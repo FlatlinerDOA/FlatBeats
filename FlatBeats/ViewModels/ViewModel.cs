@@ -1,5 +1,5 @@
 ﻿
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.ComponentModel;

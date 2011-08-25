@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.Generic;

@@ -9,12 +9,12 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    using EightTracks.DataModel;
+    using FlatBeats.DataModel;
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;

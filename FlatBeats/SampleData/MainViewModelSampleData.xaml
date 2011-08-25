@@ -1,7 +1,7 @@
 ﻿<ViewModels:MainPageViewModel 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:EightTracks" xmlns:ViewModels="clr-namespace:EightTracks.ViewModels">
+    xmlns:local="clr-namespace:FlatBeats" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels">
 
     <ViewModels:MainPageViewModel.Tags>
         <ViewModels:TagViewModel TagName="design one" />

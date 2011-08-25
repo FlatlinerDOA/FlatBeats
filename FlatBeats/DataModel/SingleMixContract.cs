@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EightTracks.DataModel
+namespace FlatBeats.DataModel
 {
     using System.Runtime.Serialization;
 

@@ -13,9 +13,9 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
-namespace EightTracks
+namespace FlatBeats
 {
-    using EightTracks.ViewModels;
+    using FlatBeats.ViewModels;
 
     public partial class App : Application
     {
@@ -141,7 +141,7 @@ namespace EightTracks
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
-            RootFrame = new TransitionFrame();
+            RootFrame = new PhoneApplicationFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // Handle navigation failures

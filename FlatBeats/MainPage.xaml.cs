@@ -1,13 +1,9 @@
-﻿namespace EightTracks
+﻿namespace FlatBeats
 {
     using System;
-    using System.ComponentModel;
     using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-
-    using EightTracks.Controls;
-    using EightTracks.ViewModels;
+    using FlatBeats.Controls;
+    using FlatBeats.ViewModels;
 
     using Microsoft.Phone.Controls;
 
@@ -33,7 +29,7 @@
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             ////App.ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
-            App.ViewModel.Load();
+            this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
             ////this.LoadDynamicBackground();
         }
 

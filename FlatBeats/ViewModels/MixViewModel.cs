@@ -3,12 +3,12 @@
 //   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
 // </copyright>
 //--------------------------------------------------------------------------------------------------
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Linq;
 
-    using EightTracks.DataModel;
+    using FlatBeats.DataModel;
 
     /// <summary>
     /// </summary>
@@ -56,6 +56,8 @@ namespace EightTracks.ViewModels
             this.ImageUrl = mix.CoverUrls.OriginalUrl;
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixName, UriKind.Relative);
+
+            this.Tags = mix.Tags;
         }
 
         #endregion
@@ -80,6 +82,26 @@ namespace EightTracks.ViewModels
 
                 this.description = value;
                 this.OnPropertyChanged("Description");
+            }
+        }
+
+        private string tags;
+
+        public string Tags
+        {
+            get
+            {
+                return this.tags;
+            }
+            set
+            {
+                if (this.tags == value)
+                {
+                    return;
+                }
+
+                this.tags = value;
+                this.OnPropertyChanged("Tags");
             }
         }
 

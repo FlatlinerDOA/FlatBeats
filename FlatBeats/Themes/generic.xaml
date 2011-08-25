@@ -8,7 +8,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/client/2007"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
-                    xmlns:local="clr-namespace:EightTracks.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls" mc:Ignorable="d">
 

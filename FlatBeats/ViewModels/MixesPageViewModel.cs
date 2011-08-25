@@ -7,14 +7,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Net;
 
-    using EightTracks.DataModel;
+    using FlatBeats.DataModel;
 
     using Microsoft.Phone.Reactive;
 

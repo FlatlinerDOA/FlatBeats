@@ -7,14 +7,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace EightTracks.ViewModels
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Net;
+    using System.Threading;
 
-    using EightTracks.DataModel;
+    using FlatBeats.DataModel;
 
     using Microsoft.Phone.Reactive;
 
@@ -43,8 +44,9 @@ namespace EightTracks.ViewModels
         /// </summary>
         public MainPageViewModel()
         {
-            this.BackgroundImage = new Uri("PanoramaBackground.png", UriKind.Relative);
+            this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
             this.Mixes = new ObservableCollection<MixViewModel>();
+            this.MixRows = new ObservableCollection<DualTileRowViewModel<MixViewModel>>();
             this.Tags = new ObservableCollection<TagViewModel>();
         }
 
@@ -83,6 +85,11 @@ namespace EightTracks.ViewModels
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
         /// <summary>
+        ///   Gets the collection of new mixes.
+        /// </summary>
+        public ObservableCollection<DualTileRowViewModel<MixViewModel>> MixRows { get; private set; }
+
+        /// <summary>
         /// </summary>
         public ObservableCollection<TagViewModel> Tags { get; private set; }
 
@@ -93,9 +100,9 @@ namespace EightTracks.ViewModels
         public void Load()
         {
             this.LoadData();
-            this.subscription = Observable.Interval(TimeSpan.FromSeconds(30))
-                .ObserveOnDispatcher()
-                .Subscribe(_ => this.PickNewBackgroundImage());
+            ////this.subscription = Observable.Interval(TimeSpan.FromSeconds(30))
+            ////    .ObserveOnDispatcher()
+            ////    .Subscribe(_ => this.PickNewBackgroundImage());
         }
 
         /// <summary>
@@ -110,14 +117,45 @@ namespace EightTracks.ViewModels
 
             this.IsDataLoaded = true;
 
-            Downloader.DownloadJson<MixesContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
-                .ObserveOnDispatcher()
-                .Subscribe(this.LoadMixes); 
+            var pageData = from latest in Downloader.DownloadJson<MixesContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
+                           from mix in latest.Mixes.ToObservable()
+                           select new MixViewModel(mix);
+            this.Mixes.Clear();
+            pageData.ObserveOnDispatcher().Subscribe(m => this.Mixes.Add(m), ex => this.ShowError(ex.Message), this.LoadTags); 
+        }
+
+        private void ShowError(string message)
+        {
+            this.Message = message;
+        }
+
+
+        private string message;
+
+        public string Message
+        {
+            get
+            {
+                return this.message;
+            }
+            set
+            {
+                if (this.message == value)
+                {
+                    return;
+                }
+
+                this.message = value;
+                this.OnPropertyChanged("Message");
+            }
         }
 
         public void Unload()
         {
-            this.subscription.Dispose();
+            if (this.subscription != null)
+            {
+                this.subscription.Dispose();
+            }
         }
 
         #endregion
@@ -126,19 +164,17 @@ namespace EightTracks.ViewModels
 
         /// <summary>
         /// </summary>
-        /// <param name="mixes">
-        /// </param>
-        private void LoadMixes(MixesContract mixes)
+        private void LoadTags()
         {
-            this.Mixes.Clear();
-            foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
+            this.MixRows.Clear();
+            foreach (var row in DualTileRowViewModel<MixViewModel>.Tile(this.Mixes))
             {
-                this.Mixes.Add(mix);
+                this.MixRows.Add(row);
             }
 
             this.Tags.Clear();
             var tags = TagViewModel.SplitAndMergeIntoTags(
-                mixes.Mixes.Select(m => m.Tags));
+                this.Mixes.Select(m => m.Tags));
             
             foreach (var tag in tags)
             {

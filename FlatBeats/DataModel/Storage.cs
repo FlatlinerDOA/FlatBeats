@@ -1,4 +1,4 @@
-﻿namespace EightTracks.DataModel
+﻿namespace FlatBeats.DataModel
 {
     using System;
     using System.IO;
@@ -68,6 +68,19 @@
                     {
                         return reader.ReadToEnd();
                     }
+                }
+            }
+        }
+
+        public static void Save(string file, Stream data)
+        {
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                using (var stream = storage.CreateFile(file))
+                {
+                    data.CopyTo(stream);
+                    stream.Flush();
+                    stream.Close();
                 }
             }
         }

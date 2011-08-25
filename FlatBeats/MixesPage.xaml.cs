@@ -1,9 +1,9 @@
-﻿namespace EightTracks
+﻿namespace FlatBeats
 {
     using System;
     using Microsoft.Phone.Controls;
-    using EightTracks.Controls;
-    using EightTracks.ViewModels;
+    using FlatBeats.Controls;
+    using FlatBeats.ViewModels;
 
     public partial class MixesPage : PhoneApplicationPage
     {

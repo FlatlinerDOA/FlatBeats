@@ -7,7 +7,7 @@
 // </summary>
 // 
 // --------------------------------------------------------------------------------------------------------------------
-namespace EightTracks.Controls
+namespace FlatBeats.Controls
 {
     using System;
     using System.Diagnostics;
