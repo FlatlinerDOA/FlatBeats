@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Phone.BackgroundAudio;
 
-namespace EightTracksPlaybackAgent
+namespace FlatBeatsPlaybackAgent
 {
     public class AudioPlayer : AudioPlayerAgent
     {

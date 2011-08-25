@@ -138,7 +138,6 @@
     </None>
     <None Include="SampleData\mixes.json" />
     <None Include="SampleData\recentmixes.json" />
-    <None Include="Thumbs.db" />
     <None Include="Toolkit.Content\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>

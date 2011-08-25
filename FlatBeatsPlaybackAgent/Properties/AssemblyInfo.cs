@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EightTracksPlaybackAgent")]
+[assembly: AssemblyTitle("FlatBeatsPlaybackAgent")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("EightTracksPlaybackAgent")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCompany("Andrew Chisholm")]
+[assembly: AssemblyProduct("FlatBeatsPlaybackAgent")]
+[assembly: AssemblyCopyright("Copyright © Andrew Chisholm 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
