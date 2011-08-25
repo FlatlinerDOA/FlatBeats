@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeats", "FlatBeats\FlatBeats.csproj", "{ED12D632-B2DC-4A9A-B98B-293B187A846B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeatsPlaybackAgent", "FlatBeatsPlaybackAgent\FlatBeatsPlaybackAgent.csproj", "{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED12D632-B2DC-4A9A-B98B-293B187A846B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

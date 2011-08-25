@@ -1,0 +1,10 @@
+glob:.gitignore
+glob:packages
+glob:_ReSharper*
+glob:Thumbs.db
+glob:[Oo]bj
+glob:[Bb]in
+glob:*.user
+glob:*.suo
+glob:*.docstates
+glob:TestResults
