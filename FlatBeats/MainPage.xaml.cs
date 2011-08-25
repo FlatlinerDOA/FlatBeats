@@ -16,7 +16,7 @@
 
             // Set the data context of the listbox control to the sample data
             this.DataContext = App.ViewModel;
-            this.Loaded += this.MainPage_Loaded;
+
             this.Unloaded += this.MainPage_Unloaded;
         }
 
@@ -25,12 +25,12 @@
             App.ViewModel.Unload();
         }
 
-        // Load data for the ViewModel Items
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+ 
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            ////App.ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
+            base.OnNavigatedTo(e);
             this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
-            ////this.LoadDynamicBackground();
         }
 
         ////private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

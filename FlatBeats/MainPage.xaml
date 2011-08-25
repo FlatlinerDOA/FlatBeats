@@ -22,7 +22,7 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" Height="181">
+                        <StackPanel Orientation="Vertical" Width="181">
                             <Controls:HubTile Message="{Binding Left.Description}"
                                                   Title="{Binding Left.TileTitle}"
                                               Margin="4">
