@@ -141,7 +141,7 @@
         	</shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="appbar_playpause"
                                             Text="play"
-                                            IconUri="/icons/appbar.transport.play.rest.png" />
+                                            IconUri="/icons/appbar.transport.play.rest.png" Click="Play_Click" />
             <shell:ApplicationBarIconButton x:Name="appbar_next"
                                             Text="next"
                                             IconUri="/icons/appbar.transport.ff.rest.png" />

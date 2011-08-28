@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.IO.IsolatedStorage;
+    using System.Text;
 
     public static class Storage
     {
@@ -38,11 +39,13 @@
 
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                using (var stream = storage.CreateFile(file))
+                using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
                 {
-                    using (var writer = new StreamWriter(stream))
+                    using (var writer = new StreamWriter(stream, Encoding.UTF8))
                     {
                         writer.Write(text);
+                        writer.Flush();
+                        writer.Close();
                     }
                 }
             }
@@ -62,9 +65,14 @@
 
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                using (var stream = storage.CreateFile(file))
+                if (!storage.FileExists(file))
                 {
-                    using (var reader = new StreamReader(stream))
+                    return null;
+                }
+
+                using (var stream = new IsolatedStorageFileStream(file, FileMode.Open, storage))
+                {
+                    using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         return reader.ReadToEnd();
                     }
@@ -76,12 +84,20 @@
         {
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                using (var stream = storage.CreateFile(file))
+                using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
                 {
                     data.CopyTo(stream);
                     stream.Flush();
                     stream.Close();
                 }
+            }
+        }
+
+        public static void Delete(string file)
+        {
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                storage.DeleteFile(file);
             }
         }
     }

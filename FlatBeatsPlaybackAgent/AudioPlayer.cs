@@ -3,6 +3,13 @@ using Microsoft.Phone.BackgroundAudio;
 
 namespace FlatBeatsPlaybackAgent
 {
+    using System.IO.IsolatedStorage;
+
+    using FlatBeats.DataModel;
+
+    using Microsoft.Devices;
+    using Microsoft.Phone.Reactive;
+
     public class AudioPlayer : AudioPlayerAgent
     {
         /// <summary>
@@ -20,10 +27,12 @@ namespace FlatBeatsPlaybackAgent
             switch (playState)
             {
                 case PlayState.TrackReady:
-                    // The track to play is set in the PlayTrack method.
                     player.Play();
                     break;
-
+                case PlayState.Stopped:
+                    player.Stop();
+                    ////Storage.Delete("nowplaying.json");
+                    break;
                 case PlayState.TrackEnded:
                     this.PlayNextTrack(player);
                     break;
@@ -49,27 +58,20 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
-            //TODO: Add code to handle user actions through the application and system-provided UI
             switch (action)
             {
                 case UserAction.Stop:
+                    player.Stop();
                     break;
                 case UserAction.Pause:
+                    player.Pause();
                     break;
                 case UserAction.Play:
+                    this.PlayTrack(player);
                     break;
                 case UserAction.SkipNext:
+                    this.SkipToNextTrack(player);
                     break;
-                case UserAction.SkipPrevious:
-                    break;
-                case UserAction.FastForward:
-                    break;
-                case UserAction.Rewind:
-                    break;
-                case UserAction.Seek:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("action");
             }
 
             this.NotifyComplete();
@@ -88,9 +90,14 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            // TODO: Add code to handle error conditions
-
-            this.NotifyComplete();
+            if (isFatal)
+            {
+                this.Abort();
+            }
+            else
+            {
+                this.NotifyComplete();
+            }
         }
 
         /// <summary>
@@ -98,8 +105,8 @@ namespace FlatBeatsPlaybackAgent
         /// </summary>
         protected override void OnCancel()
         {
+            this.NotifyComplete();
         }
-
 
         /// <summary>
         /// Increments the currentTrackNumber and plays the correpsonding track.
@@ -107,12 +114,47 @@ namespace FlatBeatsPlaybackAgent
         /// <param name="player">The BackgroundAudioPlayer</param>
         private void PlayNextTrack(BackgroundAudioPlayer player)
         {
-            ////if (++currentTrackNumber >= _playList.Count)
-            ////{
-            ////    currentTrackNumber = 0;
-            ////}
+            if (this.NowPlaying.Set.IsLastTrack)
+            {
+                player.Stop();
+                return;
+            }
 
-            this.PlayTrack(player);
+            var nextFormat = string.Format(
+                "http://8tracks.com/sets/{0}/next.json?mix_id={1}",
+                this.NowPlaying.PlayToken,
+                this.NowPlaying.MixId);
+            var nextResponse = Downloader.DownloadJson<PlayResponseContract>(new Uri(nextFormat)).First();
+            if (nextResponse.Status.StartsWith("200"))
+            {
+                this.NowPlaying.Set = nextResponse.Set;
+                this.Save();
+                this.PlayTrack(player);
+            }
+        }
+
+        /// <summary>
+        /// Increments the currentTrackNumber and plays the correpsonding track.
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        private void SkipToNextTrack(BackgroundAudioPlayer player)
+        {
+            if (!this.NowPlaying.Set.SkipAllowed)
+            {
+                return;
+            }
+
+            var skipFormat = string.Format(
+                "http://8tracks.com/sets/{0}/skip.json?mix_id={1}", 
+                this.NowPlaying.PlayToken, 
+                this.NowPlaying.MixId);
+            var skipResponse = Downloader.DownloadJson<PlayResponseContract>(new Uri(skipFormat)).First();
+            if (skipResponse.Status.StartsWith("200"))
+            {
+                this.NowPlaying.Set = skipResponse.Set;
+                this.Save();
+                this.PlayTrack(player);
+            }
         }
 
         private void PlayTrack(BackgroundAudioPlayer player)
@@ -127,7 +169,45 @@ namespace FlatBeatsPlaybackAgent
             {
                 // Set which track to play. When the TrackReady state is received 
                 // in the OnPlayStateChanged handler, call player.Play().
-                player.Track = new AudioTrack();
+                var trackUrl = new Uri(this.NowPlaying.Set.Track.TrackUrl, UriKind.Absolute);
+                var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
+
+                ////MediaHistoryItem mediaHistoryItem = new MediaHistoryItem();
+
+                //////<hubTileImageStream> must be a valid ImageStream.
+                ////mediaHistoryItem.ImageStream = IsolatedStorageFile.GetUserStoreForApplication().OpenFile(); 
+                ////mediaHistoryItem.Source = "";
+                ////mediaHistoryItem.Title = "RecentPlay";
+                ////mediaHistoryItem.PlayerContext.Add("keyString", "Song Name");
+                ////MediaHistory.Instance.WriteRecentPlay(mediaHistoryItem);
+
+                player.Track = new AudioTrack(
+                    trackUrl, 
+                    this.NowPlaying.Set.Track.Name, 
+                    this.NowPlaying.Set.Track.Artist, 
+                    this.NowPlaying.MixName, 
+                    coverUrl);
+            }
+        }
+
+        private void Save()
+        {
+            Storage.Save("Shared/Media/nowplaying.json", Json.Serialize(this.NowPlaying));
+        }
+
+        private PlayingMixContract nowPlaying;
+
+        public PlayingMixContract NowPlaying
+        {
+            get
+            {
+                if (this.nowPlaying == null)
+                {
+                    var data = Storage.Load("Shared/Media/nowplaying.json");
+                    this.nowPlaying = Json.Deserialize<PlayingMixContract>(data);
+                }
+
+                return this.nowPlaying;
             }
         }
     }

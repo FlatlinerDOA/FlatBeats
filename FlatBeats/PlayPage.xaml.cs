@@ -58,5 +58,10 @@
         {
             this.ViewModel.Share();
         }
+
+        private void Play_Click(object sender, EventArgs e)
+        {
+            this.ViewModel.Play();
+        }
     }
 }

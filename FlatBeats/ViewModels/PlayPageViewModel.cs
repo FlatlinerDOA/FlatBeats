@@ -152,9 +152,12 @@
             var downloadMix = 
             Downloader.DownloadJson<MixResponseContract>(
                 new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
-                "playingmix.json");
+                "mix-" + this.MixId + ".json");
             
-            downloadMix.ObserveOnDispatcher().Subscribe(mixes => this.LoadMix(mixes.Mix), this.ShowError, this.LoadComments);
+            downloadMix.ObserveOnDispatcher().Subscribe(
+                mixes => this.LoadMix(mixes.Mix), 
+                this.ShowError, 
+                this.LoadComments);
         }
 
         protected bool IsDataLoaded { get; set; }
@@ -165,7 +168,7 @@
                 from response in
                     Downloader.DownloadJson<ReviewsResponseContract>(
                         new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=10", this.MixId),
+                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId),
                     UriKind.RelativeOrAbsolute))
                 from review in response.Reviews.ToObservable()
                 select new ReviewViewModel(review);
@@ -241,6 +244,56 @@
         }
 
         #endregion
+
+        public void Play()
+        {
+            if (BackgroundAudioPlayer.Instance.PlayerState == PlayState.Playing)
+            {
+                this.Player.Pause();
+            }
+            else
+            {
+                if (this.NowPlaying != null)
+                {
+                    this.Player.Play();
+                    return;
+                }
+
+                var x = from playToken in Downloader.DownloadJson<PlayTokenResponseContract>(new Uri("http://8tracks.com/sets/new.json"))
+                        let nowPlaying = new PlayingMixContract
+                        {
+                            PlayToken = playToken.PlayToken,
+                            MixId = this.Mix.MixId,
+                            MixName = this.Mix.MixName,
+                            Cover = new CoverUrlContract
+                            {
+                                OriginalUrl = this.Mix.ImageUrl,
+                                ThumbnailUrl = this.Mix.ThumbnailUrl
+                            }
+                        }
+                        let playFormat = string.Format(
+                                "http://8tracks.com/sets/{0}/play.json?mix_id={1}",
+                                nowPlaying.PlayToken,
+                                nowPlaying.MixId)
+                        from playResponse in Downloader.DownloadJson<PlayResponseContract>(new Uri(playFormat))
+                        select new
+                        {
+                            NowPlaying = nowPlaying,
+                            Set = playResponse.Set
+                        };
+                x.ObserveOnDispatcher().Subscribe(
+                    m =>
+                    {
+                        this.NowPlaying = m.NowPlaying;
+                        this.NowPlaying.Set = m.Set;
+                        var data = Json.Serialize(this.NowPlaying);
+                        Storage.Save("Shared/Media/nowplaying.json", data);
+                        this.Player.Play();
+                    });
+            }
+        }
+
+        protected PlayingMixContract NowPlaying { get; set; }
 
         public void Share()
         {
