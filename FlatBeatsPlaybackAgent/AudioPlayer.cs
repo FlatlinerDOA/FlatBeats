@@ -17,9 +17,19 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnPlayStateChanged(BackgroundAudioPlayer player, AudioTrack track, PlayState playState)
         {
-            //TODO: Add code to handle play state changes
-            
-            NotifyComplete();
+            switch (playState)
+            {
+                case PlayState.TrackReady:
+                    // The track to play is set in the PlayTrack method.
+                    player.Play();
+                    break;
+
+                case PlayState.TrackEnded:
+                    this.PlayNextTrack(player);
+                    break;
+            }
+
+            this.NotifyComplete();
         }
 
 
@@ -61,7 +71,8 @@ namespace FlatBeatsPlaybackAgent
                 default:
                     throw new ArgumentOutOfRangeException("action");
             }
-            NotifyComplete();
+
+            this.NotifyComplete();
         }
 
         /// <summary>
@@ -77,9 +88,9 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            //TODO: Add code to handle error conditions
+            // TODO: Add code to handle error conditions
 
-            NotifyComplete();
+            this.NotifyComplete();
         }
 
         /// <summary>
@@ -87,6 +98,37 @@ namespace FlatBeatsPlaybackAgent
         /// </summary>
         protected override void OnCancel()
         {
+        }
+
+
+        /// <summary>
+        /// Increments the currentTrackNumber and plays the correpsonding track.
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        private void PlayNextTrack(BackgroundAudioPlayer player)
+        {
+            ////if (++currentTrackNumber >= _playList.Count)
+            ////{
+            ////    currentTrackNumber = 0;
+            ////}
+
+            this.PlayTrack(player);
+        }
+
+        private void PlayTrack(BackgroundAudioPlayer player)
+        {
+            if (PlayState.Paused == player.PlayerState)
+            {
+                // If we're paused, we already have 
+                // the track set, so just resume playing.
+                player.Play();
+            }
+            else
+            {
+                // Set which track to play. When the TrackReady state is received 
+                // in the OnPlayStateChanged handler, call player.Play().
+                player.Track = new AudioTrack();
+            }
         }
     }
 }

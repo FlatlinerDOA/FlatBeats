@@ -45,6 +45,7 @@
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
             this.ViewModel.Load();
         }
 

@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}</ProjectGuid>
+    <ProjectGuid>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</ProjectGuid>
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlatBeatsPlaybackAgent</RootNamespace>
-    <AssemblyName>FlatBeatsPlaybackAgent</AssemblyName>
+    <RootNamespace>FlatBeats.DataModel</RootNamespace>
+    <AssemblyName>FlatBeats.DataModel</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
@@ -18,7 +18,6 @@
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <BackgroundAgentType>AudioPlayerAgent</BackgroundAgentType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +41,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="System.Observable" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -51,14 +53,15 @@
     <Reference Include="mscorlib.extensions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioPlayer.cs" />
+    <Compile Include="CoverUrlContract.cs" />
+    <Compile Include="Downloader.cs" />
+    <Compile Include="Json.cs" />
+    <Compile Include="MixContract.cs" />
+    <Compile Include="MixesContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FlatBeats.DataModel\FlatBeats.DataModel.csproj">
-      <Project>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</Project>
-      <Name>FlatBeats.DataModel</Name>
-    </ProjectReference>
+    <Compile Include="ReviewsResponseContract.cs" />
+    <Compile Include="SingleMixContract.cs" />
+    <Compile Include="Storage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

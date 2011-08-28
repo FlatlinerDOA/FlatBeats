@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MainViewModel.cs" company="">
+// <copyright file="MainPageViewModel.cs" company="">
 //   
 // </copyright>
 // <summary>
@@ -12,8 +12,6 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Net;
-    using System.Threading;
 
     using FlatBeats.DataModel;
 
@@ -33,6 +31,12 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private Uri backgroundImage;
 
+        /// <summary>
+        /// </summary>
+        private string message;
+
+        /// <summary>
+        /// </summary>
         private IDisposable subscription;
 
         #endregion
@@ -40,7 +44,7 @@ namespace FlatBeats.ViewModels
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
+        ///   Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainPageViewModel()
         {
@@ -80,64 +84,14 @@ namespace FlatBeats.ViewModels
         public bool IsDataLoaded { get; private set; }
 
         /// <summary>
-        ///   Gets the collection of new mixes.
         /// </summary>
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
-
-        /// <summary>
-        ///   Gets the collection of new mixes.
-        /// </summary>
-        public ObservableCollection<DualTileRowViewModel<MixViewModel>> MixRows { get; private set; }
-
-        /// <summary>
-        /// </summary>
-        public ObservableCollection<TagViewModel> Tags { get; private set; }
-
-        #endregion
-
-        #region Public Methods
-
-        public void Load()
-        {
-            this.LoadData();
-            ////this.subscription = Observable.Interval(TimeSpan.FromSeconds(30))
-            ////    .ObserveOnDispatcher()
-            ////    .Subscribe(_ => this.PickNewBackgroundImage());
-        }
-
-        /// <summary>
-        /// Creates and adds a few ItemViewModel objects into the Items collection.
-        /// </summary>
-        private void LoadData()
-        {
-            if (this.IsDataLoaded)
-            {
-                return;
-            }
-
-            this.IsDataLoaded = true;
-
-            var pageData = from latest in Downloader.DownloadJson<MixesContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
-                           from mix in latest.Mixes.ToObservable()
-                           select new MixViewModel(mix);
-            this.Mixes.Clear();
-            pageData.ObserveOnDispatcher().Subscribe(m => this.Mixes.Add(m), ex => this.ShowError(ex.Message), this.LoadTags); 
-        }
-
-        private void ShowError(string message)
-        {
-            this.Message = message;
-        }
-
-
-        private string message;
-
         public string Message
         {
             get
             {
                 return this.message;
             }
+
             set
             {
                 if (this.message == value)
@@ -150,6 +104,57 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private bool isInProgress;
+
+        public bool IsInProgress
+        {
+            get
+            {
+                return this.isInProgress;
+            }
+            set
+            {
+                if (this.isInProgress == value)
+                {
+                    return;
+                }
+
+                this.isInProgress = value;
+                this.OnPropertyChanged("IsInProgress");
+            }
+        }
+
+        /// <summary>
+        ///   Gets the collection of new mixes.
+        /// </summary>
+        public ObservableCollection<DualTileRowViewModel<MixViewModel>> MixRows { get; private set; }
+
+        /// <summary>
+        ///   Gets the collection of new mixes.
+        /// </summary>
+        public ObservableCollection<MixViewModel> Mixes { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<TagViewModel> Tags { get; private set; }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// </summary>
+        public void Load()
+        {
+            this.LoadData();
+
+            ////this.subscription = Observable.Interval(TimeSpan.FromSeconds(30))
+            ////    .ObserveOnDispatcher()
+            ////    .Subscribe(_ => this.PickNewBackgroundImage());
+        }
+
+        /// <summary>
+        /// </summary>
         public void Unload()
         {
             if (this.subscription != null)
@@ -163,23 +168,46 @@ namespace FlatBeats.ViewModels
         #region Methods
 
         /// <summary>
+        /// Creates and adds a few ItemViewModel objects into the Items collection.
+        /// </summary>
+        private void LoadData()
+        {
+            if (this.IsDataLoaded)
+            {
+                return;
+            }
+
+            this.IsDataLoaded = true;
+            this.IsInProgress = true;
+            var pageData =
+                from latest in
+                    Downloader.DownloadJson<MixesContract>(
+                        new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
+                from mix in latest.Mixes.ToObservable()
+                select new MixViewModel(mix);
+            this.Mixes.Clear();
+            pageData.ObserveOnDispatcher().Subscribe(
+                m => this.Mixes.Add(m), ex => this.ShowError(ex.Message), this.LoadTags);
+        }
+
+        /// <summary>
         /// </summary>
         private void LoadTags()
         {
-            this.MixRows.Clear();
-            foreach (var row in DualTileRowViewModel<MixViewModel>.Tile(this.Mixes))
-            {
-                this.MixRows.Add(row);
-            }
-
+            ////this.MixRows.Clear();
+            ////foreach (var row in DualTileRowViewModel<MixViewModel>.Tile(this.Mixes))
+            ////{
+            ////    this.MixRows.Add(row);
+            ////}
             this.Tags.Clear();
-            var tags = TagViewModel.SplitAndMergeIntoTags(
-                this.Mixes.Select(m => m.Tags));
-            
+            var tags = TagViewModel.SplitAndMergeIntoTags(this.Mixes.Select(m => m.Tags));
+
             foreach (var tag in tags)
             {
                 this.Tags.Add(tag);
             }
+
+            this.IsInProgress = false;
         }
 
         /// <summary>
@@ -193,6 +221,15 @@ namespace FlatBeats.ViewModels
             }
 
             this.BackgroundImage = next.ImageUrl;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="message">
+        /// </param>
+        private void ShowError(string message)
+        {
+            this.Message = message;
         }
 
         #endregion
