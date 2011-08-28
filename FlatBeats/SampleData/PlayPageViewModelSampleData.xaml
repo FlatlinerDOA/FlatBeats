@@ -1,0 +1,65 @@
+﻿<FlatBeats_ViewModels:PlayPageViewModel xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:Microsoft_Phone_BackgroundAudio="clr-namespace:Microsoft.Phone.BackgroundAudio;assembly=Microsoft.Phone" xmlns:System="clr-namespace:System;assembly=mscorlib" IsInProgress="True" Message="Nam praesent cras mauris" MixId="Nullam duis" Title="Cras nam maecenas sed">
+	<FlatBeats_ViewModels:PlayPageViewModel.CurrentTrack>
+		<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam adipiscing maecenas aenean"/>
+	</FlatBeats_ViewModels:PlayPageViewModel.CurrentTrack>
+	<FlatBeats_ViewModels:PlayPageViewModel.Mix>
+		<FlatBeats_ViewModels:MixViewModel Description="Accumsan parturient vestibulum sed bibendum" Liked="False" MixName="Dictumst curae dis" MixId="Integer curabitur class vestibulum" Tags="Adipiscing parturient" TileTitle="Quisque eleifend vestibulum facilisi"/>
+	</FlatBeats_ViewModels:PlayPageViewModel.Mix>
+	<FlatBeats_ViewModels:PlayPageViewModel.PlayedTracks>
+		<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Donec nunc est aptent"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Adipiscing auctor amet vivamus habitant"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Hac aliquam congue leo mus"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Ante consequat"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Nec arcu convallis aliquet"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Diam blandit parturient vestibulum"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Commodo cursus vestibulum dictum lectus"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Eget adipiscing dignissim"/>
+		<FlatBeats_ViewModels:TrackViewModel Title="Parturient vestibulum inceptos vestibulum interdum"/>
+	</FlatBeats_ViewModels:PlayPageViewModel.PlayedTracks>
+	<FlatBeats_ViewModels:PlayPageViewModel.Player>
+		<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="888.19" CanSeek="False" CanPause="True" PlayerState="Paused" Volume="198.27">
+			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
+				<System:Exception/>
+			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
+			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
+				<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="578.9" CanSeek="False" CanPause="True" PlayerState="Unknown" Volume="470.99">
+					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
+						<System:Exception/>
+					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
+					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
+						<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="959.61" CanSeek="False" CanPause="True" PlayerState="BufferingStopped" Volume="678.58"/>
+					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
+					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
+						<System:TimeSpan/>
+					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
+					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
+						<Microsoft_Phone_BackgroundAudio:AudioTrack Album="Elit elementum adipiscing lobortis" Artist="Non conubia parturient" PlayerControls="SkipPrevious" Tag="Libero cubilia" Title="Dapibus egestas facilisis fermentum ligula"/>
+					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
+				</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer>
+			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
+			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
+				<System:TimeSpan/>
+			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
+			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
+				<Microsoft_Phone_BackgroundAudio:AudioTrack Album="Per fringilla enim habitasse hendrerit" Artist="Etiam erat himenaeos euismod" PlayerControls="FastForward" Tag="Litora nascetur eros luctus" Title="Nibh imperdiet feugiat sed magnis">
+					<Microsoft_Phone_BackgroundAudio:AudioTrack.Duration>
+						<System:TimeSpan/>
+					</Microsoft_Phone_BackgroundAudio:AudioTrack.Duration>
+				</Microsoft_Phone_BackgroundAudio:AudioTrack>
+			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
+		</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer>
+	</FlatBeats_ViewModels:PlayPageViewModel.Player>
+	<FlatBeats_ViewModels:PlayPageViewModel.Reviews>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Fusce nisi vestibulum lorem" Created="08/28/2011 15:30:30" UserName="Malesuada penatibus sem"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Sit vestibulum" Created="08/28/2011 15:30:30" UserName="Gravida vel porttitor morbi"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Pharetra iaculis placerat tincidunt adipiscing" Created="08/28/2011 15:30:30" UserName="Pulvinar nisl parturient lacinia mattis"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Nulla nunc mauris" Created="08/28/2011 15:30:30" UserName="Vestibulum tristique"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Nam ultricies" Created="08/28/2011 15:30:30" UserName="Laoreet vestibulum mollis"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Odio natoque sagittis posuere venenatis" Created="08/28/2011 15:30:30" UserName="Adipiscing proin vulputate"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Senectus montes" Created="08/28/2011 15:30:30" UserName="Sociosqu curabitur phasellus sed"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Dis suscipit consequat nostra" Created="08/28/2011 15:30:30" UserName="Convallis dignissim"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Parturient potenti torquent elementum" Created="08/28/2011 15:30:30" UserName="Pretium est ornare"/>
+		<FlatBeats_ViewModels:ReviewViewModel Body="Facilisis orci" Created="08/28/2011 15:30:30" UserName="Vestibulum pede"/>
+	</FlatBeats_ViewModels:PlayPageViewModel.Reviews>
+</FlatBeats_ViewModels:PlayPageViewModel>

@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class MixesContract
+    public class MixesResponseContract
     {
         [DataMember(Name = "mixes")]
         public List<MixContract> Mixes { get; set; }

@@ -5,7 +5,7 @@ namespace FlatBeats.DataModel
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class SingleMixContract
+    public class MixResponseContract
     {
         [DataMember(Name = "mix")]
         public MixContract Mix { get; set; }

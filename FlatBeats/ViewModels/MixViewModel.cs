@@ -57,7 +57,7 @@ namespace FlatBeats.ViewModels
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
-
+            this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
             this.Tags = mix.Tags;
         }
 
@@ -215,6 +215,9 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("TileTitle");
             }
         }
+
+        public Uri LinkUrl { get; set; }
+
         #endregion
     }
 }

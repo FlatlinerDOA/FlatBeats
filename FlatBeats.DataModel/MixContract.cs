@@ -21,5 +21,8 @@
 
         [DataMember(Name = "tag_list_cache")]
         public string Tags { get; set; }
+
+        [DataMember(Name = "restful_url")]
+        public string RestUrl { get; set; }
     }
 }

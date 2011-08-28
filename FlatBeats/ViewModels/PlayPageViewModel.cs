@@ -6,6 +6,7 @@
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
+    using Microsoft.Phone.Tasks;
 
     /// <summary>
     /// </summary>
@@ -30,7 +31,7 @@
         /// </summary>
         public PlayPageViewModel()
         {
-            this.Comments = new ObservableCollection<string>();
+            this.Reviews = new ObservableCollection<ReviewViewModel>();
             this.Player = BackgroundAudioPlayer.Instance;
             this.Player.PlayStateChanged += this.PlayStateChanged;
         }
@@ -123,7 +124,7 @@
             }
         }
 
-        public ObservableCollection<string> Comments { get; private set; }
+        public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -141,14 +142,22 @@
         /// </summary>
         public void Load()
         {
+            if (this.IsDataLoaded)
+            {
+                return;
+            }
+
+            this.IsDataLoaded = true;
             this.IsInProgress = true;
             var downloadMix = 
-            Downloader.DownloadJson<SingleMixContract>(
+            Downloader.DownloadJson<MixResponseContract>(
                 new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
                 "playingmix.json");
             
             downloadMix.ObserveOnDispatcher().Subscribe(mixes => this.LoadMix(mixes.Mix), this.ShowError, this.LoadComments);
         }
+
+        protected bool IsDataLoaded { get; set; }
 
         private void LoadComments()
         {
@@ -159,9 +168,9 @@
                     string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=10", this.MixId),
                     UriKind.RelativeOrAbsolute))
                 from review in response.Reviews.ToObservable()
-                select review;
+                select new ReviewViewModel(review);
             downloadComments.ObserveOnDispatcher().Subscribe(
-                r => this.Comments.Add(r.Body), this.ShowError, this.HideProgress);
+                r => this.Reviews.Add(r), this.ShowError, this.HideProgress);
         }
 
         private void HideProgress()
@@ -232,22 +241,16 @@
         }
 
         #endregion
-    }
 
-    /// <summary>
-    /// </summary>
-    public class TrackViewModel : ViewModel
-    {
-        #region Public Properties
-
-        /// <summary>
-        /// </summary>
-        public Uri AudioUrl { get; private set; }
-
-        /// <summary>
-        /// </summary>
-        public string Title { get; private set; }
-
-        #endregion
+        public void Share()
+        {
+            var task = new ShareLinkTask()
+                {
+                    LinkUri = this.Mix.LinkUrl,
+                    Title = this.Mix.MixName,
+                    Message = this.Mix.Description
+                };
+            task.Show();
+        }
     }
 }

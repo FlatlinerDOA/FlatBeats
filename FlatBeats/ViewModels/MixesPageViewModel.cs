@@ -153,9 +153,9 @@ namespace FlatBeats.ViewModels
         /// </param>
         /// <returns>
         /// </returns>
-        private static IObservable<MixesContract> DownloadMixes(string tag, string sort)
+        private static IObservable<MixesResponseContract> DownloadMixes(string tag, string sort)
         {
-            return Downloader.DownloadJson<MixesContract>(
+            return Downloader.DownloadJson<MixesResponseContract>(
                 new Uri(
                     string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", tag, sort),
                     UriKind.RelativeOrAbsolute), sort + "mixes.json");
@@ -165,7 +165,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         /// <param name="mixes">
         /// </param>
-        private void LoadHotMixes(MixesContract mixes)
+        private void LoadHotMixes(MixesResponseContract mixes)
         {
             foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
             {
@@ -177,7 +177,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         /// <param name="mixes">
         /// </param>
-        private void LoadPopularMixes(MixesContract mixes)
+        private void LoadPopularMixes(MixesResponseContract mixes)
         {
             foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
             {
@@ -189,7 +189,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         /// <param name="mixes">
         /// </param>
-        private void LoadRecentMixes(MixesContract mixes)
+        private void LoadRecentMixes(MixesResponseContract mixes)
         {
             foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
             {

@@ -6,6 +6,7 @@
     using FlatBeats.ViewModels;
 
     using Microsoft.Phone.Controls;
+    using Microsoft.Phone.Tasks;
 
     /// <summary>
     /// </summary>
@@ -50,5 +51,12 @@
         }
 
         #endregion
+
+        
+
+        private void Share_Click(object sender, EventArgs e)
+        {
+            this.ViewModel.Share();
+        }
     }
 }

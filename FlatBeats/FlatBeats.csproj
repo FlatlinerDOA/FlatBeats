@@ -96,7 +96,9 @@
     <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
+    <Compile Include="ViewModels\ReviewViewModel.cs" />
     <Compile Include="ViewModels\TagViewModel.cs" />
+    <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +106,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <DesignData Include="SampleData\PlayPageViewModelSampleData.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </DesignData>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +138,7 @@
     </None>
     <None Include="SampleData\mixes.json" />
     <None Include="SampleData\recentmixes.json" />
+    <None Include="SampleData\reviews.json" />
     <None Include="Toolkit.Content\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>
