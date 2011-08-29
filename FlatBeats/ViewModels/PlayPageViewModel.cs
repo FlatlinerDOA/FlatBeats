@@ -53,7 +53,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private string title;
 
-        private readonly Subject<PlayState> playStates = new Subject<PlayState>();
+        private readonly Subject<bool> playStates = new Subject<bool>();
 
         #endregion
 
@@ -65,8 +65,6 @@ namespace FlatBeats.ViewModels
         public PlayPageViewModel()
         {
             this.Reviews = new ObservableCollection<ReviewViewModel>();
-            this.Player = BackgroundAudioPlayer.Instance;
-            this.Player.PlayStateChanged += this.PlayStateChanged;
         }
 
         private void PlayStateChanged(object sender, EventArgs e)
@@ -232,7 +230,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         protected PlayingMixContract NowPlaying { get; set; }
 
-        public IObservable<PlayState> PlayStates 
+        public IObservable<bool> PlayStates 
         { 
             get
             {
@@ -248,8 +246,12 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Load()
         {
+            this.Player = BackgroundAudioPlayer.Instance;
+            this.Player.PlayStateChanged += this.PlayStateChanged;
+
             if (this.IsDataLoaded)
             {
+                this.UpdatePlayState();
                 return;
             }
 
@@ -267,27 +269,28 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Play()
         {
-            if (BackgroundAudioPlayer.Instance.PlayerState == PlayState.Playing)
+            if (this.NowPlaying != null)
             {
-                this.Player.Pause();
-            }
-            else
-            {
-                if (this.NowPlaying != null)
+                if (this.Player.PlayerState == PlayState.Playing)
+                {
+                    this.Player.Pause();
+                }
+                else
                 {
                     this.Player.Play();
-                    return;
                 }
 
-                var playResponse = this.mixData.StartPlaying();
-                playResponse.ObserveOnDispatcher().Subscribe(
-                    m =>
-                        {
-                            this.NowPlaying = m;
-                            this.NowPlaying.Save();
-                            this.Player.Play();
-                        });
+                return;
             }
+
+            var playResponse = this.mixData.StartPlaying();
+            playResponse.ObserveOnDispatcher().Subscribe(
+                m =>
+                    {
+                        this.NowPlaying = m;
+                        this.NowPlaying.Save();
+                        this.Player.Play();
+                    });
         }
 
         /// <summary>
@@ -350,16 +353,17 @@ namespace FlatBeats.ViewModels
 
         private void UpdatePlayState()
         {
-            if (this.Player.PlayerState == PlayState.Playing)
+            if (this.NowPlaying != null)
             {
-                if (this.ShowNowPlaying)
+                if (this.Player.PlayerState == PlayState.Playing)
                 {
-                    this.playStates.OnNext(this.Player.PlayerState);
+                    this.playStates.OnNext(true);
+                
                 }
-            }
-            else
-            {
-                this.playStates.OnNext(this.Player.PlayerState);
+                else
+                {
+                    this.playStates.OnNext(false);
+                }
             }
         }
 

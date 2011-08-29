@@ -10,15 +10,17 @@
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls="clr-namespace:FlatBeats.Controls" FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
-                            shell:SystemTray.IsVisible="True" d:DataContext="{d:DesignData /SampleData/PlayPageViewModelSampleData.xaml}">
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
+                            d:DataContext="{d:DesignData /SampleData/PlayPageViewModelSampleData.xaml}">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
+        <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
         <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
         <DataTemplate x:Key="ReviewItemTemplate">
         	<Grid d:DesignWidth="499" d:DesignHeight="127" Margin="0,4">
@@ -27,7 +29,7 @@
         			<ColumnDefinition Width="*"/>
         		</Grid.ColumnDefinitions>
                 <Image Height="100"
-                       Margin="4"
+                       Margin="8"
                        Grid.RowSpan="3"
                        VerticalAlignment="Top">
                     <Image.Source>
@@ -36,9 +38,9 @@
                     </Image.Source>
                 </Image>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Margin="4,4,4,2" TextWrapping="Wrap" Text="{Binding UserName}" d:LayoutOverrides="Width, Height" Style="{StaticResource PhoneTextAccentStyle}" FontSize="26.667"/>
-                    <TextBlock Margin="4,2" TextWrapping="Wrap" Text="{Binding Body}" Style="{StaticResource PhoneTextNormalStyle}"/>
-        		    <TextBlock Margin="4,4,4,12" TextWrapping="Wrap" Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}" d:LayoutOverrides="Height" Style="{StaticResource PhoneTextSmallStyle}" FontSize="16"/>
+                    <TextBlock Margin="8,4,4,2" TextWrapping="Wrap" Text="{Binding UserName}" d:LayoutOverrides="Width, Height" Style="{StaticResource PhoneTextAccentStyle}" FontSize="26.667"/>
+                    <TextBlock Margin="8,2" TextWrapping="Wrap" Text="{Binding Body}" Style="{StaticResource PhoneTextNormalStyle}"/>
+        		    <TextBlock Margin="8,4,4,12" TextWrapping="Wrap" Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}" d:LayoutOverrides="Height" Style="{StaticResource PhoneTextSmallStyle}" FontSize="16"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -78,7 +80,7 @@
                 </ImageBrush.ImageSource>
             </ImageBrush>
         </Grid.Background>
-        <controls:Pivot Margin="0,-12,0,0">
+        <controls:Pivot Margin="0,-8,0,0">
             <controls:PivotItem Header="mix">
                 <Grid>
                 	<Grid.RowDefinitions>
@@ -138,7 +140,7 @@
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
-            <controls:PivotItem Header="playing">
+            <controls:PivotItem Header="playing" Visibility="{Binding ShowNowPlaying, Converter={StaticResource VisibilityConverter}}">
             	<Grid/>
             </controls:PivotItem>
         </controls:Pivot>

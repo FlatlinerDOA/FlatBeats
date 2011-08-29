@@ -108,6 +108,26 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private bool isInProgress;
+
+        public bool IsInProgress
+        {
+            get
+            {
+                return this.isInProgress;
+            }
+            set
+            {
+                if (this.isInProgress == value)
+                {
+                    return;
+                }
+
+                this.isInProgress = value;
+                this.OnPropertyChanged("IsInProgress");
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -133,12 +153,18 @@ namespace FlatBeats.ViewModels
             }
 
             this.IsDataLoaded = true;
-
+            this.IsInProgress = true;
             this.Title = string.Format("FLAT BEATS - {0}", this.Tag);
 
-            DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(this.LoadRecentMixes);
-            DownloadMixes(this.Tag, "hot").ObserveOnDispatcher().Subscribe(this.LoadHotMixes);
-            DownloadMixes(this.Tag, "popular").ObserveOnDispatcher().Subscribe(this.LoadPopularMixes);
+            DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(this.LoadRecentMixes, () =>
+                {
+                    DownloadMixes(this.Tag, "hot").ObserveOnDispatcher().Subscribe(this.LoadHotMixes, () =>
+                        {
+                            DownloadMixes(this.Tag, "popular").ObserveOnDispatcher().Subscribe(this.LoadPopularMixes, () =>
+                                { this.IsInProgress = false; });
+                        });
+
+                });
         }
 
         #endregion

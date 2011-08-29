@@ -46,6 +46,11 @@
     <phone:PhoneApplicationPage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
     </phone:PhoneApplicationPage.DataContext>
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
+                                 IsIndeterminate="True" />
+    </shell:SystemTray.ProgressIndicator>
+
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
             <toolkit:NavigationInTransition.Backward>

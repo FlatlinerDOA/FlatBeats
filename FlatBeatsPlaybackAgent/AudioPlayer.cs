@@ -114,7 +114,7 @@ namespace FlatBeatsPlaybackAgent
                     player.Play();
                     break;
                 case PlayState.Stopped:
-                    PlayerService.Stop();
+                    ////PlayerService.Stop();
                     break;
                 case PlayState.TrackEnded:
                     this.PlayNextTrack(player);

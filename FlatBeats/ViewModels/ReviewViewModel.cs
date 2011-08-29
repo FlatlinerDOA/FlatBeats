@@ -72,7 +72,7 @@ namespace FlatBeats.ViewModels
         public ReviewViewModel(ReviewContract review)
         {
             this.UserName = review.User.Name;
-            this.Body = review.Body;
+            this.Body = review.Body.Trim();
             this.AvatarUrl = new Uri(review.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
             if (!this.AvatarUrl.IsAbsoluteUri)
             {

@@ -75,6 +75,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -153,6 +154,7 @@
     </Content>
     <Resource Include="icons\appbar.heart2.empty.rest.png" />
     <Resource Include="icons\appbar.heart2.rest.png" />
+    <Resource Include="icons\appbar.favs.removefrom.rest.png" />
     <Content Include="icons\appbar.favs.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

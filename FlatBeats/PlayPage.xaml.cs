@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats
 {
     using System;
+    using System.Linq;
     using System.Windows.Navigation;
 
     using FlatBeats.ViewModels;
@@ -8,6 +9,7 @@
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
+    using Microsoft.Phone.Shell;
 
     /// <summary>
     /// </summary>
@@ -52,17 +54,20 @@
             this.ViewModel.PlayStates.ObserveOnDispatcher().Subscribe(this.UpdatePlayState);
         }
 
-        private void UpdatePlayState(PlayState playState)
+        private void UpdatePlayState(bool canPause)
         {
-            if (this.appbar_playpause != null)
+            var button = this.ApplicationBar.Buttons.OfType<ApplicationBarIconButton>().FirstOrDefault();
+            if (button != null)
             {
-                if (playState == PlayState.Playing)
+                if (canPause)
                 {
-                    this.appbar_playpause.IconUri = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
+                    button.IconUri = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
+                    button.Text = "pause";
                 }
                 else
                 {
-                    this.appbar_playpause.IconUri = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
+                    button.IconUri = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
+                    button.Text = "play";
                 }
             }
         }

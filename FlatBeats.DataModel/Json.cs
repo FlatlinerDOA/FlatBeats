@@ -25,6 +25,11 @@ namespace FlatBeats.DataModel
         public static T Deserialize<T>(string json)
         {
             T obj = default(T);
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return obj;
+            }
+
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
