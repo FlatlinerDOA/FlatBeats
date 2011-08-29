@@ -50,7 +50,7 @@ namespace FlatBeats.ViewModels
         public MixViewModel(MixContract mix)
         {
             this.MixName = mix.Name;
-            var lines = mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim());
+            var lines = mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
             this.ThumbnailUrl = mix.CoverUrls.ThumbnailUrl;
             this.ImageUrl = mix.CoverUrls.OriginalUrl;
@@ -58,6 +58,8 @@ namespace FlatBeats.ViewModels
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
             this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
+            this.CreatedBy = mix.User.Name;
+            this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
             this.Tags = mix.Tags;
         }
 
@@ -66,6 +68,46 @@ namespace FlatBeats.ViewModels
         #region Public Properties
 
         public string MixId { get; private set; }
+
+        private string createdBy;
+
+        public string CreatedBy
+        {
+            get
+            {
+                return this.createdBy;
+            }
+            set
+            {
+                if (this.createdBy == value)
+                {
+                    return;
+                }
+
+                this.createdBy = value;
+                this.OnPropertyChanged("CreatedBy");
+            }
+        }
+
+        private Uri createdByAvatarUrl;
+
+        public Uri CreatedByAvatarUrl
+        {
+            get
+            {
+                return this.createdByAvatarUrl;
+            }
+            set
+            {
+                if (this.createdByAvatarUrl == value)
+                {
+                    return;
+                }
+
+                this.createdByAvatarUrl = value;
+                this.OnPropertyChanged("CreatedByAvatarUrl");
+            }
+        }
 
         /// <summary>
         /// </summary>

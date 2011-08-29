@@ -1,11 +1,22 @@
-﻿namespace FlatBeats.ViewModels
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PlayPageViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
+
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
-    using Microsoft.Phone.Shell;
     using Microsoft.Phone.Tasks;
 
     /// <summary>
@@ -20,7 +31,29 @@
 
         /// <summary>
         /// </summary>
-        private string mixName;
+        private bool isInProgress;
+
+        /// <summary>
+        /// </summary>
+        private string message;
+
+        /// <summary>
+        /// </summary>
+        private MixViewModel mix;
+
+        /// <summary>
+        /// </summary>
+        private MixContract mixData;
+
+        /// <summary>
+        /// </summary>
+        private bool showNowPlaying;
+
+        /// <summary>
+        /// </summary>
+        private string title;
+
+        private readonly Subject<PlayState> playStates = new Subject<PlayState>();
 
         #endregion
 
@@ -36,29 +69,14 @@
             this.Player.PlayStateChanged += this.PlayStateChanged;
         }
 
+        private void PlayStateChanged(object sender, EventArgs e)
+        {
+            this.UpdatePlayState();
+        }
+
         #endregion
 
         #region Public Properties
-
-        private bool isInProgress;
-
-        public bool IsInProgress
-        {
-            get
-            {
-                return this.isInProgress;
-            }
-            set
-            {
-                if (this.isInProgress == value)
-                {
-                    return;
-                }
-
-                this.isInProgress = value;
-                this.OnPropertyChanged("IsInProgress");
-            }
-        }
 
         /// <summary>
         /// </summary>
@@ -83,35 +101,34 @@
 
         /// <summary>
         /// </summary>
-        public string MixId { get; set; }
-
-        private string title;
-
-        public string Title
+        public bool IsInProgress
         {
             get
             {
-                return this.title;
+                return this.isInProgress;
             }
+
             set
             {
-                if (this.title == value)
+                if (this.isInProgress == value)
                 {
                     return;
                 }
 
-                this.title = value;
-                this.OnPropertyChanged("Title");
+                this.isInProgress = value;
+                this.OnPropertyChanged("IsInProgress");
             }
         }
-        private string message;
 
+        /// <summary>
+        /// </summary>
         public string Message
         {
             get
             {
                 return this.message;
             }
+
             set
             {
                 if (this.message == value)
@@ -124,7 +141,30 @@
             }
         }
 
-        public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
+        /// <summary>
+        /// </summary>
+        public MixViewModel Mix
+        {
+            get
+            {
+                return this.mix;
+            }
+
+            set
+            {
+                if (this.mix == value)
+                {
+                    return;
+                }
+
+                this.mix = value;
+                this.OnPropertyChanged("Mix");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string MixId { get; set; }
 
         /// <summary>
         /// </summary>
@@ -133,6 +173,72 @@
         /// <summary>
         /// </summary>
         public BackgroundAudioPlayer Player { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public bool ShowNowPlaying
+        {
+            get
+            {
+                return this.showNowPlaying;
+            }
+
+            set
+            {
+                if (this.showNowPlaying == value)
+                {
+                    return;
+                }
+
+                this.showNowPlaying = value;
+                this.OnPropertyChanged("ShowNowPlaying");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string Title
+        {
+            get
+            {
+                return this.title;
+            }
+
+            set
+            {
+                if (this.title == value)
+                {
+                    return;
+                }
+
+                this.title = value;
+                this.OnPropertyChanged("Title");
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// </summary>
+        protected bool IsDataLoaded { get; set; }
+
+        /// <summary>
+        /// </summary>
+        protected PlayingMixContract NowPlaying { get; set; }
+
+        public IObservable<PlayState> PlayStates 
+        { 
+            get
+            {
+                return this.playStates;
+            }
+        }
 
         #endregion
 
@@ -149,102 +255,16 @@
 
             this.IsDataLoaded = true;
             this.IsInProgress = true;
-            var downloadMix = 
-            Downloader.DownloadJson<MixResponseContract>(
-                new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
-                "mix-" + this.MixId + ".json");
-            
+            var downloadMix = Downloader.DownloadJson<MixResponseContract>(
+                    new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
+                    "mix-" + this.MixId + ".json");
+
             downloadMix.ObserveOnDispatcher().Subscribe(
-                mixes => this.LoadMix(mixes.Mix), 
-                this.ShowError, 
-                this.LoadComments);
-        }
-
-        protected bool IsDataLoaded { get; set; }
-
-        private void LoadComments()
-        {
-            var downloadComments =
-                from response in
-                    Downloader.DownloadJson<ReviewsResponseContract>(
-                        new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId),
-                    UriKind.RelativeOrAbsolute))
-                from review in response.Reviews.ToObservable()
-                select new ReviewViewModel(review);
-            downloadComments.ObserveOnDispatcher().Subscribe(
-                r => this.Reviews.Add(r), this.ShowError, this.HideProgress);
-        }
-
-        private void HideProgress()
-        {
-            this.IsInProgress = false;
-        }
-
-        private void ShowError(Exception obj)
-        {
-            this.IsInProgress = false;
-            this.Message = obj.Message;
+                mixes => this.LoadMix(mixes.Mix), this.ShowError, this.LoadComments);
         }
 
         /// <summary>
         /// </summary>
-        public void LoadPlaying()
-        {
-            //// http://8tracks.com/sets/460486803/tracks_played.xml?mix_id=2000
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// </summary>
-        /// <param name="loadMix">
-        /// </param>
-        private void LoadMix(MixContract loadMix)
-        {
-            this.Title = loadMix.Name;
-            this.Mix = new MixViewModel(loadMix);
-            
-            ////this.Player.Track = new AudioTrack(this.CurrentTrack.AudioUrl, this.CurrentTrack.Title, this.MixName, "", new Uri());
-        }
-
-        private MixViewModel mix;
-
-        public MixViewModel Mix
-        {
-            get
-            {
-                return this.mix;
-            }
-            set
-            {
-                if (this.mix == value)
-                {
-                    return;
-                }
-
-                this.mix = value;
-                this.OnPropertyChanged("Mix");
-            }
-        }
-
-
-
-        /// <summary>
-        /// </summary>
-        /// <param name="sender">
-        /// </param>
-        /// <param name="e">
-        /// </param>
-        private void PlayStateChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        #endregion
-
         public void Play()
         {
             if (BackgroundAudioPlayer.Instance.PlayerState == PlayState.Playing)
@@ -259,49 +279,108 @@
                     return;
                 }
 
-                var x = from playToken in Downloader.DownloadJson<PlayTokenResponseContract>(new Uri("http://8tracks.com/sets/new.json"))
-                        let nowPlaying = new PlayingMixContract
-                        {
-                            PlayToken = playToken.PlayToken,
-                            MixId = this.Mix.MixId,
-                            MixName = this.Mix.MixName,
-                            Cover = new CoverUrlContract
-                            {
-                                OriginalUrl = this.Mix.ImageUrl,
-                                ThumbnailUrl = this.Mix.ThumbnailUrl
-                            }
-                        }
-                        let playFormat = string.Format(
-                                "http://8tracks.com/sets/{0}/play.json?mix_id={1}",
-                                nowPlaying.PlayToken,
-                                nowPlaying.MixId)
-                        from playResponse in Downloader.DownloadJson<PlayResponseContract>(new Uri(playFormat))
-                        select new
-                        {
-                            NowPlaying = nowPlaying,
-                            Set = playResponse.Set
-                        };
-                x.ObserveOnDispatcher().Subscribe(
+                var playResponse = this.mixData.StartPlaying();
+                playResponse.ObserveOnDispatcher().Subscribe(
                     m =>
-                    {
-                        this.NowPlaying = m.NowPlaying;
-                        this.NowPlaying.Set = m.Set;
-                        var data = Json.Serialize(this.NowPlaying);
-                        Storage.Save("Shared/Media/nowplaying.json", data);
-                        this.Player.Play();
-                    });
+                        {
+                            this.NowPlaying = m;
+                            this.NowPlaying.Save();
+                            this.Player.Play();
+                        });
             }
         }
 
-        protected PlayingMixContract NowPlaying { get; set; }
-
+        /// <summary>
+        /// </summary>
         public void Share()
         {
-            var task = new ShareLinkTask()
+            var task = new ShareLinkTask
                 {
-                    LinkUri = this.Mix.LinkUrl,
-                    Title = this.Mix.MixName,
-                    Message = this.Mix.Description
+                    Title = "Share mix", 
+                    Message = this.Mix.MixName, 
+                    LinkUri = this.Mix.LinkUrl
+                };
+            task.Show();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        private void HideProgress()
+        {
+            this.IsInProgress = false;
+        }
+
+        /// <summary>
+        /// </summary>
+        private void LoadComments()
+        {
+            var downloadComments =
+                from response in
+                    Downloader.DownloadJson<ReviewsResponseContract>(
+                        new Uri(
+                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId), 
+                    UriKind.RelativeOrAbsolute))
+                from review in response.Reviews.ToObservable()
+                select new ReviewViewModel(review);
+            downloadComments.ObserveOnDispatcher().Subscribe(
+                r => this.Reviews.Add(r), this.ShowError, this.HideProgress);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="loadMix">
+        /// </param>
+        private void LoadMix(MixContract loadMix)
+        {
+            this.Title = loadMix.Name;
+            this.mixData = loadMix;
+            this.Mix = new MixViewModel(loadMix);
+            if (this.Player.Track != null && this.Player.Track.Tag.StartsWith(loadMix.Id + "|"))
+            {
+                this.NowPlaying = PlayerService.Load();
+            }
+
+            this.ShowNowPlaying = this.NowPlaying != null;
+            this.UpdatePlayState();
+        }
+
+        private void UpdatePlayState()
+        {
+            if (this.Player.PlayerState == PlayState.Playing)
+            {
+                if (this.ShowNowPlaying)
+                {
+                    this.playStates.OnNext(this.Player.PlayerState);
+                }
+            }
+            else
+            {
+                this.playStates.OnNext(this.Player.PlayerState);
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="obj">
+        /// </param>
+        private void ShowError(Exception obj)
+        {
+            this.IsInProgress = false;
+            this.Message = obj.Message;
+        }
+
+        #endregion
+
+        public void Email()
+        {
+            var task = new EmailComposeTask()
+                {
+                    Body = this.Mix.Description + " - " + this.Mix.LinkUrl.AbsoluteUri, 
+                    Subject = this.Mix.MixName
                 };
             task.Show();
         }

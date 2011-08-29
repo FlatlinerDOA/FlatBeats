@@ -25,7 +25,7 @@
     				<DataTemplate>
     					<toolkit:HubTile x:Name="hubTile" Message="{Binding Description}"
     						Title="{Binding TileTitle}"
-    						Margin="4">
+    						Margin="8">
     						<toolkit:HubTile.Source>
                                 <BitmapImage UriSource="{Binding ThumbnailUrl}"
                                              CreateOptions="BackgroundCreation">

@@ -24,5 +24,8 @@
 
         [DataMember(Name = "restful_url")]
         public string RestUrl { get; set; }
+
+        [DataMember(Name = "user")]
+        public UserContract User { get; set; }
     }
 }
