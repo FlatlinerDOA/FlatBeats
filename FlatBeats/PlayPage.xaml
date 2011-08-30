@@ -10,7 +10,9 @@
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls="clr-namespace:FlatBeats.Controls" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
+                            xmlns:Controls="clr-namespace:FlatBeats.Controls" 
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
@@ -39,7 +41,11 @@
                 </Image>
                 <StackPanel Grid.Column="1">
                     <TextBlock Margin="8,4,4,2" TextWrapping="Wrap" Text="{Binding UserName}" d:LayoutOverrides="Width, Height" Style="{StaticResource PhoneTextAccentStyle}" FontSize="26.667"/>
-                    <TextBlock Margin="8,2" TextWrapping="Wrap" Text="{Binding Body}" Style="{StaticResource PhoneTextNormalStyle}"/>
+                    <TextBlock Margin="8,2"
+                               TextWrapping="Wrap"
+                               Text="{Binding Body}"
+                               Style="{StaticResource PhoneTextNormalStyle}"
+                               Foreground="{StaticResource PhoneForegroundBrush}" />
         		    <TextBlock Margin="8,4,4,12" TextWrapping="Wrap" Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}" d:LayoutOverrides="Height" Style="{StaticResource PhoneTextSmallStyle}" FontSize="16"/>
                 </StackPanel>
             </Grid>

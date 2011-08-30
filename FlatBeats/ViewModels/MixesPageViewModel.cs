@@ -154,7 +154,7 @@ namespace FlatBeats.ViewModels
 
             this.IsDataLoaded = true;
             this.IsInProgress = true;
-            this.Title = string.Format("FLAT BEATS - {0}", this.Tag);
+            this.Title = string.Format("FLAT BEATS - {0}", this.Tag.ToUpper());
 
             DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(this.LoadRecentMixes, () =>
                 {

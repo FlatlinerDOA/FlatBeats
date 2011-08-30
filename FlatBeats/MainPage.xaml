@@ -1,5 +1,4 @@
-﻿<phone:PhoneApplicationPage
-                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<phone:PhoneApplicationPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
@@ -9,7 +8,9 @@
                             xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:local="clr-namespace:FlatBeats.Controls"
-                            xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" x:Class="FlatBeats.MainPage"
+                            xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="800"
@@ -18,95 +19,63 @@
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
-    	<Style TargetType="local:NavigationList"
-    		x:Key="WrapNavigationList">
-    		<Setter Property="ItemTemplate">
-    			<Setter.Value>
-    				<DataTemplate>
-    					<toolkit:HubTile x:Name="hubTile" Message="{Binding Description}"
-    						Title="{Binding TileTitle}"
-    						Margin="8">
-    						<toolkit:HubTile.Source>
+        <Style TargetType="local:NavigationList"
+               x:Key="WrapNavigationList">
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <toolkit:HubTile x:Name="hubTile"
+                                         Message="{Binding Description}"
+                                         Title="{Binding TileTitle}"
+                                         Margin="8" 
+                                         GroupTag="Latest">
+                            <toolkit:HubTile.Source>
                                 <BitmapImage UriSource="{Binding ThumbnailUrl}"
                                              CreateOptions="BackgroundCreation">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="ImageOpened">
-                                            <ec:GoToStateAction StateName="LoadedState"
-                                                                UseTransitions="True" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
                                 </BitmapImage>
-    						</toolkit:HubTile.Source>
-    						<VisualStateManager.CustomVisualStateManager>
-    							<ec:ExtendedVisualStateManager/>
-    						</VisualStateManager.CustomVisualStateManager>
-    						<VisualStateManager.VisualStateGroups>
-    							<VisualStateGroup x:Name="LoadingStates">
-    								<VisualStateGroup.Transitions>
-    									<VisualTransition GeneratedDuration="0:0:0.3">
-    										<VisualTransition.GeneratedEasingFunction>
-    											<QuadraticEase EasingMode="EaseInOut"/>
-    										</VisualTransition.GeneratedEasingFunction>
-    									</VisualTransition>
-    								</VisualStateGroup.Transitions>
-    								<VisualState x:Name="LoadedState">
-    									<Storyboard>
-    										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="hubTile" d:IsOptimized="True"/>
-    									</Storyboard>
-    								</VisualState>
-    								<VisualState x:Name="UnloadedState">
-    									<Storyboard>
-    										<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="hubTile" d:IsOptimized="True"/>
-    									</Storyboard>
-    								</VisualState>
-    							</VisualStateGroup>
-    						</VisualStateManager.VisualStateGroups>
-    						
-    					</toolkit:HubTile>
-    					<!--</StackPanel>-->
-    				</DataTemplate>
-    			</Setter.Value>
-    		</Setter>
-    		<Setter Property="Template">
-    			<Setter.Value>
-    				<ControlTemplate>
-    					<local:ItemsControlEx x:Name="itemsControl"
-    						ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
-    						ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
-    						<local:ItemsControlEx.ItemsPanel>
-    							<ItemsPanelTemplate>
-    								<toolkit:WrapPanel Height="364" 
-    									ItemWidth="181"
-    									ItemHeight="181" Orientation="Vertical" />
-    								<!--<VirtualizingStackPanel Height="378" Orientation="Horizontal" />-->
-    							</ItemsPanelTemplate>
-    						</local:ItemsControlEx.ItemsPanel>
-    						<local:ItemsControlEx.Template>
-    							<ControlTemplate>
-    								<!--</ScrollViewer>--><!--<ScrollViewer>-->
-    								<ItemsPresenter />
-    							</ControlTemplate>
-    						</local:ItemsControlEx.Template>
-    					</local:ItemsControlEx>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
+                            </toolkit:HubTile.Source>
+                        </toolkit:HubTile>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <local:ItemsControlEx x:Name="itemsControl"
+                                              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
+                            <local:ItemsControlEx.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <toolkit:WrapPanel Height="364"
+                                                       ItemWidth="181"
+                                                       ItemHeight="181"
+                                                       Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </local:ItemsControlEx.ItemsPanel>
+                            <local:ItemsControlEx.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </local:ItemsControlEx.Template>
+                        </local:ItemsControlEx>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
-	<phone:PhoneApplicationPage.FontFamily>
-		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
-	</phone:PhoneApplicationPage.FontFamily>
-	<phone:PhoneApplicationPage.FontSize>
-		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
-	</phone:PhoneApplicationPage.FontSize>
-	<phone:PhoneApplicationPage.Foreground>
-		<StaticResource ResourceKey="PhoneForegroundBrush"/>
-	</phone:PhoneApplicationPage.Foreground>
+    <phone:PhoneApplicationPage.FontFamily>
+        <StaticResource ResourceKey="PhoneFontFamilyNormal" />
+    </phone:PhoneApplicationPage.FontFamily>
+    <phone:PhoneApplicationPage.FontSize>
+        <StaticResource ResourceKey="PhoneFontSizeNormal" />
+    </phone:PhoneApplicationPage.FontSize>
+    <phone:PhoneApplicationPage.Foreground>
+        <StaticResource ResourceKey="PhoneForegroundBrush" />
+    </phone:PhoneApplicationPage.Foreground>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
-
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
             <toolkit:NavigationInTransition.Backward>
@@ -130,7 +99,9 @@
     <Grid x:Name="LayoutRoot"
           Background="Black">
         <controls:Panorama Title="flat beats"
-                           x:Name="pano">
+                           x:Name="pano" 
+                           Foreground="White" 
+                           SelectionChanged="pano_SelectionChanged">
             <controls:Panorama.Background>
                 <ImageBrush>
                     <ImageBrush.ImageSource>
@@ -139,46 +110,34 @@
                     </ImageBrush.ImageSource>
                 </ImageBrush>
             </controls:Panorama.Background>
-            <controls:PanoramaItem Header="latest mixes"
-                                   Orientation="Horizontal">
-                <!--<ListBox Margin="0,0,-12,0" ItemsSource="{Binding Mixes}">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Controls:WrapPanel Orientation="Vertical" Height="450"  />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Controls:HubTile Message="{Binding Description}" Title="{Binding MixName}" Margin="8" >
-                                <Controls:HubTile.Source>
-                                    <BitmapImage UriSource="{Binding ThumbnailUrl}"
-                                                 CreateOptions="BackgroundCreation" />
-                                </Controls:HubTile.Source>
-                            </Controls:HubTile>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>-->
+            <controls:PanoramaItem Header="history">
                 <local:NavigationList Margin="0,0,-12,0"
                                       ItemsSource="{Binding Mixes}"
-                                      Navigation="NavigationList_OnNavigation"
-                                      Style="{StaticResource WrapNavigationList}" VerticalAlignment="Top"/>
-
-            </controls:PanoramaItem>
-            <controls:PanoramaItem Header="recent">
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Tags}"
                                       Navigation="NavigationList_OnNavigation">
                     <local:NavigationList.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="0,0,0,17"
-                                        Width="432">
-                                <TextBlock Text="{Binding TagName}"
-                                           TextWrapping="NoWrap"
-                                           Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                            <StackPanel Orientation="Horizontal"
+                                        Height="80">
+                                <Image Margin="8"
+                                       Width="64"
+                                       Height="64"
+                                       Stretch="Uniform"
+                                       VerticalAlignment="Top"
+                                       Source="{Binding ThumbnailUrl}" />
+                                <TextBlock Text="{Binding MixName}"
+                                           Style="{StaticResource PhoneTextTitle2Style}" Foreground="White" VerticalAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>
                     </local:NavigationList.ItemTemplate>
                 </local:NavigationList>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem Header="latest mixes"
+                                   Orientation="Horizontal">
+                <local:NavigationList Margin="0,0,-12,0"
+                                      ItemsSource="{Binding Mixes}"
+                                      Navigation="NavigationList_OnNavigation"
+                                      Style="{StaticResource WrapNavigationList}"
+                                      VerticalAlignment="Top" />
             </controls:PanoramaItem>
             <controls:PanoramaItem Header="tags">
                 <local:NavigationList Margin="0,0,-12,0"
@@ -190,7 +149,8 @@
                                         Width="432">
                                 <TextBlock Text="{Binding TagName}"
                                            TextWrapping="NoWrap"
-                                           Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                           Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                           Foreground="White" />
                             </StackPanel>
                         </DataTemplate>
                     </local:NavigationList.ItemTemplate>

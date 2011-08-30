@@ -35,7 +35,14 @@ namespace FlatBeats.ViewModels
         public TagViewModel(string name)
         {
             this.TagName = name;
-            this.NavigationUrl = new Uri("/MixesPage.xaml?tag=" + this.TagName, UriKind.Relative);
+            if (this.TagName == "more...")
+            {
+                this.NavigationUrl = new Uri("/TagsPage.xaml", UriKind.Relative);
+            }
+            else
+            {
+                this.NavigationUrl = new Uri("/MixesPage.xaml?tag=" + this.TagName, UriKind.Relative);
+            }
         }
 
         /// <summary>

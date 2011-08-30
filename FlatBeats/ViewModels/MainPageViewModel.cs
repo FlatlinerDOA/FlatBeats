@@ -138,6 +138,25 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public ObservableCollection<TagViewModel> Tags { get; private set; }
 
+        private int currentSectionIndex;
+
+        public int CurrentSectionIndex
+        {
+            get
+            {
+                return this.currentSectionIndex;
+            }
+            set
+            {
+                if (this.currentSectionIndex == value)
+                {
+                    return;
+                }
+
+                this.currentSectionIndex = value;
+                this.OnPropertyChanged("CurrentSectionIndex");
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -200,12 +219,14 @@ namespace FlatBeats.ViewModels
             ////    this.MixRows.Add(row);
             ////}
             this.Tags.Clear();
-            var tags = TagViewModel.SplitAndMergeIntoTags(this.Mixes.Select(m => m.Tags));
+            var tags = TagViewModel.SplitAndMergeIntoTags(this.Mixes.Select(m => m.Tags)).OrderBy(t => t.TagName);
 
             foreach (var tag in tags)
             {
                 this.Tags.Add(tag);
             }
+
+            this.Tags.Add(new TagViewModel("more..."));
 
             this.IsInProgress = false;
         }

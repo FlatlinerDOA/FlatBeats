@@ -62,5 +62,27 @@
                 this.NavigationService.Navigate(navItem.NavigationUrl);
             }
         }
+
+        private void pano_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (pano.SelectedIndex != 0)
+            {
+                HubTileService.FreezeGroup("History");
+            }
+            else
+            {
+                HubTileService.UnfreezeGroup("History");
+            }
+
+            if (pano.SelectedIndex != 1)
+            {
+                HubTileService.FreezeGroup("Latest");
+            }
+            else
+            {
+                HubTileService.UnfreezeGroup("Latest");
+            }
+            App.ViewModel.CurrentSectionIndex = pano.SelectedIndex;
+        }
     }
 }

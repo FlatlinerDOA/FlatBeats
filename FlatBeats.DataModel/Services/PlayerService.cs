@@ -6,7 +6,7 @@
 
     public static class PlayerService
     {
-        private const string NowPlayingFilePath = "Shared/Media/nowplaying.json";
+        private const string NowPlayingFilePath = "nowplaying.json";
         
         public static void Stop()
         {
