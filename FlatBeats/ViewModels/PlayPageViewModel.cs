@@ -64,6 +64,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public PlayPageViewModel()
         {
+            this.PlayedTracks = new ObservableCollection<TrackViewModel>();
             this.Reviews = new ObservableCollection<ReviewViewModel>();
         }
 
@@ -197,6 +198,26 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private bool hasPlayedTracks;
+
+        public bool HasPlayedTracks
+        {
+            get
+            {
+                return this.hasPlayedTracks;
+            }
+            set
+            {
+                if (this.hasPlayedTracks == value)
+                {
+                    return;
+                }
+
+                this.hasPlayedTracks = value;
+                this.OnPropertyChanged("HasPlayedTracks");
+            }
+        }
+
         /// <summary>
         /// </summary>
         public string Title
@@ -252,12 +273,13 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.UpdatePlayState();
+                this.LoadPlayedTracks();
                 return;
             }
 
             this.IsDataLoaded = true;
             this.IsInProgress = true;
-            var downloadMix = Downloader.DownloadJson<MixResponseContract>(
+            var downloadMix = Downloader.GetJson<MixResponseContract>(
                     new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
                     "mix-" + this.MixId + ".json");
 
@@ -323,14 +345,28 @@ namespace FlatBeats.ViewModels
         {
             var downloadComments =
                 from response in
-                    Downloader.DownloadJson<ReviewsResponseContract>(
+                    Downloader.GetJson<ReviewsResponseContract>(
                         new Uri(
                     string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId), 
                     UriKind.RelativeOrAbsolute))
                 from review in response.Reviews.ToObservable()
                 select new ReviewViewModel(review);
             downloadComments.ObserveOnDispatcher().Subscribe(
-                r => this.Reviews.Add(r), this.ShowError, this.HideProgress);
+                r => this.Reviews.Add(r), this.ShowError, this.LoadPlayedTracks);
+        }
+
+        private void LoadPlayedTracks()
+        {
+            this.PlayedTracks.Clear();
+            var tracks = from response in this.mixData.PlayedTracks()
+                         where response.Tracks != null
+                         from track in response.Tracks.ToObservable()
+                             select new TrackViewModel(track);
+            tracks.ObserveOnDispatcher().Subscribe(t => this.PlayedTracks.Add(t), this.ShowError, () =>
+                {
+                    this.HasPlayedTracks = this.PlayedTracks.Count != 0;   
+                    this.HideProgress();
+                });
         }
 
         /// <summary>

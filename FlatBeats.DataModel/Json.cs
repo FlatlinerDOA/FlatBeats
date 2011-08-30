@@ -2,6 +2,7 @@
 namespace FlatBeats.DataModel
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Runtime.Serialization.Json;
     using System.Text;
@@ -45,6 +46,14 @@ namespace FlatBeats.DataModel
             T obj = default(T);
             using (json)
             {
+#if DEBUG
+                var data = new MemoryStream();
+                json.CopyTo(data);
+                var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+                Debug.WriteLine(jsonText);
+                json = data;
+#endif
+
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                 obj = (T)serializer.ReadObject(json);
                 json.Close();

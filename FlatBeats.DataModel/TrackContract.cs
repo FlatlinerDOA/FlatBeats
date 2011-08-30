@@ -22,5 +22,8 @@
 
         [DataMember(Name = "url")]
         public string TrackUrl { get; set; }
+
+        [DataMember(Name = "buy_link")]
+        public string BuyLink { get; set; }
     }
 }

@@ -181,7 +181,7 @@ namespace FlatBeats.ViewModels
         /// </returns>
         private static IObservable<MixesResponseContract> DownloadMixes(string tag, string sort)
         {
-            return Downloader.DownloadJson<MixesResponseContract>(
+            return Downloader.GetJson<MixesResponseContract>(
                 new Uri(
                     string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", tag, sort),
                     UriKind.RelativeOrAbsolute), sort + "mixes.json");

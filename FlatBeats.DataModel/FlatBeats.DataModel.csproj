@@ -59,6 +59,7 @@
     <Compile Include="Json.cs" />
     <Compile Include="MixContract.cs" />
     <Compile Include="MixesResponseContract.cs" />
+    <Compile Include="PlayedTracksResponseContract.cs" />
     <Compile Include="PlayingMixContract.cs" />
     <Compile Include="PlayResponseContract.cs" />
     <Compile Include="PlayTokenResponseContract.cs" />

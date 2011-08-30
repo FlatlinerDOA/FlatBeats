@@ -101,6 +101,7 @@
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
+    <Compile Include="ViewModels\TagsPageViewModel.cs" />
     <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
@@ -147,6 +148,7 @@
     <None Include="SampleData\mixes.json" />
     <None Include="SampleData\recentmixes.json" />
     <None Include="SampleData\reviews.json" />
+    <None Include="SampleData\tracks_played.json" />
     <None Include="Toolkit.Content\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>

@@ -10,8 +10,8 @@
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
-                            xmlns:Controls="clr-namespace:FlatBeats.Controls" 
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:Controls="clr-namespace:FlatBeats.Controls"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
@@ -23,13 +23,37 @@
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
         <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+        <Controls:BooleanToVisibilityConverter x:Key="HideConverter" WhenFalse="Visible" WhenTrue="Collapsed" />
         <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
+        <DataTemplate x:Key="TrackTemplate">
+            <Grid>
+                <StackPanel HorizontalAlignment="Left">
+                    <TextBlock Margin="8,4,4,4"
+                               TextWrapping="Wrap"
+                               Text="{Binding Artist}"
+                               d:LayoutOverrides="Width, Height"
+                               Style="{StaticResource PhoneTextAccentStyle}"
+                               FontSize="26.667" />
+                    <TextBlock Margin="8,4,12,12"
+                               TextWrapping="Wrap"
+                               Text="{Binding Title}"
+                               Style="{StaticResource PhoneTextNormalStyle}"
+                               Foreground="{StaticResource PhoneForegroundBrush}" />
+                </StackPanel>
+                <CheckBox Margin="8,4,4,12"
+                          IsChecked="{Binding IsFavourite, Mode=TwoWay}" VerticalAlignment="Center"  HorizontalAlignment="Right"/>
+            </Grid>
+
+        </DataTemplate>
+
         <DataTemplate x:Key="ReviewItemTemplate">
-        	<Grid d:DesignWidth="499" d:DesignHeight="127" Margin="0,4">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="100"/>
-        			<ColumnDefinition Width="*"/>
-        		</Grid.ColumnDefinitions>
+            <Grid d:DesignWidth="499"
+                  d:DesignHeight="127"
+                  Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Image Height="100"
                        Margin="8"
                        Grid.RowSpan="3"
@@ -40,13 +64,23 @@
                     </Image.Source>
                 </Image>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Margin="8,4,4,2" TextWrapping="Wrap" Text="{Binding UserName}" d:LayoutOverrides="Width, Height" Style="{StaticResource PhoneTextAccentStyle}" FontSize="26.667"/>
+                    <TextBlock Margin="8,4,4,2"
+                               TextWrapping="Wrap"
+                               Text="{Binding UserName}"
+                               d:LayoutOverrides="Width, Height"
+                               Style="{StaticResource PhoneTextAccentStyle}"
+                               FontSize="26.667" />
                     <TextBlock Margin="8,2"
                                TextWrapping="Wrap"
                                Text="{Binding Body}"
                                Style="{StaticResource PhoneTextNormalStyle}"
                                Foreground="{StaticResource PhoneForegroundBrush}" />
-        		    <TextBlock Margin="8,4,4,12" TextWrapping="Wrap" Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}" d:LayoutOverrides="Height" Style="{StaticResource PhoneTextSmallStyle}" FontSize="16"/>
+                    <TextBlock Margin="8,4,4,12"
+                               TextWrapping="Wrap"
+                               Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}"
+                               d:LayoutOverrides="Height"
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               FontSize="16" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -55,7 +89,8 @@
         <Binding Source="{StaticResource ViewModel}" />
     </phone:PhoneApplicationPage.DataContext>
     <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator IsVisible="{Binding IsInProgress}" IsIndeterminate="True" />
+        <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
+                                 IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
@@ -79,7 +114,8 @@
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
-            <ImageBrush Opacity="0.3" Stretch="UniformToFill">
+            <ImageBrush Opacity="0.3"
+                        Stretch="UniformToFill">
                 <ImageBrush.ImageSource>
                     <BitmapImage UriSource="{Binding Mix.ImageUrl}"
                                  CreateOptions="BackgroundCreation" />
@@ -89,39 +125,63 @@
         <controls:Pivot Margin="0,-8,0,0">
             <controls:PivotItem Header="mix">
                 <Grid>
-                	<Grid.RowDefinitions>
-                		<RowDefinition Height="Auto" MinHeight="50"/>
-                		<RowDefinition Height="Auto"/>
-                		<RowDefinition/>
-                	</Grid.RowDefinitions>
-                	<Grid.ColumnDefinitions>
-                		<ColumnDefinition Width="Auto" MinWidth="197"/>
-                		<ColumnDefinition/>
-                	</Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"
+                                       MinHeight="50" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"
+                                          MinWidth="197" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding Message}"
-                               Style="{StaticResource PhoneTextSubtleStyle}" Grid.ColumnSpan="2" Grid.RowSpan="3" FontSize="32" FontFamily="Segoe WP Light" />
-                    <Image Margin="12,4" Width="173" VerticalAlignment="Top" Grid.Row="1">
-                    	<Image.Source>
-                    		<BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
-                    			CreateOptions="BackgroundCreation" />
-                    	</Image.Source>
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               Grid.ColumnSpan="2"
+                               Grid.RowSpan="3"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" />
+                    <Image Margin="12,4"
+                           Width="173"
+                           VerticalAlignment="Top"
+                           Grid.Row="1">
+                        <Image.Source>
+                            <BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
+                                         CreateOptions="BackgroundCreation" />
+                        </Image.Source>
                     </Image>
                     <TextBlock Text="{Binding Mix.MixName}"
-                    	Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" Margin="12,8" d:LayoutOverrides="Height" Grid.ColumnSpan="2" />
+                               Style="{StaticResource PhoneTextLargeStyle}"
+                               TextWrapping="Wrap"
+                               Margin="12,8"
+                               d:LayoutOverrides="Height"
+                               Grid.ColumnSpan="2" />
                     <TextBlock Text="{Binding Mix.Description}"
-                    	Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap" Margin="12,4" Grid.Column="1" d:LayoutOverrides="Height" Grid.Row="1" />
-                    <ListBox ItemsSource="{Binding Comments}" Grid.ColumnSpan="2" Grid.Row="2">
-                    	<ListBox.ItemsPanel>
-                    		<ItemsPanelTemplate>
-                    			<VirtualizingStackPanel />
-                    		</ItemsPanelTemplate>
-                    	</ListBox.ItemsPanel>
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               TextWrapping="Wrap"
+                               Margin="12,4"
+                               Grid.Column="1"
+                               d:LayoutOverrides="Height"
+                               Grid.Row="1" />
+                    <ListBox ItemsSource="{Binding Comments}"
+                             Grid.ColumnSpan="2"
+                             Grid.Row="2">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
                     </ListBox>
-                    <Grid Grid.RowSpan="2" VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2" Margin="8">
-                    	<Grid.ColumnDefinitions>
-                    		<ColumnDefinition Width="0.221*"/>
-                    		<ColumnDefinition Width="0.779*"/>
-                    	</Grid.ColumnDefinitions>
+                    <Grid Grid.RowSpan="2"
+                          VerticalAlignment="Bottom"
+                          Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.221*" />
+                            <ColumnDefinition Width="0.779*" />
+                        </Grid.ColumnDefinitions>
                         <Image Height="100"
                                VerticalAlignment="Top"
                                Margin="8">
@@ -130,14 +190,19 @@
                                              CreateOptions="BackgroundCreation" />
                             </Image.Source>
                         </Image>
-                            <TextBlock Text="{Binding Mix.CreatedBy}"
-                    		Style="{StaticResource PhoneTextLargeStyle}" TextWrapping="Wrap" Margin="8,0,0,0" VerticalAlignment="Top" Grid.Column="1" />
+                        <TextBlock Text="{Binding Mix.CreatedBy}"
+                                   Style="{StaticResource PhoneTextLargeStyle}"
+                                   TextWrapping="Wrap"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Top"
+                                   Grid.Column="1" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="reviews">
                 <Grid>
-                    <ListBox ItemsSource="{Binding Reviews}" ItemTemplate="{StaticResource ReviewItemTemplate}">
+                    <ListBox ItemsSource="{Binding Reviews}"
+                             ItemTemplate="{StaticResource ReviewItemTemplate}">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel />
@@ -146,22 +211,37 @@
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
-            <controls:PivotItem Header="playing" Visibility="{Binding ShowNowPlaying, Converter={StaticResource VisibilityConverter}}">
-            	<Grid/>
+            <controls:PivotItem Header="played">
+                <Grid>
+                    <TextBlock Text="No tracks have been played recently for this mix"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               Margin="32"
+                               TextWrapping="Wrap"
+                               Visibility="{Binding HasPlayedTracks, Converter={StaticResource HideConverter}}" />
+                    <Controls:NavigationList Margin="0,0,-12,0"
+                                             ItemsSource="{Binding PlayedTracks}"
+                                             ItemTemplate="{StaticResource TrackTemplate}" />
+                </Grid>
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True"
                               IsMenuEnabled="True">
-        	<shell:ApplicationBar.MenuItems>
-        		<shell:ApplicationBarMenuItem IsEnabled="True" Text="share link..." Click="Share_Click" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem IsEnabled="True"
+                                              Text="share link..."
+                                              Click="Share_Click" />
                 <shell:ApplicationBarMenuItem IsEnabled="True"
                                               Text="email link..."
                                               Click="Email_Click" />
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="appbar_playpause"
-                                            Text="play" Click="Play_Click" IconUri="/icons/appbar.transport.play.rest.png" />
+                                            Text="play"
+                                            Click="Play_Click"
+                                            IconUri="/icons/appbar.transport.play.rest.png" />
             <shell:ApplicationBarIconButton x:Name="appbar_next"
                                             Text="next"
                                             IconUri="/icons/appbar.transport.ff.rest.png" />

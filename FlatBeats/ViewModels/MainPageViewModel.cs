@@ -200,7 +200,7 @@ namespace FlatBeats.ViewModels
             this.IsInProgress = true;
             var pageData =
                 from latest in
-                    Downloader.DownloadJson<MixesResponseContract>(
+                    Downloader.GetJson<MixesResponseContract>(
                         new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
                 from mix in latest.Mixes.ToObservable()
                 select new MixViewModel(mix);

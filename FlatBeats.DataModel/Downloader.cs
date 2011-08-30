@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.DataModel
 {
     using System;
+    using System.Diagnostics;
     using System.Net;
     using Microsoft.Phone.Reactive;
 
@@ -15,30 +16,54 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static IObservable<T> DownloadJson<T>(Uri url, string cacheFile = null) where T : class 
+        public static IObservable<T> GetJson<T>(Uri url, string cacheFile = null) where T : class 
         {
             IObservable<T> sequence = Observable.Empty<T>();
-            ////if (cacheFile != null && Storage.Exists(cacheFile))
-            ////{
-            ////    sequence = Observable.Start(() => Storage.Load(cacheFile))
-            ////        .Select(Json.Deserialize<T>)
-            ////        .Where(m => m != null);
-            ////}
+            if (cacheFile != null && Storage.Exists(cacheFile))
+            {
+                sequence = Observable.Start(() => Storage.Load(cacheFile))
+                    .Select(Json.Deserialize<T>)
+                    .Where(m => m != null);
+            }
 
+            var webRequest = from client in Observable.Start<WebClient>(CreateClient)
+                             from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
+                                 observer =>
+                                     {
+                                         var subscription =
+                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
+                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
+                                                 (observer);
+                                         Debug.WriteLine("GET " + url.AbsoluteUri);
+                                         client.OpenReadAsync(url);
+                                         return subscription;
+                                     }).TrySelect(evt => evt.Result)
+                             select Json.DeserializeAndClose<T>(completed);
             sequence = sequence.Concat(
-                   from client in Observable.Start<WebClient>(CreateClient)
-                   from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
-                       observer =>
-                       {
-                           var subscription = Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                   client, "OpenReadCompleted")
-                                   .Take(1)
-                                   .Select(e => e.EventArgs)
-                                   .Subscribe(observer);
-                           client.OpenReadAsync(url);
-                           return subscription;
-                       }).TrySelect(evt => evt.Result) ////.Select(result => Storage.Save(cacheFile, result))
-                   select Json.DeserializeAndClose<T>(completed));
+                webRequest.Do(
+                    cache =>
+                    {
+                        if (cacheFile != null)
+                        {
+                            Storage.Save(cacheFile, Json.Serialize(cache));
+                        }
+                    })).Take(1);
+            return sequence;
+        }
+
+        public static IObservable<T> PostAndGetJson<T>(Uri url) where T : class
+        {
+            var sequence = from client in Observable.Start<WebClient>(CreateClient)
+                           from completed in Observable.CreateWithDisposable<OpenWriteCompletedEventArgs>(
+                               observer =>
+                                   {
+                                       var subscription =
+                                           Observable.FromEvent<OpenWriteCompletedEventArgs>(client, "OpenWriteCompleted")
+                                               .Take(1).Select(e => e.EventArgs).Subscribe(observer);
+                                       client.OpenWriteAsync(url, "POST");
+                                       return subscription;
+                                   }).TrySelect(evt => evt.Result)
+                           select Json.DeserializeAndClose<T>(completed);
             return sequence;
         }
 
