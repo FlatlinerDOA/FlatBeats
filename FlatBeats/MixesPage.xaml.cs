@@ -17,7 +17,7 @@
             base.OnNavigatedTo(e);
 
             string tag = this.NavigationContext.QueryString["tag"];
-            this.ViewModel.Load(tag);
+            this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load(tag)));
         }
 
         public MixesPageViewModel ViewModel 

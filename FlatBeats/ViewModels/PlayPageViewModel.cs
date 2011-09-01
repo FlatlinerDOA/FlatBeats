@@ -27,7 +27,15 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private readonly Subject<bool> playStates = new Subject<bool>();
+
+        /// <summary>
+        /// </summary>
         private TrackViewModel currentTrack;
+
+        /// <summary>
+        /// </summary>
+        private bool hasPlayedTracks;
 
         /// <summary>
         /// </summary>
@@ -53,8 +61,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private string title;
 
-        private readonly Subject<bool> playStates = new Subject<bool>();
-
         #endregion
 
         #region Constructors and Destructors
@@ -64,13 +70,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public PlayPageViewModel()
         {
-            this.PlayedTracks = new ObservableCollection<TrackViewModel>();
+            this.Played = new MixPlayedTracksViewModel();
             this.Reviews = new ObservableCollection<ReviewViewModel>();
-        }
-
-        private void PlayStateChanged(object sender, EventArgs e)
-        {
-            this.UpdatePlayState();
         }
 
         #endregion
@@ -95,6 +96,27 @@ namespace FlatBeats.ViewModels
 
                 this.currentTrack = value;
                 this.OnPropertyChanged("CurrentTrack");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public bool HasPlayedTracks
+        {
+            get
+            {
+                return this.hasPlayedTracks;
+            }
+
+            set
+            {
+                if (this.hasPlayedTracks == value)
+                {
+                    return;
+                }
+
+                this.hasPlayedTracks = value;
+                this.OnPropertyChanged("HasPlayedTracks");
             }
         }
 
@@ -167,7 +189,14 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public ObservableCollection<TrackViewModel> PlayedTracks { get; private set; }
+        public IObservable<bool> PlayStates
+        {
+            get
+            {
+                return this.playStates;
+            }
+        }
+
 
         /// <summary>
         /// </summary>
@@ -198,26 +227,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private bool hasPlayedTracks;
-
-        public bool HasPlayedTracks
-        {
-            get
-            {
-                return this.hasPlayedTracks;
-            }
-            set
-            {
-                if (this.hasPlayedTracks == value)
-                {
-                    return;
-                }
-
-                this.hasPlayedTracks = value;
-                this.OnPropertyChanged("HasPlayedTracks");
-            }
-        }
-
         /// <summary>
         /// </summary>
         public string Title
@@ -239,6 +248,8 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        public MixPlayedTracksViewModel Played { get; private set; }
+
         #endregion
 
         #region Properties
@@ -251,17 +262,20 @@ namespace FlatBeats.ViewModels
         /// </summary>
         protected PlayingMixContract NowPlaying { get; set; }
 
-        public IObservable<bool> PlayStates 
-        { 
-            get
-            {
-                return this.playStates;
-            }
-        }
-
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// </summary>
+        public void Email()
+        {
+            var task = new EmailComposeTask()
+                {
+                   Body = this.Mix.Description + " - " + this.Mix.LinkUrl.AbsoluteUri, Subject = this.Mix.MixName 
+                };
+            task.Show();
+        }
 
         /// <summary>
         /// </summary>
@@ -273,18 +287,21 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.UpdatePlayState();
-                this.LoadPlayedTracks();
+                this.Played.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress);
                 return;
             }
 
             this.IsDataLoaded = true;
             this.IsInProgress = true;
-            var downloadMix = Downloader.GetJson<MixResponseContract>(
-                    new Uri(string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
-                    "mix-" + this.MixId + ".json");
+            var downloadMix =
+                from response in
+                    Downloader.GetJson<MixResponseContract>(
+                        new Uri(
+                    string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
+                        "mix-" + this.MixId + ".json")
+                select response.Mix;
 
-            downloadMix.ObserveOnDispatcher().Subscribe(
-                mixes => this.LoadMix(mixes.Mix), this.ShowError, this.LoadComments);
+            downloadMix.ObserveOnDispatcher().Subscribe(this.LoadMix, this.ShowError, this.LoadComments);
         }
 
         /// <summary>
@@ -352,21 +369,9 @@ namespace FlatBeats.ViewModels
                 from review in response.Reviews.ToObservable()
                 select new ReviewViewModel(review);
             downloadComments.ObserveOnDispatcher().Subscribe(
-                r => this.Reviews.Add(r), this.ShowError, this.LoadPlayedTracks);
-        }
-
-        private void LoadPlayedTracks()
-        {
-            this.PlayedTracks.Clear();
-            var tracks = from response in this.mixData.PlayedTracks()
-                         where response.Tracks != null
-                         from track in response.Tracks.ToObservable()
-                             select new TrackViewModel(track);
-            tracks.ObserveOnDispatcher().Subscribe(t => this.PlayedTracks.Add(t), this.ShowError, () =>
-                {
-                    this.HasPlayedTracks = this.PlayedTracks.Count != 0;   
-                    this.HideProgress();
-                });
+                r => this.Reviews.Add(r), 
+                this.ShowError, 
+                () => this.Played.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress));
         }
 
         /// <summary>
@@ -387,6 +392,30 @@ namespace FlatBeats.ViewModels
             this.UpdatePlayState();
         }
 
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
+        private void PlayStateChanged(object sender, EventArgs e)
+        {
+            this.UpdatePlayState();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="obj">
+        /// </param>
+        private void ShowError(Exception ex)
+        {
+            this.IsInProgress = false;
+            this.Message = ex.Message;
+        }
+
+        /// <summary>
+        /// </summary>
         private void UpdatePlayState()
         {
             if (this.NowPlaying != null)
@@ -394,7 +423,6 @@ namespace FlatBeats.ViewModels
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
                     this.playStates.OnNext(true);
-                
                 }
                 else
                 {
@@ -403,26 +431,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="obj">
-        /// </param>
-        private void ShowError(Exception obj)
-        {
-            this.IsInProgress = false;
-            this.Message = obj.Message;
-        }
-
         #endregion
-
-        public void Email()
-        {
-            var task = new EmailComposeTask()
-                {
-                    Body = this.Mix.Description + " - " + this.Mix.LinkUrl.AbsoluteUri, 
-                    Subject = this.Mix.MixName
-                };
-            task.Show();
-        }
     }
 }

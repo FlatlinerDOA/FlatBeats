@@ -97,8 +97,10 @@
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\INavigationItem.cs" />
     <Compile Include="ViewModels\MixesPageViewModel.cs" />
+    <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
     <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
     <Compile Include="ViewModels\TagsPageViewModel.cs" />

@@ -70,6 +70,7 @@
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="SetContract.cs" />
     <Compile Include="Storage.cs" />
+    <Compile Include="TagsResponseContract.cs" />
     <Compile Include="TrackContract.cs" />
     <Compile Include="UserContract.cs" />
   </ItemGroup>

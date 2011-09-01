@@ -15,6 +15,7 @@ namespace FlatBeatsPlaybackAgent
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Microsoft.Devices;
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
 

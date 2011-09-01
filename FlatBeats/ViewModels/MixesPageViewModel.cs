@@ -138,6 +138,12 @@ namespace FlatBeats.ViewModels
         /// </param>
         public void Load(string loadTag)
         {
+            if (this.IsDataLoaded && this.Tag == loadTag)
+            {
+                return;
+            }
+
+            this.IsDataLoaded = true;
             this.Tag = loadTag;
             this.LoadData();
         }
@@ -147,24 +153,19 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void LoadData()
         {
-            if (this.IsDataLoaded)
-            {
-                return;
-            }
-
-            this.IsDataLoaded = true;
             this.IsInProgress = true;
-            this.Title = string.Format("FLAT BEATS - {0}", this.Tag.ToUpper());
+            this.Title = this.Tag.ToUpper();
 
-            DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(this.LoadRecentMixes, () =>
-                {
-                    DownloadMixes(this.Tag, "hot").ObserveOnDispatcher().Subscribe(this.LoadHotMixes, () =>
-                        {
-                            DownloadMixes(this.Tag, "popular").ObserveOnDispatcher().Subscribe(this.LoadPopularMixes, () =>
-                                { this.IsInProgress = false; });
-                        });
-
-                });
+            DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(
+                this.LoadRecentMixes, 
+                () => DownloadMixes(this.Tag, "hot").ObserveOnDispatcher().Subscribe(
+                    this.LoadHotMixes, 
+                    () => DownloadMixes(this.Tag, "popular").ObserveOnDispatcher().Subscribe(
+                        this.LoadPopularMixes, 
+                        () =>
+                            {
+                                this.IsInProgress = false;
+                            })));
         }
 
         #endregion

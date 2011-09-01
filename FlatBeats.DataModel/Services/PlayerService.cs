@@ -80,16 +80,16 @@
             return playedTracks;
         }
 
-        public static IObservable<bool> SetMixLiked(string mixId, bool isLiked)
+        public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)
         {
             var urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId) : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
-            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => r.Mix.IsLiked);
+            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => new Unit());
         }
 
-        public static IObservable<bool> SetTrackFavourite(string trackId, bool isFavourite)
+        public static IObservable<Unit> SetTrackFavourite(string trackId, bool isFavourite)
         {
             var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
-            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => r.Mix.IsLiked);
+            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => new Unit());
         }
     }
 
