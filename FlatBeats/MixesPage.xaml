@@ -19,6 +19,11 @@
                             shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:MixesPageViewModel x:Key="ViewModel" />
+        <local:BooleanToVisibilityConverter x:Key="ShowConverter" WhenTrue="Visible"
+                             WhenFalse="Collapsed" />
+        <local:BooleanToVisibilityConverter x:Key="HideConverter"
+                                            WhenTrue="Collapsed"
+                                            WhenFalse="Visible" />
         <DataTemplate x:Key="MixTemplate">
             <Grid Height="149">
                 <Grid.ColumnDefinitions>
@@ -72,30 +77,48 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot x:Name="pivot"  Title="{Binding Title}" SelectionChanged="pivot_SelectionChanged">
-            <controls:PivotItem Header="recent">
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Recent.Mixes}"
-                                      ItemTemplate="{StaticResource MixTemplate}"
-                                      Navigation="NavigationList_OnNavigation">
-               
-                </local:NavigationList>
+        <controls:Pivot x:Name="pivot" Title="{Binding Title}" SelectionChanged="pivot_SelectionChanged">
+            <controls:PivotItem DataContext="{Binding Recent}" Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                                          ItemsSource="{Binding Mixes}"
+                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          Navigation="NavigationList_OnNavigation" />
+                </Grid>
             </controls:PivotItem>
-            <controls:PivotItem Header="hot">
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Hot.Mixes}"
-                                      ItemTemplate="{StaticResource MixTemplate}"
-                                      Navigation="NavigationList_OnNavigation">
-
-                </local:NavigationList>
+            <controls:PivotItem DataContext="{Binding Hot}" Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                                          ItemsSource="{Binding Mixes}"
+                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          Navigation="NavigationList_OnNavigation" />
+                </Grid>
             </controls:PivotItem>
-            <controls:PivotItem Header="popular" >
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Popular.Mixes}"
-                                      ItemTemplate="{StaticResource MixTemplate}"
-                                      Navigation="NavigationList_OnNavigation">
-
-                </local:NavigationList>
+            <controls:PivotItem DataContext="{Binding Popular}" Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                                          ItemsSource="{Binding Mixes}"
+                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          Navigation="NavigationList_OnNavigation" />
+                </Grid>
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>

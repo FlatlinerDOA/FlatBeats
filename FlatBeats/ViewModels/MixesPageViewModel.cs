@@ -39,9 +39,21 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MixesPageViewModel()
         {
-            this.Hot = new MixListViewModel() { Sort = "hot" };
-            this.Recent = new MixListViewModel() { Sort = "recent" };
-            this.Popular = new MixListViewModel() { Sort = "popular" };
+            this.Hot = new MixListViewModel()
+                {
+                    Title = "hot",
+                    Sort = "hot"
+                };
+            this.Recent = new MixListViewModel()
+                {
+                    Title = "recent",
+                    Sort = "recent"
+                };
+            this.Popular = new MixListViewModel()
+                {
+                    Title = "popular",
+                    Sort = "popular"
+                };
         }
 
         #endregion

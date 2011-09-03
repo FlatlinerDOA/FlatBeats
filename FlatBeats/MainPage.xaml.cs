@@ -82,7 +82,13 @@
             {
                 HubTileService.UnfreezeGroup("Latest");
             }
+
             App.ViewModel.CurrentSectionIndex = pano.SelectedIndex;
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, "Search", true);
         }
     }
 }

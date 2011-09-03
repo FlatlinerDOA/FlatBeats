@@ -338,7 +338,7 @@ namespace FlatBeats.ViewModels
         {
             var task = new ShareLinkTask
                 {
-                    Title = "Share mix", 
+                    Title = "share mix", 
                     Message = this.Mix.MixName, 
                     LinkUri = this.Mix.LinkUrl
                 };

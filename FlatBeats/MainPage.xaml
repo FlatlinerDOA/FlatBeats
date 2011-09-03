@@ -65,8 +65,8 @@
         <DataTemplate x:Key="TagsHeaderTemplate">
         	<Grid Width="409">
         		<TextBlock TextWrapping="Wrap" Text="tags" d:LayoutOverrides="Width, Height" FontFamily="Segoe WP Light"/>
-        		<Button HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Height" VerticalAlignment="Center">
-        			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None"/>
+        		<Button HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Height" VerticalAlignment="Center" Click="SearchButton_Click">
+        			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" />
         		</Button>
         	</Grid>
         </DataTemplate>
@@ -113,8 +113,7 @@
             <controls:Panorama.Background>
                 <ImageBrush>
                     <ImageBrush.ImageSource>
-                        <BitmapImage UriSource="PanoramaBackground.jpg"
-                                     CreateOptions="BackgroundCreation" />
+                        <BitmapImage UriSource="PanoramaBackground.jpg" />
                     </ImageBrush.ImageSource>
                 </ImageBrush>
             </controls:Panorama.Background>

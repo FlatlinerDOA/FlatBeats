@@ -16,6 +16,9 @@
         {
             this.Mixes = new ObservableCollection<MixViewModel>();
         }
+
+        public bool IsDataLoaded { get; private set; }
+
         /// <summary>
         /// </summary>
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
@@ -24,21 +27,22 @@
 
         public IObservable<Unit> SearchByTag(string tag)
         {
+            this.IsDataLoaded = true;
             var mixes = from response in this.DownloadTagMixes(tag).ObserveOnDispatcher().Do(_ => this.Mixes.Clear())
                         from mix in response.Mixes.ToObservable() 
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
-            return mixes.ObserveOnDispatcher().Do(this.Mixes.Add).Select(_ => new Unit());
+            return mixes.ObserveOnDispatcher().Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
         }
 
         public IObservable<Unit> Search(string searchQuery)
         {
-            this.Mixes.Clear();
+            this.IsDataLoaded = true;
             var mixes = from response in this.DownloadTagMixes(searchQuery).Do(_ => this.Mixes.Clear())
                         from mix in response.Mixes.ToObservable()
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
-            return mixes.ObserveOnDispatcher().Do(this.Mixes.Add).Select(_ => new Unit());
+            return mixes.ObserveOnDispatcher().Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
         }
 
         /// <summary>
