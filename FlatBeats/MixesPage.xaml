@@ -72,10 +72,10 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot Title="{Binding Title}">
+        <controls:Pivot x:Name="pivot"  Title="{Binding Title}" SelectionChanged="pivot_SelectionChanged">
             <controls:PivotItem Header="recent">
                 <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding RecentMixes}"
+                                      ItemsSource="{Binding Recent.Mixes}"
                                       ItemTemplate="{StaticResource MixTemplate}"
                                       Navigation="NavigationList_OnNavigation">
                
@@ -83,7 +83,7 @@
             </controls:PivotItem>
             <controls:PivotItem Header="hot">
                 <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding HotMixes}"
+                                      ItemsSource="{Binding Hot.Mixes}"
                                       ItemTemplate="{StaticResource MixTemplate}"
                                       Navigation="NavigationList_OnNavigation">
 
@@ -91,7 +91,7 @@
             </controls:PivotItem>
             <controls:PivotItem Header="popular" >
                 <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding PopularMixes}"
+                                      ItemsSource="{Binding Popular.Mixes}"
                                       ItemTemplate="{StaticResource MixTemplate}"
                                       Navigation="NavigationList_OnNavigation">
 

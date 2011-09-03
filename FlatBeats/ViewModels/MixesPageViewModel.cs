@@ -12,15 +12,13 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Net;
+    using Microsoft.Phone.Reactive;
 
     using FlatBeats.DataModel;
 
-    using Microsoft.Phone.Reactive;
-
     /// <summary>
     /// </summary>
-    public class MixesPageViewModel : ViewModel
+    public class MixesPageViewModel : PageViewModel
     {
         #region Constants and Fields
 
@@ -41,9 +39,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MixesPageViewModel()
         {
-            this.HotMixes = new ObservableCollection<MixViewModel>();
-            this.RecentMixes = new ObservableCollection<MixViewModel>();
-            this.PopularMixes = new ObservableCollection<MixViewModel>();
+            this.Hot = new MixListViewModel() { Sort = "hot" };
+            this.Recent = new MixListViewModel() { Sort = "recent" };
+            this.Popular = new MixListViewModel() { Sort = "popular" };
         }
 
         #endregion
@@ -52,19 +50,13 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public ObservableCollection<MixViewModel> HotMixes { get; private set; }
-
-        /// <summary>
-        /// </summary>
         public bool IsDataLoaded { get; private set; }
 
-        /// <summary>
-        /// </summary>
-        public ObservableCollection<MixViewModel> PopularMixes { get; private set; }
+        public MixListViewModel Hot { get; private set; }
 
-        /// <summary>
-        /// </summary>
-        public ObservableCollection<MixViewModel> RecentMixes { get; private set; }
+        public MixListViewModel Popular { get; private set; }
+
+        public MixListViewModel Recent { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -87,47 +79,41 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        /// <summary>
-        /// </summary>
-        public string Title
+
+        private int currentPanelIndex;
+
+        public int CurrentPanelIndex
         {
             get
             {
-                return this.title;
+                return this.currentPanelIndex;
             }
-
             set
             {
-                if (this.title == value)
+                if (this.currentPanelIndex == value)
                 {
                     return;
                 }
 
-                this.title = value;
-                this.OnPropertyChanged("Title");
-            }
-        }
-
-        private bool isInProgress;
-
-        public bool IsInProgress
-        {
-            get
-            {
-                return this.isInProgress;
-            }
-            set
-            {
-                if (this.isInProgress == value)
+                this.currentPanelIndex = value;
+                this.OnPropertyChanged("CurrentPanelIndex");
+                switch (this.currentPanelIndex)
                 {
-                    return;
+                    case 0:
+                        this.ShowProgress();
+                        this.Recent.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+                        break;
+                    case 1:
+                        this.ShowProgress();
+                        this.Hot.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+                        break;
+                    case 2:
+                        this.ShowProgress();
+                        this.Popular.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+                        break;
                 }
-
-                this.isInProgress = value;
-                this.OnPropertyChanged("IsInProgress");
             }
         }
-
         #endregion
 
         #region Public Methods
@@ -145,85 +131,13 @@ namespace FlatBeats.ViewModels
 
             this.IsDataLoaded = true;
             this.Tag = loadTag;
-            this.LoadData();
-        }
-
-        /// <summary>
-        /// Creates and adds a few ItemViewModel objects into the Items collection.
-        /// </summary>
-        public void LoadData()
-        {
-            this.IsInProgress = true;
             this.Title = this.Tag.ToUpper();
 
-            DownloadMixes(this.Tag, "recent").ObserveOnDispatcher().Subscribe(
-                this.LoadRecentMixes, 
-                () => DownloadMixes(this.Tag, "hot").ObserveOnDispatcher().Subscribe(
-                    this.LoadHotMixes, 
-                    () => DownloadMixes(this.Tag, "popular").ObserveOnDispatcher().Subscribe(
-                        this.LoadPopularMixes, 
-                        () =>
-                            {
-                                this.IsInProgress = false;
-                            })));
+            this.ShowProgress();
+            this.Recent.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
         }
 
         #endregion
 
-        #region Methods
-
-        /// <summary>
-        /// </summary>
-        /// <param name="tag">
-        /// </param>
-        /// <param name="sort">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        private static IObservable<MixesResponseContract> DownloadMixes(string tag, string sort)
-        {
-            return Downloader.GetJson<MixesResponseContract>(
-                new Uri(
-                    string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", tag, sort),
-                    UriKind.RelativeOrAbsolute), sort + "mixes.json");
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="mixes">
-        /// </param>
-        private void LoadHotMixes(MixesResponseContract mixes)
-        {
-            foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
-            {
-                this.HotMixes.Add(mix);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="mixes">
-        /// </param>
-        private void LoadPopularMixes(MixesResponseContract mixes)
-        {
-            foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
-            {
-                this.PopularMixes.Add(mix);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="mixes">
-        /// </param>
-        private void LoadRecentMixes(MixesResponseContract mixes)
-        {
-            foreach (var mix in mixes.Mixes.Select(m => new MixViewModel(m)))
-            {
-                this.RecentMixes.Add(mix);
-            }
-        }
-
-        #endregion
     }
 }

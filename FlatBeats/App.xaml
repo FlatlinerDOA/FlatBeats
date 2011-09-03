@@ -8,6 +8,13 @@
 
     <!--Application Resources-->
     <Application.Resources>
+    	<ControlTemplate x:Key="CircleButtonControlTemplate" TargetType="Button">
+    		<Grid>
+    			<Grid.Background>
+    				<ImageBrush Stretch="Fill"/>
+    			</Grid.Background>
+    		</Grid>
+    	</ControlTemplate>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

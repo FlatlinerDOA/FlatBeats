@@ -97,9 +97,11 @@
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\INavigationItem.cs" />
     <Compile Include="ViewModels\MixesPageViewModel.cs" />
+    <Compile Include="ViewModels\MixListViewModel.cs" />
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
     <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
@@ -169,6 +171,7 @@
     <Content Include="icons\appbar.favs.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="icons\appbar.feature.search.rest.png" />
     <Content Include="icons\appbar.transport.ff.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

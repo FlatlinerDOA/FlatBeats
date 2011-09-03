@@ -36,5 +36,10 @@
                 this.NavigationService.Navigate(navItem.NavigationUrl);
             }
         }
+
+        private void pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            this.ViewModel.CurrentPanelIndex = pivot.SelectedIndex;
+        }
     }
 }

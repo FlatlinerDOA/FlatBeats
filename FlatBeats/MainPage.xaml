@@ -62,6 +62,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DataTemplate x:Key="TagsHeaderTemplate">
+        	<Grid Width="409">
+        		<TextBlock TextWrapping="Wrap" Text="tags" d:LayoutOverrides="Width, Height" FontFamily="Segoe WP Light"/>
+        		<Button HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Height" VerticalAlignment="Center">
+        			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None"/>
+        		</Button>
+        	</Grid>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.FontFamily>
         <StaticResource ResourceKey="PhoneFontFamilyNormal" />
@@ -139,7 +147,7 @@
                                       Style="{StaticResource WrapNavigationList}"
                                       VerticalAlignment="Top" />
             </controls:PanoramaItem>
-            <controls:PanoramaItem Header="tags">
+            <controls:PanoramaItem Header="tags" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
                 <local:NavigationList Margin="0,0,-12,0"
                                       ItemsSource="{Binding Tags}"
                                       Navigation="NavigationList_OnNavigation">

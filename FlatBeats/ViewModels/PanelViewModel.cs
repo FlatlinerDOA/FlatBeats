@@ -13,6 +13,27 @@ namespace FlatBeats.ViewModels
 {
     public class PanelViewModel : ViewModel
     {
+
+        private string title;
+
+        public string Title
+        {
+            get
+            {
+                return this.title;
+            }
+            set
+            {
+                if (this.title == value)
+                {
+                    return;
+                }
+
+                this.title = value;
+                this.OnPropertyChanged("Title");
+            }
+        }
+
         private string message;
 
         public string Message
