@@ -16,8 +16,11 @@
         {
             base.OnNavigatedTo(e);
 
-            string tag = this.NavigationContext.QueryString["tag"];
-            this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load(tag)));
+            string query, tag;
+            this.NavigationContext.QueryString.TryGetValue("tag", out tag);
+            this.NavigationContext.QueryString.TryGetValue("q", out query);
+
+            this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load(tag, query)));
         }
 
         public MixesPageViewModel ViewModel 

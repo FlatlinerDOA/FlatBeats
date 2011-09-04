@@ -14,12 +14,13 @@ namespace FlatBeats.ViewModels
     using System.Linq;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
 
     /// <summary>
     /// </summary>
-    public class MainPageViewModel : ViewModel
+    public class MainPageViewModel : PageViewModel
     {
         #region Constants and Fields
 
@@ -49,9 +50,10 @@ namespace FlatBeats.ViewModels
         public MainPageViewModel()
         {
             this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
-            this.Mixes = new ObservableCollection<MixViewModel>();
-            this.MixRows = new ObservableCollection<DualTileRowViewModel<MixViewModel>>();
+            this.RecentMixes = new ObservableCollection<RecentMixViewModel>();
+            this.LatestMixes = new ObservableCollection<MixViewModel>();
             this.Tags = new ObservableCollection<TagViewModel>();
+            this.Title = "flat beats";
         }
 
         #endregion
@@ -83,56 +85,12 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public bool IsDataLoaded { get; private set; }
 
-        /// <summary>
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return this.message;
-            }
-
-            set
-            {
-                if (this.message == value)
-                {
-                    return;
-                }
-
-                this.message = value;
-                this.OnPropertyChanged("Message");
-            }
-        }
-
-        private bool isInProgress;
-
-        public bool IsInProgress
-        {
-            get
-            {
-                return this.isInProgress;
-            }
-            set
-            {
-                if (this.isInProgress == value)
-                {
-                    return;
-                }
-
-                this.isInProgress = value;
-                this.OnPropertyChanged("IsInProgress");
-            }
-        }
+        public ObservableCollection<RecentMixViewModel> RecentMixes { get; private set; }
 
         /// <summary>
         ///   Gets the collection of new mixes.
         /// </summary>
-        public ObservableCollection<DualTileRowViewModel<MixViewModel>> MixRows { get; private set; }
-
-        /// <summary>
-        ///   Gets the collection of new mixes.
-        /// </summary>
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
+        public ObservableCollection<MixViewModel> LatestMixes { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -197,29 +155,46 @@ namespace FlatBeats.ViewModels
             }
 
             this.IsDataLoaded = true;
-            this.IsInProgress = true;
-            var pageData =
-                from latest in
-                    Downloader.GetJson<MixesResponseContract>(
-                        new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json")
-                from mix in latest.Mixes.ToObservable()
-                select new MixViewModel(mix);
-            this.Mixes.Clear();
+            this.ShowProgress();
+            this.LoadRecentMixes();
+        }
+
+        private void LoadRecentMixes()
+        {
+            var nowPlaying = PlayerService.Load();
+            if (nowPlaying != null)
+            {
+                this.RecentMixes.Add(new RecentMixViewModel() { IsNowPlaying = true, TileTitle = nowPlaying.MixName, ImageUrl = nowPlaying.Cover.ThumbnailUrl });
+            }
+
+            var mixes =
+                from response in
+                    Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json")))
+                from mix in response.Mixes.ToObservable()
+                select new RecentMixViewModel(mix);
+            mixes.Subscribe(this.RecentMixes.Add, this.ShowError, this.LoadLatestMixes);
+        }
+
+        private void LoadLatestMixes()
+        {
+            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json").ObserveOnDispatcher().Do(_ =>
+            {
+                this.LatestMixes.Clear();
+            })
+                           from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
+                           select new MixViewModel(mix);
             pageData.ObserveOnDispatcher().Subscribe(
-                m => this.Mixes.Add(m), ex => this.ShowError(ex.Message), this.LoadTags);
+                m => this.LatestMixes.Add(m),
+                this.ShowError,
+                this.LoadTags);
         }
 
         /// <summary>
         /// </summary>
         private void LoadTags()
         {
-            ////this.MixRows.Clear();
-            ////foreach (var row in DualTileRowViewModel<MixViewModel>.Tile(this.Mixes))
-            ////{
-            ////    this.MixRows.Add(row);
-            ////}
             this.Tags.Clear();
-            var tags = TagViewModel.SplitAndMergeIntoTags(this.Mixes.Select(m => m.Tags)).OrderBy(t => t.TagName);
+            var tags = TagViewModel.SplitAndMergeIntoTags(this.LatestMixes.Select(m => m.Tags)).OrderBy(t => t.TagName);
 
             foreach (var tag in tags)
             {
@@ -228,14 +203,14 @@ namespace FlatBeats.ViewModels
 
             this.Tags.Add(new TagViewModel("more..."));
 
-            this.IsInProgress = false;
+            this.HideProgress();
         }
 
         /// <summary>
         /// </summary>
         private void PickNewBackgroundImage()
         {
-            var next = this.Mixes.Skip(RandomNumber.Next(this.Mixes.Count - 1)).FirstOrDefault();
+            var next = this.LatestMixes.Skip(RandomNumber.Next(this.LatestMixes.Count - 1)).FirstOrDefault();
             if (next == null)
             {
                 return;
@@ -254,5 +229,45 @@ namespace FlatBeats.ViewModels
         }
 
         #endregion
+    }
+
+    public class RecentMixViewModel : MixViewModel
+    {
+        /// <summary>
+        /// Initializes a new instance of the RecentMixViewModel class.
+        /// </summary>
+        public RecentMixViewModel()
+        {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the RecentMixViewModel class.
+        /// </summary>
+        public RecentMixViewModel(MixContract mix) : base(mix)
+        {
+            
+
+        }
+
+        private bool isNowPlaying;
+
+        public bool IsNowPlaying
+        {
+            get
+            {
+                return this.isNowPlaying;
+            }
+            set
+            {
+                if (this.isNowPlaying == value)
+                {
+                    return;
+                }
+
+                this.isNowPlaying = value;
+                this.OnPropertyChanged("IsNowPlaying");
+            }
+        }
     }
 }

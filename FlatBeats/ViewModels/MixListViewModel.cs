@@ -29,7 +29,7 @@
         {
             this.IsDataLoaded = true;
             var mixes = from response in this.DownloadTagMixes(tag).ObserveOnDispatcher().Do(_ => this.Mixes.Clear())
-                        from mix in response.Mixes.ToObservable() 
+                        from mix in response.Mixes.ToObservable(Scheduler.ThreadPool) 
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
             return mixes.ObserveOnDispatcher().Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
@@ -38,8 +38,8 @@
         public IObservable<Unit> Search(string searchQuery)
         {
             this.IsDataLoaded = true;
-            var mixes = from response in this.DownloadTagMixes(searchQuery).Do(_ => this.Mixes.Clear())
-                        from mix in response.Mixes.ToObservable()
+            var mixes = from response in this.DownloadSearchMixes(searchQuery).ObserveOnDispatcher().Do(_ => this.Mixes.Clear())
+                        from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
             return mixes.ObserveOnDispatcher().Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
@@ -57,8 +57,25 @@
         {
             return Downloader.GetJson<MixesResponseContract>(
                 new Uri(
-                    string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", tag, this.Sort),
+                    string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", Uri.EscapeDataString(tag), this.Sort),
                     UriKind.RelativeOrAbsolute), null);
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="tag">
+        /// </param>
+        /// <param name="sort">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private IObservable<MixesResponseContract> DownloadSearchMixes(string query)
+        {
+            return Downloader.GetJson<MixesResponseContract>(
+                new Uri(
+                    string.Format("http://8tracks.com/mixes.json?q={0}&sort={1}", Uri.EscapeDataString(query), this.Sort),
+                    UriKind.RelativeOrAbsolute), null);
+        }
+
     }
 }

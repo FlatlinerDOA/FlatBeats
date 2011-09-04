@@ -238,7 +238,7 @@
                                               Text="email link..."
                                               Click="Email_Click" />
             </shell:ApplicationBar.MenuItems>
-            <shell:ApplicationBarIconButton x:Name="appbar_playpause"
+            <!--<shell:ApplicationBarIconButton x:Name="appbar_playpause"
                                             Text="play"
                                             Click="Play_Click"
                                             IconUri="/icons/appbar.transport.play.rest.png" />
@@ -247,7 +247,7 @@
                                             IconUri="/icons/appbar.transport.ff.rest.png" />
             <shell:ApplicationBarIconButton x:Name="appbar_likeunlike"
                                             Text="like"
-                                            IconUri="/icons/appbar.check.rest.png" />
+                                            IconUri="/icons/appbar.heart2.rest.png" />-->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

@@ -2,14 +2,16 @@
 {
     using System;
     using System.Linq;
-    using System.Windows.Navigation;
 
+    using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
+
+    using NavigationEventArgs = System.Windows.Navigation.NavigationEventArgs;
 
     /// <summary>
     /// </summary>
@@ -49,9 +51,10 @@
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ApplicationBarBinder.Bind(this, this.ViewModel);
             this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
             this.ViewModel.Load();
-            this.ViewModel.PlayStates.ObserveOnDispatcher().Subscribe(this.UpdatePlayState);
+            ////this.ViewModel.PlayStates.ObserveOnDispatcher().Subscribe(this.UpdatePlayState);
         }
 
         private void UpdatePlayState(bool canPause)

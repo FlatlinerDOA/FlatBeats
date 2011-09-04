@@ -2,10 +2,15 @@
 {
     using System;
     using System.Windows;
+    using System.Windows.Controls.Primitives;
+
+    using Coding4Fun.Phone.Controls;
+
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
     using Microsoft.Phone.Controls;
+    using Microsoft.Phone.Reactive;
 
     public partial class MainPage : PhoneApplicationPage
     {
@@ -16,43 +21,24 @@
 
             // Set the data context of the listbox control to the sample data
             this.DataContext = App.ViewModel;
-
+            this.Loaded += this.MainPage_Loaded;
             this.Unloaded += this.MainPage_Unloaded;
         }
 
-        void MainPage_Unloaded(object sender, RoutedEventArgs e)
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void MainPage_Unloaded(object sender, RoutedEventArgs e)
         {
             App.ViewModel.Unload();
         }
-
- 
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
         }
-
-        ////private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        ////{
-        ////    if (e.PropertyName == "BackgroundImage")
-        ////    {
-        ////        this.LoadDynamicBackground();
-        ////    }
-        ////}
-
-        ////private void LoadDynamicBackground()
-        ////{
-        ////    this.pano.DynamicBackground = new ImageBrush
-        ////        {
-        ////            Stretch = Stretch.UniformToFill,
-        ////            Opacity = 0.7,
-        ////            ImageSource = new BitmapImage(App.ViewModel.BackgroundImage)
-        ////                {
-        ////                    CreateOptions = BitmapCreateOptions.BackgroundCreation
-        ////                }
-        ////        };
-        ////}
 
         private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
         {
@@ -88,7 +74,20 @@
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, "Search", true);
+            var search = new SearchPrompt();
+            Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(search, "Completed").Take(1).ObserveOnDispatcher()
+                .Subscribe(
+                    q =>
+                        {
+                            if (q.EventArgs.PopUpResult == PopUpResult.Ok)
+                            {
+                                this.NavigationService.Navigate(
+                                    new Uri("/MixesPage.xaml?q=" + Uri.EscapeDataString(q.EventArgs.Result), UriKind.Relative));
+                            }
+                        });
+            search.Title = "search";
+            search.Show();
+            
         }
     }
 }

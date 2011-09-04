@@ -12,8 +12,10 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.ObjectModel;
 
+    using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
@@ -21,7 +23,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class PlayPageViewModel : ViewModel
+    public class PlayPageViewModel : PageViewModel, IApplicationBarViewModel
     {
         #region Constants and Fields
 
@@ -70,8 +72,40 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public PlayPageViewModel()
         {
+            this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
+            this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.Played = new MixPlayedTracksViewModel();
             this.Reviews = new ObservableCollection<ReviewViewModel>();
+            this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = "play" };
+            this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.NextTrack, this.CanNextTrack), IconUri = "/icons/appbar.transport.ff.rest.png", Text = "next", HideWhenInactive = true };
+            this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = "like" };
+
+            this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
+            this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
+            this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
+        }
+
+        private bool CanNextTrack()
+        {
+            return this.NowPlaying != null;
+        }
+
+        private void LikeUnlike()
+        {
+            this.Mix.Liked = !this.Mix.Liked;
+            this.UpdateLikedState();
+            this.ShowProgress();
+            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).Subscribe(_ => {}, 
+                _ =>
+                {
+                    this.HideProgress();
+                });
+        }
+
+        private void NextTrack()
+        {
+            
+
         }
 
         #endregion
@@ -117,48 +151,6 @@ namespace FlatBeats.ViewModels
 
                 this.hasPlayedTracks = value;
                 this.OnPropertyChanged("HasPlayedTracks");
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        public bool IsInProgress
-        {
-            get
-            {
-                return this.isInProgress;
-            }
-
-            set
-            {
-                if (this.isInProgress == value)
-                {
-                    return;
-                }
-
-                this.isInProgress = value;
-                this.OnPropertyChanged("IsInProgress");
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return this.message;
-            }
-
-            set
-            {
-                if (this.message == value)
-                {
-                    return;
-                }
-
-                this.message = value;
-                this.OnPropertyChanged("Message");
             }
         }
 
@@ -227,27 +219,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        /// <summary>
-        /// </summary>
-        public string Title
-        {
-            get
-            {
-                return this.title;
-            }
-
-            set
-            {
-                if (this.title == value)
-                {
-                    return;
-                }
-
-                this.title = value;
-                this.OnPropertyChanged("Title");
-            }
-        }
-
         public MixPlayedTracksViewModel Played { get; private set; }
 
         #endregion
@@ -292,7 +263,7 @@ namespace FlatBeats.ViewModels
             }
 
             this.IsDataLoaded = true;
-            this.IsInProgress = true;
+            this.ShowProgress();
             var downloadMix =
                 from response in
                     Downloader.GetJson<MixResponseContract>(
@@ -303,6 +274,13 @@ namespace FlatBeats.ViewModels
 
             downloadMix.ObserveOnDispatcher().Subscribe(this.LoadMix, this.ShowError, this.LoadComments);
         }
+
+        public CommandLink PlayPauseCommand { get; private set; }
+
+        public CommandLink NextTrackCommand { get; private set; }
+
+        public CommandLink LikeUnlikeCommand { get; private set; }
+
 
         /// <summary>
         /// </summary>
@@ -351,13 +329,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private void HideProgress()
-        {
-            this.IsInProgress = false;
-        }
-
-        /// <summary>
-        /// </summary>
         private void LoadComments()
         {
             var downloadComments =
@@ -388,10 +359,25 @@ namespace FlatBeats.ViewModels
                 this.NowPlaying = PlayerService.Load();
             }
 
+            this.UpdateLikedState();
+
             this.ShowNowPlaying = this.NowPlaying != null;
             this.UpdatePlayState();
         }
 
+        private void UpdateLikedState()
+        {
+            if (this.Mix.Liked)
+            {
+                this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.rest.png";
+                this.LikeUnlikeCommand.Text = "unlike";
+            }
+            else
+            {
+                this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.empty.rest.png";
+                this.LikeUnlikeCommand.Text = "like";
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -406,31 +392,29 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        /// <param name="obj">
-        /// </param>
-        private void ShowError(Exception ex)
-        {
-            this.IsInProgress = false;
-            this.Message = ex.Message;
-        }
-
-        /// <summary>
-        /// </summary>
         private void UpdatePlayState()
         {
             if (this.NowPlaying != null)
             {
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
+                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.pause.rest.png";
+                    this.PlayPauseCommand.Text = "pause";
                     this.playStates.OnNext(true);
                 }
                 else
                 {
+                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.play.rest.png";
+                    this.PlayPauseCommand.Text = "play";
                     this.playStates.OnNext(false);
                 }
             }
         }
 
         #endregion
+
+        public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
+
+        public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
     }
 }

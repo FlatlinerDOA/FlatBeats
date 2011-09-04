@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="FlatBeats.SearchPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="133.5" d:DesignWidth="474" VerticalAlignment="Top" Height="140">
+    
+    <Grid x:Name="LayoutRoot" Background="#BF000000">
+        <Controls:PhoneTextBox x:Name="searchText" Margin="8" ActionIcon="icons\appbar.feature.search.rest.png" ActionIconTapped="PhoneTextBox_ActionIconTapped" Hint="search mixes" KeyUp="PhoneTextBox_KeyUp" VerticalAlignment="Center" />
+    </Grid>
+</UserControl>

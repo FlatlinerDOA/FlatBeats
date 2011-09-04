@@ -91,6 +91,25 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private string searchQuery;
+
+        public string SearchQuery
+        {
+            get
+            {
+                return this.searchQuery;
+            }
+            set
+            {
+                if (this.searchQuery == value)
+                {
+                    return;
+                }
+
+                this.searchQuery = value;
+                this.OnPropertyChanged("SearchQuery");
+            }
+        }
 
         private int currentPanelIndex;
 
@@ -109,21 +128,7 @@ namespace FlatBeats.ViewModels
 
                 this.currentPanelIndex = value;
                 this.OnPropertyChanged("CurrentPanelIndex");
-                switch (this.currentPanelIndex)
-                {
-                    case 0:
-                        this.ShowProgress();
-                        this.Recent.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
-                        break;
-                    case 1:
-                        this.ShowProgress();
-                        this.Hot.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
-                        break;
-                    case 2:
-                        this.ShowProgress();
-                        this.Popular.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
-                        break;
-                }
+                this.LoadCurrentPanelSearchResults();
             }
         }
         #endregion
@@ -134,21 +139,51 @@ namespace FlatBeats.ViewModels
         /// </summary>
         /// <param name="loadTag">
         /// </param>
-        public void Load(string loadTag)
+        public void Load(string loadTag, string loadQuery)
         {
-            if (this.IsDataLoaded && this.Tag == loadTag)
+            if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
             {
                 return;
             }
 
             this.IsDataLoaded = true;
             this.Tag = loadTag;
-            this.Title = this.Tag.ToUpper();
+            this.SearchQuery = loadQuery;
+            this.Title = (this.Tag ?? this.SearchQuery ?? string.Empty).ToUpper();
 
-            this.ShowProgress();
-            this.Recent.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+            this.SearchPanel(this.Recent);
         }
 
+
+        private void LoadCurrentPanelSearchResults()
+        {
+            switch (this.currentPanelIndex)
+            {
+                case 0:
+                    this.SearchPanel(this.Recent);
+                    break;
+                case 1:
+                    this.SearchPanel(this.Hot);
+                    break;
+                case 2:
+                    this.SearchPanel(this.Popular);
+                    break;
+            }
+        }
+
+        private void SearchPanel(MixListViewModel mixList)
+        {
+            this.ShowProgress();
+            if (!string.IsNullOrWhiteSpace(this.SearchQuery))
+            {
+                mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.HideProgress);
+
+                return;
+            }
+
+            mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+
+        }
         #endregion
 
     }
