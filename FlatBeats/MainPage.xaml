@@ -18,6 +18,8 @@
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
+        <local:BooleanToVisibilityConverter x:Key="VisibilityConverter"  WhenFalse="Collapsed"
+                                            WhenTrue="Visible" />
         <Style TargetType="local:NavigationList"
                x:Key="WrapNavigationList">
             <Setter Property="ItemTemplate">
@@ -105,7 +107,7 @@
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot"
           Background="Black">    	
-        <controls:Panorama Title="flat beats"
+        <controls:Panorama Title="{Binding Title}"
                            x:Name="pano" 
                            Foreground="White" 
                            SelectionChanged="pano_SelectionChanged">
@@ -116,22 +118,31 @@
                     </ImageBrush.ImageSource>
                 </ImageBrush>
             </controls:Panorama.Background>
-            <controls:PanoramaItem Header="history">
+            <controls:PanoramaItem Header="recent">
                 <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Mixes}"
+                                      ItemsSource="{Binding Recent}"
                                       Navigation="NavigationList_OnNavigation">
                     <local:NavigationList.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal"
-                                        Height="80">
-                                <Image Margin="8"
-                                       Width="64"
-                                       Height="64"
-                                       Stretch="Uniform"
-                                       VerticalAlignment="Top"
-                                       Source="{Binding ThumbnailUrl}" />
-                                <TextBlock Text="{Binding MixName}"
-                                           Style="{StaticResource PhoneTextTitle2Style}" Foreground="White" VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="now playing"
+                                           Style="{StaticResource PhoneTextTitle2Style}"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource PhoneAccentBrush}"
+                                           Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" />
+                                <StackPanel Orientation="Horizontal"
+                                            Height="80">
+                                    <Image Margin="8"
+                                           Width="64"
+                                           Height="64"
+                                           Stretch="Uniform"
+                                           VerticalAlignment="Top"
+                                           Source="{Binding ThumbnailUrl}" />
+                                    <TextBlock Text="{Binding MixName}"
+                                               Style="{StaticResource PhoneTextTitle2Style}"
+                                               Foreground="White"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
                             </StackPanel>
                         </DataTemplate>
                     </local:NavigationList.ItemTemplate>
@@ -140,7 +151,7 @@
             <controls:PanoramaItem Header="latest mixes"
                                    Orientation="Horizontal">
                 <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Mixes}"
+                                      ItemsSource="{Binding Latest}"
                                       Navigation="NavigationList_OnNavigation"
                                       Style="{StaticResource WrapNavigationList}"
                                       VerticalAlignment="Top" />

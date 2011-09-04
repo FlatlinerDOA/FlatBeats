@@ -67,7 +67,7 @@ namespace FlatBeats.ViewModels
 
         #region Public Properties
 
-        public string MixId { get; private set; }
+        public string MixId { get; set; }
 
         private string createdBy;
 
@@ -214,7 +214,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public Uri NavigationUrl { get; private set; }
+        public Uri NavigationUrl { get; set; }
 
         /// <summary>
         /// </summary>

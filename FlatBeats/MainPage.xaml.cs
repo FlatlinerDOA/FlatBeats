@@ -2,7 +2,10 @@
 {
     using System;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
 
     using Coding4Fun.Phone.Controls;
 
@@ -79,13 +82,29 @@
                 .Subscribe(
                     q =>
                         {
-                            if (q.EventArgs.PopUpResult == PopUpResult.Ok)
+                            if (q.EventArgs.PopUpResult == PopUpResult.Ok && !string.IsNullOrWhiteSpace(q.EventArgs.Result))
                             {
                                 this.NavigationService.Navigate(
-                                    new Uri("/MixesPage.xaml?q=" + Uri.EscapeDataString(q.EventArgs.Result), UriKind.Relative));
+                                    new Uri(
+                                        "/MixesPage.xaml?q=" + Uri.EscapeDataString(q.EventArgs.Result), 
+                                        UriKind.Relative));
                             }
                         });
-            search.Title = "search";
+            
+            search.ActionPopUpButtons.Clear();
+            ////search.ActionPopUpButtons.Add(
+            ////    new Button
+            ////        {
+            ////            Content =
+            ////                new Image
+            ////                    {
+            ////                        Source = new BitmapImage(
+            ////                            new Uri(
+            ////                                "/icons/appbar.feature.search.rest.png", 
+            ////                                UriKind.Relative))
+            ////                    }
+            ////        });
+            ////search.Title = "search";
             search.Show();
             
         }

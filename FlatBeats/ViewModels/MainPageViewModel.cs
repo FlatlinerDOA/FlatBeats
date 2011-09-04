@@ -50,8 +50,8 @@ namespace FlatBeats.ViewModels
         public MainPageViewModel()
         {
             this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
-            this.RecentMixes = new ObservableCollection<RecentMixViewModel>();
-            this.LatestMixes = new ObservableCollection<MixViewModel>();
+            this.Recent = new ObservableCollection<RecentMixViewModel>();
+            this.Latest = new ObservableCollection<MixViewModel>();
             this.Tags = new ObservableCollection<TagViewModel>();
             this.Title = "flat beats";
         }
@@ -85,12 +85,12 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public bool IsDataLoaded { get; private set; }
 
-        public ObservableCollection<RecentMixViewModel> RecentMixes { get; private set; }
+        public ObservableCollection<RecentMixViewModel> Recent { get; private set; }
 
         /// <summary>
-        ///   Gets the collection of new mixes.
+        /// Gets the collection of new mixes.
         /// </summary>
-        public ObservableCollection<MixViewModel> LatestMixes { get; private set; }
+        public ObservableCollection<MixViewModel> Latest { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -164,27 +164,36 @@ namespace FlatBeats.ViewModels
             var nowPlaying = PlayerService.Load();
             if (nowPlaying != null)
             {
-                this.RecentMixes.Add(new RecentMixViewModel() { IsNowPlaying = true, TileTitle = nowPlaying.MixName, ImageUrl = nowPlaying.Cover.ThumbnailUrl });
+                this.Recent.Add(
+                    new RecentMixViewModel()
+                        { 
+                            IsNowPlaying = true, 
+                            MixId = nowPlaying.MixId, 
+                            MixName = nowPlaying.MixName,
+                            TileTitle = nowPlaying.MixName, 
+                            ImageUrl = nowPlaying.Cover.OriginalUrl,
+                            ThumbnailUrl = nowPlaying.Cover.ThumbnailUrl,
+                            NavigationUrl = new Uri("/PlayPage.xaml?mix=" + nowPlaying.MixId, UriKind.Relative)
+                        });
             }
 
-            var mixes =
-                from response in
-                    Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json")))
-                from mix in response.Mixes.ToObservable()
-                select new RecentMixViewModel(mix);
-            mixes.Subscribe(this.RecentMixes.Add, this.ShowError, this.LoadLatestMixes);
+            var mixes = from response in Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json")))
+                        where response != null && response.Mixes != null
+                        from mix in response.Mixes.ToObservable()
+                        select new RecentMixViewModel(mix);
+            mixes.Subscribe(this.Recent.Add, this.ShowError, this.LoadLatestMixes);
         }
 
         private void LoadLatestMixes()
         {
             var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), "latestmixes.json").ObserveOnDispatcher().Do(_ =>
             {
-                this.LatestMixes.Clear();
+                this.Latest.Clear();
             })
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
             pageData.ObserveOnDispatcher().Subscribe(
-                m => this.LatestMixes.Add(m),
+                m => this.Latest.Add(m),
                 this.ShowError,
                 this.LoadTags);
         }
@@ -194,7 +203,7 @@ namespace FlatBeats.ViewModels
         private void LoadTags()
         {
             this.Tags.Clear();
-            var tags = TagViewModel.SplitAndMergeIntoTags(this.LatestMixes.Select(m => m.Tags)).OrderBy(t => t.TagName);
+            var tags = TagViewModel.SplitAndMergeIntoTags(this.Latest.Select(m => m.Tags)).OrderBy(t => t.TagName);
 
             foreach (var tag in tags)
             {
@@ -210,7 +219,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void PickNewBackgroundImage()
         {
-            var next = this.LatestMixes.Skip(RandomNumber.Next(this.LatestMixes.Count - 1)).FirstOrDefault();
+            var next = this.Latest.Skip(RandomNumber.Next(this.Latest.Count - 1)).FirstOrDefault();
             if (next == null)
             {
                 return;
