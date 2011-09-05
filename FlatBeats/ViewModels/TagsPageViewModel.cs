@@ -12,12 +12,14 @@
 
     public class TagsPageViewModel : PageViewModel
     {
+        private static readonly string Groups = "#abcdefghijklmnopqrstuvwxyz";
+
         /// <summary>
         /// Initializes a new instance of the TagsPageViewModel class.
         /// </summary>
         public TagsPageViewModel()
         {
-            this.Tags = new ObservableCollection<TagViewModel>();
+            this.Tags = new ObservableCollection<Grouping<string, TagViewModel>>();
             this.Title = "tags";
         }
 
@@ -33,8 +35,16 @@
                 list.Add, 
                 this.ShowError, 
                 () =>
-                {
-                    foreach (var tag in list.OrderBy(tag => tag.TagName))
+                    {
+                        list.Sort((a, b) => string.Compare(a.TagName, b.TagName, StringComparison.OrdinalIgnoreCase));
+                        var sorted = from c in Groups
+                                     join tag in list on c.ToString() equals tag.Key
+                                     into jt
+                                     from t in jt 
+                                     group t by c.ToString() into g
+                                     orderby g.Key
+                                    select new Grouping<string, TagViewModel>(g);
+                    foreach (var tag in sorted)
                     {
                         this.Tags.Add(tag);
                     }
@@ -44,7 +54,7 @@
         }
 
 
-        public ObservableCollection<TagViewModel> Tags { get; set; }
+        public ObservableCollection<Grouping<string, TagViewModel>> Tags { get; set; }
 
 
     }

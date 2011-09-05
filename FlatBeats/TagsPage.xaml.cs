@@ -44,5 +44,14 @@ namespace FlatBeats
                 this.NavigationService.Navigate(navItem.NavigationUrl);
             }
         }
+
+        private void LongListSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var navItem = tagsList.SelectedItem as INavigationItem;
+            if (navItem != null && navItem.NavigationUrl != null)
+            {
+                this.NavigationService.Navigate(navItem.NavigationUrl);
+            }
+        }
     }
 }

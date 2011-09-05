@@ -35,6 +35,12 @@ namespace FlatBeats.ViewModels
         public TagViewModel(string name)
         {
             this.TagName = name;
+            this.Key = name.ToLowerInvariant().FirstOrDefault().ToString() ?? "#";
+            if (!char.IsLetter(this.Key[0]))
+            {
+                this.Key = "#";
+            }
+
             if (this.TagName == "more...")
             {
                 this.NavigationUrl = new Uri("/TagsPage.xaml", UriKind.Relative);
@@ -59,6 +65,8 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         public Uri NavigationUrl { get; private set; }
+
+        public string Key { get; private set; }
 
         /// <summary>
         /// </summary>
