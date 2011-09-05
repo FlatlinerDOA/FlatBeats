@@ -16,7 +16,8 @@
                             d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
-                            shell:SystemTray.IsVisible="False">
+                            shell:SystemTray.IsVisible="False"
+                            Controls:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <local:BooleanToVisibilityConverter x:Key="VisibilityConverter"  WhenFalse="Collapsed"
                                             WhenTrue="Visible" />
@@ -66,7 +67,7 @@
         <DataTemplate x:Key="TagsHeaderTemplate">
         	<Grid Width="409">
         		<TextBlock TextWrapping="Wrap" Text="tags" d:LayoutOverrides="Width, Height" FontFamily="Segoe WP Light"/>
-        		<Button HorizontalAlignment="Right" Margin="0" d:LayoutOverrides="Height" VerticalAlignment="Center" Click="SearchButton_Click">
+        		<Button Background="Transparent" HorizontalAlignment="Right" Margin="4,4,4,18" d:LayoutOverrides="Height" VerticalAlignment="Bottom" Click="SearchButton_Click" Template="{StaticResource CircleButtonControlTemplate}">
         			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" />
         		</Button>
         	</Grid>

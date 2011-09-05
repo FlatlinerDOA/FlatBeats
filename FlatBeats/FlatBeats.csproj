@@ -107,6 +107,7 @@
       <DependentUpon>TagsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
+    <Compile Include="ViewModels\Grouping.cs" />
     <Compile Include="ViewModels\INavigationItem.cs" />
     <Compile Include="ViewModels\MixesPageViewModel.cs" />
     <Compile Include="ViewModels\MixListViewModel.cs" />
@@ -169,7 +170,6 @@
     <None Include="SampleData\recentmixes.json" />
     <None Include="SampleData\reviews.json" />
     <None Include="SampleData\tracks_played.json" />
-    <None Include="Toolkit.Content\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
