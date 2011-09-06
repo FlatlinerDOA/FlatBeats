@@ -59,6 +59,8 @@
             <toolkit:LongListSelector x:Name="tagsList"
                 ItemsSource="{Binding Tags}"
                                       Background="Transparent"
+                                      GroupViewOpened="LongListSelector_GroupViewOpened"
+                                      GroupViewClosing="LongListSelector_GroupViewClosing"
                                       SelectionChanged="LongListSelector_SelectionChanged">
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
