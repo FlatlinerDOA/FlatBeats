@@ -79,6 +79,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ApplicationBarBinder.cs" />
+    <Compile Include="Controls\BooleanToBrushConverter.cs" />
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="Controls\CommandLink.cs" />
     <Compile Include="Controls\DelegateCommand.cs" />

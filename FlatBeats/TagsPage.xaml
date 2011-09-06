@@ -14,6 +14,10 @@
                             shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:TagsPageViewModel x:Key="ViewModel" />
+        <local:BooleanToBrushConverter x:Key="BooleanToAccentConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneChromeBrush}" />
+        <local:BooleanToBrushConverter x:Key="BooleanToForegroundConverter"
+                                       WhenTrue="{StaticResource PhoneForegroundBrush}"
+                                       WhenFalse="{StaticResource PhoneInactiveBrush}" />
     </phone:PhoneApplicationPage.Resources>
 	<phone:PhoneApplicationPage.FontFamily>
 		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
@@ -80,7 +84,7 @@
                 </toolkit:LongListSelector.GroupItemsPanel>
                 <toolkit:LongListSelector.GroupItemTemplate>
                     <DataTemplate>
-                        <Border Background="{StaticResource PhoneAccentBrush}"
+                        <Border Background="{Binding HasItems, Converter={StaticResource BooleanToAccentConverter}}"
                                 Width="99"
                                 Height="99"
                                 Margin="6"
