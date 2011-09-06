@@ -95,16 +95,14 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress();
-            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).Subscribe(_ => {}, 
-                _ =>
-                {
-                    this.HideProgress();
-                });
+            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(_ => {}, 
+                this.ShowError,
+                this.HideProgress);
         }
 
         private void NextTrack()
         {
-            
+            this.Player.SkipNext();
 
         }
 

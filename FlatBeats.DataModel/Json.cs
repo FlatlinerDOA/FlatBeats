@@ -9,8 +9,13 @@ namespace FlatBeats.DataModel
 
     public class Json
     {
-        public static string Serialize<T>(T obj)
+        public static string Serialize<T>(T obj) where T : class 
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             string retVal; 
             using (var ms = new MemoryStream())
             {
@@ -23,9 +28,9 @@ namespace FlatBeats.DataModel
             return retVal;
         }
 
-        public static T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json) where T : class 
         {
-            T obj = default(T);
+            T obj = null;
             if (string.IsNullOrWhiteSpace(json))
             {
                 return obj;
@@ -41,9 +46,9 @@ namespace FlatBeats.DataModel
             return obj;
         }
 
-        public static T DeserializeAndClose<T>(Stream json)
+        public static T DeserializeAndClose<T>(Stream json) where T : class 
         {
-            T obj = default(T);
+            T obj;
             using (json)
             {
 #if DEBUG

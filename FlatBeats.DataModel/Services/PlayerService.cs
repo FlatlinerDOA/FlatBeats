@@ -83,13 +83,13 @@
         public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)
         {
             var urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId) : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
-            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => new Unit());
+            return Downloader.PostStringAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
         }
 
         public static IObservable<Unit> SetTrackFavourite(string trackId, bool isFavourite)
         {
             var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
-            return Downloader.PostAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute)).Select(r => new Unit());
+            return Downloader.PostStringAndGetJson<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
         }
     }
 
@@ -108,5 +108,22 @@
 
         [DataMember(Name ="liked_by_current_user")]
         public bool IsLiked { get; set; }
+    }
+
+    [DataContract]
+    public class FavouritedTrackResponseContract
+    {
+        [DataMember(Name = "track")]
+        public FavouritedTrackContract Track { get; set; }
+    }
+
+    [DataContract]
+    public class FavouritedTrackContract
+    {
+        [DataMember(Name = "id")]
+        public string Id { get; set; }
+
+        [DataMember(Name = "faved_by_current_user")]
+        public bool IsFavourited { get; set; }
     }
 }

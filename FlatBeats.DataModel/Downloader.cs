@@ -51,26 +51,59 @@
             return sequence;
         }
 
-        public static IObservable<T> PostAndGetJson<T>(Uri url) where T : class
+        public static IObservable<TResponse> PostAndGetJson<TRequest, TResponse>(Uri url, TRequest postData)
+            where TRequest : class
+            where TResponse : class
+        {
+            var sequence = from postString in Observable.Start(() => Json.Serialize(postData))
+                           from completed in PostAndGetString(url, postString)
+                           select Json.Deserialize<TResponse>(completed);
+            return sequence;
+        }
+
+
+        public static IObservable<string> PostAndGetString(Uri url, string postData)
         {
             var sequence = from client in Observable.Start<WebClient>(CreateClient)
-                           from completed in Observable.CreateWithDisposable<OpenWriteCompletedEventArgs>(
+                           from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
-                                   {
-                                       var subscription =
-                                           Observable.FromEvent<OpenWriteCompletedEventArgs>(client, "OpenWriteCompleted")
-                                               .Take(1).Select(e => e.EventArgs).Subscribe(observer);
-                                       client.OpenWriteAsync(url, "POST");
-                                       return subscription;
-                                   }).TrySelect(evt => evt.Result)
-                           select Json.DeserializeAndClose<T>(completed);
+                               {
+                                   var subscription =
+                                       Observable.FromEvent<UploadStringCompletedEventArgs>(client, "UploadStringCompleted")
+                                           .Take(1).Select(e => e.EventArgs).Subscribe(observer);
+                                   client.UploadStringAsync(url, postData, "POST");
+                                   return subscription;
+                               }).TrySelect(evt => evt.Result)
+                           select completed;
             return sequence;
+        }
+
+
+        private static string UserToken;
+
+        public static void SetUserToken(string userToken)
+        {
+            UserToken = userToken;
+        }
+
+        public static bool IsAuthenticated 
+        {
+            get
+            {
+                return UserToken != null;
+            } 
         }
 
         private static WebClient CreateClient()
         {
             var client = new WebClient();
             client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
+
+            if (IsAuthenticated)
+            {
+                client.Headers["X-User-Token"] = UserToken;
+            }
+
             return client;
         }
 
@@ -91,6 +124,14 @@
                                 d.OnError(ex);
                             }
                         }, d.OnError, d.OnCompleted));
+        }
+
+        public static IObservable<TResponse> PostStringAndGetJson<TResponse>(Uri url, string postData)
+            where TResponse : class
+        {
+            var sequence = from completed in PostAndGetString(url, postData)
+                           select Json.Deserialize<TResponse>(completed);
+            return sequence;
         }
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="ReviewsResponseContract.cs" />
     <Compile Include="MixResponseContract.cs" />
     <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="SetContract.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="TagsResponseContract.cs" />

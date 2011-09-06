@@ -173,6 +173,11 @@ namespace FlatBeats.ViewModels
 
         private void SearchPanel(MixListViewModel mixList)
         {
+            if (mixList.IsDataLoaded)
+            {
+                return;
+            }
+
             this.ShowProgress();
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
