@@ -45,7 +45,29 @@
             </Grid>
 
         </DataTemplate>
-
+        <Style TargetType="Controls:NavigationList"
+               x:Key="WrapNavigationList">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Controls:ItemsControlEx x:Name="itemsControl"
+                                              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
+                            <Controls:ItemsControlEx.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <toolkit:WrapPanel />
+                                </ItemsPanelTemplate>
+                            </Controls:ItemsControlEx.ItemsPanel>
+                            <Controls:ItemsControlEx.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </Controls:ItemsControlEx.Template>
+                        </Controls:ItemsControlEx>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <DataTemplate x:Key="ReviewItemTemplate">
             <Grid d:DesignWidth="499"
                   d:DesignHeight="127"
@@ -130,6 +152,7 @@
                                        MinHeight="50" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"
@@ -164,18 +187,23 @@
                                Grid.Column="1"
                                d:LayoutOverrides="Height"
                                Grid.Row="1" />
-                    <ListBox ItemsSource="{Binding Comments}"
-                             Grid.ColumnSpan="2"
-                             Grid.Row="2">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
-                    <Grid Grid.RowSpan="2"
-                          VerticalAlignment="Bottom"
-                          Grid.Row="1"
+                    <Controls:NavigationList Margin="12"
+                                             Grid.ColumnSpan="2"
+                                             Grid.Row="2"
+                                             ItemsSource="{Binding Mix.TagList}"
+                                             Style="{StaticResource WrapNavigationList}"
+                                             Navigation="NavigationList_OnNavigation">
+                        <Controls:NavigationList.ItemTemplate>
+                            <DataTemplate>
+                                    <TextBlock Text="{Binding TagName}" Margin="12,4"
+                                               TextWrapping="NoWrap"
+                                               Style="{StaticResource PhoneTextLargeStyle}"
+                                               Foreground="White" />
+                            </DataTemplate>
+                        </Controls:NavigationList.ItemTemplate>
+                    </Controls:NavigationList>
+                    <Grid VerticalAlignment="Bottom"
+                          Grid.Row="2"
                           Grid.ColumnSpan="2"
                           Margin="8">
                         <Grid.ColumnDefinitions>
@@ -229,25 +257,6 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True"
-                              IsMenuEnabled="True">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem IsEnabled="True"
-                                              Text="share link..."
-                                              Click="Share_Click" />
-                <shell:ApplicationBarMenuItem IsEnabled="True"
-                                              Text="email link..."
-                                              Click="Email_Click" />
-            </shell:ApplicationBar.MenuItems>
-            <!--<shell:ApplicationBarIconButton x:Name="appbar_playpause"
-                                            Text="play"
-                                            Click="Play_Click"
-                                            IconUri="/icons/appbar.transport.play.rest.png" />
-            <shell:ApplicationBarIconButton x:Name="appbar_next"
-                                            Text="next"
-                                            IconUri="/icons/appbar.transport.ff.rest.png" />
-            <shell:ApplicationBarIconButton x:Name="appbar_likeunlike"
-                                            Text="like"
-                                            IconUri="/icons/appbar.heart2.rest.png" />-->
-        </shell:ApplicationBar>
+                              IsMenuEnabled="True" />
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

@@ -91,5 +91,14 @@
         {
             this.ViewModel.Email();
         }
+
+        private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
+        {
+            var navItem = e.Item as INavigationItem;
+            if (navItem != null && navItem.NavigationUrl != null)
+            {
+                this.NavigationService.Navigate(navItem.NavigationUrl);
+            }
+        }
     }
 }

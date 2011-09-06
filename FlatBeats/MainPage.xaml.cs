@@ -108,5 +108,10 @@
             search.Show();
             
         }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

@@ -41,7 +41,7 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="settings..."/>
             </shell:ApplicationBar.MenuItems>
-            <shell:ApplicationBarIconButton IconUri="/icons/appbar.feature.search.rest.png" Text="search"/>
+            <shell:ApplicationBarIconButton IconUri="/icons/appbar.feature.settings.rest.png" Text="search"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 

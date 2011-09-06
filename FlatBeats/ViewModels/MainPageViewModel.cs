@@ -186,10 +186,7 @@ namespace FlatBeats.ViewModels
 
         private void LoadLatestMixes()
         {
-            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute)).ObserveOnDispatcher().Do(_ =>
-            {
-                this.Latest.Clear();
-            })
+            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute)).ObserveOnDispatcher().Do(_ => this.Latest.Clear())
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
             pageData.ObserveOnDispatcher().Subscribe(

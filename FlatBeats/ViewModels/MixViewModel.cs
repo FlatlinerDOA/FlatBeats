@@ -6,6 +6,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using FlatBeats.DataModel;
@@ -61,6 +62,7 @@ namespace FlatBeats.ViewModels
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
             this.Tags = mix.Tags;
+            this.TagList = this.Tags.Split(',').Select(t => new TagViewModel(t)).ToList();
         }
 
         #endregion
@@ -127,26 +129,6 @@ namespace FlatBeats.ViewModels
 
                 this.description = value;
                 this.OnPropertyChanged("Description");
-            }
-        }
-
-        private string tags;
-
-        public string Tags
-        {
-            get
-            {
-                return this.tags;
-            }
-            set
-            {
-                if (this.tags == value)
-                {
-                    return;
-                }
-
-                this.tags = value;
-                this.OnPropertyChanged("Tags");
             }
         }
 
@@ -260,6 +242,45 @@ namespace FlatBeats.ViewModels
 
         public Uri LinkUrl { get; set; }
 
+        private string tags;
+
+        public string Tags
+        {
+            get
+            {
+                return this.tags;
+            }
+            set
+            {
+                if (this.tags == value)
+                {
+                    return;
+                }
+
+                this.tags = value;
+                this.OnPropertyChanged("Tags");
+            }
+        }
+
+        private List<TagViewModel> tagList;
+
+        public List<TagViewModel> TagList
+        {
+            get
+            {
+                return this.tagList;
+            }
+            set
+            {
+                if (this.tagList == value)
+                {
+                    return;
+                }
+
+                this.tagList = value;
+                this.OnPropertyChanged("TagList");
+            }
+        }
         #endregion
     }
 }
