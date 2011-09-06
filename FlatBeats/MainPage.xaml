@@ -126,14 +126,13 @@
                     <local:NavigationList.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock Text="now playing"
+                                <TextBlock Text="NOW PLAYING"
                                            Style="{StaticResource PhoneTextTitle2Style}"
-                                           FontWeight="Bold"
                                            Foreground="{StaticResource PhoneAccentBrush}"
-                                           Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" />
+                                           Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
                                 <StackPanel Orientation="Horizontal"
                                             Height="80">
-                                    <Image Margin="8"
+                                    <Image Margin="14,8,8,8"
                                            Width="64"
                                            Height="64"
                                            Stretch="Uniform"
@@ -142,7 +141,7 @@
                                     <TextBlock Text="{Binding MixName}"
                                                Style="{StaticResource PhoneTextTitle2Style}"
                                                Foreground="White"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center" Margin="8,0" />
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

@@ -41,14 +41,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private bool isInProgress;
-
-        /// <summary>
-        /// </summary>
-        private string message;
-
-        /// <summary>
-        /// </summary>
         private MixViewModel mix;
 
         /// <summary>
@@ -77,15 +69,27 @@ namespace FlatBeats.ViewModels
             this.Played = new MixPlayedTracksViewModel();
             this.Reviews = new ObservableCollection<ReviewViewModel>();
             this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = "play" };
-            this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.NextTrack, this.CanNextTrack), IconUri = "/icons/appbar.transport.ff.rest.png", Text = "next", HideWhenInactive = true };
+            this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = "next", HideWhenInactive = true };
             this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = "like" };
 
             this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
+
+            this.ApplicationBarMenuCommands.Add(new CommandLink()
+                {
+                    Text = "share...",
+                    Command  = new DelegateCommand(this.Share)
+                });
+
+            this.ApplicationBarMenuCommands.Add(new CommandLink()
+                {
+                    Text = "email...",
+                    Command = new DelegateCommand(this.Email)
+                });
         }
 
-        private bool CanNextTrack()
+        private bool CanSkipNext()
         {
             return this.NowPlaying != null;
         }
@@ -95,15 +99,15 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress();
-            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(_ => {}, 
+            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+                _ => { }, 
                 this.ShowError,
                 this.HideProgress);
         }
 
-        private void NextTrack()
+        private void SkipNext()
         {
             this.Player.SkipNext();
-
         }
 
         #endregion
@@ -241,7 +245,7 @@ namespace FlatBeats.ViewModels
         {
             var task = new EmailComposeTask()
                 {
-                   Body = this.Mix.Description + " - " + this.Mix.LinkUrl.AbsoluteUri, Subject = this.Mix.MixName 
+                   Body = "Mix: " + this.Mix.MixName + "\r\nDescription:\r\n" + this.Mix.Description + "\r\nLink:\r\n" + this.Mix.LinkUrl.AbsoluteUri, Subject = "Check out this 8tracks.com mix!",
                 };
             task.Show();
         }
@@ -339,7 +343,7 @@ namespace FlatBeats.ViewModels
             downloadComments.ObserveOnDispatcher().Subscribe(
                 r => this.Reviews.Add(r), 
                 this.ShowError, 
-                () => this.Played.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress));
+                () => this.Played.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(_ => { }, this.HideProgress));
         }
 
         /// <summary>
@@ -374,6 +378,8 @@ namespace FlatBeats.ViewModels
                 this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.empty.rest.png";
                 this.LikeUnlikeCommand.Text = "like";
             }
+
+            ((DelegateCommand)this.LikeUnlikeCommand.Command).RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -405,6 +411,9 @@ namespace FlatBeats.ViewModels
                     this.PlayPauseCommand.Text = "play";
                     this.playStates.OnNext(false);
                 }
+
+                ((DelegateCommand)this.PlayPauseCommand.Command).RaiseCanExecuteChanged();
+                ((DelegateCommand)this.NextTrackCommand.Command).RaiseCanExecuteChanged();
             }
         }
 

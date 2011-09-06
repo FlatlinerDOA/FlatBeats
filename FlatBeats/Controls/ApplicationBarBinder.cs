@@ -152,7 +152,8 @@
         {
             bool canExecute = commandLink.Command.CanExecute(null);
             button.IsEnabled = canExecute;
-
+            button.IconUri = new Uri(commandLink.IconUri, UriKind.RelativeOrAbsolute);
+            button.Text = commandLink.Text;
             if (!commandLink.HideWhenInactive)
             {
                 return;
