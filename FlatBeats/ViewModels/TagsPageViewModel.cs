@@ -1,61 +1,81 @@
-﻿namespace FlatBeats.ViewModels
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TagsPageViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace FlatBeats.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Windows;
-
-    using FlatBeats.DataModel;
-
     using Microsoft.Phone.Reactive;
 
+    /// <summary>
+    /// </summary>
     public class TagsPageViewModel : PageViewModel
     {
-        private static readonly string Groups = "#abcdefghijklmnopqrstuvwxyz";
+        #region Constants and Fields
 
         /// <summary>
-        /// Initializes a new instance of the TagsPageViewModel class.
+        /// </summary>
+        private TagsByFirstLetter tags;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///   Initializes a new instance of the TagsPageViewModel class.
         /// </summary>
         public TagsPageViewModel()
         {
-            this.Tags = new ObservableCollection<Grouping<string, TagViewModel>>();
+            ////this.Tags = new ObservableCollection<Grouping<string, TagViewModel>>();
             this.Title = "tags";
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// </summary>
+        public TagsByFirstLetter Tags
+        {
+            get
+            {
+                return this.tags;
+            }
+
+            set
+            {
+                if (this.tags == value)
+                {
+                    return;
+                }
+
+                this.tags = value;
+                this.OnPropertyChanged("Tags");
+            }
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// </summary>
         public void Load()
         {
             this.ShowProgress();
-            var list = new List<TagViewModel>();
-            var tags = from page in Observable.Range(1, 4)
-                       from response in Downloader.GetJson<TagsResponseContract>(new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + page))
-                       from tag in response.Tags.ToObservable()
-                       select new TagViewModel(tag.Name);
-            tags.ObserveOnDispatcher().Subscribe(
-                list.Add, 
-                this.ShowError, 
-                () =>
+            Observable.Start(() => new TagsByFirstLetter()).ObserveOnDispatcher().Subscribe(
+                t =>
                     {
-                        list.Sort((a, b) => string.Compare(a.TagName, b.TagName, StringComparison.OrdinalIgnoreCase));
-                        var sorted = from c in Groups
-                                     join tag in list on c.ToString() equals tag.Key
-                                     into jt
-                                     from t in jt 
-                                     group t by c.ToString() into g
-                                     orderby g.Key
-                                    select new Grouping<string, TagViewModel>(g);
-                    foreach (var tag in sorted)
-                    {
-                        this.Tags.Add(tag);
-                    }
-
-                    this.HideProgress();
-                });
+                        this.Tags = t;
+                        this.HideProgress();
+                    });
         }
 
-
-        public ObservableCollection<Grouping<string, TagViewModel>> Tags { get; set; }
-
-
+        #endregion
     }
 }

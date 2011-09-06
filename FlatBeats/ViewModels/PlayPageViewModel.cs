@@ -268,8 +268,7 @@ namespace FlatBeats.ViewModels
                 from response in
                     Downloader.GetJson<MixResponseContract>(
                         new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute), 
-                        "mix-" + this.MixId + ".json")
+                    string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute))
                 select response.Mix;
 
             downloadMix.ObserveOnDispatcher().Subscribe(this.LoadMix, this.ShowError, this.LoadComments);

@@ -14,11 +14,11 @@ namespace FlatBeats.ViewModels
     /// <typeparam name="TElement">The type of the items.</typeparam>
     public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
-        private readonly IGrouping<TKey, TElement> _internalGrouping;
+        private readonly IGrouping<TKey, TElement> internalGrouping;
 
-        public Grouping(IGrouping<TKey, TElement> internalGrouping)
+        public Grouping(IGrouping<TKey, TElement> grouping)
         {
-            _internalGrouping = internalGrouping;
+            this.internalGrouping = grouping;
         }
 
         public override bool Equals(object obj)
@@ -37,16 +37,20 @@ namespace FlatBeats.ViewModels
 
         public TKey Key
         {
-            get { return _internalGrouping.Key; }
+            get { return this.internalGrouping.Key; }
         }
 
         #endregion
 
+        public bool HasItems { get
+        {
+            return this.internalGrouping.Any();
+        } }
         #region IEnumerable<TElement> Members
 
         public IEnumerator<TElement> GetEnumerator()
         {
-            return _internalGrouping.GetEnumerator();
+            return this.internalGrouping.GetEnumerator();
         }
 
         #endregion
@@ -55,7 +59,7 @@ namespace FlatBeats.ViewModels
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _internalGrouping.GetEnumerator();
+            return this.internalGrouping.GetEnumerator();
         }
 
         #endregion

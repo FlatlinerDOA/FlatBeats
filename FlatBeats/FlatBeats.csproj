@@ -118,6 +118,8 @@
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
+    <Compile Include="ViewModels\TagsByFirstLetter.cs" />
+    <Compile Include="ViewModels\TagsInGroup.cs" />
     <Compile Include="ViewModels\TagsPageViewModel.cs" />
     <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="ViewModels\TrackViewModel.cs" />

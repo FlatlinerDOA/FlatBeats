@@ -92,7 +92,7 @@
                                        Foreground="{StaticResource PhoneForegroundBrush}"
                                        VerticalAlignment="Bottom" />
                             <Border.Projection>
-                                <PlaneProjection RotationX="-60" />
+                                <PlaneProjection RotationX="-90" />
                             </Border.Projection>
                         </Border>
                     </DataTemplate>

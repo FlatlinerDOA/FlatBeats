@@ -11,6 +11,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     /// <summary>
@@ -35,11 +36,17 @@ namespace FlatBeats.ViewModels
         public TagViewModel(string name)
         {
             this.TagName = name;
-            this.Key = name.ToLowerInvariant().FirstOrDefault().ToString() ?? "#";
+            if (!string.IsNullOrWhiteSpace(this.TagName))
+            {
+                this.Key = this.TagName.Trim().ToLowerInvariant().First().ToString();
+            }
+
             if (!char.IsLetter(this.Key[0]))
             {
                 this.Key = "#";
             }
+
+            Debug.WriteLine("Name '{0}' Key '{1}", this.TagName, this.Key);
 
             if (this.TagName == "more...")
             {

@@ -63,7 +63,7 @@ namespace FlatBeats
 
             //Construct and begin a swivel animation to pop in the group view.
             IEasingFunction quadraticEase = new QuadraticEase { EasingMode = EasingMode.EaseOut };
-            Storyboard _swivelShow = new Storyboard();
+            Storyboard swivelShow = new Storyboard();
             ItemsControl groupItems = e.ItemsControl;
 
             foreach (var item in groupItems.Items)
@@ -78,11 +78,11 @@ namespace FlatBeats
 
                         EasingDoubleKeyFrame showKeyFrame1 = new EasingDoubleKeyFrame();
                         showKeyFrame1.KeyTime = TimeSpan.FromMilliseconds(0);
-                        showKeyFrame1.Value = -60;
+                        showKeyFrame1.Value = -90;
                         showKeyFrame1.EasingFunction = quadraticEase;
 
                         EasingDoubleKeyFrame showKeyFrame2 = new EasingDoubleKeyFrame();
-                        showKeyFrame2.KeyTime = TimeSpan.FromMilliseconds(85);
+                        showKeyFrame2.KeyTime = TimeSpan.FromMilliseconds(250);
                         showKeyFrame2.Value = 0;
                         showKeyFrame2.EasingFunction = quadraticEase;
 
@@ -92,12 +92,12 @@ namespace FlatBeats
                         Storyboard.SetTargetProperty(showAnimation, new PropertyPath(PlaneProjection.RotationXProperty));
                         Storyboard.SetTarget(showAnimation, content.Projection);
 
-                        _swivelShow.Children.Add(showAnimation);
+                        swivelShow.Children.Add(showAnimation);
                     }
                 }
             }
 
-            _swivelShow.Begin();
+            swivelShow.Begin();
         }
 
         private void LongListSelector_GroupViewClosing(object sender, GroupViewClosingEventArgs e)

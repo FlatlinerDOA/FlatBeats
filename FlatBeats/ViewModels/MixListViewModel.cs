@@ -58,7 +58,7 @@
             return Downloader.GetJson<MixesResponseContract>(
                 new Uri(
                     string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}", Uri.EscapeDataString(tag), this.Sort),
-                    UriKind.RelativeOrAbsolute), null);
+                    UriKind.RelativeOrAbsolute));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@
             return Downloader.GetJson<MixesResponseContract>(
                 new Uri(
                     string.Format("http://8tracks.com/mixes.json?q={0}&sort={1}", Uri.EscapeDataString(query), this.Sort),
-                    UriKind.RelativeOrAbsolute), null);
+                    UriKind.RelativeOrAbsolute));
         }
 
     }
