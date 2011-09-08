@@ -112,7 +112,11 @@
     </Compile>
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
+    <Compile Include="ViewModels\MainPageLatestViewModel.cs" />
+    <Compile Include="ViewModels\MainPageLikedViewModel.cs" />
+    <Compile Include="ViewModels\MainPageRecentViewModel.cs" />
     <Compile Include="ViewModels\INavigationItem.cs" />
+    <Compile Include="ViewModels\MainPageTagsViewModel.cs" />
     <Compile Include="ViewModels\MixesPageViewModel.cs" />
     <Compile Include="ViewModels\MixListViewModel.cs" />
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
@@ -121,6 +125,7 @@
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
+    <Compile Include="ViewModels\RecentMixViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
     <Compile Include="ViewModels\TagsByFirstLetter.cs" />
     <Compile Include="ViewModels\TagsInGroup.cs" />

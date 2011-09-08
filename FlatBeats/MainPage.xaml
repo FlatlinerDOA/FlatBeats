@@ -64,10 +64,30 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DataTemplate x:Key="LikedHeaderTemplate">
+            <Grid Width="409">
+                <TextBlock TextWrapping="Wrap"
+                           Text="{Binding}"
+                           d:LayoutOverrides="Width, Height"
+                           FontFamily="Segoe WP Light" />
+                <Button Background="Transparent"
+                        HorizontalAlignment="Right"
+                        Margin="4,4,4,18"
+                        d:LayoutOverrides="Height"
+                        VerticalAlignment="Bottom"
+                        Click="SettingsButton_Click"
+                        Template="{StaticResource CircleButtonControlTemplate}">
+                    <Image Source="/icons/appbar.feature.settings.rest.png"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Stretch="None" />
+                </Button>
+            </Grid>
+        </DataTemplate>
         <DataTemplate x:Key="RecentHeaderTemplate">
             <Grid Width="409">
                 <TextBlock TextWrapping="Wrap"
-                           Text="recent"
+                           Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
                            FontFamily="Segoe WP Light" />
                 <Button Background="Transparent"
@@ -139,59 +159,115 @@
                     </ImageBrush.ImageSource>
                 </ImageBrush>
             </controls:Panorama.Background>
-            <controls:PanoramaItem Header="recent" HeaderTemplate="{StaticResource RecentHeaderTemplate}">
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Recent}"
-                                      Navigation="NavigationList_OnNavigation">
-                    <local:NavigationList.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="NOW PLAYING"
-                                           Style="{StaticResource PhoneTextTitle2Style}"
-                                           Foreground="{StaticResource PhoneAccentBrush}"
-                                           Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
-                                <StackPanel Orientation="Horizontal"
-                                            Height="80">
-                                    <Image Margin="14,8,8,8"
-                                           Width="64"
-                                           Height="64"
-                                           Stretch="Uniform"
-                                           VerticalAlignment="Top"
-                                           Source="{Binding ThumbnailUrl}" />
-                                    <TextBlock Text="{Binding MixName}"
-                                               Style="{StaticResource PhoneTextTitle2Style}"
-                                               Foreground="White"
-                                               VerticalAlignment="Center" Margin="8,0" />
+            <controls:PanoramaItem DataContext="{Binding Liked}"
+                                   Header="{Binding Title}"
+                                   HeaderTemplate="{StaticResource LikedHeaderTemplate}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          ItemsSource="{Binding Mixes}"
+                                          Navigation="NavigationList_OnNavigation">
+                        <local:NavigationList.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal"
+                                                Height="80">
+                                        <Image Margin="14,8,8,8"
+                                               Width="64"
+                                               Height="64"
+                                               Stretch="Uniform"
+                                               VerticalAlignment="Top"
+                                               Source="{Binding ThumbnailUrl}" />
+                                        <TextBlock Text="{Binding MixName}"
+                                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                                   Foreground="White"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0" />
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </local:NavigationList.ItemTemplate>
-                </local:NavigationList>
+                            </DataTemplate>
+                        </local:NavigationList.ItemTemplate>
+                    </local:NavigationList>
+                </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem Header="latest mixes"
+            <controls:PanoramaItem DataContext="{Binding Recent}" Header="{Binding Title}" HeaderTemplate="{StaticResource RecentHeaderTemplate}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          ItemsSource="{Binding Mixes}"
+                                          Navigation="NavigationList_OnNavigation">
+                        <local:NavigationList.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="NOW PLAYING"
+                                               Style="{StaticResource PhoneTextTitle2Style}"
+                                               Foreground="{StaticResource PhoneAccentBrush}"
+                                               Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
+                                    <StackPanel Orientation="Horizontal"
+                                                Height="80">
+                                        <Image Margin="14,8,8,8"
+                                               Width="64"
+                                               Height="64"
+                                               Stretch="Uniform"
+                                               VerticalAlignment="Top"
+                                               Source="{Binding ThumbnailUrl}" />
+                                        <TextBlock Text="{Binding MixName}"
+                                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                                   Foreground="White"
+                                                   VerticalAlignment="Center" Margin="8,0" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </local:NavigationList.ItemTemplate>
+                    </local:NavigationList>
+                </Grid>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem DataContext="{Binding Latest}" Header="{Binding Title}"
                                    Orientation="Horizontal">
-                <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Latest}"
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" 
+                               TextWrapping="Wrap" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                      ItemsSource="{Binding Mixes}"
                                       Navigation="NavigationList_OnNavigation"
                                       Style="{StaticResource WrapNavigationList}"
                                       VerticalAlignment="Top" />
+                </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem Header="tags" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
-                <local:NavigationList Margin="0,0,-12,0"
+            <controls:PanoramaItem DataContext="{Binding Tags}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <local:NavigationList Margin="0,0,-12,0"
                                       ItemsSource="{Binding Tags}"
                                       Navigation="NavigationList_OnNavigation">
-                    <local:NavigationList.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Margin="0,0,0,17"
-                                        Width="432">
-                                <TextBlock Text="{Binding TagName}"
-                                           TextWrapping="NoWrap"
-                                           Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                           Foreground="White" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </local:NavigationList.ItemTemplate>
-                </local:NavigationList>
+                        <local:NavigationList.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,17"
+                                            Width="432">
+                                    <TextBlock Text="{Binding TagName}"
+                                               TextWrapping="NoWrap"
+                                               Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                               Foreground="White" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </local:NavigationList.ItemTemplate>
+                    </local:NavigationList>
+                </Grid>
             </controls:PanoramaItem>
         </controls:Panorama>
     </Grid>
