@@ -23,7 +23,7 @@
 
         public void Load()
         {
-            var nowPlaying = from playingMix in Observable.Start(() => PlayerService.Load())
+            var nowPlaying = from playingMix in Observable.Start(() => PlayerService.LoadNowPlaying())
                              where playingMix != null
                              select new RecentMixViewModel()
                                      {
@@ -39,13 +39,16 @@
                         where response != null && response.Mixes != null
                         from mix in response.Mixes.ToObservable()
                         select new RecentMixViewModel(mix);
-            nowPlaying.Concat(recentMixes).ObserveOnDispatcher().Subscribe(this.Mixes.Add, this.ShowError, () =>
-            {
-                if (this.Mixes.Count == 0)
+            nowPlaying.Concat(recentMixes).ObserveOnDispatcher().Subscribe(
+                this.Mixes.Add, 
+                this.ShowError, 
+                () =>
                 {
-                    this.Message = "check back here after listening to some mixes.";
-                }
-            });
+                    if (this.Mixes.Count == 0)
+                    {
+                        this.Message = "check back here after listening to some mixes.";
+                    }
+                });
         }
     }
 }

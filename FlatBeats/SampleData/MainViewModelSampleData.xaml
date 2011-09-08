@@ -1,10 +1,12 @@
 ﻿<ViewModels:MainPageViewModel 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:FlatBeats" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels">
+    xmlns:local="clr-namespace:FlatBeats" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" Title="flat beats">
 
     <ViewModels:MainPageViewModel.Tags>
-        <ViewModels:TagViewModel TagName="design one" />
+    	<ViewModels:MainPageTagsViewModel Title="design tags">
+    		<ViewModels:MainPageTagsViewModel.Tags>
+			<ViewModels:TagViewModel TagName="design one" />
         <ViewModels:TagViewModel TagName="design two" />
         <ViewModels:TagViewModel TagName="design three" />
         <ViewModels:TagViewModel TagName="design four" />
@@ -18,18 +20,28 @@
         <ViewModels:TagViewModel TagName="design twelve" />
         <ViewModels:TagViewModel TagName="design thirteen" />
         <ViewModels:TagViewModel TagName="design fourteen" />
+			</ViewModels:MainPageTagsViewModel.Tags>  	
+		</ViewModels:MainPageTagsViewModel>
+        
     </ViewModels:MainPageViewModel.Tags>
-    <ViewModels:MainPageViewModel.Recent>
-        <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" />
+    <ViewModels:MainPageViewModel.Recent >
+    	<ViewModels:MainPageRecentViewModel Title="design recent">
+    		<ViewModels:MainPageRecentViewModel.Mixes>
+    			 		 <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" />
         <ViewModels:RecentMixViewModel MixName="design two" />
         <ViewModels:RecentMixViewModel MixName="design three" />
         <ViewModels:RecentMixViewModel MixName="design four" />
         <ViewModels:RecentMixViewModel MixName="design five" />
         <ViewModels:RecentMixViewModel MixName="design six" />
         <ViewModels:RecentMixViewModel MixName="design seven" />
+			</ViewModels:MainPageRecentViewModel.Mixes>  	
+		</ViewModels:MainPageRecentViewModel>
+       
     </ViewModels:MainPageViewModel.Recent>
-        <ViewModels:MainPageViewModel.Latest>
-        <ViewModels:MixViewModel MixName="design one" TileTitle="design one" />
+        <ViewModels:MainPageViewModel.Latest >
+        	<ViewModels:MainPageLatestViewModel Title="design latest mixes">
+        		<ViewModels:MainPageLatestViewModel.Mixes>
+        			    		 <ViewModels:MixViewModel MixName="design one" TileTitle="design one" />
         <ViewModels:MixViewModel MixName="design two" TileTitle="design two"/>
         <ViewModels:MixViewModel MixName="design three" TileTitle="design three"/>
         <ViewModels:MixViewModel MixName="design four" TileTitle="design four"/>
@@ -39,6 +51,26 @@
         <ViewModels:MixViewModel MixName="design eight" TileTitle="design eight"/>
         <ViewModels:MixViewModel MixName="design nine" TileTitle="design nine"/>
         <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten"/>
+        <ViewModels:MixViewModel MixName="design eleven" TileTitle="design eleven"/>
+        <ViewModels:MixViewModel MixName="design twelve" TileTitle="design twelve"/>
+				</ViewModels:MainPageLatestViewModel.Mixes>
+			</ViewModels:MainPageLatestViewModel>
+       
     </ViewModels:MainPageViewModel.Latest>
-    
+        <ViewModels:MainPageViewModel.Liked >
+        	<ViewModels:MainPageLikedViewModel Title="design liked">
+        		<ViewModels:MainPageLikedViewModel.Mixes>
+					<ViewModels:MixViewModel MixName="design one" TileTitle="design one" />
+			        <ViewModels:MixViewModel MixName="design two" TileTitle="design two"/>
+			        <ViewModels:MixViewModel MixName="design three" TileTitle="design three"/>
+			        <ViewModels:MixViewModel MixName="design four" TileTitle="design four"/>
+			        <ViewModels:MixViewModel MixName="design five" TileTitle="design five"/>
+			        <ViewModels:MixViewModel MixName="design six" TileTitle="design six"/>
+			        <ViewModels:MixViewModel MixName="design seven" TileTitle="design seven"/>
+			        <ViewModels:MixViewModel MixName="design eight" TileTitle="design eight"/>
+			        <ViewModels:MixViewModel MixName="design nine" TileTitle="design nine"/>
+			        <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten"/>
+				</ViewModels:MainPageLikedViewModel.Mixes>
+			</ViewModels:MainPageLikedViewModel>
+    </ViewModels:MainPageViewModel.Liked>
 </ViewModels:MainPageViewModel>

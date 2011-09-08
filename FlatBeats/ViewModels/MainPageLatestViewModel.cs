@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
     using FlatBeats.DataModel;
@@ -20,24 +21,23 @@
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
-        private readonly Subject<Unit> loaded = new Subject<Unit>();
-        
-        public IObservable<Unit> Loaded 
-        { 
-            get
-            {
-                return this.loaded;
-            } 
-        }
 
-        public void Load()
+        public IObservable<List<MixViewModel>> LoadAsync()
         {
-            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute)).ObserveOnDispatcher().Do(_ => this.Mixes.Clear())
+            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute))
+                               .ObserveOnDispatcher()
+                               .Do(_ => this.Mixes.Clear())
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
-            pageData.ObserveOnDispatcher().Subscribe(
+            return pageData.ObserveOnDispatcher().Do(
                 m => this.Mixes.Add(m),
-                this.ShowError, () => this.loaded.OnNext(new Unit()));
+                this.ShowError).Aggregate(
+                    new List<MixViewModel>(), 
+                    (a, m) =>
+                    {
+                        a.Add(m);
+                        return a;
+                    });
         }
     }
 }

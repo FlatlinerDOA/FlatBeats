@@ -306,7 +306,7 @@ namespace FlatBeats.ViewModels
                 m =>
                     {
                         this.NowPlaying = m;
-                        this.NowPlaying.Save();
+                        this.NowPlaying.SaveNowPlaying();
                         this.Player.Play();
                     });
         }
@@ -357,7 +357,7 @@ namespace FlatBeats.ViewModels
             this.Mix = new MixViewModel(loadMix);
             if (this.Player.Track != null && this.Player.Track.Tag.StartsWith(loadMix.Id + "|"))
             {
-                this.NowPlaying = PlayerService.Load();
+                this.NowPlaying = PlayerService.LoadNowPlaying();
             }
 
             this.UpdateLikedState();

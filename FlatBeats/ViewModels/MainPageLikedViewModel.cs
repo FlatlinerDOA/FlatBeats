@@ -4,7 +4,10 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.ObjectModel;
 
+    using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+
+    using Microsoft.Phone.Reactive;
 
     public class MainPageLikedViewModel : PanelViewModel
     {
@@ -21,6 +24,8 @@ namespace FlatBeats.ViewModels
 
         public void Load()
         {
+            //// http://8tracks.com/users/dp/mixes.xml?view=liked
+            ////Downloader.GetJson<LikedMixResponseContract>()
             ////this.Message = "sign in or sign up to keep track of the mixes you like.";
         }
     }

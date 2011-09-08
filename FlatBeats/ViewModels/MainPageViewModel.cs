@@ -169,9 +169,8 @@ namespace FlatBeats.ViewModels
                        from likedDelay in Observable.Timer(TimeSpan.FromSeconds(1))
                        from liked in Observable.Start(this.Liked.Load)
                        from latestDelay in Observable.Timer(TimeSpan.FromSeconds(1))
-                       from latest in Observable.Start(this.Latest.Load)
-                       from latestLoaded in this.Latest.Loaded
-                       from tags in Observable.Start(() => this.Tags.Load(this.Latest.Mixes))
+                       from latest in this.Latest.LoadAsync()
+                       from tags in Observable.Start(() => this.Tags.Load(latest))
                        select new Unit();
             load.Subscribe();
         }

@@ -41,7 +41,7 @@ namespace FlatBeatsPlaybackAgent
             {
                 if (this.nowPlaying == null)
                 {
-                    this.nowPlaying = PlayerService.Load();
+                    this.nowPlaying = PlayerService.LoadNowPlaying();
                 }
 
                 return this.nowPlaying;
@@ -188,7 +188,7 @@ namespace FlatBeatsPlaybackAgent
             if (nextResponse.Status.StartsWith("200"))
             {
                 this.NowPlaying.Set = nextResponse.Set;
-                this.NowPlaying.Save();
+                this.NowPlaying.SaveNowPlaying();
                 this.PlayTrack(player);
             }
         }
@@ -241,7 +241,7 @@ namespace FlatBeatsPlaybackAgent
             if (skipResponse.Status.StartsWith("200"))
             {
                 this.NowPlaying.Set = skipResponse.Set;
-                this.NowPlaying.Save();
+                this.NowPlaying.SaveNowPlaying();
                 this.PlayTrack(player);
             }
         }

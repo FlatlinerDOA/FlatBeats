@@ -22,12 +22,12 @@
             Storage.Delete(NowPlayingFilePath);
         }
         
-        public static void Save(this PlayingMixContract playing)
+        public static void SaveNowPlaying(this PlayingMixContract playing)
         {
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
         }
 
-        public static PlayingMixContract Load()
+        public static PlayingMixContract LoadNowPlaying()
         {
             var data = Storage.Load(NowPlayingFilePath);
             return Json.Deserialize<PlayingMixContract>(data);
