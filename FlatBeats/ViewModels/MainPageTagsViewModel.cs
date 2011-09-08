@@ -15,7 +15,7 @@
         public MainPageTagsViewModel()
         {
             this.Tags = new ObservableCollection<TagViewModel>();
-            this.Title = "tags";
+            this.Title = StringResources.Title_Tags;
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace FlatBeats.ViewModels
         public MainPageLikedViewModel()
         {
             this.Mixes = new ObservableCollection<MixViewModel>();
-            this.Title = "liked";
+            this.Title = StringResources.Title_LikedMixes;
         }
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }

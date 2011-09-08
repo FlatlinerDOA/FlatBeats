@@ -16,8 +16,7 @@
     <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures>
-    </SupportedCultures>
+    <SupportedCultures>de-DE</SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>FlatBeats.xap</XapFilename>
@@ -106,6 +105,11 @@
     </Compile>
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StringResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
     <Compile Include="TagsPage.xaml.cs">
       <DependentUpon>TagsPage.xaml</DependentUpon>
@@ -226,7 +230,13 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="StringResources.de-DE.resx" />
+    <EmbeddedResource Include="StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FlatBeats.DataModel\FlatBeats.DataModel.csproj">
       <Project>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</Project>

@@ -16,7 +16,7 @@
         public MainPageLatestViewModel()
         {
             this.Mixes = new ObservableCollection<MixViewModel>();
-            this.Title = "latest mixes";
+            this.Title = StringResources.Title_LatestMixes;
         }
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
