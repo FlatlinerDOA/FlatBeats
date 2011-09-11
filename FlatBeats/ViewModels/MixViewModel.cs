@@ -61,8 +61,9 @@ namespace FlatBeats.ViewModels
             this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
+            this.Created = DateTime.Parse(mix.Created);
             this.Tags = mix.Tags;
-            this.TagList = this.Tags.Split(',').Select(t => new TagViewModel(t)).ToList();
+            this.TagList = this.Tags.Split(new[] {',' }, StringSplitOptions.RemoveEmptyEntries).Where(t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
         }
 
         #endregion
@@ -88,6 +89,26 @@ namespace FlatBeats.ViewModels
 
                 this.createdBy = value;
                 this.OnPropertyChanged("CreatedBy");
+            }
+        }
+
+        private DateTime created;
+
+        public DateTime Created
+        {
+            get
+            {
+                return this.created;
+            }
+            set
+            {
+                if (this.created == value)
+                {
+                    return;
+                }
+
+                this.created = value;
+                this.OnPropertyChanged("Created");
             }
         }
 

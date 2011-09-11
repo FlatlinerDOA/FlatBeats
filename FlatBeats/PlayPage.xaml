@@ -213,23 +213,31 @@
                           Grid.ColumnSpan="2"
                           Margin="8" d:LayoutOverrides="Height">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.221*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="0.779*" />
                         </Grid.ColumnDefinitions>
                         <Image Height="100"
                                VerticalAlignment="Top"
-                               Margin="8">
+                               Margin="8" Width="100">
                             <Image.Source>
                                 <BitmapImage UriSource="{Binding Mix.CreatedByAvatarUrl}"
                                              CreateOptions="BackgroundCreation" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="{Binding Mix.CreatedBy}"
-                                   Style="{StaticResource PhoneTextLargeStyle}"
+                        <StackPanel Grid.Column="1">
+							<TextBlock Text="{Binding Mix.CreatedBy}"
                                    TextWrapping="Wrap"
                                    Margin="8,0,0,0"
-                                   VerticalAlignment="Top"
-                                   Grid.Column="1" />
+                                   Style="{StaticResource PhoneTextAccentStyle}"
+                               	   FontSize="26.667"
+								   VerticalAlignment="Top"  />
+							<TextBlock Margin="8,4,4,12"
+                               TextWrapping="Wrap"
+                               Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
+                               d:LayoutOverrides="Height"
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               FontSize="16" />
+						</StackPanel>								   
                     </Grid>
                 </Grid>
             </controls:PivotItem>

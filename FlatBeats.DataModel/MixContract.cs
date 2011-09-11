@@ -27,5 +27,8 @@
 
         [DataMember(Name = "user")]
         public UserContract User { get; set; }
+
+        [DataMember(Name = "first_published_at")]
+        public string Created { get; set; }
     }
 }
