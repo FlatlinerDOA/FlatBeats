@@ -69,6 +69,14 @@ namespace FlatBeats.ViewModels
 
         private DateTime created;
 
+        /// <summary>
+        /// Initializes a new instance of the ReviewViewModel class.
+        /// </summary>
+        public ReviewViewModel()
+        {
+            
+        }
+
         public ReviewViewModel(ReviewContract review)
         {
             this.UserName = review.User.Name;

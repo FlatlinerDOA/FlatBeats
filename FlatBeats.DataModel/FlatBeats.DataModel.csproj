@@ -41,6 +41,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="System.Observable" />
     <Reference Include="System.Runtime.Serialization" />

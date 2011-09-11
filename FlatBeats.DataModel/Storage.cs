@@ -39,6 +39,8 @@
 
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                CreateFolderForFile(storage, file);
+
                 using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
                 {
                     using (var writer = new StreamWriter(stream, Encoding.UTF8))
@@ -84,6 +86,7 @@
         {
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                CreateFolderForFile(storage, file);
                 using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
                 {
                     data.CopyTo(stream);
@@ -99,6 +102,17 @@
             {
                 storage.DeleteFile(file);
             }
+        }
+
+        private static void CreateFolderForFile(IsolatedStorageFile storage, string filePath)
+        {
+            var folder = Path.GetDirectoryName(filePath);
+            if (folder == null)
+            {
+                return;
+            }
+            
+            storage.CreateDirectory(folder);
         }
     }
 }

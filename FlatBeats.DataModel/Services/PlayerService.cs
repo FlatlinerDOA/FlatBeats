@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.Devices;
     using Microsoft.Phone.Reactive;
 
     public static class PlayerService
@@ -48,6 +49,10 @@
 
         public static IObservable<PlayingMixContract> StartPlaying(this MixContract mix)
         {
+            ////MediaHistoryItem item = new MediaHistoryItem();
+            ////item.Title = mix.Name;
+            ////Storage.Save("/Mixes/");
+
             return from playToken in GetPlayToken()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))

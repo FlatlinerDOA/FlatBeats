@@ -53,8 +53,9 @@
             base.OnNavigatedTo(e);
             ApplicationBarBinder.Bind(this, this.ViewModel);
             this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
+            this.ViewModel.PlayOnLoad = this.NavigationContext.QueryString.ContainsKey("play")
+                                        && this.NavigationContext.QueryString["play"] == "true";
             this.ViewModel.Load();
-            ////this.ViewModel.PlayStates.ObserveOnDispatcher().Subscribe(this.UpdatePlayState);
         }
 
         private void UpdatePlayState(bool canPause)
@@ -76,21 +77,6 @@
         }
 
         #endregion
-
-        private void Share_Click(object sender, EventArgs e)
-        {
-            this.ViewModel.Share();
-        }
-
-        private void Play_Click(object sender, EventArgs e)
-        {
-            this.ViewModel.Play();
-        }
-
-        private void Email_Click(object sender, EventArgs e)
-        {
-            this.ViewModel.Email();
-        }
 
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
         {

@@ -1,4 +1,13 @@
-﻿namespace FlatBeats.ViewModels
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TrackViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace FlatBeats.ViewModels
 {
     using System;
 
@@ -11,9 +20,36 @@
     /// </summary>
     public class TrackViewModel : ViewModel
     {
+        #region Constants and Fields
+
+        /// <summary>
+        /// </summary>
+        private string artist;
+
+        /// <summary>
+        /// </summary>
+        private bool isFavourite;
+
+        /// <summary>
+        /// </summary>
+        private string title;
+
+        #endregion
+
+        #region Constructors and Destructors
+
         /// <summary>
         /// Initializes a new instance of the TrackViewModel class.
         /// </summary>
+        public TrackViewModel()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the TrackViewModel class.
+        /// </summary>
+        /// <param name="track">
+        /// </param>
         public TrackViewModel(TrackContract track)
         {
             this.title = track.Name;
@@ -22,47 +58,19 @@
             this.Id = track.Id;
         }
 
-        public string Id { get; private set; }
+        #endregion
 
         #region Public Properties
 
-        private bool isFavourite;
-
-        public bool IsFavourite
-        {
-            get
-            {
-                return this.isFavourite;
-            }
-            set
-            {
-                if (this.isFavourite == value)
-                {
-                    return;
-                }
-
-                this.isFavourite = value;
-                this.OnPropertyChanged("IsFavourite");
-                PlayerService.SetTrackFavourite(this.Id, this.isFavourite).ObserveOnDispatcher().Subscribe(
-                    _ =>
-                    {
-                    }, 
-                    ex =>
-                    {
-                        this.isFavourite = !this.isFavourite; 
-                        this.OnPropertyChanged("IsFavourite");
-                    });
-            }
-        }
-
-        private string artist;
-
+        /// <summary>
+        /// </summary>
         public string Artist
         {
             get
             {
                 return this.artist;
             }
+
             set
             {
                 if (this.artist == value)
@@ -77,14 +85,45 @@
 
         /// <summary>
         /// </summary>
-        private string title;
+        public string Id { get; private set; }
 
+        /// <summary>
+        /// </summary>
+        public bool IsFavourite
+        {
+            get
+            {
+                return this.isFavourite;
+            }
+
+            set
+            {
+                if (this.isFavourite == value)
+                {
+                    return;
+                }
+
+                this.isFavourite = value;
+                this.OnPropertyChanged("IsFavourite");
+                UserService.SetTrackFavourite(this.Id, this.isFavourite).ObserveOnDispatcher().Subscribe(
+                    _ => { }, 
+                    ex =>
+                        {
+                            this.isFavourite = !this.isFavourite;
+                            this.OnPropertyChanged("IsFavourite");
+                        });
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         public string Title
         {
             get
             {
                 return this.title;
             }
+
             set
             {
                 if (this.title == value)

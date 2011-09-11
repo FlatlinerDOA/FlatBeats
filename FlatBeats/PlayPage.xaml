@@ -150,8 +150,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"
                                        MinHeight="50" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="190" />
                         <RowDefinition />
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -162,32 +163,37 @@
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                Grid.ColumnSpan="2"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                FontSize="32"
-                               FontFamily="Segoe WP Light" />
-                    <Image Margin="12,4"
-                           Width="173"
-                           VerticalAlignment="Top"
-                           Grid.Row="1">
-                        <Image.Source>
-                            <BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
-                                         CreateOptions="BackgroundCreation" />
-                        </Image.Source>
-                    </Image>
+                               FontFamily="Segoe WP Light" Margin="12,0" />
+                    <Border Height="173" Margin="12,4,12,0"
+                    	Grid.Row="1"
+                    	VerticalAlignment="Top"
+                    	Width="173" Background="{StaticResource PhoneChromeBrush}"
+                           >
+                    	<Image>
+                    		<Image.Source>
+                    			<BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
+                    				CreateOptions="BackgroundCreation" />
+                    		</Image.Source>
+                    	</Image>
+                    </Border>
                     <TextBlock Text="{Binding Mix.MixName}"
                                Style="{StaticResource PhoneTextLargeStyle}"
                                TextWrapping="Wrap"
-                               Margin="12,8"
+                               Margin="12,0,12,8"
                                d:LayoutOverrides="Height"
                                Grid.ColumnSpan="2" />
-                    <TextBlock Text="{Binding Mix.Description}"
-                               Style="{StaticResource PhoneTextSmallStyle}"
-                               TextWrapping="Wrap"
-                               Margin="12,4"
-                               Grid.Column="1"
-                               d:LayoutOverrides="Height"
-                               Grid.Row="1" />
-                    <Controls:NavigationList Margin="12"
+                    <ScrollViewer Grid.Column="1" Grid.Row="1">
+                        <TextBlock Text="{Binding Mix.Description}"
+                                   VerticalAlignment="Top"
+                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                   TextWrapping="Wrap"
+                                   Margin="12,0,12,4"
+                                   d:LayoutOverrides="Height"
+                                   />
+                    </ScrollViewer>
+                    <Controls:NavigationList Margin="12,4,12,8"
                                              Grid.ColumnSpan="2"
                                              Grid.Row="2"
                                              ItemsSource="{Binding Mix.TagList}"
@@ -195,17 +201,17 @@
                                              Navigation="NavigationList_OnNavigation">
                         <Controls:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                    <TextBlock Text="{Binding TagName}" Margin="12,4"
+                                    <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
                                                TextWrapping="NoWrap"
                                                Style="{StaticResource PhoneTextLargeStyle}"
                                                Foreground="White" />
                             </DataTemplate>
                         </Controls:NavigationList.ItemTemplate>
                     </Controls:NavigationList>
-                    <Grid VerticalAlignment="Bottom"
-                          Grid.Row="2"
+                    <Grid
+                          Grid.Row="3"
                           Grid.ColumnSpan="2"
-                          Margin="8">
+                          Margin="8" d:LayoutOverrides="Height">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.221*" />
                             <ColumnDefinition Width="0.779*" />

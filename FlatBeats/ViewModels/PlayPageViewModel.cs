@@ -360,6 +360,12 @@ namespace FlatBeats.ViewModels
             this.Title = loadMix.Name;
             this.mixData = loadMix;
             this.Mix = new MixViewModel(loadMix);
+            if (this.PlayOnLoad)
+            {
+                this.PlayOnLoad = false;
+                this.mixData.StartPlaying();
+            }
+
             if (this.Player.Track != null && this.Player.Track.Tag.StartsWith(loadMix.Id + "|"))
             {
                 this.NowPlaying = PlayerService.LoadNowPlaying();
@@ -427,5 +433,7 @@ namespace FlatBeats.ViewModels
         public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
 
         public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
+
+        public bool PlayOnLoad { get; set; }
     }
 }

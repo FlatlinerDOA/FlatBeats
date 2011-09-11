@@ -3,10 +3,24 @@
 		<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam adipiscing maecenas aenean"/>
 	</FlatBeats_ViewModels:PlayPageViewModel.CurrentTrack>
 	<FlatBeats_ViewModels:PlayPageViewModel.Mix>
-		<FlatBeats_ViewModels:MixViewModel Description="Accumsan parturient vestibulum sed bibendum" Liked="False" MixName="Dictumst curae dis" MixId="Integer curabitur class vestibulum" Tags="Adipiscing parturient" TileTitle="Quisque eleifend vestibulum facilisi"/>
+		<FlatBeats_ViewModels:MixViewModel Description="Class nam aenean cras curae donec aliquam mauris integer nullam quisque sed dis maecenas praesent accumsan duis etiam bibendum vivamus aliquam nunc amet dictumst fusce aliquet est hac blandit commodo lorem leo aptent eleifend auctor facilisi morbi mus faucibus nec congue non conubia habitant ante nulla per proin inceptos sed augue cubilia dapibus interdum arcu sem egestas euismod feugiat gravida diam cursus lobortis sit vel dictum lectus nam dolor sed libero dis ligula iaculis est lacinia litora fames laoreet nascetur luctus natoque eget magnis felis posuere elit mattis potenti ipsum enim pretium justo" Liked="False" MixName="Dictumst curae dis" MixId="Integer curabitur class vestibulum" Tags="Adipiscing parturient" TileTitle="Quisque eleifend vestibulum facilisi">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel TagName="design one"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design two"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design three"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design four"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design five"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design six"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design seven"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design eight"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design nine"/>
+				<FlatBeats_ViewModels:TagViewModel TagName="design ten"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.Mix>
-	<FlatBeats_ViewModels:PlayPageViewModel.PlayedTracks>
-		<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum"/>
+	<FlatBeats_ViewModels:PlayPageViewModel.Played>
+        <FlatBeats_ViewModels:MixPlayedTracksViewModel Title="design played" HasPlayedTracks="False" />
+		<!--<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Donec nunc est aptent"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Adipiscing auctor amet vivamus habitant"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Hac aliquam congue leo mus"/>
@@ -15,41 +29,8 @@
 		<FlatBeats_ViewModels:TrackViewModel Title="Diam blandit parturient vestibulum"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Commodo cursus vestibulum dictum lectus"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Eget adipiscing dignissim"/>
-		<FlatBeats_ViewModels:TrackViewModel Title="Parturient vestibulum inceptos vestibulum interdum"/>
-	</FlatBeats_ViewModels:PlayPageViewModel.PlayedTracks>
-	<FlatBeats_ViewModels:PlayPageViewModel.Player>
-		<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="888.19" CanSeek="False" CanPause="True" PlayerState="Paused" Volume="198.27">
-			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
-				<System:Exception/>
-			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
-			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
-				<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="578.9" CanSeek="False" CanPause="True" PlayerState="Unknown" Volume="470.99">
-					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
-						<System:Exception/>
-					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Error>
-					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
-						<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer BufferingProgress="959.61" CanSeek="False" CanPause="True" PlayerState="BufferingStopped" Volume="678.58"/>
-					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
-					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
-						<System:TimeSpan/>
-					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
-					<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
-						<Microsoft_Phone_BackgroundAudio:AudioTrack Album="Elit elementum adipiscing lobortis" Artist="Non conubia parturient" PlayerControls="SkipPrevious" Tag="Libero cubilia" Title="Dapibus egestas facilisis fermentum ligula"/>
-					</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
-				</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer>
-			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Instance>
-			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
-				<System:TimeSpan/>
-			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Position>
-			<Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
-				<Microsoft_Phone_BackgroundAudio:AudioTrack Album="Per fringilla enim habitasse hendrerit" Artist="Etiam erat himenaeos euismod" PlayerControls="FastForward" Tag="Litora nascetur eros luctus" Title="Nibh imperdiet feugiat sed magnis">
-					<Microsoft_Phone_BackgroundAudio:AudioTrack.Duration>
-						<System:TimeSpan/>
-					</Microsoft_Phone_BackgroundAudio:AudioTrack.Duration>
-				</Microsoft_Phone_BackgroundAudio:AudioTrack>
-			</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer.Track>
-		</Microsoft_Phone_BackgroundAudio:BackgroundAudioPlayer>
-	</FlatBeats_ViewModels:PlayPageViewModel.Player>
+		<FlatBeats_ViewModels:TrackViewModel Title="Parturient vestibulum inceptos vestibulum interdum"/>-->
+    </FlatBeats_ViewModels:PlayPageViewModel.Played>
 	<FlatBeats_ViewModels:PlayPageViewModel.Reviews>
 		<FlatBeats_ViewModels:ReviewViewModel Body="Fusce nisi vestibulum lorem" Created="08/28/2011 15:30:30" UserName="Malesuada penatibus sem"/>
 		<FlatBeats_ViewModels:ReviewViewModel Body="Sit vestibulum" Created="08/28/2011 15:30:30" UserName="Gravida vel porttitor morbi"/>

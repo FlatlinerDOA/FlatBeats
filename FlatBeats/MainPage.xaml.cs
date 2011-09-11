@@ -6,6 +6,7 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Threading;
 
     using Coding4Fun.Phone.Controls;
 
@@ -17,6 +18,10 @@
 
     public partial class MainPage : PhoneApplicationPage
     {
+        private string PlayMixKey = "MixId";
+
+        private bool historyItemLaunch;
+
         // Constructor
         public MainPage()
         {
@@ -40,6 +45,26 @@
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (NavigationContext.QueryString.ContainsKey(PlayMixKey))
+            {
+                // We were launched from a history item.
+                // Change _playingSong even if something was already playing 
+                // because the user directly chose a song history item.
+
+                // Use the navigation context to find the song by name.
+                string mixId = NavigationContext.QueryString[PlayMixKey];
+
+                this.NavigationService.Navigate(new Uri("/PlayPage.xaml?MixId=" + mixId + "&play=true", UriKind.Relative));
+
+                // Set a flag to indicate that we were started from a 
+                // history item and that we should immediately start 
+                // playing the song once the UI has finished loading.
+                this.historyItemLaunch = true;
+                return;
+            }
+
+
             this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
         }
 
