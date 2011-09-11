@@ -68,9 +68,9 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.Played = new MixPlayedTracksViewModel();
             this.Reviews = new ObservableCollection<ReviewViewModel>();
-            this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = "play" };
-            this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = "next", HideWhenInactive = true };
-            this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = "like" };
+            this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
+            this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = StringResources.Command_NextTrack, HideWhenInactive = true };
+            this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
 
             this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
@@ -78,13 +78,13 @@ namespace FlatBeats.ViewModels
 
             this.ApplicationBarMenuCommands.Add(new CommandLink()
                 {
-                    Text = "share...",
+                    Text = StringResources.Command_ShareMix,
                     Command  = new DelegateCommand(this.Share)
                 });
 
             this.ApplicationBarMenuCommands.Add(new CommandLink()
                 {
-                    Text = "email...",
+                    Text = StringResources.Command_EmailMix,
                     Command = new DelegateCommand(this.Email)
                 });
         }
@@ -99,7 +99,7 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress();
-            PlayerService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+            UserService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
                 _ => { }, 
                 this.ShowError,
                 this.HideProgress);
@@ -243,9 +243,14 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Email()
         {
-            var task = new EmailComposeTask()
+            var task = new EmailComposeTask
                 {
-                   Body = "Mix: " + this.Mix.MixName + "\r\nDescription:\r\n" + this.Mix.Description + "\r\nLink:\r\n" + this.Mix.LinkUrl.AbsoluteUri, Subject = "Check out this 8tracks.com mix!",
+                   Subject = StringResources.EmailBody_ShareMix,
+                   Body = string.Format(
+                       StringResources.EmailBody_ShareMix,
+                       this.Mix.MixName,
+                       this.Mix.Description, 
+                       this.Mix.LinkUrl.AbsoluteUri)
                 };
             task.Show();
         }
@@ -317,7 +322,7 @@ namespace FlatBeats.ViewModels
         {
             var task = new ShareLinkTask
                 {
-                    Title = "share mix", 
+                    Title = StringResources.Title_ShareMix, 
                     Message = this.Mix.MixName, 
                     LinkUri = this.Mix.LinkUrl
                 };
@@ -371,12 +376,12 @@ namespace FlatBeats.ViewModels
             if (this.Mix.Liked)
             {
                 this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.rest.png";
-                this.LikeUnlikeCommand.Text = "unlike";
+                this.LikeUnlikeCommand.Text = StringResources.Command_UnlikeMix;
             }
             else
             {
                 this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.empty.rest.png";
-                this.LikeUnlikeCommand.Text = "like";
+                this.LikeUnlikeCommand.Text = StringResources.Command_LikeMix;
             }
 
             ((DelegateCommand)this.LikeUnlikeCommand.Command).RaiseCanExecuteChanged();
@@ -402,13 +407,13 @@ namespace FlatBeats.ViewModels
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
                     this.PlayPauseCommand.IconUri = "/icons/appbar.transport.pause.rest.png";
-                    this.PlayPauseCommand.Text = "pause";
+                    this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
                     this.playStates.OnNext(true);
                 }
                 else
                 {
                     this.PlayPauseCommand.IconUri = "/icons/appbar.transport.play.rest.png";
-                    this.PlayPauseCommand.Text = "play";
+                    this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
                     this.playStates.OnNext(false);
                 }
 

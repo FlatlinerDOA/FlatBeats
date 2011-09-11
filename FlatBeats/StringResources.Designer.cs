@@ -61,7 +61,110 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to latest.
+        ///   Looks up a localized string similar to email mix.
+        /// </summary>
+        internal static string Command_EmailMix {
+            get {
+                return ResourceManager.GetString("Command_EmailMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to like.
+        /// </summary>
+        internal static string Command_LikeMix {
+            get {
+                return ResourceManager.GetString("Command_LikeMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to next.
+        /// </summary>
+        internal static string Command_NextTrack {
+            get {
+                return ResourceManager.GetString("Command_NextTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pause.
+        /// </summary>
+        internal static string Command_PauseMix {
+            get {
+                return ResourceManager.GetString("Command_PauseMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to play.
+        /// </summary>
+        internal static string Command_PlayMix {
+            get {
+                return ResourceManager.GetString("Command_PlayMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to share mix.
+        /// </summary>
+        internal static string Command_ShareMix {
+            get {
+                return ResourceManager.GetString("Command_ShareMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlike.
+        /// </summary>
+        internal static string Command_UnlikeMix {
+            get {
+                return ResourceManager.GetString("Command_UnlikeMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mix: {0}
+        ///Description:
+        ///{1}
+        ///Link:
+        ///{2}.
+        /// </summary>
+        internal static string EmailBody_ShareMix {
+            get {
+                return ResourceManager.GetString("EmailBody_ShareMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check out this 8tracks.com Mix!.
+        /// </summary>
+        internal static string EmailSubject_ShareMix {
+            get {
+                return ResourceManager.GetString("EmailSubject_ShareMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sign in or sign up to keep track of the mixes you like..
+        /// </summary>
+        internal static string Message_NoLikedMixes {
+            get {
+                return ResourceManager.GetString("Message_NoLikedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hot.
+        /// </summary>
+        internal static string Title_HotMixes {
+            get {
+                return ResourceManager.GetString("Title_HotMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to latest mixes.
         /// </summary>
         internal static string Title_LatestMixes {
             get {
@@ -79,11 +182,38 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to popular.
+        /// </summary>
+        internal static string Title_PopularMixes {
+            get {
+                return ResourceManager.GetString("Title_PopularMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to recent.
         /// </summary>
         internal static string Title_RecentlyPlayedMixes {
             get {
                 return ResourceManager.GetString("Title_RecentlyPlayedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to latest.
+        /// </summary>
+        internal static string Title_RecentMixes {
+            get {
+                return ResourceManager.GetString("Title_RecentMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHARE MIX.
+        /// </summary>
+        internal static string Title_ShareMix {
+            get {
+                return ResourceManager.GetString("Title_ShareMix", resourceCulture);
             }
         }
         

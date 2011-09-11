@@ -1,64 +1,58 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.DataModel.Services
+﻿namespace FlatBeats.DataModel.Services
 {
-    using System.Runtime.Serialization;
-
+    using System;
     using Microsoft.Phone.Reactive;
 
     public static class UserService
     {
-        public static IObservable<UserLoginResponseContract> Authenticate(string userName, string password)
+        private const string CredentialsFilePath = "credentials.json";
+        
+        public static IObservable<UserLoginResponseContract> Authenticate(UserCredentialsContract userCredentials)
         {
+            if (userCredentials == null || string.IsNullOrWhiteSpace(userCredentials.UserName) || string.IsNullOrWhiteSpace(userCredentials.Password))
+            {
+                return Observable.Empty<UserLoginResponseContract>();
+            }
+
             var url = new Uri("https://8tracks.com/sessions.json", UriKind.Absolute);
             var postData = string.Format(
-                "login={0}&password={1}", Uri.EscapeDataString(userName), Uri.EscapeDataString(password));
-            return from response in Downloader.PostAndGetString(url, postData)
-                   select Json.Deserialize<UserLoginResponseContract>(response);
+                "login={0}&password={1}", Uri.EscapeDataString(userCredentials.UserName), Uri.EscapeDataString(userCredentials.Password));
+            var userLogin = from response in Downloader.PostAndGetString(url, postData)
+                   let user = Json.Deserialize<UserLoginResponseContract>(response)
+                   where !string.IsNullOrWhiteSpace(user.UserToken)
+                   select user;
 
+            return userLogin.Do(_ => SaveCredentials(userCredentials));
         }
-    }
 
-    public class UserLoginResponseContract
-    {
-        [DataMember(Name = "user_token")]
-        public string UserToken { get; set; }
+        private static void SaveCredentials(UserCredentialsContract userCredentials)
+        {
+            Storage.Save(CredentialsFilePath, Json.Serialize(userCredentials));
+        }
 
-        [DataMember(Name = "current_user")]
-        public UserContract CurentUser { get; set; }
-/*<response>
-  <user-token>1;123456789</user-token>
-  <current-user>
-    <slug>remitest</slug>
-    <location></location>
-    <popup-prefs>ask</popup-prefs>
-    <next-mix-prefs>ask</next-mix-prefs>
-    <avatar-urls>
-      <sq72>/images/avatars/sq72.jpg</sq72>
-      <sq100>/images/avatars/sq100.jpg</sq100>
-      <max200>/images/avatars/max200.jpg</max200>
-      <sq56>/images/avatars/sq56.jpg</sq56>
-    </avatar-urls>
-    <bio-html nil="true"></bio-html>
-    <subscribed nil="true"></subscribed>
-    <login>remitest</login>
-    <id>988</id>
-    <followed-by-current-user>false</followed-by-current-user>
-  </current-user>
-  <notices nil="true"></notices>
-  <errors nil="true"></errors>
-  <status>200 OK</status>
-  <logged-in>true</logged-in>
-</response>
-*/
+        public static IObservable<UserCredentialsContract> LoadCredentials()
+        {
+            return Observable.Start(
+                () => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null);
+        }
+
+        public static IObservable<MixesResponseContract> GetLikedMixes()
+        {
+            return
+                Downloader.GetJson<MixesResponseContract>(
+                    new Uri("http://8tracks.com/users/dp/mixes.xml?view=liked", UriKind.RelativeOrAbsolute));
+        }
+
+        public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)
+        {
+            var urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId) : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
+            return Downloader.PostStringAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+        }
+
+        public static IObservable<Unit> SetTrackFavourite(string trackId, bool isFavourite)
+        {
+            var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
+            return Downloader.PostStringAndGetJson<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+        }
     }
 }

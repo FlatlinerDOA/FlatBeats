@@ -60,6 +60,7 @@
     <Compile Include="MixContract.cs" />
     <Compile Include="MixesResponseContract.cs" />
     <Compile Include="PlayedTracksResponseContract.cs" />
+    <Compile Include="PlayHistoryContract.cs" />
     <Compile Include="PlayingMixContract.cs" />
     <Compile Include="PlayResponseContract.cs" />
     <Compile Include="PlayTokenResponseContract.cs" />
@@ -67,13 +68,19 @@
     <Compile Include="ReviewContract.cs" />
     <Compile Include="ReviewsResponseContract.cs" />
     <Compile Include="MixResponseContract.cs" />
+    <Compile Include="FavouritedTrackContract.cs" />
+    <Compile Include="FavouritedTrackResponseContract.cs" />
+    <Compile Include="LikedMixContract.cs" />
+    <Compile Include="LikedMixResponseContract.cs" />
     <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="UserLoginResponseContract.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="SetContract.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="TagsResponseContract.cs" />
     <Compile Include="TrackContract.cs" />
     <Compile Include="UserContract.cs" />
+    <Compile Include="UserCredentialsContract.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

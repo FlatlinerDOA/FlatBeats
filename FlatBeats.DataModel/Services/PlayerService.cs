@@ -1,7 +1,7 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Collections.Generic;
 
     using Microsoft.Phone.Reactive;
 
@@ -10,11 +10,14 @@
         private const string PlayTokenFilePath = "playtoken.json";
 
         private const string NowPlayingFilePath = "nowplaying.json";
-        
+
+        private const string PlayHistoryFilePath = "playhistory.json";
+
         public static IObservable<string> GetPlayToken()
         {
             return Downloader.GetJson<PlayTokenResponseContract>(
-                new Uri("http://8tracks.com/sets/new.json"), PlayTokenFilePath).Select(p => p.PlayToken);
+                new Uri("http://8tracks.com/sets/new.json"), 
+                PlayTokenFilePath).Select(p => p.PlayToken);
         }
 
         public static void Stop()
@@ -33,19 +36,29 @@
             return Json.Deserialize<PlayingMixContract>(data);
         }
 
+        public static PlayHistoryContract LoadPlayedMixes()
+        {
+            var data = Storage.Load(PlayHistoryFilePath);
+            var history = Json.Deserialize<PlayHistoryContract>(data);
+            return history ?? new PlayHistoryContract()
+                {
+                    PlayedMixes = new List<MixContract>()
+                };
+        }
+
         public static IObservable<PlayingMixContract> StartPlaying(this MixContract mix)
         {
             return from playToken in GetPlayToken()
-                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
+                   let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
-                    select new PlayingMixContract
-                    {
-                        PlayToken = playToken,
-                        MixId = mix.Id,
-                        MixName = mix.Name,
-                        Cover = mix.CoverUrls,
-                        Set = response.Set
-                    };
+                   select new PlayingMixContract
+                   {
+                       PlayToken = playToken,
+                       MixId = mix.Id,
+                       MixName = mix.Name,
+                       Cover = mix.CoverUrls,
+                       Set = response.Set
+                   };
         } 
 
         public static IObservable<PlayResponseContract> NextTrack(this PlayingMixContract playing)
@@ -79,51 +92,5 @@
                                select response;
             return playedTracks;
         }
-
-        public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)
-        {
-            var urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId) : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
-            return Downloader.PostStringAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
-        }
-
-        public static IObservable<Unit> SetTrackFavourite(string trackId, bool isFavourite)
-        {
-            var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
-            return Downloader.PostStringAndGetJson<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
-        }
-    }
-
-    [DataContract]
-    public class LikedMixResponseContract
-    {
-        [DataMember(Name = "mix")]
-        public LikedMixContract Mix { get; set; }
-    }
-
-    [DataContract]
-    public class LikedMixContract
-    {
-        [DataMember(Name = "id")]
-        public string Id { get; set; }
-
-        [DataMember(Name ="liked_by_current_user")]
-        public bool IsLiked { get; set; }
-    }
-
-    [DataContract]
-    public class FavouritedTrackResponseContract
-    {
-        [DataMember(Name = "track")]
-        public FavouritedTrackContract Track { get; set; }
-    }
-
-    [DataContract]
-    public class FavouritedTrackContract
-    {
-        [DataMember(Name = "id")]
-        public string Id { get; set; }
-
-        [DataMember(Name = "faved_by_current_user")]
-        public bool IsFavourited { get; set; }
     }
 }

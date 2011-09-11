@@ -5,6 +5,7 @@
     using System.Collections.ObjectModel;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
 
@@ -20,7 +21,6 @@
         }
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
-
 
         public IObservable<List<MixViewModel>> LoadAsync()
         {

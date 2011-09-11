@@ -117,14 +117,63 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Command_EmailMix" xml:space="preserve">
+    <value>email mix</value>
+  </data>
+  <data name="Command_LikeMix" xml:space="preserve">
+    <value>like</value>
+  </data>
+  <data name="Command_NextTrack" xml:space="preserve">
+    <value>next</value>
+  </data>
+  <data name="Command_PauseMix" xml:space="preserve">
+    <value>pause</value>
+  </data>
+  <data name="Command_PlayMix" xml:space="preserve">
+    <value>play</value>
+  </data>
+  <data name="Command_ShareMix" xml:space="preserve">
+    <value>share mix</value>
+  </data>
+  <data name="Command_UnlikeMix" xml:space="preserve">
+    <value>unlike</value>
+  </data>
+  <data name="EmailBody_ShareMix" xml:space="preserve">
+    <value>Mix: {0}
+Description:
+{1}
+Link:
+{2}</value>
+    <comment>{0} - Mix name
+{1} - Description
+{2} - Link address</comment>
+  </data>
+  <data name="EmailSubject_ShareMix" xml:space="preserve">
+    <value>Check out this 8tracks.com Mix!</value>
+  </data>
+  <data name="Message_NoLikedMixes" xml:space="preserve">
+    <value>sign in or sign up to keep track of the mixes you like.</value>
+  </data>
+  <data name="Title_HotMixes" xml:space="preserve">
+    <value>hot</value>
+  </data>
   <data name="Title_LatestMixes" xml:space="preserve">
-    <value>latest</value>
+    <value>latest mixes</value>
   </data>
   <data name="Title_LikedMixes" xml:space="preserve">
     <value>liked</value>
   </data>
+  <data name="Title_PopularMixes" xml:space="preserve">
+    <value>popular</value>
+  </data>
   <data name="Title_RecentlyPlayedMixes" xml:space="preserve">
     <value>recent</value>
+  </data>
+  <data name="Title_RecentMixes" xml:space="preserve">
+    <value>latest</value>
+  </data>
+  <data name="Title_ShareMix" xml:space="preserve">
+    <value>SHARE MIX</value>
   </data>
   <data name="Title_Tags" xml:space="preserve">
     <value>tags</value>

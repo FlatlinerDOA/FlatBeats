@@ -10,11 +10,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
-    using System.Collections.ObjectModel;
-    using System.Linq;
     using Microsoft.Phone.Reactive;
-
-    using FlatBeats.DataModel;
 
     /// <summary>
     /// </summary>
@@ -39,19 +35,19 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MixesPageViewModel()
         {
+            this.Recent = new MixListViewModel()
+            {
+                Title = StringResources.Title_RecentMixes,
+                Sort = "recent"
+            };
             this.Hot = new MixListViewModel()
                 {
-                    Title = "hot",
+                    Title = StringResources.Title_HotMixes,
                     Sort = "hot"
-                };
-            this.Recent = new MixListViewModel()
-                {
-                    Title = "recent",
-                    Sort = "recent"
                 };
             this.Popular = new MixListViewModel()
                 {
-                    Title = "popular",
+                    Title = StringResources.Title_PopularMixes,
                     Sort = "popular"
                 };
         }
