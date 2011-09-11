@@ -21,7 +21,7 @@
 
         public ObservableCollection<RecentMixViewModel> Mixes { get; private set; }
 
-        public void Load()
+        public IObservable<Unit> LoadAsync()
         {
             var nowPlaying = from playingMix in Observable.Start(() => PlayerService.LoadNowPlaying())
                              where playingMix != null
@@ -39,7 +39,7 @@
                         where response != null && response.Mixes != null
                         from mix in response.Mixes.ToObservable()
                         select new RecentMixViewModel(mix);
-            nowPlaying.Concat(recentMixes).ObserveOnDispatcher().Subscribe(
+            return nowPlaying.Concat(recentMixes).ObserveOnDispatcher().Do(
                 this.Mixes.Add, 
                 this.ShowError, 
                 () =>
@@ -48,7 +48,7 @@
                     {
                         this.Message = "check back here after listening to some mixes.";
                     }
-                });
+                }).SelectFinally(() => new Unit());
         }
     }
 }

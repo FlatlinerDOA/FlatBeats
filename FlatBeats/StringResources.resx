@@ -152,7 +152,7 @@ Link:
     <value>Check out this 8tracks.com Mix!</value>
   </data>
   <data name="Message_NoLikedMixes" xml:space="preserve">
-    <value>sign in or sign up to keep track of the mixes you like.</value>
+    <value>Sign in or sign up to keep track of the mixes you like.</value>
   </data>
   <data name="Title_HotMixes" xml:space="preserve">
     <value>hot</value>
@@ -177,5 +177,8 @@ Link:
   </data>
   <data name="Title_Tags" xml:space="preserve">
     <value>tags</value>
+  </data>
+  <data name="Command_PinToStart" xml:space="preserve">
+    <value>pin to start</value>
   </data>
 </root>

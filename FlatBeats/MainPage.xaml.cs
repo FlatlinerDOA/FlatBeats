@@ -55,7 +55,7 @@
                 // Use the navigation context to find the song by name.
                 string mixId = NavigationContext.QueryString[PlayMixKey];
 
-                this.NavigationService.Navigate(new Uri("/PlayPage.xaml?MixId=" + mixId + "&play=true", UriKind.Relative));
+                this.NavigationService.Navigate(new Uri("/PlayPage.xaml?mix=" + mixId + "&play=true", UriKind.Relative));
 
                 // Set a flag to indicate that we were started from a 
                 // history item and that we should immediately start 
@@ -79,7 +79,7 @@
 
         private void pano_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (pano.SelectedIndex != 0)
+            if (pano.SelectedIndex != 1)
             {
                 HubTileService.FreezeGroup("History");
             }
@@ -88,7 +88,7 @@
                 HubTileService.UnfreezeGroup("History");
             }
 
-            if (pano.SelectedIndex != 1)
+            if (pano.SelectedIndex != 2)
             {
                 HubTileService.FreezeGroup("Latest");
             }
@@ -117,21 +117,7 @@
                         });
             
             search.ActionPopUpButtons.Clear();
-            ////search.ActionPopUpButtons.Add(
-            ////    new Button
-            ////        {
-            ////            Content =
-            ////                new Image
-            ////                    {
-            ////                        Source = new BitmapImage(
-            ////                            new Uri(
-            ////                                "/icons/appbar.feature.search.rest.png", 
-            ////                                UriKind.Relative))
-            ////                    }
-            ////        });
-            ////search.Title = "search";
             search.Show();
-            
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)

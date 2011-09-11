@@ -107,7 +107,7 @@
         private static void CreateFolderForFile(IsolatedStorageFile storage, string filePath)
         {
             var folder = Path.GetDirectoryName(filePath);
-            if (folder == null)
+            if (string.IsNullOrEmpty(folder))
             {
                 return;
             }

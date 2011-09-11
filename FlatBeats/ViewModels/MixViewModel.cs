@@ -1,8 +1,12 @@
-﻿//--------------------------------------------------------------------------------------------------
-// <copyright file="MixViewModel.cs" company="DNS Technology Pty Ltd.">
-//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MixViewModel.cs" company="">
+//   
 // </copyright>
-//--------------------------------------------------------------------------------------------------
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace FlatBeats.ViewModels
 {
     using System;
@@ -19,6 +23,18 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private DateTime created;
+
+        /// <summary>
+        /// </summary>
+        private string createdBy;
+
+        /// <summary>
+        /// </summary>
+        private Uri createdByAvatarUrl;
+
+        /// <summary>
+        /// </summary>
         private string description;
 
         /// <summary>
@@ -27,11 +43,27 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private bool liked;
+
+        /// <summary>
+        /// </summary>
         private string mixName;
 
         /// <summary>
         /// </summary>
+        private List<TagViewModel> tagList;
+
+        /// <summary>
+        /// </summary>
+        private string tags;
+
+        /// <summary>
+        /// </summary>
         private Uri thumbnailUrl;
+
+        /// <summary>
+        /// </summary>
+        private string tileTitle;
 
         #endregion
 
@@ -51,7 +83,9 @@ namespace FlatBeats.ViewModels
         public MixViewModel(MixContract mix)
         {
             this.MixName = mix.Name;
-            var lines = mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t));
+            var lines =
+                mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
             this.ThumbnailUrl = mix.CoverUrls.ThumbnailUrl;
             this.ImageUrl = mix.CoverUrls.OriginalUrl;
@@ -63,43 +97,24 @@ namespace FlatBeats.ViewModels
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
             this.Created = DateTime.Parse(mix.Created);
             this.Tags = mix.Tags;
-            this.TagList = this.Tags.Split(new[] {',' }, StringSplitOptions.RemoveEmptyEntries).Where(t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
+            this.TagList =
+                this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
+                    t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
         }
 
         #endregion
 
         #region Public Properties
 
-        public string MixId { get; set; }
-
-        private string createdBy;
-
-        public string CreatedBy
-        {
-            get
-            {
-                return this.createdBy;
-            }
-            set
-            {
-                if (this.createdBy == value)
-                {
-                    return;
-                }
-
-                this.createdBy = value;
-                this.OnPropertyChanged("CreatedBy");
-            }
-        }
-
-        private DateTime created;
-
+        /// <summary>
+        /// </summary>
         public DateTime Created
         {
             get
             {
                 return this.created;
             }
+
             set
             {
                 if (this.created == value)
@@ -112,14 +127,36 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private Uri createdByAvatarUrl;
+        /// <summary>
+        /// </summary>
+        public string CreatedBy
+        {
+            get
+            {
+                return this.createdBy;
+            }
 
+            set
+            {
+                if (this.createdBy == value)
+                {
+                    return;
+                }
+
+                this.createdBy = value;
+                this.OnPropertyChanged("CreatedBy");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         public Uri CreatedByAvatarUrl
         {
             get
             {
                 return this.createdByAvatarUrl;
             }
+
             set
             {
                 if (this.createdByAvatarUrl == value)
@@ -176,6 +213,35 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        public bool Liked
+        {
+            get
+            {
+                return this.liked;
+            }
+
+            set
+            {
+                if (this.liked == value)
+                {
+                    return;
+                }
+
+                this.liked = value;
+                this.OnPropertyChanged("Liked");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public Uri LinkUrl { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public string MixId { get; set; }
+
+        /// <summary>
+        /// </summary>
         public string MixName
         {
             get
@@ -195,29 +261,51 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private bool liked;
+        /// <summary>
+        /// </summary>
+        public Uri NavigationUrl { get; set; }
 
-        public bool Liked
+        /// <summary>
+        /// </summary>
+        public List<TagViewModel> TagList
         {
             get
             {
-                return this.liked;
+                return this.tagList;
             }
+
             set
             {
-                if (this.liked == value)
+                if (this.tagList == value)
                 {
                     return;
                 }
 
-                this.liked = value;
-                this.OnPropertyChanged("Liked");
+                this.tagList = value;
+                this.OnPropertyChanged("TagList");
             }
         }
 
         /// <summary>
         /// </summary>
-        public Uri NavigationUrl { get; set; }
+        public string Tags
+        {
+            get
+            {
+                return this.tags;
+            }
+
+            set
+            {
+                if (this.tags == value)
+                {
+                    return;
+                }
+
+                this.tags = value;
+                this.OnPropertyChanged("Tags");
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -240,15 +328,15 @@ namespace FlatBeats.ViewModels
             }
         }
 
-
-        private string tileTitle;
-
+        /// <summary>
+        /// </summary>
         public string TileTitle
         {
             get
             {
                 return this.tileTitle;
             }
+
             set
             {
                 if (this.tileTitle == value)
@@ -261,47 +349,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        public Uri LinkUrl { get; set; }
-
-        private string tags;
-
-        public string Tags
-        {
-            get
-            {
-                return this.tags;
-            }
-            set
-            {
-                if (this.tags == value)
-                {
-                    return;
-                }
-
-                this.tags = value;
-                this.OnPropertyChanged("Tags");
-            }
-        }
-
-        private List<TagViewModel> tagList;
-
-        public List<TagViewModel> TagList
-        {
-            get
-            {
-                return this.tagList;
-            }
-            set
-            {
-                if (this.tagList == value)
-                {
-                    return;
-                }
-
-                this.tagList = value;
-                this.OnPropertyChanged("TagList");
-            }
-        }
         #endregion
     }
 }

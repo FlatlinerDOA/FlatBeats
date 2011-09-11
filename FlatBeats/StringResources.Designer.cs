@@ -97,6 +97,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to pin to start.
+        /// </summary>
+        internal static string Command_PinToStart {
+            get {
+                return ResourceManager.GetString("Command_PinToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
         internal static string Command_PlayMix {
@@ -146,7 +155,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sign in or sign up to keep track of the mixes you like..
+        ///   Looks up a localized string similar to Sign in or sign up to keep track of the mixes you like..
         /// </summary>
         internal static string Message_NoLikedMixes {
             get {

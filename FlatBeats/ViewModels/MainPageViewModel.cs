@@ -165,10 +165,8 @@ namespace FlatBeats.ViewModels
 
             this.IsDataLoaded = true;
             this.ShowProgress();
-            var load = from recent in Observable.Start(this.Recent.Load)
-                       from likedDelay in Observable.Timer(TimeSpan.FromSeconds(1))
-                       from liked in Observable.Start(this.Liked.Load)
-                       from latestDelay in Observable.Timer(TimeSpan.FromSeconds(1))
+            var load = from recent in this.Recent.LoadAsync()
+                       from liked in this.Liked.LoadAsync()
                        from latest in this.Latest.LoadAsync()
                        from tags in Observable.Start(() => this.Tags.Load(latest))
                        select new Unit();

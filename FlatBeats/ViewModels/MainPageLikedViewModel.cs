@@ -22,13 +22,13 @@ namespace FlatBeats.ViewModels
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
-        public void Load()
+        public IObservable<Unit> LoadAsync()
         {
             var liked = from userCredentials in UserService.LoadCredentials()
                         from mixes in UserService.GetLikedMixes()
                         select mixes;
 
-            liked.ObserveOnDispatcher().Subscribe(
+            return liked.ObserveOnDispatcher().Do(
                 _ => { }, 
                 () =>
                 {
@@ -36,7 +36,7 @@ namespace FlatBeats.ViewModels
                     {
                         this.Message = StringResources.Message_NoLikedMixes;
                     }
-                });
+                }).SelectFinally(() => new Unit());
         }
     }
 }

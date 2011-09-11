@@ -126,6 +126,7 @@
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
     <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\ObservableExtensions.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />

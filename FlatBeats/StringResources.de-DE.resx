@@ -117,14 +117,63 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Command_EmailMix" xml:space="preserve">
+    <value>e-mail</value>
+  </data>
+  <data name="Command_LikeMix" xml:space="preserve">
+    <value>mochte</value>
+  </data>
+  <data name="Command_NextTrack" xml:space="preserve">
+    <value>nächste</value>
+  </data>
+  <data name="Command_PauseMix" xml:space="preserve">
+    <value>anhalten</value>
+  </data>
+  <data name="Command_PlayMix" xml:space="preserve">
+    <value>spielen</value>
+  </data>
+  <data name="Command_ShareMix" xml:space="preserve">
+    <value>teilen</value>
+  </data>
+  <data name="Command_UnlikeMix" xml:space="preserve">
+    <value>nicht mögen</value>
+  </data>
+  <data name="EmailBody_ShareMix" xml:space="preserve">
+    <value>Mix: {0}
+Beschreibung:
+{1}
+
+{2}</value>
+    <comment>{0} - Mix name
+{1} - Description
+{2} - Link address</comment>
+  </data>
+  <data name="EmailSubject_ShareMix" xml:space="preserve">
+    <value>Hören Sie diese Musik auf 8tracks.com!</value>
+  </data>
+  <data name="Message_NoLikedMixes" xml:space="preserve">
+    <value>Einloggen oder anmelden um zu verfolgen die Mixe, die Sie mögen.</value>
+  </data>
+  <data name="Title_HotMixes" xml:space="preserve">
+    <value>hot</value>
+  </data>
   <data name="Title_LatestMixes" xml:space="preserve">
     <value>neueste</value>
   </data>
   <data name="Title_LikedMixes" xml:space="preserve">
     <value>mochte</value>
   </data>
+  <data name="Title_PopularMixes" xml:space="preserve">
+    <value>beliebte</value>
+  </data>
   <data name="Title_RecentlyPlayedMixes" xml:space="preserve">
     <value>zuletzt gespielt</value>
+  </data>
+  <data name="Title_RecentMixes" xml:space="preserve">
+    <value>jüngste</value>
+  </data>
+  <data name="Title_ShareMix" xml:space="preserve">
+    <value>aktie-mix</value>
   </data>
   <data name="Title_Tags" xml:space="preserve">
     <value>kategorien</value>

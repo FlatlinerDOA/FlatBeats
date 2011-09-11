@@ -19,6 +19,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
+    using Microsoft.Phone.Shell;
     using Microsoft.Phone.Tasks;
 
     /// <summary>
@@ -71,11 +72,16 @@ namespace FlatBeats.ViewModels
             this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
             this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = StringResources.Command_NextTrack, HideWhenInactive = true };
             this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
-
             this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
 
+            this.ApplicationBarMenuCommands.Add(
+                new CommandLink()
+                    {
+                        Command = new DelegateCommand(this.PinToStart), 
+                        Text = StringResources.Command_PinToStart
+                    });
             this.ApplicationBarMenuCommands.Add(new CommandLink()
                 {
                     Text = StringResources.Command_ShareMix,
@@ -86,6 +92,19 @@ namespace FlatBeats.ViewModels
                 {
                     Text = StringResources.Command_EmailMix,
                     Command = new DelegateCommand(this.Email)
+                });
+        }
+
+        public CommandLink PinToStartCommand { get; private set; }
+
+        private void PinToStart()
+        {
+            ShellTile.Create(new Uri("/PlayPage.xaml?mix=" + this.Mix.MixId, UriKind.Relative), new StandardTileData()
+                {
+                    Title = this.Mix.MixName,
+                    BackContent = this.Mix.Description,
+                    BackgroundImage = this.Mix.ThumbnailUrl,
+                    BackTitle = this.Mix.MixName
                 });
         }
 
