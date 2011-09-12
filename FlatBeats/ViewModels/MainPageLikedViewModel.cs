@@ -36,7 +36,7 @@ namespace FlatBeats.ViewModels
                     {
                         this.Message = StringResources.Message_NoLikedMixes;
                     }
-                }).SelectFinally(() => new Unit());
+                }).FinallySelect(() => new Unit());
         }
     }
 }

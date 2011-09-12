@@ -71,6 +71,7 @@
                            d:LayoutOverrides="Width, Height"
                            FontFamily="Segoe WP Light" />
                 <Button Background="Transparent"
+                        Foreground="White"
                         HorizontalAlignment="Right"
                         Margin="4,4,4,18"
                         d:LayoutOverrides="Height"
@@ -91,6 +92,7 @@
                            d:LayoutOverrides="Width, Height"
                            FontFamily="Segoe WP Light" />
                 <Button Background="Transparent"
+                        Foreground="White"
                         HorizontalAlignment="Right"
                         Margin="4,4,4,18"
                         d:LayoutOverrides="Height"
@@ -107,7 +109,14 @@
         <DataTemplate x:Key="TagsHeaderTemplate">
         	<Grid Width="409">
         		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" FontFamily="Segoe WP Light"/>
-        		<Button Background="Transparent" HorizontalAlignment="Right" Margin="4,4,4,18" d:LayoutOverrides="Height" VerticalAlignment="Bottom" Click="SearchButton_Click" Template="{StaticResource CircleButtonControlTemplate}">
+                <Button Background="Transparent"
+                        HorizontalAlignment="Right"
+                        Margin="4,4,4,18"
+                        d:LayoutOverrides="Height"
+                        VerticalAlignment="Bottom"
+                        Click="SearchButton_Click"
+                        Foreground="White"
+                        Template="{StaticResource CircleButtonControlTemplate}">
         			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" />
         		</Button>
         	</Grid>
@@ -116,7 +125,7 @@
 	<phone:PhoneApplicationPage.ApplicationBar>
 		<shell:ApplicationBar IsVisible="True" Mode="Minimized" Opacity="0.5" IsMenuEnabled="True">
 			<shell:ApplicationBar.MenuItems>
-				<shell:ApplicationBarMenuItem Text="settings"/>
+				<shell:ApplicationBarMenuItem Text="profile" Click="SettingsMenuItem_Click"/>
 			</shell:ApplicationBar.MenuItems>
 		</shell:ApplicationBar>
 	</phone:PhoneApplicationPage.ApplicationBar>
@@ -237,10 +246,7 @@
                     </local:NavigationList>
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Latest}" 
-                                   Header="{Binding Title}"
-                                   Orientation="Horizontal" 
-                                   Width="1120">
+            <controls:PanoramaItem DataContext="{Binding Latest}" Header="{Binding Title}" Orientation="Horizontal" Width="1120">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -254,7 +260,7 @@
                                       VerticalAlignment="Top" />
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Tags}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
+            <controls:PanoramaItem DataContext="{Binding TagsPanel}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -262,8 +268,8 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap" />
                     <local:NavigationList Margin="0,0,-12,0"
-                                      ItemsSource="{Binding Tags}"
-                                      Navigation="NavigationList_OnNavigation">
+                                          ItemsSource="{Binding Tags}"
+                                          Navigation="NavigationList_OnNavigation">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="0,0,0,17"

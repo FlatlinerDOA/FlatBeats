@@ -39,6 +39,8 @@
 
         private void MainPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            this.Loaded -= this.MainPage_Loaded;
+            this.Unloaded -= this.MainPage_Unloaded;
             App.ViewModel.Unload();
         }
 
@@ -122,7 +124,11 @@
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            
+        }
+
+        private void SettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            this.NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }
     }
 }

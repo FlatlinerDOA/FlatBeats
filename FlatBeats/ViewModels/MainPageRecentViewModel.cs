@@ -36,19 +36,22 @@
                                          NavigationUrl = new Uri("/PlayPage.xaml?mix=" + playingMix.MixId, UriKind.Relative)
                                      };
             var recentMixes = from response in Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json")))
-                        where response != null && response.Mixes != null
-                        from mix in response.Mixes.ToObservable()
-                        select new RecentMixViewModel(mix);
-            return nowPlaying.Concat(recentMixes).ObserveOnDispatcher().Do(
-                this.Mixes.Add, 
-                this.ShowError, 
-                () =>
-                {
-                    if (this.Mixes.Count == 0)
+                              where response != null && response.Mixes != null
+                              from mix in response.Mixes.ToObservable()
+                              select new RecentMixViewModel(mix);
+            return nowPlaying.Concat(recentMixes)
+                .ObserveOnDispatcher()
+                .FirstDo(_ => this.Mixes.Clear())
+                .Do(
+                    this.Mixes.Add, 
+                    this.ShowError, 
+                    () =>
                     {
-                        this.Message = "check back here after listening to some mixes.";
-                    }
-                }).SelectFinally(() => new Unit());
+                        if (this.Mixes.Count == 0)
+                        {
+                            this.Message = "check back here after listening to some mixes.";
+                        }
+                    }).FinallySelect(() => new Unit());
         }
     }
 }

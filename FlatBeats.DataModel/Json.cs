@@ -36,7 +36,7 @@ namespace FlatBeats.DataModel
                 return obj;
             }
 
-            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                 obj = (T)serializer.ReadObject(ms);

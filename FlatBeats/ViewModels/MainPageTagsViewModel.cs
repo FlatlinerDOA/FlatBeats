@@ -26,8 +26,7 @@
         /// </summary>
         public void Load(IEnumerable<MixViewModel> mixes)
         {
-            var load = from splitTags in Observable.Start(() => 
-                            TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags))
+            var load = from splitTags in Observable.Start(() => TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags))
                             .OrderBy(t => t.TagName))
                             .ObserveOnDispatcher()
                             .Do(_ => this.Tags.Clear())
@@ -37,11 +36,8 @@
             load.Concat(Observable.Return(new TagViewModel("more...")))
                 .ObserveOnDispatcher()
                 .Subscribe(
-                t => this.Tags.Add(t), 
-                this.ShowError);
+                    t => this.Tags.Add(t), 
+                    this.ShowError);
         }
-
-
-
     }
 }

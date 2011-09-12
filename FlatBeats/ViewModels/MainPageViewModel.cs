@@ -11,9 +11,8 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.Linq;
 
-    using FlatBeats.DataModel.Services;
+    using FlatBeats.Controls;
 
     using Microsoft.Phone.Reactive;
 
@@ -30,6 +29,10 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         private Uri backgroundImage;
+
+        /// <summary>
+        /// </summary>
+        private int currentSectionIndex;
 
         /// <summary>
         /// </summary>
@@ -51,10 +54,20 @@ namespace FlatBeats.ViewModels
             this.Liked = new MainPageLikedViewModel();
             this.Recent = new MainPageRecentViewModel();
             this.Latest = new MainPageLatestViewModel();
-            this.Tags = new MainPageTagsViewModel();
+            this.TagsPanel = new MainPageTagsViewModel();
             this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
             this.Title = "flat beats";
+            ////this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
+            ////this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>
+            ////    {
+            ////        new CommandLink()
+            ////            {
+            ////                Command = new DelegateCommand(this.ShowSettings), 
+            ////                Text = "profile"
+            ////            }
+            ////    };
         }
+
 
         #endregion
 
@@ -83,36 +96,13 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public bool IsDataLoaded { get; private set; }
-
-        /// <summary>
-        /// Gets the liked mixes panel
-        /// </summary>
-        public MainPageLikedViewModel Liked { get; private set; }
-
-        /// <summary>
-        /// Gets the recent mixes panel
-        /// </summary>
-        public MainPageRecentViewModel Recent { get; private set; }
-
-        /// <summary>
-        /// Gets the latest mixes panel.
-        /// </summary>
-        public MainPageLatestViewModel Latest { get; private set; }
-
-        /// <summary>
-        /// Gets the tags panel
-        /// </summary>
-        public MainPageTagsViewModel Tags { get; private set; }
-
-        private int currentSectionIndex;
-
         public int CurrentSectionIndex
         {
             get
             {
                 return this.currentSectionIndex;
             }
+
             set
             {
                 if (this.currentSectionIndex == value)
@@ -124,6 +114,31 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("CurrentSectionIndex");
             }
         }
+
+        /// <summary>
+        /// </summary>
+        public bool IsDataLoaded { get; private set; }
+
+        /// <summary>
+        ///   Gets the latest mixes panel.
+        /// </summary>
+        public MainPageLatestViewModel Latest { get; private set; }
+
+        /// <summary>
+        ///   Gets the liked mixes panel
+        /// </summary>
+        public MainPageLikedViewModel Liked { get; private set; }
+
+        /// <summary>
+        ///   Gets the recent mixes panel
+        /// </summary>
+        public MainPageRecentViewModel Recent { get; private set; }
+
+        /// <summary>
+        ///   Gets the tags panel
+        /// </summary>
+        public MainPageTagsViewModel TagsPanel { get; private set; }
+
         #endregion
 
         #region Public Methods
@@ -133,10 +148,6 @@ namespace FlatBeats.ViewModels
         public void Load()
         {
             this.LoadData();
-
-            ////this.subscription = Observable.Interval(TimeSpan.FromSeconds(30))
-            ////    .ObserveOnDispatcher()
-            ////    .Subscribe(_ => this.PickNewBackgroundImage());
         }
 
         /// <summary>
@@ -160,6 +171,7 @@ namespace FlatBeats.ViewModels
         {
             if (this.IsDataLoaded)
             {
+                this.Recent.LoadAsync().Subscribe();
                 return;
             }
 
@@ -168,11 +180,12 @@ namespace FlatBeats.ViewModels
             var load = from recent in this.Recent.LoadAsync()
                        from liked in this.Liked.LoadAsync()
                        from latest in this.Latest.LoadAsync()
-                       from tags in Observable.Start(() => this.Tags.Load(latest))
+                       from tags in Observable.Start(() => this.TagsPanel.Load(latest))
                        select new Unit();
             load.Subscribe();
         }
 
+        #endregion
 
         /////// <summary>
         /////// </summary>
@@ -187,6 +200,8 @@ namespace FlatBeats.ViewModels
         ////    this.BackgroundImage = next.ImageUrl;
         ////}
 
-        #endregion
+        public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
+
+        public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
     }
 }

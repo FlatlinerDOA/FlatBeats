@@ -110,7 +110,9 @@ namespace FlatBeats.ViewModels
         {
             var allTags = (from tagList in tags
                            from tag in tagList.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                           select tag.Trim().ToLower()).Distinct();
+                           let cleanedTag = tag.Trim().ToLower()
+                           where !string.IsNullOrWhiteSpace(cleanedTag)
+                           select cleanedTag).Distinct();
             return allTags.Select(tag => new TagViewModel(tag));
         }
 

@@ -15,24 +15,42 @@ namespace FlatBeats.ViewModels
 
     public static class ObservableExtensions
     {
-        public static IObservable<TResult> SelectFinally<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)
+        public static IObservable<T> FirstDo<T>(this IObservable<T> sequence, Action<T> firstAction)
+        {
+            bool hasBeenRun = false;
+            return Observable.CreateWithDisposable<T>(
+                observer => sequence.Subscribe(
+                    _ =>
+                    {
+                        if (!hasBeenRun)
+                        {
+                            hasBeenRun = true;
+                            firstAction(_);
+                        }
+
+                        observer.OnNext(_);
+                    }, 
+                    observer.OnError, 
+                    observer.OnCompleted));
+        }
+
+        public static IObservable<TResult> FinallySelect<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)
         {
             return Observable.CreateWithDisposable<TResult>(
-                observer =>
+                observer => sequence.Subscribe(
+                    _ =>
                     {
-                        return sequence.Subscribe(
-                            _ => { },
-                            ex => 
-                            { 
-                                observer.OnNext(finalValue());
-                                observer.OnCompleted();
-                            },
-                            () =>
-                                { 
-                                    observer.OnNext(finalValue());
-                                    observer.OnCompleted();
-                                });
-                    });
+                    },
+                    ex => 
+                    { 
+                        observer.OnNext(finalValue());
+                        observer.OnCompleted();
+                    },
+                    () =>
+                    { 
+                        observer.OnNext(finalValue());
+                        observer.OnCompleted();
+                    }));
         }
     }
 }
