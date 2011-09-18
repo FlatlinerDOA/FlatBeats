@@ -25,6 +25,11 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        public override void ShowError(Exception error)
+        {
+            this.HideProgress();
+            base.ShowError(error);
+        }
 
         protected void ShowProgress()
         {

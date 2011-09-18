@@ -1,0 +1,13 @@
+﻿ {"current_user":
+ {"popup_prefs":"ask","next_mix_prefs":"ask","bio_html":null,"location":"","subscribed":null,"follows_count":0,"id":532219,"login":"FlatlinerDOA","slug":"flatlinerdoa","path":"/flatlinerdoa","restful_url":"http://8tracks.com/users/532219","avatar_urls":
+              {
+			  "sq56":"http://cf3.8tracks.us/avatars/000/532/219/25569.sq56.jpg","sq72":"http://cf3.8tracks.us/avatars/000/532/219/25569.sq72.jpg","sq100":"http://cf3.8tracks.us/avatars/000/532/219/25569.sq100.jpg","max200":"http://cf3.8tracks.us/avatars/000/532/219/25569.max200.jpg"
+              }
+         },
+         "auth_token":"532219;f1d1ec642b3d37808a19c3c32038d104458578e6",
+         "user_token":"532219;f1d1ec642b3d37808a19c3c32038d104458578e6",
+         "redirect_to":"/",
+         "status":"200 OK",
+         "errors":null,
+         "notices":"You are now logged in as FlatlinerDOA",
+         "logged_in":true}

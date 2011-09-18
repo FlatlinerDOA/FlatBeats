@@ -5,6 +5,8 @@
     using System.IO.IsolatedStorage;
     using System.Text;
 
+    using Microsoft.Phone.Reactive;
+
     public static class Storage
     {
         /// <summary>
@@ -51,6 +53,15 @@
                     }
                 }
             }
+        }
+
+        public static IObservable<string> LoadStringAsync(string file)
+        {
+            // TODO: Figure out how to do this using asynchronous calls.
+            ////return from storage in Observable.Start(() => IsolatedStorageFile.GetUserStoreForApplication())
+            ////       from stream in Observable.Start(() => new IsolatedStorageFileStream(file, FileMode.Open, storage))
+            ////       from data in Observable.FromAsyncPattern(stream.BeginRead, stream.EndRead)
+            return Observable.Start(() => Load(file));
         }
 
         /// <summary>

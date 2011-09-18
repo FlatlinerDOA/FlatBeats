@@ -1,6 +1,5 @@
-﻿namespace FlatBeats.DataModel
+﻿namespace FlatBeats.DataModel.Profile
 {
-    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 

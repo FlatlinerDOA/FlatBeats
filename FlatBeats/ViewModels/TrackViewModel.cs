@@ -105,7 +105,7 @@ namespace FlatBeats.ViewModels
 
                 this.isFavourite = value;
                 this.OnPropertyChanged("IsFavourite");
-                UserService.SetTrackFavourite(this.Id, this.isFavourite).ObserveOnDispatcher().Subscribe(
+                ProfileService.SetTrackFavourite(this.Id, this.isFavourite).ObserveOnDispatcher().Subscribe(
                     _ => { }, 
                     ex =>
                         {

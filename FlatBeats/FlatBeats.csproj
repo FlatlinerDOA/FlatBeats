@@ -85,6 +85,7 @@
     <Compile Include="Controls\IApplicationBarViewModel.cs" />
     <Compile Include="Controls\ICommandLink.cs" />
     <Compile Include="Controls\SearchPrompt.cs" />
+    <Compile Include="Controls\UrlToBitmapConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -187,6 +188,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="SampleData\login.json" />
     <None Include="SampleData\mixes.json" />
     <None Include="SampleData\recentmixes.json" />
     <None Include="SampleData\reviews.json" />
@@ -205,6 +207,8 @@
     <Content Include="icons\appbar.feature.settings.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="icons\appbar.game.addfriend.rest.png" />
+    <Resource Include="icons\appbar.game.removefriend.rest.png" />
     <Content Include="icons\appbar.heart2.empty.rest.png" />
     <Content Include="icons\appbar.heart2.rest.png" />
     <Content Include="icons\appbar.favs.removefrom.rest.png" />

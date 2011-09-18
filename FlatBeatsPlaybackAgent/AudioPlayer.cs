@@ -147,8 +147,7 @@ namespace FlatBeatsPlaybackAgent
         /// User actions do not automatically make any changes in system state; the agent is responsible
         ///   for carrying out the user actions if they are supported
         /// </remarks>
-        protected override void OnUserAction(
-            BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
+        protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
             switch (action)
             {

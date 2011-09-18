@@ -55,7 +55,6 @@
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
-
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
             <toolkit:NavigationInTransition.Backward>
@@ -77,7 +76,7 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <controls:Pivot x:Name="pivot" Title="{Binding Title}" SelectionChanged="pivot_SelectionChanged">
+        <controls:Pivot x:Name="pivot" Title="{Binding Title}" SelectionChanged="PivotSelectionChanged">
             <controls:PivotItem DataContext="{Binding Recent}" Header="{Binding Title}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
@@ -89,7 +88,7 @@
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Mixes}"
                                           ItemTemplate="{StaticResource MixTemplate}"
-                                          Navigation="NavigationList_OnNavigation" />
+                                          Navigation="NavigationList_OnNavigation"  />
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Hot}" Header="{Binding Title}">

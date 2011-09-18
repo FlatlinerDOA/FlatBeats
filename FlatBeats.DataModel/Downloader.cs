@@ -1,29 +1,92 @@
-﻿namespace FlatBeats.DataModel
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Downloader.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace FlatBeats.DataModel
 {
     using System;
     using System.Diagnostics;
     using System.Net;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
-    /// 
     /// </summary>
     public static class Downloader
     {
+        #region Constants and Fields
+
         /// <summary>
-        /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static IObservable<T> GetJson<T>(Uri url, string cacheFile = null) where T : class 
+        private static string UserToken;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// </summary>
+        public static bool IsAuthenticated
+        {
+            get
+            {
+                return UserToken != null;
+            }
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="fileName">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static IObservable<Unit> GetAndSaveFile(Uri url, string fileName)
+        {
+            var webRequest = from client in Observable.Start<WebClient>(CreateClient)
+                             from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
+                                 observer =>
+                                     {
+                                         var subscription =
+                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
+                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
+                                                 (observer);
+                                         Debug.WriteLine("GET " + url.AbsoluteUri);
+                                         client.OpenReadAsync(url);
+                                         return subscription;
+                                     }).TrySelect(evt => evt.Result).Do(data => Storage.Save(fileName, data))
+                             select new Unit();
+
+            return webRequest;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="url">
+        /// </param>
+        /// <param name="cacheFile">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static IObservable<T> GetJson<T>(Uri url, string cacheFile = null) where T : class
         {
             IObservable<T> sequence = Observable.Empty<T>();
             if (cacheFile != null && Storage.Exists(cacheFile))
             {
-                sequence = Observable.Start(() => Storage.Load(cacheFile))
-                    .Select(Json.Deserialize<T>)
-                    .Where(m => m != null);
+                sequence =
+                    Observable.Start(() => Storage.Load(cacheFile)).Select(Json.Deserialize<T>).Where(m => m != null);
             }
 
             var webRequest = from client in Observable.Start<WebClient>(CreateClient)
@@ -42,18 +105,29 @@
             sequence = sequence.Concat(
                 webRequest.Do(
                     cache =>
-                    {
-                        if (cacheFile != null)
                         {
-                            Storage.Save(cacheFile, Json.Serialize(cache));
-                        }
-                    })).Take(1);
+                            if (cacheFile != null)
+                            {
+                                Storage.Save(cacheFile, Json.Serialize(cache));
+                            }
+                        })).Take(1);
             return sequence;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="postData">
+        /// </param>
+        /// <typeparam name="TRequest">
+        /// </typeparam>
+        /// <typeparam name="TResponse">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public static IObservable<TResponse> PostAndGetJson<TRequest, TResponse>(Uri url, TRequest postData)
-            where TRequest : class
-            where TResponse : class
+            where TRequest : class where TResponse : class
         {
             var sequence = from postString in Observable.Start(() => Json.Serialize(postData))
                            from completed in PostAndGetString(url, postString)
@@ -61,39 +135,67 @@
             return sequence;
         }
 
-
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="postData">
+        /// </param>
+        /// <returns>
+        /// </returns>
         public static IObservable<string> PostAndGetString(Uri url, string postData)
         {
             var sequence = from client in Observable.Start<WebClient>(CreateClient)
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
-                               {
-                                   var subscription =
-                                       Observable.FromEvent<UploadStringCompletedEventArgs>(client, "UploadStringCompleted")
-                                           .Take(1).Select(e => e.EventArgs).Subscribe(observer);
-                                   client.UploadStringAsync(url, postData, "POST");
-                                   return subscription;
-                               }).TrySelect(evt => evt.Result)
+                                   {
+                                       var subscription =
+                                           Observable.FromEvent<UploadStringCompletedEventArgs>(
+                                               client, "UploadStringCompleted").Take(1).Select(e => e.EventArgs).
+                                               Subscribe(observer);
+                                       Debug.WriteLine("POST " + url.AbsoluteUri + "\r\n" + postData);
+                                       client.UploadStringAsync(url, "POST", postData);
+                                       return subscription;
+                                   }).TrySelect(evt => evt.Result)
                            select completed;
             return sequence;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="postData">
+        /// </param>
+        /// <typeparam name="TResponse">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<TResponse> PostStringAndGetJson<TResponse>(Uri url, string postData)
+            where TResponse : class
+        {
+            var sequence = from completed in PostAndGetString(url, postData)
+                           select Json.Deserialize<TResponse>(completed);
+            return sequence;
+        }
 
-        private static string UserToken;
-
+        /// <summary>
+        /// </summary>
+        /// <param name="userToken">
+        /// </param>
         public static void SetUserToken(string userToken)
         {
             UserToken = userToken;
         }
 
-        public static bool IsAuthenticated 
-        {
-            get
-            {
-                return UserToken != null;
-            } 
-        }
+        #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
         private static WebClient CreateClient()
         {
             var client = new WebClient();
@@ -107,31 +209,38 @@
             return client;
         }
 
-        private static IObservable<TResult> TrySelect<T, TResult>(this IObservable<T> items, Func<T,TResult> selector)
+        /// <summary>
+        /// </summary>
+        /// <param name="items">
+        /// </param>
+        /// <param name="selector">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        private static IObservable<TResult> TrySelect<T, TResult>(this IObservable<T> items, Func<T, TResult> selector)
         {
             return Observable.CreateWithDisposable<TResult>(
                 d => items.Subscribe(
                     item =>
                         {
-                            TResult result; 
                             try
                             {
-                                result = selector(item);
+                                TResult result = selector(item);
                                 d.OnNext(result);
-                            } 
+                            }
                             catch (Exception ex)
                             {
                                 d.OnError(ex);
                             }
-                        }, d.OnError, d.OnCompleted));
+                        }, 
+                    d.OnError, 
+                    d.OnCompleted));
         }
 
-        public static IObservable<TResponse> PostStringAndGetJson<TResponse>(Uri url, string postData)
-            where TResponse : class
-        {
-            var sequence = from completed in PostAndGetString(url, postData)
-                           select Json.Deserialize<TResponse>(completed);
-            return sequence;
-        }
+        #endregion
     }
 }

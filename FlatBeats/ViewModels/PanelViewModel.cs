@@ -51,6 +51,11 @@ namespace FlatBeats.ViewModels
 
                 this.message = value;
                 this.OnPropertyChanged("Message");
+
+                if (this.message == null)
+                {
+                    this.ShowMessage = false;
+                }
             }
         }
 

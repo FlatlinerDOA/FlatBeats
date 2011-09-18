@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using FlatBeats.DataModel.Profile;
+
     using Microsoft.Devices;
     using Microsoft.Phone.Reactive;
 
@@ -56,6 +58,7 @@
             return from playToken in GetPlayToken()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
+                   from save in Downloader.GetAndSaveFile(mix.CoverUrls.OriginalUrl, "/mixes/" + mix.Id + "/original.jpg")
                    select new PlayingMixContract
                    {
                        PlayToken = playToken,
@@ -73,6 +76,13 @@
                 playing.PlayToken,
                 playing.MixId);
             return Downloader.GetJson<PlayResponseContract>(new Uri(nextFormat, UriKind.Absolute));
+        }
+        
+        public static IObservable<Unit> AddMixTrackHistory(int mixId, PlayResponseContract response)
+        {
+            // TODO : Load Mix Track History
+            // Update and re-save
+            return Observable.Empty<Unit>();
         }
 
         public static IObservable<PlayResponseContract> SkipToNextTrack(this PlayingMixContract playing)

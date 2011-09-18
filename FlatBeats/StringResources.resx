@@ -181,4 +181,7 @@ Link:
   <data name="Command_PinToStart" xml:space="preserve">
     <value>pin to start</value>
   </data>
+  <data name="Message_NoRecentlyPlayedMixes" xml:space="preserve">
+    <value>Check back here after listening to some mixes.</value>
+  </data>
 </root>

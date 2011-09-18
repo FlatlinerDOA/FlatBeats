@@ -37,7 +37,7 @@ namespace FlatBeats
         {
             base.OnNavigatedTo(e);
             ApplicationBarBinder.Bind(this, this.ViewModel);
-
+            this.ViewModel.Load();
         }
     }
 }

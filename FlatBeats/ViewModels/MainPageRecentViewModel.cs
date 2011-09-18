@@ -49,7 +49,11 @@
                     {
                         if (this.Mixes.Count == 0)
                         {
-                            this.Message = "check back here after listening to some mixes.";
+                            this.Message = StringResources.Message_NoRecentlyPlayedMixes;
+                        }
+                        else
+                        {
+                            this.Message = null;
                         }
                     }).FinallySelect(() => new Unit());
         }

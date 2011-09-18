@@ -1,9 +1,13 @@
 ﻿namespace FlatBeats
 {
     using System;
+    using System.Windows.Navigation;
+
     using Microsoft.Phone.Controls;
-    using FlatBeats.Controls;
+
     using FlatBeats.ViewModels;
+
+    using NavigationEventArgs = FlatBeats.Controls.NavigationEventArgs;
 
     public partial class MixesPage : PhoneApplicationPage
     {
@@ -40,7 +44,7 @@
             }
         }
 
-        private void pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void PivotSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             this.ViewModel.CurrentPanelIndex = pivot.SelectedIndex;
         }

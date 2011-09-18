@@ -118,7 +118,7 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress();
-            UserService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+            ProfileService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
                 _ => { }, 
                 this.ShowError,
                 this.HideProgress);
