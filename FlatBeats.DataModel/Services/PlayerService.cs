@@ -30,6 +30,7 @@
         
         public static void SaveNowPlaying(this PlayingMixContract playing)
         {
+            
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
         }
 

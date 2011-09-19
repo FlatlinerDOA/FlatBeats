@@ -21,10 +21,26 @@ namespace FlatBeats.DataModel
     {
         #region Constants and Fields
 
+        private static readonly object syncRoot = new object();
         /// <summary>
         /// </summary>
-        private static string UserToken;
+        private static string userToken;
 
+        public static string UserToken { get
+        {
+            lock (syncRoot)
+            {
+
+                return userToken;
+            }
+        } 
+            set
+        {
+            lock (syncRoot)
+            {
+                userToken = value;
+            }
+        } }
         #endregion
 
         #region Public Properties
@@ -179,14 +195,6 @@ namespace FlatBeats.DataModel
             return sequence;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="userToken">
-        /// </param>
-        public static void SetUserToken(string userToken)
-        {
-            UserToken = userToken;
-        }
 
         #endregion
 

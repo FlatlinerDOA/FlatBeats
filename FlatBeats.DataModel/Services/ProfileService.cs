@@ -29,8 +29,8 @@
             return userLogin.Do(response =>
                 {
                     SaveCredentials(userCredentials);
-                    Storage.Save(UserLoginFilePath, Json.Serialize(response));
-                    Downloader.SetUserToken(response.UserToken);
+                    SaveUserToken(response);
+                    Downloader.UserToken = response.UserToken;
                 });
         }
 
@@ -44,11 +44,15 @@
             return Observable.Start(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null);
         }
 
+        private static void SaveUserToken(UserLoginResponseContract login)
+        {
+            Storage.Save(UserLoginFilePath, Json.Serialize(login));
+        }
         public static IObservable<UserLoginResponseContract> LoadUserToken()
         {
             return
                 Observable.Start(() => Json.Deserialize<UserLoginResponseContract>(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
-                    user => Downloader.SetUserToken(user.UserToken));
+                    user => Downloader.UserToken = user.UserToken);
         }
 
         public static IObservable<MixesResponseContract> GetLikedMixes()
