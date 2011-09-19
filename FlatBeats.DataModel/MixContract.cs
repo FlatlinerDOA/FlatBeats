@@ -14,16 +14,17 @@
         [DataMember(Name = "name")]
         public string Name { get; set; }
 
-
         [DataMember(Name = "description")]
         public string Description { get; set; }
-
 
         [DataMember(Name = "tag_list_cache")]
         public string Tags { get; set; }
 
         [DataMember(Name = "restful_url")]
         public string RestUrl { get; set; }
+
+        [DataMember(Name = "liked_by_current_user")]
+        public bool Liked { get; set; }
 
         [DataMember(Name = "user")]
         public UserContract User { get; set; }

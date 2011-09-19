@@ -26,21 +26,45 @@ namespace FlatBeats.DataModel
         /// </summary>
         private static string userToken;
 
-        public static string UserToken { get
+        public static string UserToken
         {
-            lock (syncRoot)
+            get
             {
+                lock (syncRoot)
+                {
 
-                return userToken;
+                    return userToken;
+                }
             }
-        } 
             set
-        {
-            lock (syncRoot)
             {
-                userToken = value;
+                lock (syncRoot)
+                {
+                    userToken = value;
+                }
             }
-        } }
+        }
+
+        private static UserCredentialsContract userCredentials;
+
+        public static UserCredentialsContract UserCredentials
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+
+                    return userCredentials;
+                }
+            }
+            set
+            {
+                lock (syncRoot)
+                {
+                    userCredentials = value;
+                }
+            }
+        }
         #endregion
 
         #region Public Properties
@@ -51,7 +75,7 @@ namespace FlatBeats.DataModel
         {
             get
             {
-                return UserToken != null;
+                return UserToken != null || UserCredentials != null;
             }
         }
 
@@ -211,6 +235,7 @@ namespace FlatBeats.DataModel
 
             if (IsAuthenticated)
             {
+                //client.Credentials = new NetworkCredential(UserCredentials.UserName, UserCredentials.Password);
                 client.Headers["X-User-Token"] = UserToken;
             }
 

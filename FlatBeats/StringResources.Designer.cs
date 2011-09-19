@@ -173,6 +173,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flat Beats.
+        /// </summary>
+        internal static string Title_ApplicationName {
+            get {
+                return ResourceManager.GetString("Title_ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hot.
         /// </summary>
         internal static string Title_HotMixes {
@@ -196,6 +205,15 @@ namespace FlatBeats {
         internal static string Title_LikedMixes {
             get {
                 return ResourceManager.GetString("Title_LikedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now Playing.
+        /// </summary>
+        internal static string Title_NowPlaying {
+            get {
+                return ResourceManager.GetString("Title_NowPlaying", resourceCulture);
             }
         }
         

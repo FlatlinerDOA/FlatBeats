@@ -138,119 +138,118 @@
         <controls:Pivot Margin="0,-8,0,0">
             <controls:PivotItem Header="mix">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"
-                                       MinHeight="50" />
-                        <RowDefinition Height="190" />
-                        <RowDefinition />
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"
-                                          MinWidth="197" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
-                               Grid.ColumnSpan="2"
-                               Grid.RowSpan="4"
                                FontSize="32"
-                               FontFamily="Segoe WP Light" Margin="12,0" />
-                    <Border Height="173" Margin="12,4,12,0"
-                    	Grid.Row="1"
-                    	VerticalAlignment="Top"
-                    	Width="173" Background="{StaticResource PhoneChromeBrush}" BorderThickness="2,3,0,0"
-                           >
-                    	<Image>
-                    		<Image.Source>
-                    			<BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
-                    				CreateOptions="BackgroundCreation" />
-                    		</Image.Source>
-                    	</Image>
-                    </Border>
-                    <TextBlock Text="{Binding Mix.MixName}"
-                               Style="{StaticResource PhoneTextLargeStyle}"
-                               TextWrapping="Wrap"
-                               Margin="12,0,12,8"
-                               d:LayoutOverrides="Height"
-                               Grid.ColumnSpan="2" />
-                    <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="0">
-                        <TextBlock Text="{Binding Mix.Description}"
-                                   VerticalAlignment="Top"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   TextWrapping="Wrap"
-                                   Margin="12,2,12,4"
-                                   d:LayoutOverrides="Height"
-                                   />
-                    </ScrollViewer>
-                    <Controls:NavigationList Margin="12,4,12,8"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Row="2"
-                                             ItemsSource="{Binding Mix.TagList}"
-                                             Style="{StaticResource WrapNavigationList}"
-                                             Navigation="NavigationList_OnNavigation">
-                        <Controls:NavigationList.ItemTemplate>
-                            <DataTemplate>
-                                    <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
-                                               TextWrapping="NoWrap"
-                                               Style="{StaticResource PhoneTextLargeStyle}"
-                                               Foreground="White" />
-                            </DataTemplate>
-                        </Controls:NavigationList.ItemTemplate>
-                    </Controls:NavigationList>
-                    <Grid
-                          Grid.Row="3"
-                          Grid.ColumnSpan="2"
-                          Margin="8" d:LayoutOverrides="Height">
+                               Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
+                               FontFamily="Segoe WP Light"
+                               Margin="12,0" />
+                    <Grid Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"
+                                           MinHeight="50" />
+                            <RowDefinition Height="190" />
+                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="0.779*" />
+                            <ColumnDefinition Width="Auto"
+                                              MinWidth="197" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Border Height="100" Margin="4,0,8,5" VerticalAlignment="Top" Width="100" Background="{StaticResource PhoneChromeBrush}">
-                            <Image Source="{Binding Mix.CreatedByAvatarUrl, Converter={StaticResource ImageConverter}}" />
-                    	</Border>
-                        <StackPanel Grid.Column="1">
-							<TextBlock Text="{Binding Mix.CreatedBy}"
+                        <Border Height="173" Margin="12,4,12,0"
+                    	    Grid.Row="1"
+                    	    VerticalAlignment="Top"
+                    	    Width="173" Background="{StaticResource PhoneChromeBrush}" BorderThickness="2,3,0,0"
+                               >
+                    	    <Image>
+                    		    <Image.Source>
+                    			    <BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
+                    				    CreateOptions="BackgroundCreation" />
+                    		    </Image.Source>
+                    	    </Image>
+                        </Border>
+                        <TextBlock Text="{Binding Mix.MixName}"
+                                   Style="{StaticResource PhoneTextLargeStyle}"
                                    TextWrapping="Wrap"
-                                   Margin="8,0,0,0"
-                                   Style="{StaticResource PhoneTextAccentStyle}"
-                               	   FontSize="26.667"
-								   VerticalAlignment="Top"  />
-							<TextBlock Margin="8,4,4,12"
-                               TextWrapping="Wrap"
-                               Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
-                               d:LayoutOverrides="Height"
-                               Style="{StaticResource PhoneTextSmallStyle}"
-                               FontSize="16" />
-						</StackPanel>								   
+                                   Margin="12,0,12,8"
+                                   d:LayoutOverrides="Height"
+                                   Grid.ColumnSpan="2" />
+                        <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="0">
+                            <TextBlock Text="{Binding Mix.Description}"
+                                       VerticalAlignment="Top"
+                                       Style="{StaticResource PhoneTextSmallStyle}"
+                                       TextWrapping="Wrap"
+                                       Margin="12,2,12,4"
+                                       d:LayoutOverrides="Height"
+                                       />
+                        </ScrollViewer>
+                        <Controls:NavigationList Margin="12,4,12,8"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Row="2"
+                                                 ItemsSource="{Binding Mix.TagList}"
+                                                 Style="{StaticResource WrapNavigationList}"
+                                                 Navigation="NavigationList_OnNavigation">
+                            <Controls:NavigationList.ItemTemplate>
+                                <DataTemplate>
+                                        <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
+                                                   TextWrapping="NoWrap"
+                                                   Style="{StaticResource PhoneTextLargeStyle}"
+                                                   Foreground="White" />
+                                </DataTemplate>
+                            </Controls:NavigationList.ItemTemplate>
+                        </Controls:NavigationList>
+                        <Grid
+                              Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              Margin="8" d:LayoutOverrides="Height">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="0.779*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Height="100" Margin="4,0,8,5" VerticalAlignment="Top" Width="100" Background="{StaticResource PhoneChromeBrush}">
+                                <Image Source="{Binding Mix.CreatedByAvatarUrl, Converter={StaticResource ImageConverter}}" />
+                    	    </Border>
+                            <StackPanel Grid.Column="1">
+							    <TextBlock Text="{Binding Mix.CreatedBy}"
+                                       TextWrapping="Wrap"
+                                       Margin="8,0,0,0"
+                                       Style="{StaticResource PhoneTextAccentStyle}"
+                               	       FontSize="26.667"
+								       VerticalAlignment="Top"  />
+							    <TextBlock Margin="8,4,4,12"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
+                                   d:LayoutOverrides="Height"
+                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                   FontSize="16" />
+						    </StackPanel>								   
+                        </Grid>
                     </Grid>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="reviews">
                 <Grid>
-                    <ListBox ItemsSource="{Binding Reviews}"
-                             ItemTemplate="{StaticResource ReviewItemTemplate}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
+                    <Controls:NavigationList Margin="0,0,-12,0"
+                                             ItemsSource="{Binding Reviews}"
+                                             ItemTemplate="{StaticResource ReviewItemTemplate}" />
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="played">
-                <Grid>
-                    <TextBlock Text="No tracks have been played recently for this mix"
+                <Grid DataContext="{Binding Played}">
+                    <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                Margin="12,0"
                                TextWrapping="Wrap"
-                               Visibility="{Binding HasPlayedTracks, Converter={StaticResource HideConverter}}" VerticalAlignment="Top" />
+                               Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}" 
+                               VerticalAlignment="Top" />
                     <Controls:NavigationList Margin="0,0,-12,0"
-                                             ItemsSource="{Binding PlayedTracks}"
-                                             ItemTemplate="{StaticResource TrackTemplate}" />
+                                             ItemsSource="{Binding Tracks}"
+                                             ItemTemplate="{StaticResource TrackTemplate}"
+                                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

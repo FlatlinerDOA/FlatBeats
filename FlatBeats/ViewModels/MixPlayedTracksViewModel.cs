@@ -32,25 +32,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public ObservableCollection<TrackViewModel> Tracks { get; private set; }
 
-        private bool hasPlayedTracks;
-
-        public bool HasPlayedTracks
-        {
-            get
-            {
-                return this.hasPlayedTracks;
-            }
-            set
-            {
-                if (this.hasPlayedTracks == value)
-                {
-                    return;
-                }
-
-                this.hasPlayedTracks = value;
-                this.OnPropertyChanged("HasPlayedTracks");
-            }
-        }
 
         public IObservable<Unit> LoadAsync(MixContract mixData)
         {
@@ -59,18 +40,25 @@ namespace FlatBeats.ViewModels
                          where response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);
-            return tracks.ObserveOnDispatcher()
-                .Do(t =>
-                {
-                    this.Tracks.Add(t);
-                    this.HasPlayedTracks = true;
-                }).Select(_ => new Unit()).Catch<Unit, Exception>(
-                ex => 
-                { 
-                    this.ShowError(ex);
-                    return Observable.Return(new Unit());
-                });
-            
+            return tracks.ObserveOnDispatcher().Do(
+                    t => this.Tracks.Add(t), 
+                    () =>
+                    {
+                        if (this.Tracks.Count == 0)
+                        {
+                            this.Message = "No tracks have been played recently for this mix.";
+                            this.ShowMessage = true;
+                        }
+                        else
+                        {
+                            this.Message = null;
+                        }
+                    }).Select(_ => new Unit()).Catch<Unit, Exception>(
+                        ex => 
+                        { 
+                            this.ShowError(ex);
+                            return Observable.Return(new Unit());
+                        });
         }
     }
 }

@@ -184,4 +184,10 @@ Link:
   <data name="Message_NoRecentlyPlayedMixes" xml:space="preserve">
     <value>Check back here after listening to some mixes.</value>
   </data>
+  <data name="Title_NowPlaying" xml:space="preserve">
+    <value>Now Playing</value>
+  </data>
+  <data name="Title_ApplicationName" xml:space="preserve">
+    <value>Flat Beats</value>
+  </data>
 </root>

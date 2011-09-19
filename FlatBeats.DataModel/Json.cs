@@ -55,7 +55,11 @@ namespace FlatBeats.DataModel
                 var data = new MemoryStream();
                 json.CopyTo(data);
                 var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-                Debug.WriteLine(jsonText);
+                foreach (var line in jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Debug.WriteLine(line);
+                }
+
                 json = data;
 #endif
 

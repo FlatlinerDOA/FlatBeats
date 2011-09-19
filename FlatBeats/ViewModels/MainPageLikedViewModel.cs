@@ -24,12 +24,14 @@ namespace FlatBeats.ViewModels
 
         public IObservable<Unit> LoadAsync()
         {
-            var liked = from userCredentials in ProfileService.LoadUserToken()
-                        from mixes in ProfileService.GetLikedMixes()
-                        select mixes;
+            var liked = from userCredentials in ProfileService.LoadCredentials()
+                        from userToken in ProfileService.LoadUserToken()
+                        from response in ProfileService.GetLikedMixes(userToken.CurentUser.Id)
+                        from mix in response.Mixes.ToObservable()
+                        select new MixViewModel(mix);
 
             return liked.ObserveOnDispatcher().Do(
-                _ => { }, 
+                this.Mixes.Add, 
                 () =>
                 {
                     if (this.Mixes.Count == 0)

@@ -31,6 +31,7 @@
                     SaveCredentials(userCredentials);
                     SaveUserToken(response);
                     Downloader.UserToken = response.UserToken;
+                    Downloader.UserCredentials = userCredentials;
                 });
         }
 
@@ -41,13 +42,14 @@
 
         public static IObservable<UserCredentialsContract> LoadCredentials()
         {
-            return Observable.Start(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null);
+            return Observable.Start(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
         }
 
         private static void SaveUserToken(UserLoginResponseContract login)
         {
             Storage.Save(UserLoginFilePath, Json.Serialize(login));
         }
+
         public static IObservable<UserLoginResponseContract> LoadUserToken()
         {
             return
@@ -55,11 +57,11 @@
                     user => Downloader.UserToken = user.UserToken);
         }
 
-        public static IObservable<MixesResponseContract> GetLikedMixes()
+        public static IObservable<MixesResponseContract> GetLikedMixes(string userId)
         {
             return
                 Downloader.GetJson<MixesResponseContract>(
-                    new Uri("http://8tracks.com/users/dp/mixes.json?view=liked", UriKind.RelativeOrAbsolute));
+                    new Uri("http://8tracks.com/users/" + userId + "/mixes.json?view=liked", UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)

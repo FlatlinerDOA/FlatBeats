@@ -88,6 +88,10 @@ namespace FlatBeats.ViewModels
             }
 
             this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
+            if (this.Created > DateTime.Now)
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
         }
 
         public DateTime Created

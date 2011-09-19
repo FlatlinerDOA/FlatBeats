@@ -208,6 +208,12 @@ namespace FlatBeatsPlaybackAgent
             {
                 // Set which track to play. When the TrackReady state is received 
                 // in the OnPlayStateChanged handler, call player.Play().
+                if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
+                {
+                    player.Stop();
+                    return;
+                }
+
                 var trackUrl = new Uri(this.NowPlaying.Set.Track.TrackUrl, UriKind.Absolute);
                 var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
 

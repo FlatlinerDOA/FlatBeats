@@ -11,6 +11,12 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.IO.IsolatedStorage;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
 
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
@@ -325,6 +331,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.ShowProgress();
             var playResponse = this.mixData.StartPlaying();
             playResponse.ObserveOnDispatcher().Subscribe(
                 m =>
@@ -332,7 +339,72 @@ namespace FlatBeats.ViewModels
                         this.NowPlaying = m;
                         this.NowPlaying.SaveNowPlaying();
                         this.Player.Play();
+                        
+                        var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
+                        if (appTile != null)
+                        {
+                            SaveFadedThumbnail().Subscribe(url =>
+                                {
+                                     var newAppTile = new StandardTileData()
+                                        {
+                                            BackContent = this.Mix.MixName,
+                                            BackTitle = StringResources.Title_NowPlaying,
+                                            BackBackgroundImage = url,
+                                            BackgroundImage = new Uri("Background.png", UriKind.Relative),
+                                            Title = StringResources.Title_ApplicationName
+                                        };
+                                        appTile.Update(newAppTile);
+                                }, 
+                                this.ShowError, 
+                                this.HideProgress);
+                        }
                     });
+        }
+
+        private IObservable<Uri> SaveFadedThumbnail()
+        {
+            var bitmap = new BitmapImage();
+            var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").Select(_ => new Unit()).Take(1);
+            var failed = from failure in Observable.FromEvent<ExceptionRoutedEventArgs>(bitmap, "ImageFailed").Take(1)
+                         from result in Observable.Throw<Exception>(failure.EventArgs.ErrorException)
+                         select new Unit();
+
+            bitmap.CreateOptions = BitmapCreateOptions.None;
+            bitmap.UriSource = this.Mix.ThumbnailUrl;
+            return opened.Amb(failed).Select(
+                _ =>
+                {
+                    var img = new Image()
+                    {
+                        Source = bitmap,
+                        Stretch = Stretch.Uniform,
+                        Opacity = 0.5,
+                        Width = 173,
+                        Height = 173
+                       
+                    };
+
+                    img.Measure(new Size(173, 173));
+                    img.Arrange(new Rect(0, 0, 173, 173));
+                    var wb = new WriteableBitmap(173, 173);
+                    wb.Render(img, new TranslateTransform());
+                    wb.Invalidate();
+                    using (var isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!isolatedStorageFile.DirectoryExists("Images"))
+                        {
+                            isolatedStorageFile.CreateDirectory("Images");
+                        }
+
+                        using (var file = isolatedStorageFile.CreateFile("/Shared/ShellContent/NowPlaying.jpg"))
+                        {
+                            wb.SaveJpeg(file, 173, 173, 0, 85);
+                            file.Close();
+                        }
+                    }
+
+                    return new Uri("isostore:/Shared/ShellContent/NowPlaying.jpg", UriKind.RelativeOrAbsolute);
+                });
         }
 
         /// <summary>

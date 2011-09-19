@@ -93,9 +93,14 @@ namespace FlatBeats.ViewModels
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
             this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
+            this.Liked = mix.Liked;
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-            this.Created = DateTime.Parse(mix.Created);
+            this.Created = DateTimeOffset.Parse(mix.Created).ToLocalTime().DateTime;
+            if (this.Created > DateTime.Now)
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
             this.Tags = mix.Tags;
             this.TagList =
                 this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
