@@ -74,6 +74,7 @@
     <Compile Include="FavouritedTrackResponseContract.cs" />
     <Compile Include="LikedMixContract.cs" />
     <Compile Include="LikedMixResponseContract.cs" />
+    <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="UserLoginResponseContract.cs" />
     <Compile Include="Services\ProfileService.cs" />

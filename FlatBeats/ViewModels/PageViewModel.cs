@@ -2,6 +2,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Windows;
 
     public abstract class PageViewModel : PanelViewModel
     {
@@ -28,6 +29,7 @@ namespace FlatBeats.ViewModels
         public override void ShowError(Exception error)
         {
             this.HideProgress();
+            MessageBox.Show(error.Message);
             base.ShowError(error);
         }
 

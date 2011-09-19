@@ -24,12 +24,14 @@
 
         public IObservable<List<MixViewModel>> LoadAsync()
         {
-            var pageData = from latest in Downloader.GetJson<MixesResponseContract>(new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute))
-                               .ObserveOnDispatcher()
-                               .Do(_ => this.Mixes.Clear())
+            var pageData = from latest in MixesService.GetLatestMixes()
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
-            return pageData.ObserveOnDispatcher().Do(
+            return pageData.ObserveOnDispatcher()
+                .FirstDo(_ =>
+                    {
+                        this.Mixes.Clear();
+                    }).Do(
                 m => this.Mixes.Add(m),
                 this.ShowError).Aggregate(
                     new List<MixViewModel>(), 

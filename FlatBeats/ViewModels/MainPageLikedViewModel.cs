@@ -30,7 +30,9 @@ namespace FlatBeats.ViewModels
                         from mix in response.Mixes.ToObservable()
                         select new MixViewModel(mix);
 
-            return liked.ObserveOnDispatcher().Do(
+            return liked.ObserveOnDispatcher()
+                .FirstDo(_ => this.Mixes.Clear())
+                .Do(
                 this.Mixes.Add, 
                 () =>
                 {

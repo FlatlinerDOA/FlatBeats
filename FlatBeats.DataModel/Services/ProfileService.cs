@@ -59,9 +59,11 @@
 
         public static IObservable<MixesResponseContract> GetLikedMixes(string userId)
         {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked", userId);
             return
                 Downloader.GetJson<MixesResponseContract>(
-                    new Uri("http://8tracks.com/users/" + userId + "/mixes.json?view=liked", UriKind.RelativeOrAbsolute));
+                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+
         }
 
         public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)

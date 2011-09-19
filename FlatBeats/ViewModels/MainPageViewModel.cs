@@ -171,7 +171,10 @@ namespace FlatBeats.ViewModels
         {
             if (this.IsDataLoaded)
             {
-                this.Recent.LoadAsync().Subscribe();
+                var reload = from recent in this.Recent.LoadAsync()
+                             from liked in this.Liked.LoadAsync()
+                             select new Unit();
+                reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
                 return;
             }
 
@@ -182,7 +185,7 @@ namespace FlatBeats.ViewModels
                        from latest in this.Latest.LoadAsync()
                        from tags in Observable.Start(() => this.TagsPanel.Load(latest))
                        select new Unit();
-            load.Subscribe();
+            load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
         }
 
         #endregion

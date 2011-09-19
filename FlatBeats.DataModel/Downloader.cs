@@ -235,7 +235,6 @@ namespace FlatBeats.DataModel
 
             if (IsAuthenticated)
             {
-                //client.Credentials = new NetworkCredential(UserCredentials.UserName, UserCredentials.Password);
                 client.Headers["X-User-Token"] = UserToken;
             }
 
