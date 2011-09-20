@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using FlatBeats.DataModel.Profile;
 
@@ -34,6 +35,33 @@
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
         }
 
+        public static IObservable<MixesResponseContract> RecentlyPlayed()
+        {
+            return Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json"))).Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>()} );
+        }
+
+        public static IObservable<Unit> AddToRecentlyPlayed(MixContract mix)
+        {
+            return from recentlyPlayed in RecentlyPlayed().Do(m =>
+                {
+                    var duplicates = m.Mixes.Where(d => d.Id == mix.Id).ToList();
+                    foreach (var duplicate in duplicates)
+                    {
+                        m.Mixes.Remove(duplicate);
+                    }
+
+                    m.Mixes.Insert(0, mix);
+
+                    if (m.Mixes.Count > 10)
+                    {
+                        m.Mixes.Remove(m.Mixes.Last());
+                    }
+                })
+                   from mixes in Observable.Start(
+                       () => Storage.Save("recentmixes.json", Json.Serialize(recentlyPlayed)))
+                   select new Unit();
+        }
+
         public static PlayingMixContract LoadNowPlaying()
         {
             var data = Storage.Load(NowPlayingFilePath);
@@ -60,6 +88,7 @@
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
                    from save in Downloader.GetAndSaveFile(mix.CoverUrls.OriginalUrl, "/mixes/" + mix.Id + "/original.jpg")
+                   from added in AddToRecentlyPlayed(mix)
                    select new PlayingMixContract
                    {
                        PlayToken = playToken,

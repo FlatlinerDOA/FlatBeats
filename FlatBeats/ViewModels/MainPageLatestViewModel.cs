@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Threading;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -25,7 +26,7 @@
         public IObservable<List<MixViewModel>> LoadAsync()
         {
             var pageData = from latest in MixesService.GetLatestMixes()
-                           from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
+                           from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool).Do(_ => Thread.Sleep(200))
                            select new MixViewModel(mix);
             return pageData.ObserveOnDispatcher()
                 .FirstDo(_ =>

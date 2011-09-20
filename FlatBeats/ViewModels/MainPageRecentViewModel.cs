@@ -23,23 +23,24 @@
 
         public IObservable<Unit> LoadAsync()
         {
-            var nowPlaying = from playingMix in Observable.Start(() => PlayerService.LoadNowPlaying())
-                             where playingMix != null
-                             select new RecentMixViewModel()
-                                     {
-                                         IsNowPlaying = true,
-                                         MixId = playingMix.MixId,
-                                         MixName = playingMix.MixName,
-                                         TileTitle = playingMix.MixName,
-                                         ImageUrl = playingMix.Cover.OriginalUrl,
-                                         ThumbnailUrl = playingMix.Cover.ThumbnailUrl,
-                                         NavigationUrl = new Uri("/PlayPage.xaml?mix=" + playingMix.MixId, UriKind.Relative)
-                                     };
-            var recentMixes = from response in Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json")))
+            ////var nowPlaying = from playingMix in Observable.Start(() => PlayerService.LoadNowPlaying())
+            ////                 where playingMix != null
+            ////                 select new RecentMixViewModel()
+            ////                         {
+            ////                             IsNowPlaying = true,
+            ////                             MixId = playingMix.MixId,
+            ////                             MixName = playingMix.MixName,
+            ////                             TileTitle = playingMix.MixName,
+            ////                             ImageUrl = playingMix.Cover.OriginalUrl,
+            ////                             ThumbnailUrl = playingMix.Cover.ThumbnailUrl,
+            ////                             NavigationUrl = new Uri("/PlayPage.xaml?mix=" + playingMix.MixId, UriKind.Relative)
+            ////                         };
+            var recentMixes = from response in PlayerService.RecentlyPlayed()
+                              let playing = PlayerService.LoadNowPlaying()
                               where response != null && response.Mixes != null
                               from mix in response.Mixes.ToObservable()
-                              select new RecentMixViewModel(mix);
-            return nowPlaying.Concat(recentMixes)
+                              select new RecentMixViewModel(mix) { IsNowPlaying = playing.MixId == mix.Id };
+            return recentMixes
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())
                 .Do(
