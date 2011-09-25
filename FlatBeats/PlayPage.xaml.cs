@@ -17,6 +17,8 @@
     /// </summary>
     public partial class PlayPage : PhoneApplicationPage
     {
+        private ApplicationBarBinder appBarBinder;
+
         #region Constructors and Destructors
 
         /// <summary>
@@ -51,7 +53,11 @@
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ApplicationBarBinder.Bind(this, this.ViewModel);
+            if (this.appBarBinder == null)
+            {
+                this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
+            }
+
             this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
             this.ViewModel.PlayOnLoad = this.NavigationContext.QueryString.ContainsKey("play")
                                         && this.NavigationContext.QueryString["play"] == "true";

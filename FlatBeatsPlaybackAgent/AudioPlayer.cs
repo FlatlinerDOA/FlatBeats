@@ -115,7 +115,7 @@ namespace FlatBeatsPlaybackAgent
                     player.Play();
                     break;
                 case PlayState.Stopped:
-                    ////PlayerService.Stop();
+                    PlayerService.Stop();
                     break;
                 case PlayState.TrackEnded:
                     this.PlayNextTrack(player);
@@ -176,10 +176,10 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         private void PlayNextTrack(BackgroundAudioPlayer player)
         {
-            if (this.NowPlaying.Set.IsLastTrack)
+            if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.IsLastTrack)
             {
                 player.Stop();
-                PlayerService.Stop();
+                ////PlayerService.Stop();
                 return;
             }
 

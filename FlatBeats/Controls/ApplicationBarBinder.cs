@@ -45,11 +45,6 @@
             this.BindApplicationBar(viewModel);
         }
 
-        public static ApplicationBarBinder Bind(PhoneApplicationPage page, IApplicationBarViewModel viewModel)
-        {
-            return new ApplicationBarBinder(page, viewModel);
-        }
-
         protected PhoneApplicationPage Page
         {
             get;

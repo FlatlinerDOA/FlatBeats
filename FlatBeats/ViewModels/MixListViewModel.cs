@@ -31,11 +31,11 @@
             this.IsDataLoaded = true;
 
             var mixes = from page in Observable.Range(1, 2)
-                from response in MixesService.DownloadTagMixes(tag, this.Sort, page).ObserveOnDispatcher()
+                from response in MixesService.DownloadTagMixes(tag, this.Sort, page)
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool) 
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
-            return mixes.ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
+            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
         }
 
         public IObservable<Unit> Search(string searchQuery)
@@ -46,7 +46,7 @@
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
-            return mixes.ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
+            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
         }
 
 

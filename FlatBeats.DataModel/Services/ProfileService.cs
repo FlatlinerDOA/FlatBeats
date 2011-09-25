@@ -16,6 +16,8 @@
                 return Observable.Empty<UserLoginResponseContract>();
             }
 
+            Downloader.UserCredentials = null;
+            Downloader.UserToken = null;
             var url = new Uri("https://8tracks.com/sessions.json", UriKind.Absolute);
             var postData = string.Format(
                 "login={0}&password={1}", 
@@ -57,6 +59,16 @@
                     user => Downloader.UserToken = user.UserToken);
         }
 
+
+        public static IObservable<MixesResponseContract> GetUserMixes(string userId)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json", userId);
+            return
+                Downloader.GetJson<MixesResponseContract>(
+                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+
+        }
+
         public static IObservable<MixesResponseContract> GetLikedMixes(string userId)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked", userId);
@@ -76,6 +88,23 @@
         {
             var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
             return Downloader.PostStringAndGetJson<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+        }
+
+        private static void DeleteCredentials()
+        {
+            Storage.Delete(UserLoginFilePath);
+            Storage.Delete(CredentialsFilePath);
+            Downloader.UserToken = null;
+            Downloader.UserCredentials = null;
+        }
+
+        public static IObservable<Unit> Reset()
+        {
+            return from deleteCredentials in Observable.Start(DeleteCredentials)
+                   from playing in Observable.Start(PlayerService.Stop)
+                   from playToken in Observable.Start(PlayerService.DeletePlayToken)
+                   from list in Observable.Start(PlayerService.ClearRecentlyPlayed)
+                   select new Unit();
         }
     }
 }

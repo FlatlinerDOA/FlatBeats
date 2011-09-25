@@ -24,7 +24,9 @@
         <local:BooleanToVisibilityConverter x:Key="HideConverter"
                                             WhenTrue="Collapsed"
                                             WhenFalse="Visible" />
+        <local:UrlToBitmapConverter x:Key="ImageConverter" />
         <DataTemplate x:Key="MixTemplate">
+            <local:AnimatingContentControl>
             <Grid Height="149">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="149"  />
@@ -34,7 +36,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Image Margin="8" Grid.RowSpan="2" Width="133" Stretch="Uniform" Height="133" VerticalAlignment="Top" Source="{Binding ThumbnailUrl}"/>
+                <Image Margin="8" Grid.RowSpan="2" Width="133" Stretch="Uniform" Height="133" VerticalAlignment="Top" Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}"/>
                 <TextBlock Text="{Binding MixName}" 
                            Style="{StaticResource PhoneTextTitle2Style}"
                            Grid.Column="1" />
@@ -46,6 +48,7 @@
                            Grid.Column="1"
                            Grid.Row="1" />
             </Grid>
+            </local:AnimatingContentControl>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>

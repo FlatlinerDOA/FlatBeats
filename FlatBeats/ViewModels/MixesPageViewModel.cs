@@ -177,12 +177,11 @@ namespace FlatBeats.ViewModels
             this.ShowProgress();
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
-                mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.HideProgress);
-
+                mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.ShowError, this.HideProgress);
                 return;
             }
 
-            mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.HideProgress);
+            mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.ShowError, this.HideProgress);
 
         }
         #endregion

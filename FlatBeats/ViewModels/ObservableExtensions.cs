@@ -11,10 +11,29 @@ using System.Windows.Shapes;
 
 namespace FlatBeats.ViewModels
 {
+    using System.Threading;
+
     using Microsoft.Phone.Reactive;
 
     public static class ObservableExtensions
     {
+        public static IObservable<T> FlowIn<T>(this IObservable<T> source)
+        {
+            bool hasBeenRun = false;
+            return source.Do(
+                _ =>
+                    {
+                        if (!hasBeenRun)
+                        {
+                            hasBeenRun = true;
+                        }
+                        else
+                        {
+                            Thread.Sleep(75);
+                        }
+                    });
+        }
+
         public static IObservable<T> FirstDo<T>(this IObservable<T> sequence, Action<T> firstAction)
         {
             bool hasBeenRun = false;
@@ -41,11 +60,7 @@ namespace FlatBeats.ViewModels
                     _ =>
                     {
                     },
-                    ex => 
-                    { 
-                        observer.OnNext(finalValue());
-                        observer.OnCompleted();
-                    },
+                    observer.OnError,
                     () =>
                     { 
                         observer.OnNext(finalValue());

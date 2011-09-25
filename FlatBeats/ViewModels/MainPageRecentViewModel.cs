@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Threading;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -39,8 +40,8 @@
                               let playing = PlayerService.LoadNowPlaying()
                               where response != null && response.Mixes != null
                               from mix in response.Mixes.ToObservable()
-                              select new RecentMixViewModel(mix) { IsNowPlaying = playing.MixId == mix.Id };
-            return recentMixes
+                              select new RecentMixViewModel(mix) { IsNowPlaying = playing != null && playing.MixId == mix.Id };
+            return recentMixes.FlowIn()
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())
                 .Do(

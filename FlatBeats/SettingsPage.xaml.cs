@@ -36,8 +36,16 @@ namespace FlatBeats
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ApplicationBarBinder.Bind(this, this.ViewModel);
             this.ViewModel.Load();
+        }
+
+        private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
+        {
+            var navItem = e.Item as INavigationItem;
+            if (navItem != null && navItem.NavigationUrl != null)
+            {
+                this.NavigationService.Navigate(navItem.NavigationUrl);
+            }
         }
     }
 }

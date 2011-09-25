@@ -6,7 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:local="clr-namespace:FlatBeats.Controls" mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -14,6 +14,44 @@
     shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
+        <local:BooleanToVisibilityConverter x:Key="ShowConverter"
+                                            WhenTrue="Visible"
+                                            WhenFalse="Collapsed" />
+        <local:BooleanToVisibilityConverter x:Key="HideConverter"
+                                            WhenTrue="Collapsed"
+                                            WhenFalse="Visible" />
+        <local:UrlToBitmapConverter x:Key="ImageConverter" />
+        <DataTemplate x:Key="MixTemplate">
+            <local:AnimatingContentControl>
+                <Grid Height="149">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="149" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image Margin="8"
+                           Grid.RowSpan="2"
+                           Width="133"
+                           Stretch="Uniform"
+                           Height="133"
+                           VerticalAlignment="Top"
+                           Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                    <TextBlock Text="{Binding MixName}"
+                               Style="{StaticResource PhoneTextTitle2Style}"
+                               Grid.Column="1" />
+                    <TextBlock Text="{Binding Description}"
+                               Style="{StaticResource PhoneTextSmallStyle}"
+                               TextWrapping="Wrap"
+                               TextTrimming="WordEllipsis"
+                               VerticalAlignment="Top"
+                               Grid.Column="1"
+                               Grid.Row="1" />
+                </Grid>
+            </local:AnimatingContentControl>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
@@ -28,15 +66,33 @@
             <controls:PivotItem Header="login">
                 <Grid>
                     <StackPanel>
-                        <TextBlock Text="USERNAME" />
+                        <TextBlock Text="USERNAME" Margin="8,0" />
                         <TextBox Text="{Binding UserName, Mode=TwoWay}" />
-                        <TextBlock Text="PASSWORD" />
-                        <TextBox Text="{Binding Password, Mode=TwoWay}" />
+                        
+                        <TextBlock Text="PASSWORD"
+                                   Margin="8,0" />
+                        <PasswordBox Password="{Binding Password, Mode=TwoWay}" />
+                        <Button Command="{Binding LoginCommand}" Content="login" Margin="8" Width="200" />
+                        <Button Command="{Binding ResetCommand}"
+                                Content="reset"
+                                Margin="8"
+                                Width="200" />
                     </StackPanel>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="my mixes">
-                <Grid />
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light" TextWrapping="Wrap" />
+                    <local:NavigationList Margin="0,0,-12,0"
+                                          Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                                          ItemsSource="{Binding Mixes}"
+                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          Navigation="NavigationList_OnNavigation" />
+                </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="following">
                 <Grid />

@@ -125,5 +125,16 @@
             
             storage.CreateDirectory(folder);
         }
+
+        public static Stream LoadStream(string imageFilePath)
+        {
+            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+                if (!storage.FileExists(imageFilePath))
+                {
+                    return null;
+                }
+
+            return new IsolatedStorageFileStream(imageFilePath, FileMode.Open, storage);                
+        }
     }
 }

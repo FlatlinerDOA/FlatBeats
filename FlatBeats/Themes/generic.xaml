@@ -11,8 +11,63 @@
                     xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls" xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls" mc:Ignorable="d">
-
-	<Style TargetType="local:TransitioningBackgroundControl">
+    <Style TargetType="local:AnimatingContentControl">
+        <Setter Property="Foreground"
+                Value="#FF000000" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AnimatingContentControl">
+                    <Grid x:Name="root"
+                          RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <CompositeTransform />
+                        </Grid.RenderTransform>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="LayoutStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.5">
+                                        <VisualTransition.GeneratedEasingFunction>
+                                            <CubicEase EasingMode="EaseInOut" />
+                                        </VisualTransition.GeneratedEasingFunction>
+                                    </VisualTransition>
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="AfterLoaded">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ContentContainer"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="AfterUnLoaded">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ContentContainer"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="BeforeLoaded" />
+                                <VisualState x:Name="BeforeUnloaded" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter            x:Name="ContentContainer"
+                                                     Opacity="0"
+                                                     Cursor="{TemplateBinding Cursor}"
+                                                     ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                     Content="{TemplateBinding Content}"
+                                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                     Margin="{TemplateBinding Padding}"
+                                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="local:TransitioningBackgroundControl">
 		<Setter Property="IsTabStop"
 			Value="False" />
 		<Setter Property="HorizontalContentAlignment"
@@ -132,7 +187,9 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" />
+                    <local:AnimatingContentControl>
+                        <TextBlock Text="{Binding}" />
+                    </local:AnimatingContentControl>
                 </DataTemplate>
             </Setter.Value>
         </Setter>

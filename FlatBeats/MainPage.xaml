@@ -19,6 +19,7 @@
                             shell:SystemTray.IsVisible="False"
                             Controls:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
+        <local:UrlToBitmapConverter x:Key="ImageConverter" />
         <local:BooleanToVisibilityConverter x:Key="VisibilityConverter"  WhenFalse="Collapsed"
                                             WhenTrue="Visible" />
         <Style TargetType="local:NavigationList"
@@ -26,17 +27,16 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <toolkit:HubTile x:Name="hubTile"
-                                         Message="{Binding Description}"
-                                         Title="{Binding TileTitle}"
-                                         Margin="8" 
-                                         GroupTag="Latest">
-                            <toolkit:HubTile.Source>
-                                <BitmapImage UriSource="{Binding ThumbnailUrl}"
-                                             >
-                                </BitmapImage>
-                            </toolkit:HubTile.Source>
-                        </toolkit:HubTile>
+                        <local:AnimatingContentControl>
+                            <toolkit:HubTile x:Name="hubTile"
+                                             Message="{Binding Description}"
+                                             Title="{Binding TileTitle}"
+                                             Margin="8" 
+                                             IsFrozen="True"
+                                             GroupTag="Latest"
+                                             Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}">
+                            </toolkit:HubTile>
+                        </local:AnimatingContentControl> 
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -69,7 +69,7 @@
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP Light" />
+                           FontFamily="Segoe WP SemiLight" />
                 <Button Background="Transparent"
                         Foreground="White"
                         HorizontalAlignment="Right"
@@ -90,25 +90,15 @@
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP Light" />
-                <Button Background="Transparent"
-                        Foreground="White"
-                        HorizontalAlignment="Right"
-                        Margin="4,4,4,18"
-                        d:LayoutOverrides="Height"
-                        VerticalAlignment="Bottom"
-                        Click="SettingsButton_Click"
-                        Template="{StaticResource CircleButtonControlTemplate}">
-                    <Image Source="/icons/appbar.feature.settings.rest.png"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Stretch="None" />
-                </Button>
+                           FontFamily="Segoe WP SemiLight" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TagsHeaderTemplate">
         	<Grid Width="409">
-        		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" FontFamily="Segoe WP Light"/>
+                <TextBlock TextWrapping="Wrap"
+                           Text="{Binding}"
+                           d:LayoutOverrides="Width, Height"
+                           FontFamily="Segoe WP SemiLight"/>
                 <Button Background="Transparent"
                         HorizontalAlignment="Right"
                         Margin="4,4,4,18"
@@ -122,13 +112,6 @@
         	</Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
-	<phone:PhoneApplicationPage.ApplicationBar>
-		<shell:ApplicationBar IsVisible="True" Mode="Minimized" Opacity="0.5" IsMenuEnabled="True">
-			<shell:ApplicationBar.MenuItems>
-				<shell:ApplicationBarMenuItem Text="profile" Click="SettingsMenuItem_Click"/>
-			</shell:ApplicationBar.MenuItems>
-		</shell:ApplicationBar>
-	</phone:PhoneApplicationPage.ApplicationBar>
     <phone:PhoneApplicationPage.FontFamily>
         <StaticResource ResourceKey="PhoneFontFamilyNormal" />
     </phone:PhoneApplicationPage.FontFamily>
@@ -189,7 +172,7 @@
                                           Navigation="NavigationList_OnNavigation">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
+                                <local:AnimatingContentControl>
                                     <StackPanel Orientation="Horizontal"
                                                 Height="80">
                                         <Image Margin="14,8,8,8"
@@ -204,7 +187,7 @@
                                                    VerticalAlignment="Center"
                                                    Margin="8,0" />
                                     </StackPanel>
-                                </StackPanel>
+                                </local:AnimatingContentControl>
                             </DataTemplate>
                         </local:NavigationList.ItemTemplate>
                     </local:NavigationList>
@@ -222,26 +205,29 @@
                                           Navigation="NavigationList_OnNavigation">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Text="NOW PLAYING"
-                                               Style="{StaticResource PhoneTextTitle2Style}"
-                                               Foreground="{StaticResource PhoneAccentBrush}"
-                                               Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
-                                    <StackPanel Orientation="Horizontal"
-                                                Height="80">
-                                        <Image Margin="14,8,8,8"
-                                               Width="64"
-                                               Height="64"
-                                               Stretch="Uniform"
-                                               VerticalAlignment="Top"
-                                               Source="{Binding ThumbnailUrl}" />
-                                        <TextBlock Text="{Binding MixName}"
+                                <local:AnimatingContentControl>
+                                    <StackPanel>
+                                        <TextBlock Text="NOW PLAYING"
                                                    Style="{StaticResource PhoneTextTitle2Style}"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center" Margin="8,0" />
+                                                   Foreground="{StaticResource PhoneAccentBrush}"
+                                                   Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
+                                        <StackPanel Orientation="Horizontal"
+                                                    Height="80">
+                                            <Image Margin="14,8,8,8"
+                                                   Width="64"
+                                                   Height="64"
+                                                   Stretch="Uniform"
+                                                   VerticalAlignment="Top"
+                                                   Source="{Binding ThumbnailUrl}" />
+                                            <TextBlock Text="{Binding MixName}"
+                                                       Style="{StaticResource PhoneTextTitle2Style}"
+                                                       Foreground="White"
+                                                       VerticalAlignment="Center" Margin="8,0" />
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
+                                </local:AnimatingContentControl>
                             </DataTemplate>
+                           
                         </local:NavigationList.ItemTemplate>
                     </local:NavigationList>
                 </Grid>
@@ -272,13 +258,17 @@
                                           Navigation="NavigationList_OnNavigation">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="0,0,0,17"
+                                <local:AnimatingContentControl>
+
+                                    <StackPanel Margin="0,0,0,17"
                                             Width="432">
-                                    <TextBlock Text="{Binding TagName}"
-                                               TextWrapping="NoWrap"
-                                               Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                               Foreground="White" />
-                                </StackPanel>
+                                        <TextBlock Text="{Binding TagName}"
+                                                   TextWrapping="NoWrap"
+                                                   Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                                   Foreground="White" />
+                                    </StackPanel>
+
+                                </local:AnimatingContentControl>
                             </DataTemplate>
                         </local:NavigationList.ItemTemplate>
                     </local:NavigationList>

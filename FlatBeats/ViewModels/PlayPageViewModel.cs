@@ -381,7 +381,6 @@ namespace FlatBeats.ViewModels
                         Opacity = 0.5,
                         Width = 173,
                         Height = 173
-                       
                     };
 
                     img.Measure(new Size(173, 173));

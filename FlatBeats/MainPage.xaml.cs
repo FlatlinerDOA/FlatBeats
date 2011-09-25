@@ -33,6 +33,14 @@
             this.Unloaded += this.MainPage_Unloaded;
         }
 
+        public MainPageViewModel ViewModel
+        {
+            get
+            {
+                return (MainPageViewModel)this.DataContext;
+            }
+        }
+
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
         }
@@ -79,18 +87,18 @@
             }
         }
 
-        private void pano_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (pano.SelectedIndex != 1)
-            {
-                HubTileService.FreezeGroup("History");
-            }
-            else
-            {
-                HubTileService.UnfreezeGroup("History");
-            }
+            ////if (pano.SelectedIndex != 1 || this.ViewModel.IsInProgress)
+            ////{
+            ////    HubTileService.FreezeGroup("History");
+            ////}
+            ////else
+            ////{
+            ////    HubTileService.UnfreezeGroup("History");
+            ////}
 
-            if (pano.SelectedIndex != 2)
+            if (pano.SelectedIndex != 2 || this.ViewModel.IsInProgress)
             {
                 HubTileService.FreezeGroup("Latest");
             }
@@ -123,10 +131,6 @@
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void SettingsMenuItem_Click(object sender, EventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }

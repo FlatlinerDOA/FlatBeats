@@ -38,9 +38,13 @@ namespace FlatBeats.DataModel
 
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                obj = (T)serializer.ReadObject(ms);
-                ms.Close();
+                try
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                    obj = (T)serializer.ReadObject(ms);
+                    ms.Close();
+                }
+                catch (ArgumentException) { }
             }
 
             return obj;
@@ -48,24 +52,34 @@ namespace FlatBeats.DataModel
 
         public static T DeserializeAndClose<T>(Stream json) where T : class 
         {
-            T obj;
+            T obj = default(T);
             using (json)
             {
-#if DEBUG
-                var data = new MemoryStream();
-                json.CopyTo(data);
-                var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-                foreach (var line in jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                try
                 {
-                    Debug.WriteLine(line);
-                }
+#if DEBUG
+                    var data = new MemoryStream();
+                    json.CopyTo(data);
+                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+                    foreach (
+                        var line in
+                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
+                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        Debug.WriteLine(line);
+                    }
 
-                json = data;
+                    json = data;
 #endif
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                obj = (T)serializer.ReadObject(json);
-                json.Close();
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                    obj = (T)serializer.ReadObject(json);
+                    json.Close();
+                }
+                catch (ArgumentException)
+                {
+                    
+                }
             }
 
             return obj;

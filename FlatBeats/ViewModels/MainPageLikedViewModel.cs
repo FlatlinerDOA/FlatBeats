@@ -3,6 +3,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Threading;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -30,7 +31,7 @@ namespace FlatBeats.ViewModels
                         from mix in response.Mixes.ToObservable()
                         select new MixViewModel(mix);
 
-            return liked.ObserveOnDispatcher()
+            return liked.FlowIn().ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())
                 .Do(
                 this.Mixes.Add, 

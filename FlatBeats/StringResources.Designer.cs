@@ -173,6 +173,24 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This will clear everything on this device including your play history, it won&apos;t affect your profile such as liked mixes etc..
+        /// </summary>
+        internal static string MessageBox_ResetSettings_Message {
+            get {
+                return ResourceManager.GetString("MessageBox_ResetSettings_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset everything?.
+        /// </summary>
+        internal static string MessageBox_ResetSettings_Title {
+            get {
+                return ResourceManager.GetString("MessageBox_ResetSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flat Beats.
         /// </summary>
         internal static string Title_ApplicationName {

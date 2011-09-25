@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Windows.Media.Imaging;
 
     using FlatBeats.DataModel.Profile;
 
@@ -15,7 +17,7 @@
 
         private const string NowPlayingFilePath = "nowplaying.json";
 
-        private const string PlayHistoryFilePath = "playhistory.json";
+        private const string RecentlyPlayedFilePath = "recentmixes.json";
 
         public static IObservable<string> GetPlayToken()
         {
@@ -24,41 +26,61 @@
                 PlayTokenFilePath).Select(p => p.PlayToken);
         }
 
+        public static void DeletePlayToken()
+        {
+            Storage.Delete(PlayTokenFilePath);
+        }
+
         public static void Stop()
         {
             Storage.Delete(NowPlayingFilePath);
         }
         
+        public static void ClearRecentlyPlayed()
+        {
+            Storage.Delete(RecentlyPlayedFilePath);
+        }
+
         public static void SaveNowPlaying(this PlayingMixContract playing)
         {
-            
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayed()
         {
-            return Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load("recentmixes.json"))).Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>()} );
+            return
+                Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
+                    Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
         public static IObservable<Unit> AddToRecentlyPlayed(MixContract mix)
         {
-            return from recentlyPlayed in RecentlyPlayed().Do(m =>
-                {
-                    var duplicates = m.Mixes.Where(d => d.Id == mix.Id).ToList();
-                    foreach (var duplicate in duplicates)
-                    {
-                        m.Mixes.Remove(duplicate);
-                    }
+            string imageFilePath = "/Shared/Media/" + mix.Id + "-Original.jpg";
 
-                    m.Mixes.Insert(0, mix);
+            return from recentlyPlayed in RecentlyPlayed().Do(
+                       m =>
+                        {
+                            var duplicates = m.Mixes.Where(d => d.Id == mix.Id).ToList();
+                            foreach (var duplicate in duplicates)
+                            {
+                                m.Mixes.Remove(duplicate);
+                            }
 
-                    if (m.Mixes.Count > 10)
-                    {
-                        m.Mixes.Remove(m.Mixes.Last());
-                    }
-                })
-                   from mixes in Observable.Start(
-                       () => Storage.Save("recentmixes.json", Json.Serialize(recentlyPlayed)))
+                            m.Mixes.Insert(0, mix);
+
+                            if (m.Mixes.Count > 10)
+                            {
+                                m.Mixes.Remove(m.Mixes.Last());
+                            }
+                        })
+                   from mixes in Observable.Start(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)))
+                       from save in Downloader.GetAndSaveFile(mix.CoverUrls.OriginalUrl, imageFilePath).Do(d =>
+                       {
+                           MediaHistoryItem item = new MediaHistoryItem();
+                           item.Title = mix.Name;
+                           item.ImageStream = Storage.LoadStream(imageFilePath);
+                           MediaHistory.Instance.WriteRecentPlay(item);
+                       })
                    select new Unit();
         }
 
@@ -68,26 +90,11 @@
             return Json.Deserialize<PlayingMixContract>(data);
         }
 
-        public static PlayHistoryContract LoadPlayedMixes()
-        {
-            var data = Storage.Load(PlayHistoryFilePath);
-            var history = Json.Deserialize<PlayHistoryContract>(data);
-            return history ?? new PlayHistoryContract()
-                {
-                    PlayedMixes = new List<MixContract>()
-                };
-        }
-
         public static IObservable<PlayingMixContract> StartPlaying(this MixContract mix)
         {
-            ////MediaHistoryItem item = new MediaHistoryItem();
-            ////item.Title = mix.Name;
-            ////Storage.Save("/Mixes/");
-
             return from playToken in GetPlayToken()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
-                   from save in Downloader.GetAndSaveFile(mix.CoverUrls.OriginalUrl, "/mixes/" + mix.Id + "/original.jpg")
                    from added in AddToRecentlyPlayed(mix)
                    select new PlayingMixContract
                    {

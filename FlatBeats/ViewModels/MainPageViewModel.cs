@@ -171,8 +171,10 @@ namespace FlatBeats.ViewModels
         {
             if (this.IsDataLoaded)
             {
-                var reload = from recent in this.Recent.LoadAsync()
-                             from liked in this.Liked.LoadAsync()
+                this.ShowProgress();
+
+                var reload = from liked in this.Liked.LoadAsync()
+                             from recent in this.Recent.LoadAsync()
                              select new Unit();
                 reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
                 return;
@@ -180,8 +182,8 @@ namespace FlatBeats.ViewModels
 
             this.IsDataLoaded = true;
             this.ShowProgress();
-            var load = from recent in this.Recent.LoadAsync()
-                       from liked in this.Liked.LoadAsync()
+            var load = from liked in this.Liked.LoadAsync()
+                       from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
                        from tags in Observable.Start(() => this.TagsPanel.Load(latest))
                        select new Unit();

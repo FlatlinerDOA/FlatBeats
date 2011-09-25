@@ -26,13 +26,10 @@
         public IObservable<List<MixViewModel>> LoadAsync()
         {
             var pageData = from latest in MixesService.GetLatestMixes()
-                           from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool).Do(_ => Thread.Sleep(200))
+                           from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
-            return pageData.ObserveOnDispatcher()
-                .FirstDo(_ =>
-                    {
-                        this.Mixes.Clear();
-                    }).Do(
+            return pageData.FlowIn().ObserveOnDispatcher()
+                .FirstDo(_ => this.Mixes.Clear()).Do(
                 m => this.Mixes.Add(m),
                 this.ShowError).Aggregate(
                     new List<MixViewModel>(), 
