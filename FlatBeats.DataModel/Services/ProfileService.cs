@@ -92,6 +92,9 @@
 
         private static void DeleteCredentials()
         {
+            PlayerService.Stop();
+            PlayerService.ClearRecentlyPlayed();
+            PlayerService.DeletePlayToken();
             Storage.Delete(UserLoginFilePath);
             Storage.Delete(CredentialsFilePath);
             Downloader.UserToken = null;
@@ -101,9 +104,6 @@
         public static IObservable<Unit> Reset()
         {
             return from deleteCredentials in Observable.Start(DeleteCredentials)
-                   from playing in Observable.Start(PlayerService.Stop)
-                   from playToken in Observable.Start(PlayerService.DeletePlayToken)
-                   from list in Observable.Start(PlayerService.ClearRecentlyPlayed)
                    select new Unit();
         }
     }

@@ -8,9 +8,13 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/client/2007"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
-                    xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                    xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls" xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls" mc:Ignorable="d">
+                    xmlns:local="clr-namespace:FlatBeats.Controls"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
+                    xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
+                    xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                    mc:Ignorable="d">
     <Style TargetType="local:AnimatingContentControl">
         <Setter Property="Foreground"
                 Value="#FF000000" />
@@ -68,35 +72,43 @@
         </Setter>
     </Style>
     <Style TargetType="local:TransitioningBackgroundControl">
-		<Setter Property="IsTabStop"
-			Value="False" />
-		<Setter Property="HorizontalContentAlignment"
-			Value="Stretch" />
-		<Setter Property="VerticalContentAlignment"
-			Value="Stretch" />
-		<Setter Property="Transition"
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="Transition"
                 Value="BackgroundContent" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="local:TransitioningBackgroundControl">
-					<Grid>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="PresentationStates">
-								<VisualStateGroup.Transitions>
-									<VisualTransition GeneratedDuration="0:0:1.8" />
-								</VisualStateGroup.Transitions>
-								<VisualState x:Name="ForegroundContent">
-									<Storyboard>
-										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PART_ForegroundContentPresentationSite" d:IsOptimized="True"/>
-									</Storyboard>
-								</VisualState>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TransitioningBackgroundControl">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="PresentationStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:1.8" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="ForegroundContent">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                         Storyboard.TargetName="PART_ForegroundContentPresentationSite"
+                                                         d:IsOptimized="True" />
+                                    </Storyboard>
+                                </VisualState>
                                 <VisualState x:Name="BackgroundContent">
-									<Storyboard>
-										<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PART_ForegroundContentPresentationSite" d:IsOptimized="True"/>
-									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                         Storyboard.TargetName="PART_ForegroundContentPresentationSite"
+                                                         d:IsOptimized="True" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
 
                         <!---->
 						<Grid x:Name="PART_BackgroundContentPresentationSite"
@@ -106,9 +118,9 @@
 							<!--<Rectangle Fill="#FFFB2200"
 								Stroke="Black" Opacity="0.5"
                                        />-->
-						</Grid>
+                    </Grid>
 
-                        <!---->
+                    <!---->
 						<Grid x:Name="PART_ForegroundContentPresentationSite"
 							CacheMode="BitmapCache"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -116,40 +128,40 @@
 							<!--<Rectangle Fill="Blue"
 								Stroke="Black" Opacity="0.5"
                                        />-->
-						</Grid>
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+                    </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-	<Style TargetType="local:DynamicBackgroundPanorama">
-		<Setter Property="ItemsPanel">
-			<Setter.Value>
-				<ItemsPanelTemplate>
-					<controlsPrimitives:PanoramaPanel x:Name="panel" />
-				</ItemsPanelTemplate>
-			</Setter.Value>
-		</Setter>
-		<Setter Property="Foreground"
-			Value="{StaticResource PhoneForegroundBrush}" />
-		<Setter Property="Background"
-			Value="Transparent" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="local:DynamicBackgroundPanorama">
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="auto" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<local:UpdatingPanningLayer x:Name="BackgroundLayer"
-							HorizontalAlignment="Left"
-							Grid.RowSpan="2">
-							<local:TransitioningBackgroundControl x:Name="background"
-								DynamicBackground="{TemplateBinding DynamicBackground}"
-								Margin="-1,0">
-								<!--<local:TransitioningBackgroundControl.OpacityMask>
+    <Style TargetType="local:DynamicBackgroundPanorama">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <controlsPrimitives:PanoramaPanel x:Name="panel" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground"
+                Value="{StaticResource PhoneForegroundBrush}" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:DynamicBackgroundPanorama">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <local:UpdatingPanningLayer x:Name="BackgroundLayer"
+                                                    HorizontalAlignment="Left"
+                                                    Grid.RowSpan="2">
+                            <local:TransitioningBackgroundControl x:Name="background"
+                                                                  DynamicBackground="{TemplateBinding DynamicBackground}"
+                                                                  Margin="-1,0">
+                                <!--<local:TransitioningBackgroundControl.OpacityMask>
                                     <LinearGradientBrush StartPoint="0,0.5"
                                                          EndPoint="1,0.5">
                                         <GradientStop Color="Transparent"
@@ -162,27 +174,27 @@
                                                       Offset="1" />
                                     </LinearGradientBrush>
                                 </local:TransitioningBackgroundControl.OpacityMask>-->
-							</local:TransitioningBackgroundControl>
-						</local:UpdatingPanningLayer>
+                            </local:TransitioningBackgroundControl>
+                        </local:UpdatingPanningLayer>
                         <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
-							CacheMode="BitmapCache"
-							ContentTemplate="{TemplateBinding TitleTemplate}"
-							Content="{TemplateBinding Title}"
-							FontSize="187"
-							FontFamily="{StaticResource PhoneFontFamilyLight}"
-							HorizontalAlignment="Left"
-							Margin="10,-76,0,9"
-							Grid.Row="0" />
-						<controlsPrimitives:PanningLayer x:Name="ItemsLayer"
-							HorizontalAlignment="Left"
-							Grid.Row="1">
-							<ItemsPresenter x:Name="items" />
-						</controlsPrimitives:PanningLayer>
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+                                                              CacheMode="BitmapCache"
+                                                              ContentTemplate="{TemplateBinding TitleTemplate}"
+                                                              Content="{TemplateBinding Title}"
+                                                              FontSize="187"
+                                                              FontFamily="{StaticResource PhoneFontFamilyLight}"
+                                                              HorizontalAlignment="Left"
+                                                              Margin="10,-76,0,9"
+                                                              Grid.Row="0" />
+                        <controlsPrimitives:PanningLayer x:Name="ItemsLayer"
+                                                         HorizontalAlignment="Left"
+                                                         Grid.Row="1">
+                            <ItemsPresenter x:Name="items" />
+                        </controlsPrimitives:PanningLayer>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <Style TargetType="local:NavigationList">
         <Setter Property="ItemTemplate">
             <Setter.Value>
@@ -198,8 +210,8 @@
                 <ControlTemplate>
 
                     <local:ItemsControlEx x:Name="itemsControl"
-                                      ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
-                                      ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
+                                          ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
                         <local:ItemsControlEx.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Vertical" />
@@ -225,10 +237,11 @@
                 Value="{StaticResource PhoneFontSizeNormal}" />
         <Setter Property="Foreground"
                 Value="{StaticResource PhoneForegroundBrush}" />
-        <Setter Property="Background" >
-        	<Setter.Value>
+        <Setter Property="Background"
+                Value="{StaticResource PhoneBackgroundBrush}">
+            <!--<Setter.Value>
         		<SolidColorBrush Color="#BF1F1F1F"/>
-        	</Setter.Value>
+        	</Setter.Value>-->
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
@@ -250,17 +263,24 @@
                                            FontFamily="Segoe WP Light" />
                                 <TextBlock Text="{TemplateBinding Message}" />
                                 <Grid Height="72">
-                                	<Grid.ColumnDefinitions>
-                                		<ColumnDefinition/>
-                                		<ColumnDefinition Width="Auto"/>
-                                	</Grid.ColumnDefinitions>
-                                	<TextBox x:Name="inputBox"
-                                		Binding:TextBinding.UpdateSourceOnChange="True"
-                                		InputScope="{TemplateBinding InputScope}"
-                                		Text="{TemplateBinding Value}" Margin="0,0,1,0" d:LayoutOverrides="Width, Height" />
-                                	<StackPanel x:Name="actionButtonArea"
-                                		Orientation="Horizontal"
-                                		HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,8,0,0" Grid.ColumnSpan="2" Grid.Column="1" />
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Controls:PhoneTextBox x:Name="inputBox"
+                                                           Hint="search mixes by name, tag or artist"
+                                                           Binding:TextBinding.UpdateSourceOnChange="True"
+                                                           InputScope="{TemplateBinding InputScope}"
+                                                           Text="{TemplateBinding Value}"
+                                                           Margin="0,0,1,0"
+                                                           d:LayoutOverrides="Width, Height" />
+                                    <StackPanel x:Name="actionButtonArea"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="0,8,0,0"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Column="1" />
                                 </Grid>
                             </StackPanel>
 

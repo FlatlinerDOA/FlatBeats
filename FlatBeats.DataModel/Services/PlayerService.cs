@@ -3,13 +3,18 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.IsolatedStorage;
     using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     using FlatBeats.DataModel.Profile;
 
     using Microsoft.Devices;
     using Microsoft.Phone.Reactive;
+    using Microsoft.Phone.Shell;
 
     public static class PlayerService
     {
@@ -74,7 +79,7 @@
                             }
                         })
                    from mixes in Observable.Start(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)))
-                       from save in Downloader.GetAndSaveFile(mix.CoverUrls.OriginalUrl, imageFilePath).Do(d =>
+                       from save in Downloader.GetAndSaveFile(mix.CoverUrls.ThumbnailUrl, imageFilePath).Do(d =>
                        {
                            MediaHistoryItem item = new MediaHistoryItem();
                            item.Title = mix.Name;
@@ -104,7 +109,76 @@
                        Cover = mix.CoverUrls,
                        Set = response.Set
                    };
-        } 
+        }
+
+        public static IObservable<Unit> SetNowPlayingTile(MixContract mix, string title, string backTitle)
+        {
+            var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
+            if (appTile == null)
+            {
+                return Observable.Empty<Unit>();
+            }
+
+            return SaveFadedThumbnail(mix).Do(
+                url =>
+                    {
+                        var newAppTile = new StandardTileData()
+                            {
+                                BackContent = mix.Name,
+                                BackTitle = backTitle,
+                                BackBackgroundImage = url,
+                                BackgroundImage = new Uri("Background.png", UriKind.Relative),
+                                Title = title 
+                            };
+                        appTile.Update(newAppTile);
+                    }).Select(_ => new Unit());
+        }
+        
+
+        private static IObservable<Uri> SaveFadedThumbnail(MixContract mix)
+        {
+            var bitmap = new BitmapImage();
+            var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").Select(_ => new Unit()).Take(1);
+            var failed = from failure in Observable.FromEvent<ExceptionRoutedEventArgs>(bitmap, "ImageFailed").Take(1)
+                         from result in Observable.Throw<Exception>(failure.EventArgs.ErrorException)
+                         select new Unit();
+
+            bitmap.CreateOptions = BitmapCreateOptions.None;
+            bitmap.UriSource = mix.CoverUrls.ThumbnailUrl;
+            return opened.Amb(failed).Select(
+                _ =>
+                {
+                    var img = new Image()
+                    {
+                        Source = bitmap,
+                        Stretch = Stretch.Uniform,
+                        Opacity = 0.5,
+                        Width = 173,
+                        Height = 173
+                    };
+
+                    img.Measure(new Size(173, 173));
+                    img.Arrange(new Rect(0, 0, 173, 173));
+                    var wb = new WriteableBitmap(173, 173);
+                    wb.Render(img, new TranslateTransform());
+                    wb.Invalidate();
+                    using (var isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!isolatedStorageFile.DirectoryExists("Images"))
+                        {
+                            isolatedStorageFile.CreateDirectory("Images");
+                        }
+
+                        using (var file = isolatedStorageFile.CreateFile("/Shared/ShellContent/NowPlaying.jpg"))
+                        {
+                            wb.SaveJpeg(file, 173, 173, 0, 85);
+                            file.Close();
+                        }
+                    }
+
+                    return new Uri("isostore:/Shared/ShellContent/NowPlaying.jpg", UriKind.RelativeOrAbsolute);
+                });
+        }
 
         public static IObservable<PlayResponseContract> NextTrack(this PlayingMixContract playing)
         {
