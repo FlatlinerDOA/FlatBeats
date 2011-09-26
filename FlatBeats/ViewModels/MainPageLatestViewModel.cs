@@ -1,11 +1,13 @@
-﻿namespace FlatBeats.ViewModels
+﻿//--------------------------------------------------------------------------------------------------
+// <copyright file="MainPageLatestViewModel.cs" company="DNS Technology Pty Ltd.">
+//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
+// </copyright>
+//--------------------------------------------------------------------------------------------------
+namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Threading;
-
-    using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
@@ -28,10 +30,10 @@
             var pageData = from latest in MixesService.GetLatestMixes()
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
-            return pageData.FlowIn().ObserveOnDispatcher()
-                .FirstDo(_ => this.Mixes.Clear()).Do(
-                m => this.Mixes.Add(m),
-                this.ShowError).Aggregate(
+            return pageData.FlowIn()
+                .ObserveOnDispatcher()
+                .FirstDo(_ => this.Mixes.Clear())
+                .Do(m => this.Mixes.Add(m), this.ShowError).Aggregate(
                     new List<MixViewModel>(), 
                     (a, m) =>
                     {

@@ -28,7 +28,7 @@ namespace FlatBeats.ViewModels
             var liked = from userCredentials in ProfileService.LoadCredentials()
                         from userToken in ProfileService.LoadUserToken()
                         from response in ProfileService.GetLikedMixes(userToken.CurentUser.Id)
-                        from mix in response.Mixes.ToObservable()
+                        from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                         select new MixViewModel(mix);
 
             return liked.FlowIn().ObserveOnDispatcher()

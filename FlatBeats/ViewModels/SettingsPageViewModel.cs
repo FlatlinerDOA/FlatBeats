@@ -19,6 +19,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
+    using Microsoft.Phone.Tasks;
 
     /// <summary>
     /// </summary>
@@ -44,9 +45,21 @@ namespace FlatBeats.ViewModels
         public SettingsPageViewModel()
         {
             this.Title = "PROFILE";
+            this.LoginLabelText = "login";
+            this.ResetLabelText = "reset";
+            this.SignupLabelText = "create account";
+            this.UserNameLabelText = "Username";
+            this.PasswordLabelText = "Password";
             this.Mixes = new ObservableCollection<MixViewModel>();
+            this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);
             this.ResetCommand = new DelegateCommand(this.Reset);
+        }
+
+        private void Signup()
+        {
+            var task = new WebBrowserTask() { Uri = new Uri("http://8tracks.com/signup") };
+            task.Show();
         }
 
         #endregion
@@ -56,6 +69,47 @@ namespace FlatBeats.ViewModels
         public DelegateCommand LoginCommand { get; private set; }
 
         public DelegateCommand ResetCommand { get; private set; }
+
+        private string passwordLabelText;
+
+        public string PasswordLabelText
+        {
+            get
+            {
+                return this.passwordLabelText;
+            }
+            set
+            {
+                if (this.passwordLabelText == value)
+                {
+                    return;
+                }
+
+                this.passwordLabelText = value;
+                this.OnPropertyChanged("PasswordLabelText");
+            }
+        }
+
+        private string userNameLabelText;
+
+        public string UserNameLabelText
+        {
+            get
+            {
+                return this.userNameLabelText;
+            }
+            set
+            {
+                if (this.userNameLabelText == value)
+                {
+                    return;
+                }
+
+                this.userNameLabelText = value;
+                this.OnPropertyChanged("UserNameLabelText");
+            }
+        }
+
         /// <summary>
         /// </summary>
         public string Password
@@ -74,6 +128,66 @@ namespace FlatBeats.ViewModels
 
                 this.password = value;
                 this.OnPropertyChanged("Password");
+            }
+        }
+
+        private string resetLabelText;
+
+        public string ResetLabelText
+        {
+            get
+            {
+                return this.resetLabelText;
+            }
+            set
+            {
+                if (this.resetLabelText == value)
+                {
+                    return;
+                }
+
+                this.resetLabelText = value;
+                this.OnPropertyChanged("ResetLabelText");
+            }
+        }
+
+        private string loginLabelText;
+
+        public string LoginLabelText
+        {
+            get
+            {
+                return this.loginLabelText;
+            }
+            set
+            {
+                if (this.loginLabelText == value)
+                {
+                    return;
+                }
+
+                this.loginLabelText = value;
+                this.OnPropertyChanged("LoginLabelText");
+            }
+        }
+
+        private string signupLabelText;
+
+        public string SignupLabelText
+        {
+            get
+            {
+                return this.signupLabelText;
+            }
+            set
+            {
+                if (this.signupLabelText == value)
+                {
+                    return;
+                }
+
+                this.signupLabelText = value;
+                this.OnPropertyChanged("SignupLabelText");
             }
         }
 
@@ -97,6 +211,8 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("UserName");
             }
         }
+
+        public DelegateCommand SignupCommand { get; private set; }
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
         #endregion

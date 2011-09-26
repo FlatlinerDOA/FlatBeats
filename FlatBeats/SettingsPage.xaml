@@ -64,21 +64,27 @@
         <!--Pivot Control-->
         <controls:Pivot Title="FLAT BEATS">
             <controls:PivotItem Header="login">
-                <Grid>
-                    <StackPanel>
-                        <TextBlock Text="USERNAME" Margin="8,0" />
+                <ScrollViewer>
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock Text="{Binding UserNameLabelText}" Margin="12,0" />
                         <TextBox Text="{Binding UserName, Mode=TwoWay}" />
                         
-                        <TextBlock Text="PASSWORD"
-                                   Margin="8,0" />
+                        <TextBlock Text="{Binding PasswordLabelText}"
+                                   Margin="12,0" />
                         <PasswordBox Password="{Binding Password, Mode=TwoWay}" />
-                        <Button Command="{Binding LoginCommand}" Content="login" Margin="8" Width="200" />
+                        <Button Command="{Binding LoginCommand}" Content="{Binding LoginLabelText}" Margin="0,0,8,8" MinWidth="250" HorizontalAlignment="Left" />
+                        <Button Command="{Binding SignupCommand}"
+                                Content="{Binding SignupLabelText}"
+                                Margin="0,0,8,8"
+                                MinWidth="250"
+                                HorizontalAlignment="Left" />
                         <Button Command="{Binding ResetCommand}"
-                                Content="reset"
-                                Margin="8"
-                                Width="200" />
+                                Content="{Binding ResetLabelText}"
+                                Margin="0,0,8,8"
+                                MinWidth="250"
+                                HorizontalAlignment="Left" />
                     </StackPanel>
-                </Grid>
+                </ScrollViewer>
             </controls:PivotItem>
             <controls:PivotItem Header="my mixes">
                 <Grid>
@@ -100,9 +106,4 @@
 
         </controls:Pivot>
     </Grid>
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True"
-                              IsMenuEnabled="True">
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>    
 </phone:PhoneApplicationPage>

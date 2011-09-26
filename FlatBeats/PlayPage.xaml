@@ -196,7 +196,7 @@
                                         <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
                                                    TextWrapping="NoWrap"
                                                    Style="{StaticResource PhoneTextLargeStyle}"
-                                                   Foreground="White" />
+                                                   Foreground="{StaticResource PhoneForegroundBrush}" />
                                 </DataTemplate>
                             </Controls:NavigationList.ItemTemplate>
                         </Controls:NavigationList>

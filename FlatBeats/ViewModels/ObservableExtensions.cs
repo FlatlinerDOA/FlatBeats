@@ -1,22 +1,25 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿//--------------------------------------------------------------------------------------------------
+// <copyright file="ObservableExtensions.cs" company="DNS Technology Pty Ltd.">
+//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
+// </copyright>
+//--------------------------------------------------------------------------------------------------
 namespace FlatBeats.ViewModels
 {
+    using System;
     using System.Threading;
+    using System.Windows.Threading;
 
     using Microsoft.Phone.Reactive;
 
     public static class ObservableExtensions
     {
+        public static IObservable<T> FlowInTime<T>(this IObservable<T> source)
+        {
+            return from item in source
+                   from interval in Observable.Interval(TimeSpan.FromMilliseconds(150)).Take(1)
+                   select item;
+        }
+
         public static IObservable<T> FlowIn<T>(this IObservable<T> source)
         {
             bool hasBeenRun = false;
@@ -29,7 +32,7 @@ namespace FlatBeats.ViewModels
                         }
                         else
                         {
-                            Thread.Sleep(75);
+                            Thread.Sleep(150);
                         }
                     });
         }

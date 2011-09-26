@@ -1,16 +1,11 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿//--------------------------------------------------------------------------------------------------
+// <copyright file="MixTrackHistoryContract.cs" company="DNS Technology Pty Ltd.">
+//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
+// </copyright>
+//--------------------------------------------------------------------------------------------------
 namespace FlatBeats.DataModel.Profile
 {
+    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 

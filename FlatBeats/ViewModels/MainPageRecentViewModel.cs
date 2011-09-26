@@ -39,7 +39,7 @@
             var recentMixes = from response in PlayerService.RecentlyPlayed()
                               let playing = PlayerService.LoadNowPlaying()
                               where response != null && response.Mixes != null
-                              from mix in response.Mixes.ToObservable()
+                              from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                               select new RecentMixViewModel(mix) { IsNowPlaying = playing != null && playing.MixId == mix.Id };
             return recentMixes.FlowIn()
                 .ObserveOnDispatcher()

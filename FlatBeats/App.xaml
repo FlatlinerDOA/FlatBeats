@@ -9,8 +9,8 @@
     <!--Application Resources-->
     <Application.Resources>
     	<ControlTemplate x:Key="CircleButtonControlTemplate" TargetType="Button">
-    		<Grid Background="{StaticResource TransparentBrush}">
-    			<Ellipse Stroke="{StaticResource PhoneForegroundBrush}" StrokeThickness="2"/>
+    		<Grid Background="{TemplateBinding Background}">
+    			<Ellipse Stroke="{TemplateBinding Foreground}" StrokeThickness="2"/>
     			<ContentPresenter/>
     		</Grid>
     	</ControlTemplate>
