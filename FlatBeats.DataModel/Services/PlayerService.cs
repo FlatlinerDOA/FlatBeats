@@ -38,6 +38,7 @@
 
         public static void Stop()
         {
+            ResetNowPlayingTile();
             Storage.Delete(NowPlayingFilePath);
         }
         
@@ -109,6 +110,22 @@
                        Cover = mix.CoverUrls,
                        Set = response.Set
                    };
+        }
+
+        public static void ResetNowPlayingTile()
+        {
+            var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
+            if (appTile == null)
+            {
+                return;
+            }
+
+            var newAppTile = new StandardTileData()
+            {
+                BackgroundImage = new Uri("Background.png", UriKind.Relative),
+                Title = "Flat Beats"
+            };
+            appTile.Update(newAppTile);
         }
 
         public static IObservable<Unit> SetNowPlayingTile(MixContract mix, string title, string backTitle)
