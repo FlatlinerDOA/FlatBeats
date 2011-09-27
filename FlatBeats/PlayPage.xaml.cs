@@ -92,5 +92,10 @@
                 this.NavigationService.Navigate(navItem.NavigationUrl);
             }
         }
+
+        private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate(new Uri("/UserProfilePage.xaml?userid=" + this.ViewModel.CreatedByUserId, UriKind.Relative));
+        }
     }
 }

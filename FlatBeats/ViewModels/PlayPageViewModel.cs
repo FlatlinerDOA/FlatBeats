@@ -395,6 +395,7 @@ namespace FlatBeats.ViewModels
         {
             this.Title = loadMix.Name;
             this.mixData = loadMix;
+            this.CreatedByUserId = loadMix.User.Id;
             this.Mix = new MixViewModel(loadMix);
             if (this.PlayOnLoad)
             {
@@ -471,5 +472,7 @@ namespace FlatBeats.ViewModels
         public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
 
         public bool PlayOnLoad { get; set; }
+
+        public string CreatedByUserId { get; set; }
     }
 }

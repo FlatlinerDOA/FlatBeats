@@ -70,36 +70,45 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="ReviewItemTemplate">
-            <Grid d:DesignWidth="499"
-                  d:DesignHeight="127"
-                  Margin="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border Height="100" Margin="12,8,8,8" Grid.RowSpan="3" VerticalAlignment="Top" Width="100" Background="{StaticResource PhoneChromeBrush}">
-                    <Image Source="{Binding AvatarUrl, Converter={StaticResource ImageConverter}}" />
-            	</Border>
-            	<StackPanel Grid.Column="1" Margin="2,0,0,0">
-            		<TextBlock Margin="8,6,0,0"
-            			TextWrapping="Wrap"
-            			Text="{Binding UserName}"
-            			d:LayoutOverrides="Width, Height"
-            			Style="{StaticResource PhoneTextAccentStyle}"
-            			FontSize="26.667" />
-            		<TextBlock Margin="8,0"
-            			TextWrapping="Wrap"
-            			Text="{Binding Body}"
-            			Style="{StaticResource PhoneTextNormalStyle}"
-            			Foreground="{StaticResource PhoneForegroundBrush}" />
-            		<TextBlock Margin="8,4,4,0"
-            			TextWrapping="Wrap"
-            			Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}"
-            			d:LayoutOverrides="Height"
-            			Style="{StaticResource PhoneTextSmallStyle}"
-            			FontSize="16" />
-            	</StackPanel>
-            </Grid>
+            <Controls:AnimatingContentControl>
+                <Grid  d:DesignWidth="499"
+                        d:DesignHeight="127"
+                        Margin="0"
+                        toolkit:TiltEffect.IsTiltEnabled="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Height="100"
+                            Margin="12,8,8,8"
+                            Grid.RowSpan="3"
+                            VerticalAlignment="Top"
+                            Width="100"
+                            Background="{StaticResource PhoneChromeBrush}">
+                        <Image Source="{Binding AvatarUrl, Converter={StaticResource ImageConverter}}" />
+                    </Border>
+                    <StackPanel Grid.Column="1"
+                                Margin="2,0,0,0">
+                        <TextBlock Margin="8,6,0,0"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding UserName}"
+                                    d:LayoutOverrides="Width, Height"
+                                    Style="{StaticResource PhoneTextAccentStyle}"
+                                    FontSize="26.667" />
+                        <TextBlock Margin="8,0"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding Body}"
+                                    Style="{StaticResource PhoneTextNormalStyle}"
+                                    Foreground="{StaticResource PhoneForegroundBrush}" />
+                        <TextBlock Margin="8,4,4,0"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}"
+                                    d:LayoutOverrides="Height"
+                                    Style="{StaticResource PhoneTextSmallStyle}"
+                                    FontSize="16" />
+                    </StackPanel>
+                </Grid>
+            </Controls:AnimatingContentControl>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>
@@ -158,11 +167,13 @@
                                               MinWidth="197" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Border Height="173" Margin="12,4,12,0"
-                    	    Grid.Row="1"
-                    	    VerticalAlignment="Top"
-                    	    Width="173" Background="{StaticResource PhoneChromeBrush}" BorderThickness="2,3,0,0"
-                               >
+                        <Border Height="173" 
+                                Margin="12,4,12,0"
+                    	        Grid.Row="1"
+                    	        VerticalAlignment="Top"
+                    	        Width="173" 
+                                Background="{StaticResource PhoneChromeBrush}" 
+                                BorderThickness="2,3,0,0">
                     	    <Image>
                     		    <Image.Source>
                     			    <BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
@@ -200,32 +211,40 @@
                                 </DataTemplate>
                             </Controls:NavigationList.ItemTemplate>
                         </Controls:NavigationList>
-                        <Grid
-                              Grid.Row="3"
-                              Grid.ColumnSpan="2"
-                              Margin="8" d:LayoutOverrides="Height">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="0.779*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Height="100" Margin="4,0,8,5" VerticalAlignment="Top" Width="100" Background="{StaticResource PhoneChromeBrush}">
-                                <Image Source="{Binding Mix.CreatedByAvatarUrl, Converter={StaticResource ImageConverter}}" />
-                    	    </Border>
-                            <StackPanel Grid.Column="1">
-							    <TextBlock Text="{Binding Mix.CreatedBy}"
+                        <Button Grid.Row="3"
+                                Grid.ColumnSpan="2"
+                                Margin="8"
+                                toolkit:TiltEffect.IsTiltEnabled="True" 
+                                Click="UserButton_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="0.779*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Height="100" Margin="4,0,8,5" VerticalAlignment="Top" Width="100" Background="{StaticResource PhoneChromeBrush}">
+                                    <Image Source="{Binding Mix.CreatedByAvatarUrl, Converter={StaticResource ImageConverter}}" />
+                    	        </Border>
+                                <StackPanel Grid.Column="1">
+							        <TextBlock Text="{Binding Mix.CreatedBy}"
+                                           TextWrapping="Wrap"
+                                           Margin="8,0,0,0"
+                                           Style="{StaticResource PhoneTextAccentStyle}"
+                               	           FontSize="26.667"
+								           VerticalAlignment="Top"  />
+							        <TextBlock Margin="8,4,4,12"
                                        TextWrapping="Wrap"
-                                       Margin="8,0,0,0"
-                                       Style="{StaticResource PhoneTextAccentStyle}"
-                               	       FontSize="26.667"
-								       VerticalAlignment="Top"  />
-							    <TextBlock Margin="8,4,4,12"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
-                                   d:LayoutOverrides="Height"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   FontSize="16" />
-						    </StackPanel>								   
-                        </Grid>
+                                       Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
+                                       d:LayoutOverrides="Height"
+                                       Style="{StaticResource PhoneTextSmallStyle}"
+                                       FontSize="16" />
+						        </StackPanel>								   
+                            </Grid>
+                        </Button>
                     </Grid>
                 </Grid>
             </controls:PivotItem>
@@ -233,7 +252,8 @@
                 <Grid>
                     <Controls:NavigationList Margin="0,0,-12,0"
                                              ItemsSource="{Binding Reviews}"
-                                             ItemTemplate="{StaticResource ReviewItemTemplate}" />
+                                             ItemTemplate="{StaticResource ReviewItemTemplate}"
+                                             Navigation="NavigationList_OnNavigation" />
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="played">

@@ -29,11 +29,31 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private string loginLabelText;
+
+        /// <summary>
+        /// </summary>
         private string password;
 
         /// <summary>
         /// </summary>
+        private string passwordLabelText;
+
+        /// <summary>
+        /// </summary>
+        private string resetLabelText;
+
+        /// <summary>
+        /// </summary>
+        private string signupLabelText;
+
+        /// <summary>
+        /// </summary>
         private string userName;
+
+        /// <summary>
+        /// </summary>
+        private string userNameLabelText;
 
         #endregion
 
@@ -56,59 +76,38 @@ namespace FlatBeats.ViewModels
             this.ResetCommand = new DelegateCommand(this.Reset);
         }
 
-        private void Signup()
-        {
-            var task = new WebBrowserTask() { Uri = new Uri("http://8tracks.com/signup") };
-            task.Show();
-        }
-
         #endregion
 
         #region Public Properties
 
+        /// <summary>
+        /// </summary>
         public DelegateCommand LoginCommand { get; private set; }
 
-        public DelegateCommand ResetCommand { get; private set; }
-
-        private string passwordLabelText;
-
-        public string PasswordLabelText
+        /// <summary>
+        /// </summary>
+        public string LoginLabelText
         {
             get
             {
-                return this.passwordLabelText;
+                return this.loginLabelText;
             }
+
             set
             {
-                if (this.passwordLabelText == value)
+                if (this.loginLabelText == value)
                 {
                     return;
                 }
 
-                this.passwordLabelText = value;
-                this.OnPropertyChanged("PasswordLabelText");
+                this.loginLabelText = value;
+                this.OnPropertyChanged("LoginLabelText");
             }
         }
 
-        private string userNameLabelText;
-
-        public string UserNameLabelText
-        {
-            get
-            {
-                return this.userNameLabelText;
-            }
-            set
-            {
-                if (this.userNameLabelText == value)
-                {
-                    return;
-                }
-
-                this.userNameLabelText = value;
-                this.OnPropertyChanged("UserNameLabelText");
-            }
-        }
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -131,14 +130,40 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private string resetLabelText;
+        /// <summary>
+        /// </summary>
+        public string PasswordLabelText
+        {
+            get
+            {
+                return this.passwordLabelText;
+            }
 
+            set
+            {
+                if (this.passwordLabelText == value)
+                {
+                    return;
+                }
+
+                this.passwordLabelText = value;
+                this.OnPropertyChanged("PasswordLabelText");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public DelegateCommand ResetCommand { get; private set; }
+
+        /// <summary>
+        /// </summary>
         public string ResetLabelText
         {
             get
             {
                 return this.resetLabelText;
             }
+
             set
             {
                 if (this.resetLabelText == value)
@@ -151,34 +176,19 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private string loginLabelText;
+        /// <summary>
+        /// </summary>
+        public DelegateCommand SignupCommand { get; private set; }
 
-        public string LoginLabelText
-        {
-            get
-            {
-                return this.loginLabelText;
-            }
-            set
-            {
-                if (this.loginLabelText == value)
-                {
-                    return;
-                }
-
-                this.loginLabelText = value;
-                this.OnPropertyChanged("LoginLabelText");
-            }
-        }
-
-        private string signupLabelText;
-
+        /// <summary>
+        /// </summary>
         public string SignupLabelText
         {
             get
             {
                 return this.signupLabelText;
             }
+
             set
             {
                 if (this.signupLabelText == value)
@@ -212,9 +222,27 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        public DelegateCommand SignupCommand { get; private set; }
+        /// <summary>
+        /// </summary>
+        public string UserNameLabelText
+        {
+            get
+            {
+                return this.userNameLabelText;
+            }
 
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
+            set
+            {
+                if (this.userNameLabelText == value)
+                {
+                    return;
+                }
+
+                this.userNameLabelText = value;
+                this.OnPropertyChanged("UserNameLabelText");
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -225,11 +253,17 @@ namespace FlatBeats.ViewModels
         {
             this.ShowProgress();
             ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
-                    this.LoadProfile, 
-                    this.ShowError, 
-                    this.HideProgress);
+                this.LoadProfile, this.ShowError, this.HideProgress);
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        /// <param name="creds">
+        /// </param>
         private void LoadProfile(UserCredentialsContract creds)
         {
             if (creds == null)
@@ -240,33 +274,29 @@ namespace FlatBeats.ViewModels
             this.UserName = creds.UserName;
             this.Password = creds.Password;
 
+            this.ShowProgress();
             var q = from user in ProfileService.LoadUserToken()
-                    from mixes in ProfileService.GetUserMixes(user.CurentUser.Id)
-                    from mix in
-                        mixes.Mixes.ToObservable().Select(m => new MixViewModel(m)).ObserveOnDispatcher().FirstDo(
-                            _ => this.Mixes.Clear()).Do(this.Mixes.Add)
+                    from loaded in this.LoadMixes(user.CurentUser.Id)
                     select new Unit();
-            q.Subscribe(_ => { }, this.ShowError, this.ShowProgress);
+            q.Subscribe(_ => { }, this.ShowError, this.HideProgress);
         }
 
-        #endregion
-
-        #region Methods
+        private IObservable<Unit> LoadMixes(string userId)
+        {
+            var q = from mixes in ProfileService.GetUserMixes(userId)
+                    from mix in mixes.Mixes.ToObservable(Scheduler.ThreadPool)
+                    select new MixViewModel(mix);
+                        
+            return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add).FinallySelect(() => new Unit());
+        }
 
         /// <summary>
         /// </summary>
-        private void SignIn()
-        {
-            var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
-            this.ShowProgress();
-            ProfileService.Authenticate(creds).ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
-        }
-
         private void Reset()
         {
             var response = MessageBox.Show(
-                StringResources.MessageBox_ResetSettings_Message,
-                StringResources.MessageBox_ResetSettings_Title,
+                StringResources.MessageBox_ResetSettings_Message, 
+                StringResources.MessageBox_ResetSettings_Title, 
                 MessageBoxButton.OKCancel);
 
             if (response == MessageBoxResult.Cancel)
@@ -294,6 +324,30 @@ namespace FlatBeats.ViewModels
             ProfileService.Reset();
             this.UserName = null;
             this.Password = null;
+            this.Mixes.Clear();
+        }
+
+        /// <summary>
+        /// </summary>
+        private void SignIn()
+        {
+            var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
+            this.ShowProgress();
+            var q = from auth in ProfileService.Authenticate(creds)
+                    from mixLoaded in this.LoadMixes(auth.CurentUser.Id)
+                    select new Unit();
+            q.ObserveOnDispatcher().Subscribe(_ => {  }, this.ShowError, this.HideProgress);
+        }
+
+        /// <summary>
+        /// </summary>
+        private void Signup()
+        {
+            var task = new WebBrowserTask
+                {
+                    Uri = new Uri("http://8tracks.com/signup", UriKind.Absolute)
+                };
+            task.Show();
         }
 
         #endregion

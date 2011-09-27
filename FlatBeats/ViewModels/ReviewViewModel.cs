@@ -5,7 +5,7 @@ namespace FlatBeats.ViewModels
 
     using FlatBeats.DataModel;
 
-    public class ReviewViewModel : ViewModel
+    public class ReviewViewModel : ViewModel, INavigationItem
     {
         private Uri avatarUrl;
 
@@ -92,6 +92,9 @@ namespace FlatBeats.ViewModels
             {
                 this.Created = DateTime.Now.AddSeconds(-1);
             }
+
+            this.NavigationUrl = new Uri(
+                "/UserProfilePage.xaml?userid=" + review.Id, UriKind.Relative);
         }
 
         public DateTime Created
@@ -111,5 +114,9 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("Created");
             }
         }
+
+        public Uri NavigationUrl
+        {
+            get; private set; }
     }
 }
