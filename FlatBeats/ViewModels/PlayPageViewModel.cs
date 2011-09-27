@@ -18,6 +18,8 @@ namespace FlatBeats.ViewModels
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
+    using Coding4Fun.Phone.Controls;
+
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -77,11 +79,15 @@ namespace FlatBeats.ViewModels
             this.Reviews = new ObservableCollection<ReviewViewModel>();
             this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
             this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = StringResources.Command_NextTrack, HideWhenInactive = true };
-            this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
+            this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
             this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
-
+            this.ApplicationBarMenuCommands.Add(new CommandLink()
+                {
+                    Command = new DelegateCommand(this.AddReview, this.CanAddReview),
+                    Text = "review mix"
+                });
             this.ApplicationBarMenuCommands.Add(
                 new CommandLink()
                     {
@@ -99,6 +105,29 @@ namespace FlatBeats.ViewModels
                     Text = StringResources.Command_EmailMix,
                     Command = new DelegateCommand(this.Email)
                 });
+        }
+
+        private bool CanLikeUnlike()
+        {
+            return Downloader.IsAuthenticated;
+        }
+
+        private bool CanAddReview()
+        {
+            return Downloader.IsAuthenticated;
+        }
+
+        private void AddReview()
+        {
+            var prompt = new InputPrompt();
+            var completed = Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(handler => prompt.Completed += handler, handler => prompt.Completed -= handler);
+
+            var q = from response in completed.Take(1)
+                    where response.EventArgs.PopUpResult == PopUpResult.Ok
+                    from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
+                    select reviewAdded;
+            q.ObserveOnDispatcher().Subscribe(review => this.Reviews.Add(new ReviewViewModel(review.Reviews.FirstOrDefault())), this.ShowError, this.HideProgress);
+            prompt.Show();
         }
 
         public CommandLink PinToStartCommand { get; private set; }

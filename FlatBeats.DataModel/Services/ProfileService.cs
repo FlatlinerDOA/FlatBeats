@@ -1,6 +1,8 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
+    using System.Runtime.Serialization;
+
     using Microsoft.Phone.Reactive;
 
     public static class ProfileService
@@ -59,6 +61,14 @@
                     user => Downloader.UserToken = user.UserToken);
         }
 
+        public static IObservable<UserProfileResponseContract> GetUserProfile(string userId)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}.json", userId);
+            return
+                Downloader.GetJson<UserProfileResponseContract>(
+                    new Uri(urlFormat, UriKind.Absolute));
+
+        }
 
         public static IObservable<MixesResponseContract> GetUserMixes(string userId)
         {
@@ -101,10 +111,37 @@
             Downloader.UserCredentials = null;
         }
 
+        public static IObservable<FollowUserResponseContract> SetFollowUser(string userId, bool isFollowed)
+        {
+            var urlFormat = isFollowed ? string.Format("http://8tracks.com/users/{0}/follow.json", userId) : string.Format("http://8tracks.com/tracks/{0}/unfollow.json", userId);
+            var url = new Uri(urlFormat, UriKind.Absolute);
+            return Downloader.PostStringAndGetJson<FollowUserResponseContract>(url, string.Empty);
+        }
+
+        public static IObservable<ReviewsResponseContract> AddMixReview(string mixId, string review)
+        {
+            var url = new Uri("http://8tracks.com/reviews.json", UriKind.Absolute);
+            string body = string.Format("review[mixid]={0}&review[body]={1}", mixId, Uri.EscapeDataString(review));
+            return Downloader.PostStringAndGetJson<ReviewsResponseContract>(url, body);
+        }
+
         public static IObservable<Unit> Reset()
         {
-            return from deleteCredentials in Observable.Start(DeleteCredentials)
-                   select new Unit();
+            return Observable.Start(DeleteCredentials);
         }
+    }
+
+    [DataContract]
+    public class FollowUserResponseContract
+    {
+        [DataMember(Name = "user")]
+        public UserContract User { get; set; }
+    }
+
+    [DataContract]
+    public class UserProfileResponseContract
+    {
+        [DataMember(Name = "user")]
+        public UserContract User { get; set; }
     }
 }

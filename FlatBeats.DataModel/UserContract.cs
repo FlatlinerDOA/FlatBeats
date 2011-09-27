@@ -13,5 +13,9 @@
 
         [DataMember(Name = "avatar_urls")]
         public AvatarContract Avatar { get; set; }
+
+        [DataMember(Name = "followed_by_current_user")]
+        public bool IsFollowed { get; set; }
+
     }
 }
