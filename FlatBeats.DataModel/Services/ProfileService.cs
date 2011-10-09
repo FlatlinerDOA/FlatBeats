@@ -32,6 +32,7 @@
 
             return userLogin.Do(response =>
                 {
+                    PlayerService.DeletePlayToken();
                     SaveCredentials(userCredentials);
                     SaveUserToken(response);
                     Downloader.UserToken = response.UserToken;
