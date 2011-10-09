@@ -11,7 +11,7 @@
     x:Class="FlatBeats.TagsPage"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-                            shell:SystemTray.IsVisible="True">
+                            shell:SystemTray.IsVisible="True" d:DataContext="{d:DesignData /SampleData/TagsPageViewModelSampleData.xaml}">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:TagsPageViewModel x:Key="ViewModel" />
         <local:BooleanToBrushConverter x:Key="BooleanToAccentConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneChromeBrush}" />
@@ -58,7 +58,7 @@
                             <TextBlock Text="{Binding TagName}"
                                        TextWrapping="NoWrap"
                                        Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                       Foreground="{StaticResource PhoneForegroundBrush}" />
+                                       Foreground="{StaticResource PhoneForegroundBrush}" Margin="0" />
                         </StackPanel>
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>

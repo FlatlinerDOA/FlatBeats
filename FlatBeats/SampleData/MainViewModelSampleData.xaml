@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:FlatBeats" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" Title="flat beats">
 
-    <ViewModels:MainPageViewModel.Tags>
+    <ViewModels:MainPageViewModel.TagsPanel>
     	<ViewModels:MainPageTagsViewModel Title="design tags">
     		<ViewModels:MainPageTagsViewModel.Tags>
 			<ViewModels:TagViewModel TagName="design one" />
@@ -23,7 +23,7 @@
 			</ViewModels:MainPageTagsViewModel.Tags>  	
 		</ViewModels:MainPageTagsViewModel>
         
-    </ViewModels:MainPageViewModel.Tags>
+    </ViewModels:MainPageViewModel.TagsPanel>
     <ViewModels:MainPageViewModel.Recent >
     	<ViewModels:MainPageRecentViewModel Title="design recent">
     		<ViewModels:MainPageRecentViewModel.Mixes>

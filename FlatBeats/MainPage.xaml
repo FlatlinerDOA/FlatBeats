@@ -65,17 +65,17 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="LikedHeaderTemplate">
-            <Grid Width="409">
+            <Grid Background="{StaticResource PhoneInactiveBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" />
+                           FontFamily="Segoe WP SemiLight" Margin="8,4" />
                 <Button Background="Transparent"
                         Foreground="White"
                         HorizontalAlignment="Right"
-                        Margin="4,4,4,18"
+                        Margin="4,8,4,4"
                         d:LayoutOverrides="Height"
-                        VerticalAlignment="Bottom"
+                        VerticalAlignment="Center"
                         Click="SettingsButton_Click"
                         Template="{StaticResource CircleButtonControlTemplate}">
                     <Image Source="/icons/appbar.feature.settings.rest.png"
@@ -86,19 +86,19 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="RecentHeaderTemplate">
-            <Grid Width="409">
+            <Grid Background="{StaticResource PhoneInactiveBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" />
+                           FontFamily="Segoe WP SemiLight" Margin="8,4" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TagsHeaderTemplate">
-        	<Grid Width="409">
+        	<Grid Background="{StaticResource PhoneInactiveBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight"/>
+                           FontFamily="Segoe WP SemiLight" Margin="8,4"/>
                 <Button Background="Transparent"
                         HorizontalAlignment="Right"
                         Margin="4,4,4,18"
@@ -111,6 +111,40 @@
         		</Button>
         	</Grid>
         </DataTemplate>
+        <DataTemplate x:Key="TitleTemplate">
+        	<Grid Margin="0,62,0,0">
+        		<TextBlock TextWrapping="Wrap" Text="flat beats" d:LayoutOverrides="Width, Height"/>
+        	</Grid>
+        </DataTemplate>
+        <Storyboard x:Name="BackgroundStoryboard"/>
+        <DataTemplate x:Key="LatestHeaderTemplate">
+        	<Grid Background="{StaticResource PhoneInactiveBrush}">
+        		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" Margin="8,4"/>
+        	</Grid>
+        </DataTemplate>
+        <Style x:Key="PanoramaItemStyle1" TargetType="controls:PanoramaItem">
+        	<Setter Property="CacheMode" Value="BitmapCache"/>
+        	<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        	<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="controls:PanoramaItem">
+        				<Grid Background="{TemplateBinding Background}" Margin="0">
+        					<Grid.RowDefinitions>
+        						<RowDefinition Height="auto"/>
+        						<RowDefinition Height="*"/>
+        					</Grid.RowDefinitions>
+        					<ContentControl x:Name="header" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}" FontFamily="{StaticResource PhoneFontFamilySemiLight}" Margin="0" HorizontalContentAlignment="Stretch">
+        						<ContentControl.RenderTransform>
+        							<TranslateTransform x:Name="headerTransform"/>
+        						</ContentControl.RenderTransform>
+        					</ContentControl>
+        					<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Grid.Row="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.FontFamily>
         <StaticResource ResourceKey="PhoneFontFamilyNormal" />
@@ -145,22 +179,78 @@
             </toolkit:NavigationOutTransition.Forward>
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
-    <Grid x:Name="LayoutRoot"
-          Background="Black">    	
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="LoadStates">
+            <VisualStateGroup.Transitions>
+                <VisualTransition GeneratedDuration="0:0:0.8">
+                    <VisualTransition.GeneratedEasingFunction>
+                        <QuarticEase EasingMode="EaseOut" />
+                    </VisualTransition.GeneratedEasingFunction>
+                </VisualTransition>
+            </VisualStateGroup.Transitions>
+            <VisualState x:Name="UnloadedState">
+                <Storyboard>
+                    <DoubleAnimation Duration="0"
+                                     To="0"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationZ)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                    <DoubleAnimation Duration="0"
+                                     To="611"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.LocalOffsetX)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                    <DoubleAnimation Duration="0"
+                                     To="-51"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                    <DoubleAnimation Duration="0"
+                                     To="46"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.LocalOffsetZ)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                </Storyboard>
+            </VisualState>
+            <VisualState x:Name="LoadedState">
+                <Storyboard>
+                    <DoubleAnimation Duration="0"
+                                     To="0"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationZ)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                    <DoubleAnimation Duration="0"
+                                     To="0"
+                                     Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.LocalOffsetX)"
+                                     Storyboard.TargetName="pano"
+                                     d:IsOptimized="True" />
+                </Storyboard>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+    <Grid x:Name="LayoutRoot">
+    	<Grid.Background>
+    		<RadialGradientBrush RadiusX="1.152" RadiusY="0.59">
+    			<GradientStop Color="#FF3B3F47" Offset="1"/>
+    			<GradientStop Color="#FF5E5E62"/>
+    		</RadialGradientBrush>
+    	</Grid.Background>    	
         <controls:Panorama Title="{Binding Title}"
                            x:Name="pano" 
                            Foreground="White" 
-                           SelectionChanged="pano_SelectionChanged">
-            <controls:Panorama.Background>
-                <ImageBrush>
-                    <ImageBrush.ImageSource>
-                        <BitmapImage UriSource="PanoramaBackground.jpg" />
-                    </ImageBrush.ImageSource>
-                </ImageBrush>
-            </controls:Panorama.Background>
+                           SelectionChanged="pano_SelectionChanged" RenderTransformOrigin="0.5,0.5" TitleTemplate="{StaticResource TitleTemplate}" ItemContainerStyle="{StaticResource PanoramaItemStyle1}">
+        	<controls:Panorama.Background>
+        		<ImageBrush Stretch="None" ImageSource="PanoramaBackground.jpg"/>
+        	</controls:Panorama.Background>
+        	<controls:Panorama.RenderTransform>
+        		<CompositeTransform ScaleX="1.07" ScaleY="1.07"/>
+        	</controls:Panorama.RenderTransform>
+        	<controls:Panorama.Projection>
+        		<PlaneProjection RotationY="-18" GlobalOffsetX="18"/>
+        	</controls:Panorama.Projection>
             <controls:PanoramaItem DataContext="{Binding Liked}"
                                    Header="{Binding Title}"
-                                   HeaderTemplate="{StaticResource LikedHeaderTemplate}">
+                                   HeaderTemplate="{StaticResource LikedHeaderTemplate}" RenderTransformOrigin="0.5,0.5">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -175,7 +265,7 @@
                             <DataTemplate>
                                 <local:AnimatingContentControl>
                                     <StackPanel Orientation="Horizontal"
-                                                Height="80">
+                                                Height="80" Background="#7F000000" Margin="4">
                                         <Image Margin="14,8,8,8"
                                                Width="64"
                                                Height="64"
@@ -194,7 +284,7 @@
                     </local:NavigationList>
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Recent}" Header="{Binding Title}" HeaderTemplate="{StaticResource RecentHeaderTemplate}">
+            <controls:PanoramaItem DataContext="{Binding Recent}" Header="{Binding Title}" HeaderTemplate="{StaticResource RecentHeaderTemplate}" Margin="0,0,0,35">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -208,7 +298,7 @@
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl>
-                                    <StackPanel>
+                                    <StackPanel Background="#7F000000" Margin="4">
                                         <TextBlock Text="NOW PLAYING"
                                                    Style="{StaticResource PhoneTextTitle2Style}"
                                                    Foreground="{StaticResource PhoneAccentBrush}"
@@ -234,14 +324,14 @@
                     </local:NavigationList>
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Latest}" Header="{Binding Title}" Orientation="Horizontal" Width="1120">
+            <controls:PanoramaItem DataContext="{Binding Latest}" Header="{Binding Title}" Orientation="Horizontal" Width="1120" Margin="0,0,0,35" HeaderTemplate="{StaticResource LatestHeaderTemplate}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                Foreground="LightGray"
                                FontSize="32"
                                FontFamily="Segoe WP Light" 
-                               TextWrapping="Wrap" />
+                               TextWrapping="Wrap" Margin="12,0" />
                     <local:NavigationList Margin="4,0,-12,0"
                                       ItemsSource="{Binding Mixes}"
                                       Navigation="NavigationList_OnNavigation"
@@ -249,7 +339,7 @@
                                       VerticalAlignment="Top" />
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding TagsPanel}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}">
+            <controls:PanoramaItem DataContext="{Binding TagsPanel}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}" Margin="0,0,0,35">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -264,12 +354,12 @@
                             <DataTemplate>
                                 <local:AnimatingContentControl>
 
-                                    <StackPanel Margin="0,0,0,17"
-                                            Width="432">
+                                    <StackPanel Margin="4,4,12,4"
+                                            Width="432" Background="#7F000000">
                                         <TextBlock Text="{Binding TagName}"
                                                    TextWrapping="NoWrap"
                                                    Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                                   Foreground="White" />
+                                                   Foreground="White" Margin="12,4" />
                                     </StackPanel>
 
                                 </local:AnimatingContentControl>

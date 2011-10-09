@@ -43,6 +43,7 @@
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            VisualStateManager.GoToState(this, "UnloadedState", false);
         }
 
         private void MainPage_Unloaded(object sender, RoutedEventArgs e)
