@@ -9,7 +9,7 @@
         public string Id { get; set; }
 
         [DataMember(Name = "cover_urls")]
-        public CoverUrlContract CoverUrls { get; set; }
+        public CoverUrlContract Cover { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }

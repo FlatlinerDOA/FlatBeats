@@ -205,6 +205,7 @@ namespace FlatBeatsPlaybackAgent
             {
                 // If we're paused, we already have 
                 // the track set, so just resume playing.
+                player.Volume = 1;
                 player.Play();
             }
             else
@@ -218,6 +219,7 @@ namespace FlatBeatsPlaybackAgent
                     return;
                 }
 
+
                 var trackUrl = new Uri(this.NowPlaying.Set.Track.TrackUrl, UriKind.Absolute);
                 var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
 
@@ -230,6 +232,7 @@ namespace FlatBeatsPlaybackAgent
                     this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id, 
                     EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext);
                 player.Track = track;
+                player.Volume = 1;
             }
         }
 

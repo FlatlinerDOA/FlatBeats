@@ -50,12 +50,12 @@
         public static void SaveNowPlaying(this PlayingMixContract playing)
         {
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
+            SetNowPlayingTile(playing, StringResources.Title_ApplicationName, StringResources.Title_NowPlaying);
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayed()
         {
-            return
-                Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
+            return Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
                     Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
@@ -80,7 +80,7 @@
                             }
                         })
                    from mixes in Observable.Start(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)))
-                       from save in Downloader.GetAndSaveFile(mix.CoverUrls.ThumbnailUrl, imageFilePath).Do(d =>
+                       from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
                            MediaHistoryItem item = new MediaHistoryItem();
                            item.Title = mix.Name;
@@ -107,7 +107,7 @@
                        PlayToken = playToken,
                        MixId = mix.Id,
                        MixName = mix.Name,
-                       Cover = mix.CoverUrls,
+                       Cover = mix.Cover,
                        Set = response.Set
                    };
         }
@@ -128,7 +128,7 @@
             appTile.Update(newAppTile);
         }
 
-        public static IObservable<Unit> SetNowPlayingTile(MixContract mix, string title, string backTitle)
+        public static IObservable<Unit> SetNowPlayingTile(PlayingMixContract mix, string title, string backTitle)
         {
             var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
             if (appTile == null)
@@ -136,12 +136,12 @@
                 return Observable.Empty<Unit>();
             }
 
-            return SaveFadedThumbnail(mix).Do(
+            return Observable.Defer(() => SaveFadedThumbnail(mix)).SubscribeOnDispatcher().Do(
                 url =>
                     {
                         var newAppTile = new StandardTileData()
                             {
-                                BackContent = mix.Name,
+                                BackContent = mix.MixName,
                                 BackTitle = backTitle,
                                 BackBackgroundImage = url,
                                 BackgroundImage = new Uri("Background.png", UriKind.Relative),
@@ -152,7 +152,7 @@
         }
         
 
-        private static IObservable<Uri> SaveFadedThumbnail(MixContract mix)
+        private static IObservable<Uri> SaveFadedThumbnail(PlayingMixContract mix)
         {
             var bitmap = new BitmapImage();
             var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").Select(_ => new Unit()).Take(1);
@@ -161,7 +161,7 @@
                          select new Unit();
 
             bitmap.CreateOptions = BitmapCreateOptions.None;
-            bitmap.UriSource = mix.CoverUrls.ThumbnailUrl;
+            bitmap.UriSource = mix.Cover.ThumbnailUrl;
             return opened.Amb(failed).Select(
                 _ =>
                 {

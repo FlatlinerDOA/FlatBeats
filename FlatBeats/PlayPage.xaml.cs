@@ -64,24 +64,11 @@
             this.ViewModel.Load();
         }
 
-        private void UpdatePlayState(bool canPause)
-        {
-            var button = this.ApplicationBar.Buttons.OfType<ApplicationBarIconButton>().FirstOrDefault();
-            if (button != null)
-            {
-                if (canPause)
-                {
-                    button.IconUri = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
-                    button.Text = "pause";
-                }
-                else
-                {
-                    button.IconUri = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
-                    button.Text = "play";
-                }
-            }
-        }
-
+        ////protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        ////{
+        ////    this.ViewModel.Unload();
+        ////    base.OnNavigatingFrom(e);
+        ////}
         #endregion
 
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)

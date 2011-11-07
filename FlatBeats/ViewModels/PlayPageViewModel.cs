@@ -42,10 +42,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private TrackViewModel currentTrack;
-
-        /// <summary>
-        /// </summary>
         private bool hasPlayedTracks;
 
         /// <summary>
@@ -56,13 +52,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private MixContract mixData;
 
-        /// <summary>
-        /// </summary>
-        private bool showNowPlaying;
-
-        /// <summary>
-        /// </summary>
-        private string title;
 
         #endregion
 
@@ -86,7 +75,7 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarMenuCommands.Add(new CommandLink()
                 {
                     Command = new DelegateCommand(this.AddReview, this.CanAddReview),
-                    Text = "review mix"
+                    Text = StringResources.Command_ReviewMix
                 });
             this.ApplicationBarMenuCommands.Add(
                 new CommandLink()
@@ -170,27 +159,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public TrackViewModel CurrentTrack
-        {
-            get
-            {
-                return this.currentTrack;
-            }
-
-            set
-            {
-                if (this.currentTrack == value)
-                {
-                    return;
-                }
-
-                this.currentTrack = value;
-                this.OnPropertyChanged("CurrentTrack");
-            }
-        }
-
-        /// <summary>
-        /// </summary>
         public bool HasPlayedTracks
         {
             get
@@ -254,26 +222,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
 
-        /// <summary>
-        /// </summary>
-        public bool ShowNowPlaying
-        {
-            get
-            {
-                return this.showNowPlaying;
-            }
-
-            set
-            {
-                if (this.showNowPlaying == value)
-                {
-                    return;
-                }
-
-                this.showNowPlaying = value;
-                this.OnPropertyChanged("ShowNowPlaying");
-            }
-        }
 
         public MixPlayedTracksViewModel Played { get; private set; }
 
@@ -285,9 +233,22 @@ namespace FlatBeats.ViewModels
         /// </summary>
         protected bool IsDataLoaded { get; set; }
 
+        private PlayingMixContract nowPlaying;
+
         /// <summary>
         /// </summary>
-        protected PlayingMixContract NowPlaying { get; set; }
+        protected PlayingMixContract NowPlaying
+        {
+            get
+            {
+                return this.nowPlaying;
+            }
+            set
+            {
+                this.nowPlaying = value;
+                this.Played.NowPlaying = value;
+            }
+        }
 
         #endregion
 
@@ -335,6 +296,12 @@ namespace FlatBeats.ViewModels
             downloadMix.ObserveOnDispatcher().Subscribe(this.LoadMix, this.ShowError, this.LoadComments);
         }
 
+        public void Unload()
+        {
+            this.Played.Unload();
+            this.Player.PlayStateChanged -= this.PlayStateChanged;
+        }
+
         public CommandLink PlayPauseCommand { get; private set; }
 
         public CommandLink NextTrackCommand { get; private set; }
@@ -368,17 +335,33 @@ namespace FlatBeats.ViewModels
                                     this.NowPlaying.SaveNowPlaying();
                                     this.Player.Play();
                                 })
-                               from updateTile in
-                                   PlayerService.SetNowPlayingTile(
-                                       this.mixData,
-                                       StringResources.Title_ApplicationName,
-                                       StringResources.Title_NowPlaying)
                                select new Unit();
 
             playSequence.Subscribe(
-                        _ => { }, 
+                        _ =>
+                            { this.CurrentPanelIndex = 2; }, 
                         this.ShowError, 
                         this.HideProgress);
+        }
+
+        private int currentPanelIndex;
+
+        public int CurrentPanelIndex
+        {
+            get
+            {
+                return this.currentPanelIndex;
+            }
+            set
+            {
+                if (this.currentPanelIndex == value)
+                {
+                    return;
+                }
+
+                this.currentPanelIndex = value;
+                this.OnPropertyChanged("CurrentPanelIndex");
+            }
         }
 
         /// <summary>
@@ -439,7 +422,6 @@ namespace FlatBeats.ViewModels
 
             this.UpdateLikedState();
 
-            this.ShowNowPlaying = this.NowPlaying != null;
             this.UpdatePlayState();
         }
 

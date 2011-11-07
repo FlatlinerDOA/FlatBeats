@@ -87,8 +87,8 @@ namespace FlatBeats.ViewModels
                 mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
                     .Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
-            this.ThumbnailUrl = mix.CoverUrls.ThumbnailUrl;
-            this.ImageUrl = mix.CoverUrls.OriginalUrl;
+            this.ThumbnailUrl = mix.Cover.ThumbnailUrl;
+            this.ImageUrl = mix.Cover.OriginalUrl;
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);

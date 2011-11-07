@@ -144,7 +144,7 @@
                         Stretch="UniformToFill"
                         ImageSource="{Binding Mix.ImageUrl, Converter={StaticResource ImageConverter}}" />
         </Grid.Background>
-        <controls:Pivot Margin="0,-8,0,0">
+        <controls:Pivot Margin="0,-8,0,0" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
             <controls:PivotItem Header="mix">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
@@ -256,20 +256,42 @@
                                              Navigation="NavigationList_OnNavigation" />
                 </Grid>
             </controls:PivotItem>
-            <controls:PivotItem Header="played">
-                <Grid DataContext="{Binding Played}">
+            <controls:PivotItem Header="{Binding Title}"
+                                DataContext="{Binding Played}">
+                <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                Margin="12,0"
                                TextWrapping="Wrap"
-                               Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}" 
+                               Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                VerticalAlignment="Top" />
-                    <Controls:NavigationList Margin="0,0,-12,0"
-                                             ItemsSource="{Binding Tracks}"
-                                             ItemTemplate="{StaticResource TrackTemplate}"
-                                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Visibility="{Binding ShowNowPlaying, Converter={StaticResource VisibilityConverter}}"
+                              Margin="0,0,-12,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ContentControl Content="{Binding CurrentTrack}"
+                                            ContentTemplate="{StaticResource TrackTemplate}" Margin="0,4,0,4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                            <ProgressBar Value="{Binding Progress}"
+                                         Grid.Row="1"
+                                         IsIndeterminate="{Binding IsProgressIndeterminate}" />
+                            <TextBlock Text="{Binding ProgressStatusText}" Grid.Row="2" Margin="8,2,8,16" />
+                        </Grid>
+                        <Controls:NavigationList Margin="0,0,-12,0"
+                                                 Grid.Row="1"
+                                                 ItemsSource="{Binding Tracks}"
+                                                 ItemTemplate="{StaticResource TrackTemplate}"
+                                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
+                    </Grid>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
