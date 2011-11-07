@@ -253,7 +253,7 @@ namespace FlatBeats.ViewModels
 
         private void UpdateMessage()
         {
-            if (this.Tracks.Count == 0)
+            if (this.CurrentTrack == null && this.Tracks.Count == 0)
             {
                 this.Message = StringResources.Message_NoRecentlyPlayedTracks;
                 this.ShowMessage = true;
@@ -324,6 +324,8 @@ namespace FlatBeats.ViewModels
                 this.CurrentTrack = null;
                 this.refreshSubscription.Dispose();
             }
+
+            this.UpdateMessage();
         }
 
         /// <summary>
