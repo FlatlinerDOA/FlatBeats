@@ -10,10 +10,6 @@
 namespace FlatBeats.ViewModels
 {
     using System;
-    using System.Collections.ObjectModel;
-
-    using FlatBeats.Controls;
-
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -36,11 +32,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private string message;
-
-        /// <summary>
-        /// </summary>
-        private IDisposable subscription;
+        private IDisposable subscription = Disposable.Empty;
 
         #endregion
 
@@ -57,15 +49,6 @@ namespace FlatBeats.ViewModels
             this.TagsPanel = new MainPageTagsViewModel();
             this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
             this.Title = "flat beats";
-            ////this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
-            ////this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>
-            ////    {
-            ////        new CommandLink()
-            ////            {
-            ////                Command = new DelegateCommand(this.ShowSettings), 
-            ////                Text = "profile"
-            ////            }
-            ////    };
         }
 
 
@@ -154,10 +137,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Unload()
         {
-            if (this.subscription != null)
-            {
-                this.subscription.Dispose();
-            }
+            this.subscription.Dispose();
         }
 
         #endregion
@@ -169,6 +149,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void LoadData()
         {
+            this.subscription.Dispose();
+
             if (this.IsDataLoaded)
             {
                 this.ShowProgress();
@@ -176,7 +158,7 @@ namespace FlatBeats.ViewModels
                 var reload = from liked in this.Liked.LoadAsync()
                              from recent in this.Recent.LoadAsync()
                              select new Unit();
-                reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
+                this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
                 return;
             }
 
@@ -187,26 +169,9 @@ namespace FlatBeats.ViewModels
                        from latest in this.Latest.LoadAsync()
                        from tags in Observable.Start(() => this.TagsPanel.Load(latest))
                        select new Unit();
-            load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
+            this.subscription = load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
         }
 
         #endregion
-
-        /////// <summary>
-        /////// </summary>
-        ////private void PickNewBackgroundImage()
-        ////{
-        ////    var next = this.Latest.Skip(RandomNumber.Next(this.Latest.Count - 1)).FirstOrDefault();
-        ////    if (next == null)
-        ////    {
-        ////        return;
-        ////    }
-
-        ////    this.BackgroundImage = next.ImageUrl;
-        ////}
-
-        public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
-
-        public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
     }
 }

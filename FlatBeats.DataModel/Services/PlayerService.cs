@@ -139,7 +139,7 @@
             return Observable.Defer(() => SaveFadedThumbnail(mix)).SubscribeOnDispatcher().Do(
                 url =>
                     {
-                        var newAppTile = new StandardTileData()
+                        var newAppTile = new StandardTileData
                             {
                                 BackContent = mix.MixName,
                                 BackTitle = backTitle,
@@ -197,29 +197,48 @@
                 });
         }
 
-        public static IObservable<PlayResponseContract> NextTrack(this PlayingMixContract playing)
+        public static IObservable<PlayResponseContract> NextTrack(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var nextFormat = string.Format(
                 "http://8tracks.com/sets/{0}/next.json?mix_id={1}",
                 playing.PlayToken,
                 playing.MixId);
-            return Downloader.GetJson<PlayResponseContract>(new Uri(nextFormat, UriKind.Absolute));
-        }
-        
-        public static IObservable<Unit> AddMixTrackHistory(int mixId, PlayResponseContract response)
-        {
-            // TODO : Load Mix Track History
-            // Update and re-save
-            return Observable.Empty<Unit>();
+            return from addToHistory in AddToMixTrackHistory(playing, timePlayed)
+                   from response in Downloader.GetJson<PlayResponseContract>(new Uri(nextFormat, UriKind.Absolute))
+                   select response;
         }
 
-        public static IObservable<PlayResponseContract> SkipToNextTrack(this PlayingMixContract playing)
+        private static IObservable<Unit> AddToMixTrackHistory(PlayingMixContract playing, TimeSpan timePlayed)
+        {
+            // If play duration was more than 30 seconds, post the report to Pay The Man
+            if (timePlayed < TimeSpan.FromSeconds(30))
+            {
+                return Observable.Return(new Unit());
+            }
+
+            var payment = from response in
+                       Downloader.GetJson<ResponseContract>(
+                           new Uri(
+                       string.Format(
+                           @"http://8tracks.com/sets/{0}/report.json?track_id={1}&mix_id={2}",
+                           playing.PlayToken,
+                           playing.Set.Track.Id,
+                           playing.MixId),
+                       UriKind.Absolute))
+                   select new Unit();
+
+            return payment.OnErrorResumeNext(Observable.Return(new Unit()));
+        }
+
+        public static IObservable<PlayResponseContract> SkipToNextTrack(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var skipFormat = string.Format(
                 "http://8tracks.com/sets/{0}/skip.json?mix_id={1}",
                 playing.PlayToken,
                 playing.MixId);
-            return Downloader.GetJson<PlayResponseContract>(new Uri(skipFormat, UriKind.Absolute));
+            return from addToHistory in AddToMixTrackHistory(playing, timePlayed)
+                   from response in Downloader.GetJson<PlayResponseContract>(new Uri(skipFormat, UriKind.Absolute))
+                   select response;
         }
 
         public static IObservable<PlayedTracksResponseContract> PlayedTracks(this MixContract mix)

@@ -101,7 +101,9 @@ namespace FlatBeats.DataModel
                                              Observable.FromEvent<OpenReadCompletedEventArgs>(
                                                  client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
                                                  (observer);
+#if DEBUG
                                          Debug.WriteLine("GET " + url.AbsoluteUri);
+#endif
                                          client.OpenReadAsync(url);
                                          return subscription;
                                      }).TrySelect(evt => evt.Result).Do(data => Storage.Save(fileName, data))
@@ -137,7 +139,9 @@ namespace FlatBeats.DataModel
                                              Observable.FromEvent<OpenReadCompletedEventArgs>(
                                                  client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
                                                  (observer);
+#if DEBUG
                                          Debug.WriteLine("GET " + url.AbsoluteUri);
+#endif
                                          client.OpenReadAsync(url);
                                          return subscription;
                                      }).TrySelect(evt => evt.Result)
@@ -189,11 +193,13 @@ namespace FlatBeats.DataModel
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
                                    {
-                                       var subscription =
-                                           Observable.FromEvent<UploadStringCompletedEventArgs>(
-                                               client, "UploadStringCompleted").Take(1).Select(e => e.EventArgs).
-                                               Subscribe(observer);
+                                       var subscription = Observable.FromEvent<UploadStringCompletedEventArgs>(client, "UploadStringCompleted")
+                                           .Take(1)
+                                           .Select(e => e.EventArgs)
+                                           .Subscribe(observer);
+#if DEBUG
                                        Debug.WriteLine("POST " + url.AbsoluteUri + "\r\n" + postData);
+#endif
                                        client.UploadStringAsync(url, "POST", postData);
                                        return subscription;
                                    }).TrySelect(evt => evt.Result)

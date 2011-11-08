@@ -193,8 +193,7 @@
                                        Style="{StaticResource PhoneTextSmallStyle}"
                                        TextWrapping="Wrap"
                                        Margin="12,2,12,4"
-                                       d:LayoutOverrides="Height"
-                                       />
+                                       d:LayoutOverrides="Height" />
                         </ScrollViewer>
                         <Controls:NavigationList Margin="12,4,12,8"
                                                  Grid.ColumnSpan="2"

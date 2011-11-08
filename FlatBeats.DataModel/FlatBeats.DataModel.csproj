@@ -67,6 +67,7 @@
     <Compile Include="PlayResponseContract.cs" />
     <Compile Include="PlayTokenResponseContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseContract.cs" />
     <Compile Include="ReviewContract.cs" />
     <Compile Include="ReviewsResponseContract.cs" />
     <Compile Include="MixResponseContract.cs" />

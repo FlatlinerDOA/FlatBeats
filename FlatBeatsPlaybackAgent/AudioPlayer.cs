@@ -186,7 +186,7 @@ namespace FlatBeatsPlaybackAgent
                 return;
             }
 
-            var nextResponse = this.NowPlaying.NextTrack().First();
+            var nextResponse = this.NowPlaying.NextTrack(player.Position).First();
             if (nextResponse.Status.StartsWith("200"))
             {
                 this.NowPlaying.Set = nextResponse.Set;
@@ -249,7 +249,7 @@ namespace FlatBeatsPlaybackAgent
                 return;
             }
 
-            var skipResponse = this.NowPlaying.SkipToNextTrack().First();
+            var skipResponse = this.NowPlaying.SkipToNextTrack(player.Position).First();
             if (skipResponse.Status.StartsWith("200"))
             {
                 this.NowPlaying.Set = skipResponse.Set;
