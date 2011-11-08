@@ -48,7 +48,7 @@
                                               ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
                             <local:ItemsControlEx.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <toolkit:WrapPanel Height="364"
+                                    <toolkit:WrapPanel Height="370"
                                                        ItemWidth="181"
                                                        ItemHeight="181"
                                                        Orientation="Vertical" />

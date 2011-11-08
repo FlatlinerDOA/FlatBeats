@@ -136,6 +136,7 @@
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\RecentMixViewModel.cs" />
+    <Compile Include="ViewModels\ReviewsPanelViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="ViewModels\TagsByFirstLetter.cs" />

@@ -81,7 +81,7 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            PlayerService.Stop();
+            this.NowPlaying.Stop(player.Position);
             if (isFatal)
             {
                 this.Abort();
@@ -121,7 +121,7 @@ namespace FlatBeatsPlaybackAgent
                     this.PlayNextTrack(player);
                     break;
                 case PlayState.Error:
-                    PlayerService.Stop();
+                    this.NowPlaying.Stop(player.Position).First();
                     break;
             }
 
@@ -182,7 +182,7 @@ namespace FlatBeatsPlaybackAgent
             if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.IsLastTrack)
             {
                 player.Stop();
-                PlayerService.Stop();
+                this.NowPlaying.Stop(player.Position).First();
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace FlatBeatsPlaybackAgent
                 if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
                 {
                     player.Stop();
-                    PlayerService.Stop();
+                    this.NowPlaying.Stop(player.Position);
                     return;
                 }
 

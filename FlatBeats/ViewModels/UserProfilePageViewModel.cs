@@ -50,7 +50,10 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("UserName");
             }
         }
+
         private Uri avatarImageUrl;
+
+        private IDisposable subscription = Disposable.Empty;
 
         public Uri AvatarImageUrl
         {
@@ -70,43 +73,59 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        public void Load()
+        public override void Load()
         {
-            this.LoadUserAsync();
-            this.LoadMixesAsync();
-            this.LoadFollowingAsync();
-            this.LoadFollowedByAsync();
+            this.subscription.Dispose();
+            if (this.IsDataLoaded)
+            {
+                return;
+            }
+
+            this.ShowProgress();
+            var loadProcess = from userProfile in this.LoadUserAsync()
+                              from mixes in this.LoadMixesAsync()
+                              from following in this.LoadFollowingAsync()
+                              from followedBy in this.LoadFollowedByAsync()
+                              select new Unit();
+            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
         }
 
-        private void LoadFollowedByAsync()
+        public override void Unload()
         {
-            
+            this.subscription.Dispose();
         }
 
-        private void LoadFollowingAsync()
+        private IObservable<Unit> LoadFollowedByAsync()
         {
-            
+            // TODO: Load followed by
+            return Observable.Return(new Unit());
         }
 
-        private void LoadMixesAsync()
+        private IObservable<Unit> LoadFollowingAsync()
+        {
+            // TODO: Load following
+            return Observable.Return(new Unit());
+        }
+
+        private IObservable<Unit> LoadMixesAsync()
         {
             var mixes = from response in ProfileService.GetUserMixes(this.UserId)
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                         select new MixViewModel(mix);
-            mixes.FlowIn()
+            return mixes.FlowIn()
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())
-                .Subscribe(
+                .Do(
                     this.Mixes.Add, 
                     this.ShowError, 
-                    this.HideProgress);
+                    this.HideProgress).FinallySelect(() => new Unit());
         }
 
-        private void LoadUserAsync()
+        private IObservable<Unit> LoadUserAsync()
         {
-            var profile = from response in ProfileService.GetUserProfile(this.UserId) 
+            var profile = from response in ProfileService.GetUserProfile(this.UserId)
                           select response.User;
-            profile.ObserveOnDispatcher().Subscribe(this.LoadUserProfile);
+            return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
         }
 
         private void LoadUserProfile(UserContract userContract)

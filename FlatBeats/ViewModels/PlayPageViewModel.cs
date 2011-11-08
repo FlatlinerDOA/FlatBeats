@@ -64,8 +64,8 @@ namespace FlatBeats.ViewModels
         {
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
-            this.Played = new MixPlayedTracksViewModel();
-            this.Reviews = new ObservableCollection<ReviewViewModel>();
+            this.PlayedPanel = new MixPlayedTracksViewModel();
+            this.ReviewsPanel = new ReviewsPanelViewModel();
             this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
             this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = StringResources.Command_NextTrack, HideWhenInactive = true };
             this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
@@ -94,6 +94,7 @@ namespace FlatBeats.ViewModels
                     Text = StringResources.Command_EmailMix,
                     Command = new DelegateCommand(this.Email)
                 });
+            this.Title = StringResources.Title_Mix;
         }
 
         private bool CanLikeUnlike()
@@ -115,7 +116,7 @@ namespace FlatBeats.ViewModels
                     where response.EventArgs.PopUpResult == PopUpResult.Ok
                     from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
-            q.ObserveOnDispatcher().Subscribe(review => this.Reviews.Add(new ReviewViewModel(review.Reviews.FirstOrDefault())), this.ShowError, this.HideProgress);
+            q.ObserveOnDispatcher().Subscribe(review => this.ReviewsPanel.Reviews.Add(new ReviewViewModel(review.Reviews.FirstOrDefault())), this.ShowError, this.HideProgress);
             prompt.Show();
         }
 
@@ -213,25 +214,15 @@ namespace FlatBeats.ViewModels
             }
         }
 
-
         /// <summary>
         /// </summary>
         public BackgroundAudioPlayer Player { get; set; }
 
-        /// <summary>
-        /// </summary>
-        public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
-
-
-        public MixPlayedTracksViewModel Played { get; private set; }
+        public MixPlayedTracksViewModel PlayedPanel { get; private set; }
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// </summary>
-        protected bool IsDataLoaded { get; set; }
 
         private PlayingMixContract nowPlaying;
 
@@ -246,7 +237,7 @@ namespace FlatBeats.ViewModels
             set
             {
                 this.nowPlaying = value;
-                this.Played.NowPlaying = value;
+                this.PlayedPanel.NowPlaying = value;
             }
         }
 
@@ -272,34 +263,44 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public void Load()
+        public override void Load()
         {
+            this.subscription.Dispose();
+
             this.Player = BackgroundAudioPlayer.Instance;
             this.Player.PlayStateChanged += this.PlayStateChanged;
 
             if (this.IsDataLoaded)
             {
                 this.UpdatePlayState();
-                this.Played.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress);
+                this.PlayedPanel.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress);
                 return;
             }
 
-            this.IsDataLoaded = true;
             this.ShowProgress();
-            var downloadMix =
-                from response in
-                    Downloader.GetJson<MixResponseContract>(
-                        new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute))
-                select response.Mix;
-
-            downloadMix.ObserveOnDispatcher().Subscribe(this.LoadMix, this.ShowError, this.LoadComments);
+            var loadProcess = from mix in this.LoadMixAsync()
+                              from reviews in this.ReviewsPanel.LoadAsync(mix.Id)
+                              from played in this.PlayedPanel.LoadAsync(mix)
+                              select mix;
+            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
         }
 
-        public void Unload()
+        private IObservable<MixContract> LoadMixAsync()
         {
-            this.Played.Unload();
+            var downloadMix =
+               from response in
+                   Downloader.GetJson<MixResponseContract>(
+                       new Uri(
+                   string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute))
+               select response.Mix;
+            return downloadMix.ObserveOnDispatcher().Do(this.LoadMix);
+        }
+
+        public override void Unload()
+        {
             this.Player.PlayStateChanged -= this.PlayStateChanged;
+            this.PlayedPanel.Unload();
+            this.subscription.Dispose();
         }
 
         public CommandLink PlayPauseCommand { get; private set; }
@@ -346,6 +347,8 @@ namespace FlatBeats.ViewModels
 
         private int currentPanelIndex;
 
+        private IDisposable subscription = Disposable.Empty;
+
         public int CurrentPanelIndex
         {
             get
@@ -381,23 +384,7 @@ namespace FlatBeats.ViewModels
 
         #region Methods
 
-        /// <summary>
-        /// </summary>
-        private void LoadComments()
-        {
-            var downloadComments =
-                from response in
-                    Downloader.GetJson<ReviewsResponseContract>(
-                        new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId), 
-                    UriKind.RelativeOrAbsolute))
-                from review in response.Reviews.ToObservable()
-                select new ReviewViewModel(review);
-            downloadComments.ObserveOnDispatcher().Subscribe(
-                r => this.Reviews.Add(r), 
-                this.ShowError, 
-                () => this.Played.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(_ => { }, this.HideProgress));
-        }
+        public ReviewsPanelViewModel ReviewsPanel { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -405,7 +392,6 @@ namespace FlatBeats.ViewModels
         /// </param>
         private void LoadMix(MixContract loadMix)
         {
-            this.Title = loadMix.Name;
             this.mixData = loadMix;
             this.CreatedByUserId = loadMix.User.Id;
             this.Mix = new MixViewModel(loadMix);

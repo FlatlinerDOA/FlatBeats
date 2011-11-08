@@ -36,10 +36,17 @@
             Storage.Delete(PlayTokenFilePath);
         }
 
-        public static void Stop()
+        public static IObservable<Unit> Stop(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
         {
             ResetNowPlayingTile();
             Storage.Delete(NowPlayingFilePath);
+
+            if (nowPlaying == null)
+            {
+                return Observable.Return(new Unit());
+            }
+
+            return AddToMixTrackHistory(nowPlaying, timePlayed);
         }
         
         public static void ClearRecentlyPlayed()
@@ -50,7 +57,6 @@
         public static void SaveNowPlaying(this PlayingMixContract playing)
         {
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
-            SetNowPlayingTile(playing, StringResources.Title_ApplicationName, StringResources.Title_NowPlaying);
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayed()
@@ -98,7 +104,7 @@
 
         public static IObservable<PlayingMixContract> StartPlaying(this MixContract mix)
         {
-            return from playToken in GetPlayToken()
+            var playingMix = from playToken in GetPlayToken()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
                    from added in AddToRecentlyPlayed(mix)
@@ -110,6 +116,13 @@
                        Cover = mix.Cover,
                        Set = response.Set
                    };
+
+            return from playing in playingMix
+                   from tile in SetNowPlayingTile(
+                           playing, 
+                           StringResources.Title_ApplicationName, 
+                           StringResources.Title_NowPlaying)
+                   select playing;
         }
 
         public static void ResetNowPlayingTile()
@@ -208,7 +221,7 @@
                    select response;
         }
 
-        private static IObservable<Unit> AddToMixTrackHistory(PlayingMixContract playing, TimeSpan timePlayed)
+        private static IObservable<Unit> AddToMixTrackHistory(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))

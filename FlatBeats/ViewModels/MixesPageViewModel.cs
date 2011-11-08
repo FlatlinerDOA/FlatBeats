@@ -56,10 +56,6 @@ namespace FlatBeats.ViewModels
 
         #region Public Properties
 
-        /// <summary>
-        /// </summary>
-        public bool IsDataLoaded { get; private set; }
-
         public MixListViewModel Hot { get; private set; }
 
         public MixListViewModel Popular { get; private set; }
@@ -131,6 +127,15 @@ namespace FlatBeats.ViewModels
 
         #region Public Methods
 
+        public override void Load()
+        {
+            this.Load(this.NavigationParameters["tag"], this.NavigationParameters["query"]);
+        }
+
+        public override void Unload()
+        {
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="loadTag">
@@ -142,12 +147,12 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.IsDataLoaded = true;
             this.Tag = loadTag;
             this.SearchQuery = loadQuery;
             this.Title = (this.Tag ?? this.SearchQuery ?? string.Empty).ToUpper();
 
             this.SearchPanel(this.Recent);
+            this.LoadCompleted();
         }
 
 

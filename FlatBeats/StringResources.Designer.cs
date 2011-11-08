@@ -182,11 +182,20 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No tracks have been played recently for this mix... Or i&apos;ve just forgotten what they were... Sorry!.
+        ///   Looks up a localized string similar to No tracks have been played recently for this mix..
         /// </summary>
         internal static string Message_NoRecentlyPlayedTracks {
             get {
                 return ResourceManager.GetString("Message_NoRecentlyPlayedTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hmmm... no one&apos;s said anything? Why don&apos;t you be the first to congratulate the creator of this mix!.
+        /// </summary>
+        internal static string Message_NoReviews {
+            get {
+                return ResourceManager.GetString("Message_NoReviews", resourceCulture);
             }
         }
         
@@ -245,6 +254,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to mix.
+        /// </summary>
+        internal static string Title_Mix {
+            get {
+                return ResourceManager.GetString("Title_Mix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Now Playing.
         /// </summary>
         internal static string Title_NowPlaying {
@@ -295,6 +313,15 @@ namespace FlatBeats {
         internal static string Title_RecentMixes {
             get {
                 return ResourceManager.GetString("Title_RecentMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to reviews.
+        /// </summary>
+        internal static string TItle_Reviews {
+            get {
+                return ResourceManager.GetString("TItle_Reviews", resourceCulture);
             }
         }
         

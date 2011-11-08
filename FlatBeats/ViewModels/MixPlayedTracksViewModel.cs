@@ -243,7 +243,7 @@ namespace FlatBeats.ViewModels
                          select new TrackViewModel(track);
             return tracks.ObserveOnDispatcher().Do(
                 t => this.Tracks.Add(t), 
-                this.UpdateMessage).Select(_ => new Unit()).Catch<Unit, Exception>(
+                this.UpdateMessage).FinallySelect(() => new Unit()).Catch<Unit, Exception>(
                     ex =>
                         {
                             this.ShowError(ex);

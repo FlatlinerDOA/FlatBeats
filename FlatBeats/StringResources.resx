@@ -197,7 +197,7 @@ Link:
     <value>Reset everything?</value>
   </data>
   <data name="Message_NoRecentlyPlayedTracks" xml:space="preserve">
-    <value>No tracks have been played recently for this mix... Or i've just forgotten what they were... Sorry!</value>
+    <value>No tracks have been played recently for this mix.</value>
   </data>
   <data name="Title_PlayedTracks" xml:space="preserve">
     <value>played</value>
@@ -207,5 +207,14 @@ Link:
   </data>
   <data name="Command_ReviewMix" xml:space="preserve">
     <value>review mix</value>
+  </data>
+  <data name="Message_NoReviews" xml:space="preserve">
+    <value>Hmmm... no one's said anything? Why don't you be the first to congratulate the creator of this mix!</value>
+  </data>
+  <data name="TItle_Reviews" xml:space="preserve">
+    <value>reviews</value>
+  </data>
+  <data name="Title_Mix" xml:space="preserve">
+    <value>mix</value>
   </data>
 </root>

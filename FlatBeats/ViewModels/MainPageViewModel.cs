@@ -99,10 +99,6 @@ namespace FlatBeats.ViewModels
         }
 
         /// <summary>
-        /// </summary>
-        public bool IsDataLoaded { get; private set; }
-
-        /// <summary>
         ///   Gets the latest mixes panel.
         /// </summary>
         public MainPageLatestViewModel Latest { get; private set; }
@@ -127,49 +123,41 @@ namespace FlatBeats.ViewModels
         #region Public Methods
 
         /// <summary>
-        /// </summary>
-        public void Load()
-        {
-            this.LoadData();
-        }
-
-        /// <summary>
-        /// </summary>
-        public void Unload()
-        {
-            this.subscription.Dispose();
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
         /// </summary>
-        private void LoadData()
+        public override void Load()
         {
             this.subscription.Dispose();
-
             if (this.IsDataLoaded)
             {
-                this.ShowProgress();
-
-                var reload = from liked in this.Liked.LoadAsync()
-                             from recent in this.Recent.LoadAsync()
-                             select new Unit();
-                this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
+                this.Refresh();
                 return;
             }
 
-            this.IsDataLoaded = true;
             this.ShowProgress();
             var load = from liked in this.Liked.LoadAsync()
                        from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
                        from tags in Observable.Start(() => this.TagsPanel.Load(latest))
                        select new Unit();
-            this.subscription = load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.HideProgress);
+            this.subscription = load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
+        }
+
+        private void Refresh()
+        {
+            this.ShowProgress();
+
+            var reload = from liked in this.Liked.LoadAsync()
+                         from recent in this.Recent.LoadAsync()
+                         select new Unit();
+            this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
+        }
+
+        /// <summary>
+        /// </summary>
+        public override void Unload()
+        {
+            this.subscription.Dispose();
         }
 
         #endregion

@@ -18,7 +18,7 @@
 			</FlatBeats_ViewModels:MixViewModel.TagList>
 		</FlatBeats_ViewModels:MixViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.Mix>
-	<FlatBeats_ViewModels:PlayPageViewModel.Played>
+	<FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
         <FlatBeats_ViewModels:MixPlayedTracksViewModel Title="design played" HasPlayedTracks="False" />
 		<!--<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Donec nunc est aptent"/>
@@ -30,7 +30,7 @@
 		<FlatBeats_ViewModels:TrackViewModel Title="Commodo cursus vestibulum dictum lectus"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Eget adipiscing dignissim"/>
 		<FlatBeats_ViewModels:TrackViewModel Title="Parturient vestibulum inceptos vestibulum interdum"/>-->
-    </FlatBeats_ViewModels:PlayPageViewModel.Played>
+    </FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
 	<FlatBeats_ViewModels:PlayPageViewModel.Reviews>
 		<FlatBeats_ViewModels:ReviewViewModel Body="Fusce nisi vestibulum lorem" Created="08/28/2011 15:30:30" UserName="Malesuada penatibus sem"/>
 		<FlatBeats_ViewModels:ReviewViewModel Body="Sit vestibulum" Created="08/28/2011 15:30:30" UserName="Gravida vel porttitor morbi"/>

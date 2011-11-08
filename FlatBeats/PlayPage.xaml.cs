@@ -64,11 +64,12 @@
             this.ViewModel.Load();
         }
 
-        ////protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        ////{
-        ////    this.ViewModel.Unload();
-        ////    base.OnNavigatingFrom(e);
-        ////}
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            this.ViewModel.Unload();
+            base.OnNavigatingFrom(e);
+        }
+
         #endregion
 
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)

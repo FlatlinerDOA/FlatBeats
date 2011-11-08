@@ -9,6 +9,8 @@
 
 namespace FlatBeats.ViewModels
 {
+    using System;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -20,6 +22,8 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         private TagsByFirstLetter tags;
+
+        private IDisposable subscription = Disposable.Empty;
 
         #endregion
 
@@ -65,15 +69,21 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public void Load()
+        public override void Load()
         {
             this.ShowProgress();
-            Observable.Start(() => new TagsByFirstLetter()).ObserveOnDispatcher().Subscribe(
+            this.subscription = Observable.Start(() => new TagsByFirstLetter()).ObserveOnDispatcher().Subscribe(
                 t =>
                     {
                         this.Tags = t;
-                        this.HideProgress();
-                    });
+                    }, 
+                    this.ShowError, 
+                    this.LoadCompleted);
+        }
+
+        public override void Unload()
+        {
+            this.subscription.Dispose();
         }
 
         #endregion
