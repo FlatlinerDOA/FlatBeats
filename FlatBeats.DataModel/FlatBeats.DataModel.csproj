@@ -75,8 +75,10 @@
     <Compile Include="FavouritedTrackResponseContract.cs" />
     <Compile Include="LikedMixContract.cs" />
     <Compile Include="LikedMixResponseContract.cs" />
+    <Compile Include="FollowUserResponseContract.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="UserProfileResponseContract.cs" />
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

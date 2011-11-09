@@ -20,4 +20,11 @@ namespace FlatBeats.DataModel
         [DataMember(Name = "reviews")]
         public List<ReviewContract> Reviews { get; set; }
     }
+
+    [DataContract]
+    public class ReviewResponseContract
+    {
+        [DataMember(Name = "review")]
+        public ReviewContract Review { get; set; }
+    }
 }
