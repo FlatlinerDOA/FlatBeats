@@ -1,16 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.DataModel
+﻿namespace FlatBeats.DataModel
 {
+    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
@@ -19,18 +9,5 @@ namespace FlatBeats.DataModel
     {
         [DataMember(Name = "tags")]
         public List<TagContract> Tags { get; set; }
-    }
-
-    [DataContract]
-    public class TagContract
-    {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "path")]
-        public string Path { get; set; }
-
-        [DataMember(Name = "taggings_count")]
-        public int Count { get; set; }
     }
 }

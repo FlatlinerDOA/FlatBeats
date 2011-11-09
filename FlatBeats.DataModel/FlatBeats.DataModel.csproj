@@ -78,6 +78,7 @@
     <Compile Include="FollowUserResponseContract.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="TagContract.cs" />
     <Compile Include="UserProfileResponseContract.cs" />
     <Compile Include="StringResources.Designer.cs">
       <AutoGen>True</AutoGen>
