@@ -31,11 +31,9 @@
                             <toolkit:HubTile x:Name="hubTile"
                                              Message="{Binding Description}"
                                              Title="{Binding TileTitle}"
-                                             Margin="8" 
-                                             IsFrozen="True"
+                                             Margin="8"
                                              GroupTag="Latest"
-                                             Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}">
-                            </toolkit:HubTile>
+                                             Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" IsFrozen="True"/>
                         </local:AnimatingContentControl> 
                     </DataTemplate>
                 </Setter.Value>
@@ -264,20 +262,23 @@
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl>
-                                    <StackPanel Orientation="Horizontal"
-                                                Height="80" Background="#7F000000" Margin="4">
-                                        <Image Margin="14,8,8,8"
-                                               Width="64"
-                                               Height="64"
-                                               Stretch="Uniform"
-                                               VerticalAlignment="Top"
-                                               Source="{Binding ThumbnailUrl}" />
-                                        <TextBlock Text="{Binding MixName}"
-                                                   Style="{StaticResource PhoneTextTitle2Style}"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center"
-                                                   Margin="8,0" />
-                                    </StackPanel>
+                                    <Grid Background="#7F000000" Height="64" Margin="16,8,16,0">
+                                    	<Grid.ColumnDefinitions>
+                                    		<ColumnDefinition Width="Auto"/>
+                                    		<ColumnDefinition/>
+                                    	</Grid.ColumnDefinitions>
+                                		<Image Margin="0"
+                                			Width="64"
+                                			Height="64"
+                                			Stretch="Uniform"
+                                			VerticalAlignment="Top"
+                                			Source="{Binding ThumbnailUrl}" HorizontalAlignment="Left" />
+                                		<TextBlock Text="{Binding MixName}"
+                                			Style="{StaticResource PhoneTextTitle2Style}"
+                                			Foreground="White"
+                                			VerticalAlignment="Center"
+                                			Margin="8,0" d:LayoutOverrides="Width" Grid.Column="1" />
+                                	</Grid>
                                 </local:AnimatingContentControl>
                             </DataTemplate>
                         </local:NavigationList.ItemTemplate>
@@ -298,25 +299,29 @@
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl>
-                                    <StackPanel Background="#7F000000" Margin="4">
-                                        <TextBlock Text="NOW PLAYING"
-                                                   Style="{StaticResource PhoneTextTitle2Style}"
-                                                   Foreground="{StaticResource PhoneAccentBrush}"
-                                                   Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" />
-                                        <StackPanel Orientation="Horizontal"
-                                                    Height="80">
-                                            <Image Margin="14,8,8,8"
-                                                   Width="64"
-                                                   Height="64"
-                                                   Stretch="Uniform"
-                                                   VerticalAlignment="Top"
-                                                   Source="{Binding ThumbnailUrl}" />
-                                            <TextBlock Text="{Binding MixName}"
-                                                       Style="{StaticResource PhoneTextTitle2Style}"
-                                                       Foreground="White"
-                                                       VerticalAlignment="Center" Margin="8,0" />
-                                        </StackPanel>
-                                    </StackPanel>
+                                    <Grid Background="#7F000000" Margin="16,8,16,0">
+                                    	<Grid.RowDefinitions>
+                                    		<RowDefinition Height="Auto"/>
+                                    		<RowDefinition Height="64"/>
+                                    	</Grid.RowDefinitions>
+                                    	<Grid.ColumnDefinitions>
+                                    		<ColumnDefinition Width="Auto"/>
+                                    		<ColumnDefinition/>
+                                    	</Grid.ColumnDefinitions>
+                                		<TextBlock Text="NOW PLAYING"
+                                			Style="{StaticResource PhoneTextTitle2Style}"
+                                			Foreground="{StaticResource PhoneAccentBrush}"
+                                			Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" Grid.ColumnSpan="2" Margin="16,8" />
+                                		<Image Margin="0"
+                                			Width="64"
+                                			Height="64"
+                                			Stretch="Uniform"
+                                			Source="{Binding ThumbnailUrl}" Grid.Row="1" />
+                                		<TextBlock Text="{Binding MixName}"
+                                			Style="{StaticResource PhoneTextTitle2Style}"
+                                			Foreground="White"
+                                			VerticalAlignment="Center" Margin="8,0" Grid.Column="1" Grid.Row="1" />
+                                	</Grid>
                                 </local:AnimatingContentControl>
                             </DataTemplate>
                            
@@ -336,7 +341,7 @@
                                       ItemsSource="{Binding Mixes}"
                                       Navigation="NavigationList_OnNavigation"
                                       Style="{StaticResource WrapNavigationList}"
-                                      VerticalAlignment="Top" />
+                                      VerticalAlignment="Center" />
                 </Grid>
             </controls:PanoramaItem>
             <controls:PanoramaItem DataContext="{Binding TagsPanel}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}" Margin="0,0,0,35">
@@ -349,18 +354,17 @@
                                Foreground="LightGray" />
                     <local:NavigationList Margin="0,0,-12,0"
                                           ItemsSource="{Binding Tags}"
-                                          Navigation="NavigationList_OnNavigation">
+                                          Navigation="NavigationList_OnNavigation" Padding="0,0,0,50">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl>
 
-                                    <StackPanel Margin="4,4,12,4"
-                                            Width="432" Background="#7F000000">
-                                        <TextBlock Text="{Binding TagName}"
-                                                   TextWrapping="NoWrap"
-                                                   Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                                   Foreground="White" Margin="12,4" />
-                                    </StackPanel>
+                                    <Border Background="#7F000000" Height="64" Margin="16,8,16,0">
+                                		<TextBlock Text="{Binding TagName}"
+                                			TextWrapping="NoWrap"
+                                			Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                			Foreground="White" Margin="12,4" d:LayoutOverrides="Height, VerticalMargin" VerticalAlignment="Center" />
+                                	</Border>
 
                                 </local:AnimatingContentControl>
                             </DataTemplate>
