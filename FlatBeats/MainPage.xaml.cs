@@ -43,6 +43,8 @@
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            var x = this.pano.ActualWidth;
+            var y = this.pano.ActualHeight;
             VisualStateManager.GoToState(this, "UnloadedState", false);
         }
 

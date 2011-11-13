@@ -5,6 +5,7 @@
        Version="1.0.0.0" 
        Genre="apps.normal" 
        Author="Andrew Chisholm" 
+       BitsPerPixel="32" 
        Description="Flat Beats is a music player powered by www.8tracks.com" 
        Publisher="Andrew Chisholm"
        HubType="1">

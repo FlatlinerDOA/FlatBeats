@@ -58,6 +58,7 @@ namespace FlatBeats.ViewModels
                     if (this.Reviews.Count == 0)
                     {
                         this.Message = StringResources.Message_NoReviews;
+                        this.ShowMessage = true;
                     }
                     else
                     {

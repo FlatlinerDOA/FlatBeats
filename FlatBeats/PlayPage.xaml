@@ -250,6 +250,14 @@
             <controls:PivotItem Header="{Binding Title}"
                                 DataContext="{Binding ReviewsPanel}">
                 <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               Margin="12,0"
+                               TextWrapping="Wrap"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
+                               VerticalAlignment="Top" />
                     <Controls:NavigationList Margin="0,0,-12,0"
                                              ItemsSource="{Binding Reviews}"
                                              ItemTemplate="{StaticResource ReviewItemTemplate}"

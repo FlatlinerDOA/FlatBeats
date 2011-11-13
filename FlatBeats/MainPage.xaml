@@ -238,7 +238,7 @@
                            Foreground="White" 
                            SelectionChanged="pano_SelectionChanged" RenderTransformOrigin="0.5,0.5" TitleTemplate="{StaticResource TitleTemplate}" ItemContainerStyle="{StaticResource PanoramaItemStyle1}">
         	<controls:Panorama.Background>
-        		<ImageBrush Stretch="None" ImageSource="PanoramaBackground.jpg"/>
+        		<ImageBrush ImageSource="PanoramaBackground.jpg"/>
         	</controls:Panorama.Background>
         	<controls:Panorama.RenderTransform>
         		<CompositeTransform ScaleX="1.07" ScaleY="1.07"/>
