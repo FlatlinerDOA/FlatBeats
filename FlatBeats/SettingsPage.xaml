@@ -88,6 +88,7 @@
                                 HorizontalAlignment="Left" />
                         <Button Command="{Binding SignupCommand}"
                                 Content="{Binding SignupLabelText}"
+                                Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
                                 Margin="0,0,8,8"
                                 MinWidth="250"
                                 HorizontalAlignment="Left" />

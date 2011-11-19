@@ -26,8 +26,86 @@
         <Controls:BooleanToVisibilityConverter x:Key="HideConverter" WhenFalse="Visible" WhenTrue="Collapsed" />
         <Controls:UrlToBitmapConverter x:Key="ImageConverter" />
         <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
+        <ControlTemplate x:Key="FavouriteCheckBoxControlTemplate" TargetType="CheckBox">
+        	<Grid x:Name="grid">
+        		<VisualStateManager.VisualStateGroups>
+        			<VisualStateGroup x:Name="CheckStates">
+        				<VisualState x:Name="Indeterminate">
+        					<Storyboard>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="checkedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Collapsed</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="uncheckedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Collapsed</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        					</Storyboard>
+        				</VisualState>
+        				<VisualState x:Name="Unchecked">
+        					<Storyboard>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="uncheckedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Visible</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="checkedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Collapsed</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        					</Storyboard>
+        				</VisualState>
+        				<VisualState x:Name="Checked">
+        					<Storyboard>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="uncheckedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Collapsed</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="checkedImage">
+        							<DiscreteObjectKeyFrame KeyTime="0">
+        								<DiscreteObjectKeyFrame.Value>
+        									<Visibility>Visible</Visibility>
+        								</DiscreteObjectKeyFrame.Value>
+        							</DiscreteObjectKeyFrame>
+        						</ObjectAnimationUsingKeyFrames>
+        					</Storyboard>
+        				</VisualState>
+        			</VisualStateGroup>
+        			<VisualStateGroup x:Name="CommonStates">
+        				<VisualState x:Name="Normal"/>
+        				<VisualState x:Name="MouseOver"/>
+        				<VisualState x:Name="Pressed"/>
+        				<VisualState x:Name="Disabled">
+        					<Storyboard>
+        						<DoubleAnimation Duration="0" To="0.5" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+        					</Storyboard>
+        				</VisualState>
+        			</VisualStateGroup>
+        		</VisualStateManager.VisualStateGroups>
+        		<Image x:Name="uncheckedImage" Stretch="None" Source="/icons/appbar.favs.addto.rest.png" Margin="{TemplateBinding Margin}"/>
+        		<Image x:Name="checkedImage" Margin="{TemplateBinding Margin}" Source="/icons/appbar.favs.removefrom.rest.png" Stretch="None" Visibility="Collapsed"/>
+        	</Grid>
+        </ControlTemplate>
         <DataTemplate x:Key="TrackTemplate">
             <Grid>
+            	<Grid.ColumnDefinitions>
+            		<ColumnDefinition/>
+            		<ColumnDefinition Width="Auto"/>
+            	</Grid.ColumnDefinitions>
                 <StackPanel HorizontalAlignment="Left">
                     <TextBlock Margin="8,4,4,4"
                                TextWrapping="Wrap"
@@ -41,8 +119,9 @@
                                Style="{StaticResource PhoneTextNormalStyle}"
                                Foreground="{StaticResource PhoneForegroundBrush}" />
                 </StackPanel>
-                <CheckBox Margin="8,4,4,12"
-                          IsChecked="{Binding IsFavourite, Mode=TwoWay}" VerticalAlignment="Center"  HorizontalAlignment="Right"/>
+                <CheckBox Margin="4"
+                          IsChecked="{Binding IsFavourite, Mode=TwoWay}"
+                          Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center"  HorizontalAlignment="Right" Template="{StaticResource FavouriteCheckBoxControlTemplate}" Grid.Column="1"/>
             </Grid>
 
         </DataTemplate>

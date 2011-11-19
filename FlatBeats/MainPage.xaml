@@ -63,11 +63,15 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="LikedHeaderTemplate">
-            <Grid Background="{StaticResource PhoneInactiveBrush}">
+            <Grid Background="{StaticResource PhoneDisabledBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4" />
+                           FontFamily="Segoe WP SemiLight" Margin="8,4" >
+                	<TextBlock.Foreground>
+                		<SolidColorBrush Color="#FFFFFFFF"/>
+                	</TextBlock.Foreground>
+                </TextBlock>
                 <Button Background="Transparent"
                         Foreground="White"
                         HorizontalAlignment="Right"
@@ -84,19 +88,27 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="RecentHeaderTemplate">
-            <Grid Background="{StaticResource PhoneInactiveBrush}">
+            <Grid Background="{StaticResource PhoneDisabledBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4" />
+                           FontFamily="Segoe WP SemiLight" Margin="8,4" >
+                	<TextBlock.Foreground>
+                		<SolidColorBrush Color="#FFFFFFFF"/>
+                	</TextBlock.Foreground>
+                </TextBlock>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TagsHeaderTemplate">
-        	<Grid Background="{StaticResource PhoneInactiveBrush}">
+        	<Grid Background="{StaticResource PhoneDisabledBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4"/>
+                           FontFamily="Segoe WP SemiLight" Margin="8,4">
+                	<TextBlock.Foreground>
+                		<SolidColorBrush Color="#FFFFFFFF"/>
+                	</TextBlock.Foreground>
+                </TextBlock>
                 <Button Background="Transparent"
                         HorizontalAlignment="Right"
                         Margin="4,4,4,18"
@@ -116,8 +128,12 @@
         </DataTemplate>
         <Storyboard x:Name="BackgroundStoryboard"/>
         <DataTemplate x:Key="LatestHeaderTemplate">
-        	<Grid Background="{StaticResource PhoneInactiveBrush}">
-        		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" Margin="8,4"/>
+        	<Grid Background="{StaticResource PhoneDisabledBrush}">
+        		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" Margin="8,4">
+        			<TextBlock.Foreground>
+        				<SolidColorBrush Color="#FFFFFFFF"/>
+        			</TextBlock.Foreground>
+        		</TextBlock>
         	</Grid>
         </DataTemplate>
         <Style x:Key="PanoramaItemStyle1" TargetType="controls:PanoramaItem">
@@ -139,6 +155,41 @@
         					</ContentControl>
         					<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Grid.Row="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
         				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+        <Style x:Key="TiltedNavigationListStyle" TargetType="local:NavigationList">
+        	<Setter Property="ItemTemplate">
+        		<Setter.Value>
+        			<DataTemplate>
+        				<local:AnimatingContentControl>
+        					<TextBlock Text="{Binding}" />
+        				</local:AnimatingContentControl>
+        			</DataTemplate>
+        		</Setter.Value>
+        	</Setter>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="local:NavigationList">
+
+        				<local:ItemsControlEx x:Name="itemsControl"
+        					ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+        					ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
+        					<local:ItemsControlEx.ItemsPanel>
+        						<ItemsPanelTemplate>
+        							<VirtualizingStackPanel Orientation="Vertical" />
+        						</ItemsPanelTemplate>
+        					</local:ItemsControlEx.ItemsPanel>
+        					<local:ItemsControlEx.Template>
+        						<ControlTemplate>
+        							<ScrollViewer>
+        								<ItemsPresenter />
+        							</ScrollViewer>
+        						</ControlTemplate>
+        					</local:ItemsControlEx.Template>
+        				</local:ItemsControlEx>
+
         			</ControlTemplate>
         		</Setter.Value>
         	</Setter>
@@ -256,13 +307,13 @@
                                FontFamily="Segoe WP Light"
                                Foreground="LightGray"
                                TextWrapping="Wrap" />
-                    <local:NavigationList Margin="0,0,-12,0"
+                    <local:NavigationList Margin="0,0,-12,32"
                                           ItemsSource="{Binding Mixes}"
-                                          Navigation="NavigationList_OnNavigation">
+                                          Navigation="NavigationList_OnNavigation" Style="{StaticResource TiltedNavigationListStyle}">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl>
-                                    <Grid Background="#7F000000" Height="64" Margin="16,8,16,0">
+                                <local:AnimatingContentControl RenderTransformOrigin="0.5,0.5" Margin="16,8,16,0">
+                                    <Grid Background="#7F000000" Height="64">
                                     	<Grid.ColumnDefinitions>
                                     		<ColumnDefinition Width="Auto"/>
                                     		<ColumnDefinition/>
@@ -298,8 +349,8 @@
                                           Navigation="NavigationList_OnNavigation">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl>
-                                    <Grid Background="#7F000000" Margin="16,8,16,0">
+                                <local:AnimatingContentControl Margin="16,8,16,0">
+                                    <Grid Background="#7F000000">
                                     	<Grid.RowDefinitions>
                                     		<RowDefinition Height="Auto"/>
                                     		<RowDefinition Height="64"/>
@@ -357,9 +408,9 @@
                                           Navigation="NavigationList_OnNavigation" Padding="0,0,0,50">
                         <local:NavigationList.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl>
+                                <local:AnimatingContentControl Margin="16,8,16,0">
 
-                                    <Border Background="#7F000000" Height="64" Margin="16,8,16,0">
+                                    <Border Background="#7F000000" Height="64">
                                 		<TextBlock Text="{Binding TagName}"
                                 			TextWrapping="NoWrap"
                                 			Style="{StaticResource PhoneTextExtraLargeStyle}"

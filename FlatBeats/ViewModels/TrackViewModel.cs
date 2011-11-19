@@ -56,6 +56,7 @@ namespace FlatBeats.ViewModels
             this.artist = track.Artist;
             this.isFavourite = track.IsFavourite;
             this.Id = track.Id;
+            this.canFavouriteTrack = Downloader.IsAuthenticated;
         }
 
         #endregion
@@ -112,6 +113,26 @@ namespace FlatBeats.ViewModels
                             this.isFavourite = !this.isFavourite;
                             this.OnPropertyChanged("IsFavourite");
                         });
+            }
+        }
+
+        private bool canFavouriteTrack;
+
+        public bool CanFavouriteTrack
+        {
+            get
+            {
+                return this.canFavouriteTrack;
+            }
+            set
+            {
+                if (this.canFavouriteTrack == value)
+                {
+                    return;
+                }
+
+                this.canFavouriteTrack = value;
+                this.OnPropertyChanged("CanFavouriteTrack");
             }
         }
 

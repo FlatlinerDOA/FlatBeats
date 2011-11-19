@@ -57,6 +57,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private bool showNowPlaying;
 
+        private string currentMixId;
+
         #endregion
 
         #region Constructors and Destructors
@@ -224,6 +226,7 @@ namespace FlatBeats.ViewModels
         /// </returns>
         public IObservable<Unit> LoadAsync(MixContract mixData)
         {
+            this.currentMixId = mixData.Id;
             this.Player = BackgroundAudioPlayer.Instance;
             this.UpdateIsNowPlaying();
             this.playStateSubscription =
@@ -313,7 +316,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void UpdateIsNowPlaying()
         {
-            this.ShowNowPlaying = this.NowPlaying != null;
+            this.ShowNowPlaying = this.NowPlaying != null && this.NowPlaying.MixId == this.currentMixId;
             this.Title = this.ShowNowPlaying ? StringResources.Title_Playing : StringResources.Title_PlayedTracks;
             if (this.NowPlaying != null && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
             {
