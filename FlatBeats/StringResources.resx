@@ -191,10 +191,10 @@ Link:
     <value>Flat Beats</value>
   </data>
   <data name="MessageBox_ResetSettings_Message" xml:space="preserve">
-    <value>This will clear everything on this device including your play history, it won't affect your profile such as liked mixes etc.</value>
+    <value>If you sign out we will forget your recently played mixes!</value>
   </data>
   <data name="MessageBox_ResetSettings_Title" xml:space="preserve">
-    <value>Reset everything?</value>
+    <value>Sign out?</value>
   </data>
   <data name="Message_NoRecentlyPlayedTracks" xml:space="preserve">
     <value>No tracks have been played recently for this mix.</value>
@@ -216,5 +216,8 @@ Link:
   </data>
   <data name="Title_Mix" xml:space="preserve">
     <value>mix</value>
+  </data>
+  <data name="Message_NoPersonalMixes" xml:space="preserve">
+    <value>You haven't created any mixes yet, visit 8tracks.com to get started!</value>
   </data>
 </root>

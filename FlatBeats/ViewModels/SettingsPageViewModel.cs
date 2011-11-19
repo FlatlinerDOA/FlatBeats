@@ -67,8 +67,8 @@ namespace FlatBeats.ViewModels
         public SettingsPageViewModel()
         {
             this.Title = "PROFILE";
-            this.LoginLabelText = "login";
-            this.ResetLabelText = "reset";
+            this.LoginLabelText = "sign in";
+            this.ResetLabelText = "sign out";
             this.SignupLabelText = "create account";
             this.UserNameLabelText = "Username";
             this.PasswordLabelText = "Password";
@@ -254,6 +254,7 @@ namespace FlatBeats.ViewModels
         public override void Load()
         {
             this.subscription.Dispose();
+            this.CanLogin = true;
             this.ShowProgress();
             this.subscription = ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
                 this.LoadProfile, this.ShowError, this.LoadCompleted);
@@ -263,7 +264,48 @@ namespace FlatBeats.ViewModels
         {
             this.subscription.Dispose();
         }
+
         #endregion
+
+        private bool isLoggedIn;
+
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return this.isLoggedIn;
+            }
+            set
+            {
+                if (this.isLoggedIn == value)
+                {
+                    return;
+                }
+
+                this.isLoggedIn = value;
+                this.OnPropertyChanged("IsLoggedIn");
+            }
+        }
+
+        private bool canLogin;
+
+        public bool CanLogin
+        {
+            get
+            {
+                return this.canLogin;
+            }
+            set
+            {
+                if (this.canLogin == value)
+                {
+                    return;
+                }
+
+                this.canLogin = value;
+                this.OnPropertyChanged("CanLogin");
+            }
+        }
 
         #region Methods
 
@@ -285,7 +327,10 @@ namespace FlatBeats.ViewModels
             var q = from user in ProfileService.LoadUserToken()
                     from loaded in this.LoadMixes(user.CurentUser.Id)
                     select new Unit();
-            q.Subscribe(_ => { }, this.ShowError, this.HideProgress);
+            q.Subscribe(profile => { 
+                this.IsLoggedIn = true;
+                                     this.CanLogin = false;
+            }, this.ShowError, this.HideProgress);
         }
 
         private IObservable<Unit> LoadMixes(string userId)
@@ -294,7 +339,21 @@ namespace FlatBeats.ViewModels
                     from mix in mixes.Mixes.ToObservable(Scheduler.ThreadPool)
                     select new MixViewModel(mix);
                         
-            return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add).FinallySelect(() => new Unit());
+            return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(
+                this.Mixes.Add, 
+                this.ShowError, 
+                () =>
+                {
+                    if (this.Mixes.Count == 0)
+                    {
+                        this.Message = StringResources.Message_NoPersonalMixes;
+                        this.ShowMessage = true;
+                    }
+                    else
+                    {
+                        this.ShowMessage = false;
+                    }
+                }).FinallySelect(() => new Unit());
         }
 
         /// <summary>
@@ -332,6 +391,8 @@ namespace FlatBeats.ViewModels
             this.UserName = null;
             this.Password = null;
             this.Mixes.Clear();
+            this.CanLogin = true;
+            this.IsLoggedIn = false;
         }
 
         /// <summary>
@@ -343,7 +404,13 @@ namespace FlatBeats.ViewModels
             var q = from auth in ProfileService.Authenticate(creds)
                     from mixLoaded in this.LoadMixes(auth.CurentUser.Id)
                     select new Unit();
-            q.ObserveOnDispatcher().Subscribe(_ => {  }, this.ShowError, this.HideProgress);
+            q.ObserveOnDispatcher().Subscribe(profile => 
+            { 
+                this.IsLoggedIn = true;
+                this.CanLogin = false;
+            }, 
+            this.ShowError, 
+            this.HideProgress);
         }
 
         /// <summary>

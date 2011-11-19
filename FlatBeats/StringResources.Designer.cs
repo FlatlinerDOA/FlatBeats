@@ -173,6 +173,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com to get started!.
+        /// </summary>
+        internal static string Message_NoPersonalMixes {
+            get {
+                return ResourceManager.GetString("Message_NoPersonalMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check back here after listening to some mixes..
         /// </summary>
         internal static string Message_NoRecentlyPlayedMixes {
@@ -200,7 +209,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This will clear everything on this device including your play history, it won&apos;t affect your profile such as liked mixes etc..
+        ///   Looks up a localized string similar to If you sign out we will forget your recently played mixes!.
         /// </summary>
         internal static string MessageBox_ResetSettings_Message {
             get {
@@ -209,7 +218,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset everything?.
+        ///   Looks up a localized string similar to Sign out?.
         /// </summary>
         internal static string MessageBox_ResetSettings_Title {
             get {
