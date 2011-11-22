@@ -200,7 +200,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hmmm... no one&apos;s said anything? Why don&apos;t you be the first to congratulate the creator of this mix!.
+        ///   Looks up a localized string similar to Hmmm... no one&apos;s said anything about this mix..
         /// </summary>
         internal static string Message_NoReviews {
             get {
@@ -209,7 +209,16 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you sign out we will forget your recently played mixes!.
+        ///   Looks up a localized string similar to This person hasn&apos;t created any mixes..
+        /// </summary>
+        internal static string Message_UserHasNoMixes {
+            get {
+                return ResourceManager.GetString("Message_UserHasNoMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait! If you sign out we will forget which mixes you played recently!.
         /// </summary>
         internal static string MessageBox_ResetSettings_Message {
             get {
@@ -232,6 +241,15 @@ namespace FlatBeats {
         internal static string Title_ApplicationName {
             get {
                 return ResourceManager.GetString("Title_ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mixes.
+        /// </summary>
+        internal static string Title_CreatedMixes {
+            get {
+                return ResourceManager.GetString("Title_CreatedMixes", resourceCulture);
             }
         }
         

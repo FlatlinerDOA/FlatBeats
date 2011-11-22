@@ -21,13 +21,15 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public UserProfilePageViewModel()
         {
-            this.Mixes = new ObservableCollection<MixViewModel>();
+            this.Mixes = new UserProfileMixesViewModel();
             this.LikedMixes = new ObservableCollection<MixViewModel>();
             this.FollowedBy = new ObservableCollection<UserContract>();
             this.Following = new ObservableCollection<UserContract>();
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
         }
+
+        public UserProfileMixesViewModel Mixes { get; private set; }
 
         public string UserId { get; set; }
 
@@ -83,9 +85,9 @@ namespace FlatBeats.ViewModels
 
             this.ShowProgress();
             var loadProcess = from userProfile in this.LoadUserAsync()
-                              from mixes in this.LoadMixesAsync()
-                              from following in this.LoadFollowingAsync()
-                              from followedBy in this.LoadFollowedByAsync()
+                              from mixes in this.Mixes.LoadMixesAsync(this.UserId)
+                              ////from following in this.LoadFollowingAsync()
+                              ////from followedBy in this.LoadFollowedByAsync()
                               select new Unit();
             this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
         }
@@ -107,19 +109,6 @@ namespace FlatBeats.ViewModels
             return Observable.Return(new Unit());
         }
 
-        private IObservable<Unit> LoadMixesAsync()
-        {
-            var mixes = from response in ProfileService.GetUserMixes(this.UserId)
-                        from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
-                        select new MixViewModel(mix);
-            return mixes.FlowIn()
-                .ObserveOnDispatcher()
-                .FirstDo(_ => this.Mixes.Clear())
-                .Do(
-                    this.Mixes.Add, 
-                    this.ShowError, 
-                    this.HideProgress).FinallySelect(() => new Unit());
-        }
 
         private IObservable<Unit> LoadUserAsync()
         {
@@ -138,7 +127,6 @@ namespace FlatBeats.ViewModels
             this.UserName = userContract.Name;
         }
 
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
         public ObservableCollection<MixViewModel> LikedMixes { get; private set; }
 

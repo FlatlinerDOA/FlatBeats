@@ -1,12 +1,17 @@
 ﻿namespace FlatBeats
 {
     using System;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
+
+    using Clarity.Phone.Controls;
+    using Clarity.Phone.Controls.Animations;
+    using Clarity.Phone.Extensions;
 
     using Coding4Fun.Phone.Controls;
 
@@ -16,7 +21,9 @@
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
 
-    public partial class MainPage : PhoneApplicationPage
+    using GestureEventArgs = System.Windows.Input.GestureEventArgs;
+
+    public partial class MainPage : AnimatedBasePage
     {
         private string PlayMixKey = "MixId";
 
@@ -27,9 +34,10 @@
         {
             this.InitializeComponent();
 
+            this.AnimationContext = this.LayoutRoot;
+
             // Set the data context of the listbox control to the sample data
             this.DataContext = App.ViewModel;
-            this.Loaded += this.MainPage_Loaded;
             this.Unloaded += this.MainPage_Unloaded;
         }
 
@@ -41,16 +49,39 @@
             }
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
-            var x = this.pano.ActualWidth;
-            var y = this.pano.ActualHeight;
-            VisualStateManager.GoToState(this, "UnloadedState", false);
+            if (toOrFrom != null)
+            {
+                if (toOrFrom.OriginalString.Contains("PlayPage.xaml"))
+                {
+                    return null;
+                    ////var container = (PanoramaItem)this.pano.ItemContainerGenerator.ContainerFromIndex(this.pano.SelectedIndex);
+                    ////var listBox = ((FrameworkElement)container.Content).GetVisualChildren<ListBox>().FirstOrDefault();
+                    ////if (listBox != null)
+                    ////{
+                    ////    var listItem = (ListBoxItem)listBox.ItemContainerGenerator.ContainerFromIndex(listBox.SelectedIndex);
+                    ////    return this.GetContinuumAnimation(listItem, animationType);
+                    ////}
+                }
+            }
+
+            if (animationType == AnimationType.NavigateForwardIn)
+            {
+                return new TurnstileForwardInAnimator() { RootElement = this.LayoutRoot };
+            }
+
+            if (animationType == AnimationType.NavigateBackwardIn)
+            {
+                return new TurnstileBackwardInAnimator() { RootElement = this.LayoutRoot };
+            }
+
+            return new TurnstileBackwardOutAnimator() { RootElement = this.LayoutRoot };
         }
+
 
         private void MainPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.Loaded -= this.MainPage_Loaded;
             this.Unloaded -= this.MainPage_Unloaded;
             App.ViewModel.Unload();
         }
@@ -84,10 +115,7 @@
         private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
         {
             var navItem = e.Item as INavigationItem;
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
+            this.NavigateTo(navItem);
         }
 
         private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -136,6 +164,19 @@
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
+        }
+
+        private void ListBoxTap(object sender, GestureEventArgs e)
+        {
+            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+        }
+
+        private void NavigateTo(INavigationItem navItem)
+        {
+            if (navItem != null && navItem.NavigationUrl != null)
+            {
+                this.NavigationService.Navigate(navItem.NavigationUrl);
+            }
         }
     }
 }

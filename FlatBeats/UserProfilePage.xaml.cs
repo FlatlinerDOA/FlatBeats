@@ -13,16 +13,46 @@ using Microsoft.Phone.Controls;
 
 namespace FlatBeats
 {
+    using Clarity.Phone.Controls;
+    using Clarity.Phone.Controls.Animations;
+
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
-    public partial class UserProfilePage : PhoneApplicationPage
+    using GestureEventArgs = System.Windows.Input.GestureEventArgs;
+
+    public partial class UserProfilePage : AnimatedBasePage
     {
         private ApplicationBarBinder appBarBinder;
 
         public UserProfilePage()
         {
             this.InitializeComponent();
+            this.AnimationContext = this.LayoutRoot;
+        }
+
+        protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
+        {
+            ////if (toOrFrom != null)
+            ////{
+            ////    if (toOrFrom.OriginalString.Contains("MixesPage.xaml"))
+            ////    {
+            ////        if (animationType == AnimationType.NavigateForwardIn)
+            ////        {
+            ////            return new TurnstileFeatherForwardInAnimator() { RootElement = LayoutRoot, ListBox = this.mixesListBox };
+            ////        }
+
+            ////        return new TurnstileFeatherBackwardInAnimator() { RootElement = LayoutRoot, ListBox = this.mixesListBox };
+
+            ////    }
+            ////}
+
+            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardIn)
+            {
+                return new SlideUpAnimator() { RootElement = LayoutRoot };
+            }
+
+            return new SlideDownAnimator() { RootElement = LayoutRoot };
         }
 
         public UserProfilePageViewModel ViewModel 
@@ -46,10 +76,13 @@ namespace FlatBeats
             this.ViewModel.Load();
         }
 
-
-        private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
+        private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            var navItem = e.Item as INavigationItem;
+            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+        }
+
+        private void NavigateTo(INavigationItem navItem)
+        {
             if (navItem != null && navItem.NavigationUrl != null)
             {
                 this.NavigationService.Navigate(navItem.NavigationUrl);

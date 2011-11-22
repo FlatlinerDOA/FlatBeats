@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage x:Class="FlatBeats.PlayPage"
+﻿<Controls1:AnimatedBasePage x:Class="FlatBeats.PlayPage"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -11,15 +11,16 @@
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:Controls="clr-namespace:FlatBeats.Controls"
-                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            xmlns:Controls="clr-namespace:FlatBeats.Controls" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
                             shell:SystemTray.Opacity="0"
-                            d:DataContext="{d:DesignData /SampleData/PlayPageViewModelSampleData.xaml}">
+                            shell:SystemTray.BackgroundColor="Transparent"
+                            d:DataContext="{d:DesignData /SampleData/PlayPageViewModelSampleData.xaml}"
+                            toolkit:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
         <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
@@ -27,7 +28,7 @@
         <Controls:UrlToBitmapConverter x:Key="ImageConverter" />
         <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
         <ControlTemplate x:Key="FavouriteCheckBoxControlTemplate" TargetType="CheckBox">
-        	<Grid x:Name="grid">
+        	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource TransparentBrush}">
         		<VisualStateManager.VisualStateGroups>
         			<VisualStateGroup x:Name="CheckStates">
         				<VisualState x:Name="Indeterminate">
@@ -96,12 +97,26 @@
         				</VisualState>
         			</VisualStateGroup>
         		</VisualStateManager.VisualStateGroups>
-        		<Image x:Name="uncheckedImage" Stretch="None" Source="/icons/appbar.favs.addto.rest.png" Margin="{TemplateBinding Margin}"/>
-        		<Image x:Name="checkedImage" Margin="{TemplateBinding Margin}" Source="/icons/appbar.favs.removefrom.rest.png" Stretch="None" Visibility="Collapsed"/>
+                <Border x:Name="uncheckedImage"
+                           Background="{StaticResource PhoneForegroundBrush}"
+                           Margin="{TemplateBinding Margin}" Width="32" Height="32">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/icons/appbar.favs.addto.rest.png"
+                                    Stretch="None" />
+                    </Border.OpacityMask>
+                </Border>
+                <Border x:Name="checkedImage"
+                           Margin="{TemplateBinding Margin}"
+                           Background="{StaticResource PhoneAccentBrush}"
+                           Visibility="Collapsed" Width="32" Height="32">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/icons/appbar.favs.removefrom.rest.png" Stretch="None" />
+                    </Border.OpacityMask>
+                </Border>
         	</Grid>
         </ControlTemplate>
         <DataTemplate x:Key="TrackTemplate">
-            <Grid>
+            <Grid d:DesignWidth="218" d:DesignHeight="64">
             	<Grid.ColumnDefinitions>
             		<ColumnDefinition/>
             		<ColumnDefinition Width="Auto"/>
@@ -121,30 +136,17 @@
                 </StackPanel>
                 <CheckBox Margin="4"
                           IsChecked="{Binding IsFavourite, Mode=TwoWay}"
-                          Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center"  HorizontalAlignment="Right" Template="{StaticResource FavouriteCheckBoxControlTemplate}" Grid.Column="1"/>
+                          Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center"  HorizontalAlignment="Right" Template="{StaticResource FavouriteCheckBoxControlTemplate}" Grid.Column="1" Padding="8"/>
             </Grid>
 
         </DataTemplate>
-        <Style TargetType="Controls:NavigationList"
-               x:Key="WrapNavigationList">
-            <Setter Property="Template">
+        <Style x:Key="WrapNavigationList"
+               TargetType="ListBox">
+            <Setter Property="ItemsPanel">
                 <Setter.Value>
-                    <ControlTemplate>
-                        <Controls:ItemsControlEx x:Name="itemsControl"
-                                              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
-                            <Controls:ItemsControlEx.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <toolkit:WrapPanel />
-                                </ItemsPanelTemplate>
-                            </Controls:ItemsControlEx.ItemsPanel>
-                            <Controls:ItemsControlEx.Template>
-                                <ControlTemplate>
-                                    <ItemsPresenter />
-                                </ControlTemplate>
-                            </Controls:ItemsControlEx.Template>
-                        </Controls:ItemsControlEx>
-                    </ControlTemplate>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel />
+                    </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -223,7 +225,7 @@
                         Stretch="UniformToFill"
                         ImageSource="{Binding Mix.ImageUrl, Converter={StaticResource ImageConverter}}" />
         </Grid.Background>
-        <controls:Pivot Margin="0,-8,0,0" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
+        <controls:Pivot x:Name="pivot" Margin="0,-8,0,72" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
             <controls:PivotItem Header="{Binding Title}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
@@ -260,7 +262,8 @@
                     		    </Image.Source>
                     	    </Image>
                         </Border>
-                        <TextBlock Text="{Binding Mix.MixName}"
+                        <TextBlock x:Name="mixNameTextBlock"
+                            Text="{Binding Mix.MixName}"
                                    Style="{StaticResource PhoneTextLargeStyle}"
                                    TextWrapping="Wrap"
                                    Margin="12,0,12,8"
@@ -274,21 +277,21 @@
                                        Margin="12,2,12,4"
                                        d:LayoutOverrides="Height" />
                         </ScrollViewer>
-                        <Controls:NavigationList Margin="12,4,12,8"
+                        <ListBox Margin="12,4,12,8"
                                                  Grid.ColumnSpan="2"
                                                  Grid.Row="2"
                                                  ItemsSource="{Binding Mix.TagList}"
                                                  Style="{StaticResource WrapNavigationList}"
-                                                 Navigation="NavigationList_OnNavigation">
-                            <Controls:NavigationList.ItemTemplate>
+                                                 Tap="ListBoxTap">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                        <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
-                                                   TextWrapping="NoWrap"
-                                                   Style="{StaticResource PhoneTextLargeStyle}"
-                                                   Foreground="{StaticResource PhoneForegroundBrush}" />
+                                    <TextBlock Text="{Binding TagName}" Margin="0,4,24,4"
+                                                TextWrapping="NoWrap"
+                                                Style="{StaticResource PhoneTextLargeStyle}"
+                                                Foreground="{StaticResource PhoneForegroundBrush}" />
                                 </DataTemplate>
-                            </Controls:NavigationList.ItemTemplate>
-                        </Controls:NavigationList>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                         <Button Grid.Row="3"
                                 Grid.ColumnSpan="2"
                                 Margin="8"
@@ -337,10 +340,10 @@
                                TextWrapping="Wrap"
                                Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                VerticalAlignment="Top" />
-                    <Controls:NavigationList Margin="0,0,-12,0"
+                    <ListBox Margin="0,0,-12,0"
                                              ItemsSource="{Binding Reviews}"
                                              ItemTemplate="{StaticResource ReviewItemTemplate}"
-                                             Navigation="NavigationList_OnNavigation" />
+                                             Tap="ListBoxTap" />
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="{Binding Title}"
@@ -373,11 +376,11 @@
                                          IsIndeterminate="{Binding IsProgressIndeterminate}" />
                             <TextBlock Text="{Binding ProgressStatusText}" Grid.Row="2" Margin="8,2,8,16" />
                         </Grid>
-                        <Controls:NavigationList Margin="0,0,-12,0"
+                        <ListBox Margin="0,0,-12,0"
                                                  Grid.Row="1"
                                                  ItemsSource="{Binding Tracks}"
                                                  ItemTemplate="{StaticResource TrackTemplate}"
-                                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
+                                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" ItemContainerStyle="{StaticResource FullWidthListBoxItemStyle}" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
@@ -385,6 +388,6 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True"
-                              IsMenuEnabled="True" />
+                              IsMenuEnabled="True" BackgroundColor="#88000000" />
     </phone:PhoneApplicationPage.ApplicationBar>
-</phone:PhoneApplicationPage>
+</Controls1:AnimatedBasePage>

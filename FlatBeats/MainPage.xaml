@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Controls1:AnimatedBasePage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
@@ -9,7 +9,10 @@
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:local="clr-namespace:FlatBeats.Controls"
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
-                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:FlatBeats="clr-namespace:FlatBeats" x:Class="FlatBeats.MainPage"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:FlatBeats="clr-namespace:FlatBeats"
+                            xmlns:Controls1="clr-namespace:Clarity.Phone.Controls"
+                            x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="800"
@@ -20,10 +23,12 @@
                             Controls:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <local:UrlToBitmapConverter x:Key="ImageConverter" />
-        <local:BooleanToVisibilityConverter x:Key="VisibilityConverter"  WhenFalse="Collapsed"
+        <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
+        <local:BooleanToVisibilityConverter x:Key="VisibilityConverter"
+                                            WhenFalse="Collapsed"
                                             WhenTrue="Visible" />
-        <Style TargetType="local:NavigationList"
-               x:Key="WrapNavigationList">
+        <Style x:Key="WrapNavigationList"
+               TargetType="ListBox">
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -33,12 +38,23 @@
                                              Title="{Binding TileTitle}"
                                              Margin="8"
                                              GroupTag="Latest"
-                                             Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" IsFrozen="True"/>
-                        </local:AnimatingContentControl> 
+                                             Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}"
+                                             IsFrozen="True" />
+                        </local:AnimatingContentControl>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Template">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel Height="370"
+                                           ItemWidth="181"
+                                           ItemHeight="181"
+                                           Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <!--<Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <local:ItemsControlEx x:Name="itemsControl"
@@ -60,16 +76,17 @@
                         </local:ItemsControlEx>
                     </ControlTemplate>
                 </Setter.Value>
-            </Setter>
+            </Setter>-->
         </Style>
         <DataTemplate x:Key="LikedHeaderTemplate">
-            <Grid Background="{StaticResource PhoneDisabledBrush}">
+            <Grid Background="{StaticResource HeaderBackgroundBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4" >
+                           FontFamily="Segoe WP SemiLight"
+                           Margin="8,4">
                 	<TextBlock.Foreground>
-                		<SolidColorBrush Color="#FFFFFFFF"/>
+                		<SolidColorBrush Color="#FFFFFFFF" />
                 	</TextBlock.Foreground>
                 </TextBlock>
                 <Button Background="Transparent"
@@ -88,25 +105,27 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="RecentHeaderTemplate">
-            <Grid Background="{StaticResource PhoneDisabledBrush}">
+            <Grid Background="{StaticResource HeaderBackgroundBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4" >
+                           FontFamily="Segoe WP SemiLight"
+                           Margin="8,4">
                 	<TextBlock.Foreground>
-                		<SolidColorBrush Color="#FFFFFFFF"/>
+                		<SolidColorBrush Color="#FFFFFFFF" />
                 	</TextBlock.Foreground>
                 </TextBlock>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TagsHeaderTemplate">
-        	<Grid Background="{StaticResource PhoneDisabledBrush}">
+            <Grid Background="{StaticResource HeaderBackgroundBrush}">
                 <TextBlock TextWrapping="Wrap"
                            Text="{Binding}"
                            d:LayoutOverrides="Width, Height"
-                           FontFamily="Segoe WP SemiLight" Margin="8,4">
+                           FontFamily="Segoe WP SemiLight"
+                           Margin="8,4">
                 	<TextBlock.Foreground>
-                		<SolidColorBrush Color="#FFFFFFFF"/>
+                		<SolidColorBrush Color="#FFFFFFFF" />
                 	</TextBlock.Foreground>
                 </TextBlock>
                 <Button Background="Transparent"
@@ -117,59 +136,77 @@
                         Click="SearchButton_Click"
                         Foreground="White"
                         Template="{StaticResource CircleButtonControlTemplate}">
-        			<Image Source="icons/appbar.feature.search.rest.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" />
-        		</Button>
-        	</Grid>
+                    <Image Source="icons/appbar.feature.search.rest.png"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Stretch="None" />
+                </Button>
+            </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TitleTemplate">
-        	<Grid Margin="0,62,0,0">
-        		<TextBlock TextWrapping="Wrap" Text="flat beats" d:LayoutOverrides="Width, Height"/>
-        	</Grid>
+            <Grid Margin="0,62,0,0">
+                <TextBlock TextWrapping="Wrap"
+                           Text="flat beats"
+                           d:LayoutOverrides="Width, Height" />
+            </Grid>
         </DataTemplate>
-        <Storyboard x:Name="BackgroundStoryboard"/>
         <DataTemplate x:Key="LatestHeaderTemplate">
-        	<Grid Background="{StaticResource PhoneDisabledBrush}">
-        		<TextBlock TextWrapping="Wrap" Text="{Binding}" d:LayoutOverrides="Width, Height" Margin="8,4">
+            <Grid Background="{StaticResource HeaderBackgroundBrush}">
+                <TextBlock TextWrapping="Wrap"
+                           Text="{Binding}"
+                           d:LayoutOverrides="Width, Height"
+                           Margin="8,4">
         			<TextBlock.Foreground>
-        				<SolidColorBrush Color="#FFFFFFFF"/>
+        				<SolidColorBrush Color="#FFFFFFFF" />
         			</TextBlock.Foreground>
-        		</TextBlock>
-        	</Grid>
+                </TextBlock>
+            </Grid>
         </DataTemplate>
-        <Style x:Key="PanoramaItemStyle1" TargetType="controls:PanoramaItem">
-        	<Setter Property="CacheMode" Value="BitmapCache"/>
-        	<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        	<Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        	<Setter Property="Template">
-        		<Setter.Value>
-        			<ControlTemplate TargetType="controls:PanoramaItem">
-        				<Grid Background="{TemplateBinding Background}" Margin="0">
-        					<Grid.RowDefinitions>
-        						<RowDefinition Height="auto"/>
-        						<RowDefinition Height="*"/>
-        					</Grid.RowDefinitions>
-        					<ContentControl x:Name="header" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}" FontFamily="{StaticResource PhoneFontFamilySemiLight}" Margin="0" HorizontalContentAlignment="Stretch">
-        						<ContentControl.RenderTransform>
-        							<TranslateTransform x:Name="headerTransform"/>
-        						</ContentControl.RenderTransform>
-        					</ContentControl>
-        					<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Grid.Row="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-        				</Grid>
-        			</ControlTemplate>
-        		</Setter.Value>
-        	</Setter>
+        <Style x:Key="PanoramaItemStyle1"
+               TargetType="controls:PanoramaItem">
+            <Setter Property="CacheMode"
+                    Value="BitmapCache" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="controls:PanoramaItem">
+                        <Grid Background="{TemplateBinding Background}"
+                              Margin="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <ContentControl x:Name="header"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            Content="{TemplateBinding Header}"
+                                            FontSize="{StaticResource PhoneFontSizeExtraExtraLarge}"
+                                            FontFamily="{StaticResource PhoneFontFamilySemiLight}"
+                                            Margin="0"
+                                            HorizontalContentAlignment="Stretch">
+                                <ContentControl.RenderTransform>
+                                    <TranslateTransform x:Name="headerTransform" />
+                                </ContentControl.RenderTransform>
+                            </ContentControl>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              Grid.Row="1"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        <Style x:Key="TiltedNavigationListStyle" TargetType="local:NavigationList">
-        	<Setter Property="ItemTemplate">
-        		<Setter.Value>
-        			<DataTemplate>
-        				<local:AnimatingContentControl>
-        					<TextBlock Text="{Binding}" />
-        				</local:AnimatingContentControl>
-        			</DataTemplate>
-        		</Setter.Value>
-        	</Setter>
-        	<Setter Property="Template">
+		 <Style x:Key="TiltedNavigationListStyle"
+               TargetType="ListBox">
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="Margin" Value="0,0,-12,12"/>
+			<Setter Property="ItemContainerStyle" Value="{StaticResource FullWidthListBoxItemStyle}" />
+			<!--<Setter Property="Template">
         		<Setter.Value>
         			<ControlTemplate TargetType="local:NavigationList">
 
@@ -192,7 +229,7 @@
 
         			</ControlTemplate>
         		</Setter.Value>
-        	</Setter>
+        	</Setter>-->
         </Style>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.FontFamily>
@@ -208,7 +245,7 @@
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
-    <toolkit:TransitionService.NavigationInTransition>
+    <!--<toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
             <toolkit:NavigationInTransition.Backward>
                 <toolkit:TurnstileTransition Mode="BackwardIn" />
@@ -231,7 +268,7 @@
     <VisualStateManager.VisualStateGroups>
         <VisualStateGroup x:Name="LoadStates">
             <VisualStateGroup.Transitions>
-                <VisualTransition GeneratedDuration="0:0:0.8">
+                <VisualTransition GeneratedDuration="0:0:3">
                     <VisualTransition.GeneratedEasingFunction>
                         <QuarticEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
@@ -276,30 +313,38 @@
                 </Storyboard>
             </VisualState>
         </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
+    </VisualStateManager.VisualStateGroups>-->
     <Grid x:Name="LayoutRoot">
-    	<Grid.Background>
-    		<RadialGradientBrush RadiusX="1.152" RadiusY="0.59">
-    			<GradientStop Color="#FF3B3F47" Offset="1"/>
-    			<GradientStop Color="#FF5E5E62"/>
-    		</RadialGradientBrush>
-    	</Grid.Background>    	
+        <Grid.Background>
+            <RadialGradientBrush RadiusX="1.152"
+                                 RadiusY="0.59">
+                <GradientStop Color="#FF3B3F47"
+                              Offset="1" />
+                <GradientStop Color="#FF5E5E62" />
+            </RadialGradientBrush>
+        </Grid.Background>
         <controls:Panorama Title="{Binding Title}"
-                           x:Name="pano" 
-                           Foreground="White" 
-                           SelectionChanged="pano_SelectionChanged" RenderTransformOrigin="0.5,0.5" TitleTemplate="{StaticResource TitleTemplate}" ItemContainerStyle="{StaticResource PanoramaItemStyle1}">
-        	<controls:Panorama.Background>
-        		<ImageBrush ImageSource="PanoramaBackground.jpg"/>
-        	</controls:Panorama.Background>
-        	<controls:Panorama.RenderTransform>
-        		<CompositeTransform ScaleX="1.07" ScaleY="1.07"/>
-        	</controls:Panorama.RenderTransform>
-        	<controls:Panorama.Projection>
-        		<PlaneProjection RotationY="-18" GlobalOffsetX="18"/>
-        	</controls:Panorama.Projection>
+                           x:Name="pano"
+                           Foreground="White"
+                           SelectionChanged="pano_SelectionChanged"
+                           RenderTransformOrigin="0.5,0.5"
+                           TitleTemplate="{StaticResource TitleTemplate}"
+                           ItemContainerStyle="{StaticResource PanoramaItemStyle1}">
+            <controls:Panorama.Background>
+                <ImageBrush ImageSource="PanoramaBackground.jpg" />
+            </controls:Panorama.Background>
+            <controls:Panorama.RenderTransform>
+                <CompositeTransform ScaleX="1.07"
+                                    ScaleY="1.07" />
+            </controls:Panorama.RenderTransform>
+            <controls:Panorama.Projection>
+                <PlaneProjection RotationY="-18"
+                                 GlobalOffsetX="18" />
+            </controls:Panorama.Projection>
             <controls:PanoramaItem DataContext="{Binding Liked}"
                                    Header="{Binding Title}"
-                                   HeaderTemplate="{StaticResource LikedHeaderTemplate}" RenderTransformOrigin="0.5,0.5">
+                                   HeaderTemplate="{StaticResource LikedHeaderTemplate}"
+                                   RenderTransformOrigin="0.5,0.5">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -307,36 +352,46 @@
                                FontFamily="Segoe WP Light"
                                Foreground="LightGray"
                                TextWrapping="Wrap" />
-                    <local:NavigationList Margin="0,0,-12,32"
-                                          ItemsSource="{Binding Mixes}"
-                                          Navigation="NavigationList_OnNavigation" Style="{StaticResource TiltedNavigationListStyle}">
-                        <local:NavigationList.ItemTemplate>
+                    <ListBox
+                             ItemsSource="{Binding Mixes}"
+                             Tap="ListBoxTap"
+                             Style="{StaticResource TiltedNavigationListStyle}" 
+							 >
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl RenderTransformOrigin="0.5,0.5" Margin="16,8,16,0">
-                                    <Grid Background="#7F000000" Height="64">
-                                    	<Grid.ColumnDefinitions>
-                                    		<ColumnDefinition Width="Auto"/>
-                                    		<ColumnDefinition/>
-                                    	</Grid.ColumnDefinitions>
-                                		<Image Margin="0"
-                                			Width="64"
-                                			Height="64"
-                                			Stretch="Uniform"
-                                			VerticalAlignment="Top"
-                                			Source="{Binding ThumbnailUrl}" HorizontalAlignment="Left" />
-                                		<TextBlock Text="{Binding MixName}"
-                                			Style="{StaticResource PhoneTextTitle2Style}"
-                                			Foreground="White"
-                                			VerticalAlignment="Center"
-                                			Margin="8,0" d:LayoutOverrides="Width" Grid.Column="1" />
-                                	</Grid>
+                                <local:AnimatingContentControl RenderTransformOrigin="0.5,0.5"
+                                                               Margin="16,8,16,0">
+                                    <Grid Background="#7F000000"
+                                          Height="64">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Image Margin="0"
+                                               Width="64"
+                                               Height="64"
+                                               Stretch="Uniform"
+                                               VerticalAlignment="Top"
+                                               Source="{Binding ThumbnailUrl}"
+                                               HorizontalAlignment="Left" />
+                                        <TextBlock Text="{Binding MixName}"
+                                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                                   Foreground="White"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0"
+                                                   d:LayoutOverrides="Width"
+                                                   Grid.Column="1" />
+                                    </Grid>
                                 </local:AnimatingContentControl>
                             </DataTemplate>
-                        </local:NavigationList.ItemTemplate>
-                    </local:NavigationList>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Recent}" Header="{Binding Title}" HeaderTemplate="{StaticResource RecentHeaderTemplate}" Margin="0,0,0,35">
+            <controls:PanoramaItem DataContext="{Binding Recent}"
+                                   Header="{Binding Title}"
+                                   HeaderTemplate="{StaticResource RecentHeaderTemplate}"
+                                   Margin="0,0,0,35">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -344,58 +399,75 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
                                Foreground="LightGray" />
-                    <local:NavigationList Margin="0,0,-12,0"
-                                          ItemsSource="{Binding Mixes}"
-                                          Navigation="NavigationList_OnNavigation">
-                        <local:NavigationList.ItemTemplate>
+                    <ListBox Margin="0,0,-12,0"
+                             ItemsSource="{Binding Mixes}"
+                             Tap="ListBoxTap"
+                             Style="{StaticResource TiltedNavigationListStyle}">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl Margin="16,8,16,0">
                                     <Grid Background="#7F000000">
-                                    	<Grid.RowDefinitions>
-                                    		<RowDefinition Height="Auto"/>
-                                    		<RowDefinition Height="64"/>
-                                    	</Grid.RowDefinitions>
-                                    	<Grid.ColumnDefinitions>
-                                    		<ColumnDefinition Width="Auto"/>
-                                    		<ColumnDefinition/>
-                                    	</Grid.ColumnDefinitions>
-                                		<TextBlock Text="NOW PLAYING"
-                                			Style="{StaticResource PhoneTextTitle2Style}"
-                                			Foreground="{StaticResource PhoneAccentBrush}"
-                                			Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}" FontFamily="Segoe WP" Grid.ColumnSpan="2" Margin="16,8" />
-                                		<Image Margin="0"
-                                			Width="64"
-                                			Height="64"
-                                			Stretch="Uniform"
-                                			Source="{Binding ThumbnailUrl}" Grid.Row="1" />
-                                		<TextBlock Text="{Binding MixName}"
-                                			Style="{StaticResource PhoneTextTitle2Style}"
-                                			Foreground="White"
-                                			VerticalAlignment="Center" Margin="8,0" Grid.Column="1" Grid.Row="1" />
-                                	</Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="64" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="NOW PLAYING"
+                                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                                   Foreground="{StaticResource PhoneAccentBrush}"
+                                                   Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"
+                                                   FontFamily="Segoe WP"
+                                                   Grid.ColumnSpan="2"
+                                                   Margin="16,8" />
+                                        <Image Margin="0"
+                                               Width="64"
+                                               Height="64"
+                                               Stretch="Uniform"
+                                               Source="{Binding ThumbnailUrl}"
+                                               Grid.Row="1" />
+                                        <TextBlock Text="{Binding MixName}"
+                                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                                   Foreground="White"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0"
+                                                   Grid.Column="1"
+                                                   Grid.Row="1" />
+                                    </Grid>
                                 </local:AnimatingContentControl>
                             </DataTemplate>
-                           
-                        </local:NavigationList.ItemTemplate>
-                    </local:NavigationList>
+
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding Latest}" Header="{Binding Title}" Orientation="Horizontal" Width="1120" Margin="0,0,0,35" HeaderTemplate="{StaticResource LatestHeaderTemplate}">
+            <controls:PanoramaItem DataContext="{Binding Latest}"
+                                   Header="{Binding Title}"
+                                   Orientation="Horizontal"
+                                   Width="1120"
+                                   Margin="0,0,0,35"
+                                   HeaderTemplate="{StaticResource LatestHeaderTemplate}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                Foreground="LightGray"
                                FontSize="32"
-                               FontFamily="Segoe WP Light" 
-                               TextWrapping="Wrap" Margin="12,0" />
-                    <local:NavigationList Margin="4,0,-12,0"
-                                      ItemsSource="{Binding Mixes}"
-                                      Navigation="NavigationList_OnNavigation"
-                                      Style="{StaticResource WrapNavigationList}"
-                                      VerticalAlignment="Center" />
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap"
+                               Margin="12,0" />
+                    <ListBox Margin="4,0,-12,0"
+                             ItemsSource="{Binding Mixes}"
+                             Tap="ListBoxTap"
+                             Style="{StaticResource WrapNavigationList}"
+                             VerticalAlignment="Center" />
                 </Grid>
             </controls:PanoramaItem>
-            <controls:PanoramaItem DataContext="{Binding TagsPanel}" Header="{Binding Title}" HeaderTemplate="{StaticResource TagsHeaderTemplate}" Margin="0,0,0,35">
+            <controls:PanoramaItem DataContext="{Binding TagsPanel}"
+                                   Header="{Binding Title}"
+                                   HeaderTemplate="{StaticResource TagsHeaderTemplate}"
+                                   Margin="0,0,0,35">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
@@ -403,27 +475,30 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
                                Foreground="LightGray" />
-                    <local:NavigationList Margin="0,0,-12,0"
-                                          ItemsSource="{Binding Tags}"
-                                          Navigation="NavigationList_OnNavigation" Padding="0,0,0,50">
-                        <local:NavigationList.ItemTemplate>
+                    <ListBox Margin="0,0,-12,0"
+                             ItemsSource="{Binding Tags}"
+                             Tap="ListBoxTap"
+                             Style="{StaticResource TiltedNavigationListStyle}">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl Margin="16,8,16,0">
-
-                                    <Border Background="#7F000000" Height="64">
-                                		<TextBlock Text="{Binding TagName}"
-                                			TextWrapping="NoWrap"
-                                			Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                			Foreground="White" Margin="12,4" d:LayoutOverrides="Height, VerticalMargin" VerticalAlignment="Center" />
-                                	</Border>
-
+                                    <Border Background="#7F000000"
+                                            Height="64">
+                                        <TextBlock Text="{Binding TagName}"
+                                                   TextWrapping="NoWrap"
+                                                   Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                                   Foreground="White"
+                                                   Margin="12,4"
+                                                   d:LayoutOverrides="Height, VerticalMargin"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
                                 </local:AnimatingContentControl>
                             </DataTemplate>
-                        </local:NavigationList.ItemTemplate>
-                    </local:NavigationList>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PanoramaItem>
         </controls:Panorama>
     </Grid>
 
-</phone:PhoneApplicationPage>
+</Controls1:AnimatedBasePage>

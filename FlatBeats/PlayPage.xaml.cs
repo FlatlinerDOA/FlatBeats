@@ -2,6 +2,10 @@
 {
     using System;
     using System.Linq;
+    using System.Windows.Controls;
+
+    using Clarity.Phone.Controls;
+    using Clarity.Phone.Controls.Animations;
 
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
@@ -11,11 +15,12 @@
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
 
+    using GestureEventArgs = System.Windows.Input.GestureEventArgs;
     using NavigationEventArgs = System.Windows.Navigation.NavigationEventArgs;
 
     /// <summary>
     /// </summary>
-    public partial class PlayPage : PhoneApplicationPage
+    public partial class PlayPage : AnimatedBasePage
     {
         private ApplicationBarBinder appBarBinder;
 
@@ -26,9 +31,29 @@
         public PlayPage()
         {
             this.InitializeComponent();
+            this.AnimationContext = LayoutRoot;
         }
 
         #endregion
+
+        protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
+        {
+            ////if (toOrFrom != null)
+            ////{
+            ////    if (toOrFrom.OriginalString.Contains("UserProfilePage"))
+            ////    {
+            ////        return null;
+            ////    }
+            ////}
+
+            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardIn)
+            {
+                return new SlideUpAnimator() { RootElement = LayoutRoot };
+            }
+
+            return new SlideDownAnimator() { RootElement = LayoutRoot };
+        }
+
 
         #region Public Properties
 
@@ -75,15 +100,26 @@
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
         {
             var navItem = e.Item as INavigationItem;
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
+            this.NavigateTo(navItem);
         }
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             this.NavigationService.Navigate(new Uri("/UserProfilePage.xaml?userid=" + this.ViewModel.CreatedByUserId, UriKind.Relative));
+        }
+
+        private void ListBoxTap(object sender, GestureEventArgs e)
+        {
+            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+        }
+
+        private void NavigateTo(INavigationItem navItem)
+        {
+            if (navItem != null && navItem.NavigationUrl != null)
+            {
+                this.NavigationService.Navigate(navItem.NavigationUrl);
+            }
+
         }
     }
 }

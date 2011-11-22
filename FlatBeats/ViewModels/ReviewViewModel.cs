@@ -94,7 +94,7 @@ namespace FlatBeats.ViewModels
             }
 
             this.NavigationUrl = new Uri(
-                "/UserProfilePage.xaml?userid=" + review.Id, UriKind.Relative);
+                "/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
         }
 
         public DateTime Created

@@ -13,15 +13,18 @@ using Microsoft.Phone.Controls;
 
 namespace FlatBeats
 {
+    using Clarity.Phone.Controls;
+
     using FlatBeats.ViewModels;
 
-    public partial class TagsPage : PhoneApplicationPage
+    public partial class TagsPage : AnimatedBasePage
     {
         private LongListSelector currentSelector;
 
         public TagsPage()
         {
             InitializeComponent();
+            this.AnimationContext = this.LayoutRoot;
         }
 
         public TagsPageViewModel ViewModel

@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage
+﻿<Controls:AnimatedBasePage
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
     xmlns:local="clr-namespace:FlatBeats.Controls" 
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
-    x:Class="FlatBeats.TagsPage"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls="clr-namespace:Clarity.Phone.Controls" x:Class="FlatBeats.TagsPage"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
                             shell:SystemTray.IsVisible="True" d:DataContext="{d:DesignData /SampleData/TagsPageViewModelSampleData.xaml}">
@@ -108,4 +107,4 @@
             </toolkit:LongListSelector>
         </Grid>
     </Grid>
-</phone:PhoneApplicationPage>
+</Controls:AnimatedBasePage>
