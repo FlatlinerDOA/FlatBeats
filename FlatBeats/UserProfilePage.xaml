@@ -44,13 +44,18 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Image Margin="8"
-                           Grid.RowSpan="2"
+                    <Border Margin="8"
+                            Grid.RowSpan="2"
+                            VerticalAlignment="Top"
+                            Height="133"
+                            Width="133"
+                            Background="{StaticResource PhoneChromeBrush}">
+                        <Image 
                            Width="133"
                            Stretch="Uniform"
                            Height="133"
-                           VerticalAlignment="Top"
                            Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                    </Border>
                     <TextBlock Text="{Binding MixName}"
                                Style="{StaticResource PhoneTextTitle2Style}"
                                Grid.Column="1" />
@@ -76,16 +81,20 @@
             <controls:PivotItem Header="profile">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
                                Style="{StaticResource MessageTextStyle}" />
-                    <Image Source="{Binding AvatarImageUrl}"
-                           Width="100"
-                           Stretch="Uniform" 
-                           VerticalAlignment="Top" />
+                    <Border Margin="8"
+                            Width="100"
+                            Height="100"
+                            Background="{StaticResource PhoneChromeBrush}"
+                            VerticalAlignment="Top">
+                        <Image Source="{Binding AvatarImageUrl}"
+                               Stretch="Uniform" />
+                    </Border>
                     <TextBlock Text="{Binding UserName}"
                                Grid.Column="1"
                                Style="{StaticResource PhoneTextTitle2Style}" />

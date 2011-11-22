@@ -158,10 +158,10 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Border Height="100"
-                            Margin="12,8,8,8"
+                    <Border Margin="12,8,8,8"
                             Grid.RowSpan="3"
                             VerticalAlignment="Top"
+                            Height="100"
                             Width="100"
                             Background="{StaticResource PhoneChromeBrush}">
                         <Image Source="{Binding AvatarUrl, Converter={StaticResource ImageConverter}}" />
