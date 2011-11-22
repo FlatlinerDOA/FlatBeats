@@ -116,7 +116,10 @@ namespace FlatBeats.ViewModels
                     where response.EventArgs.PopUpResult == PopUpResult.Ok
                     from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
-            q.ObserveOnDispatcher().Subscribe(review => this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)), this.ShowError, this.HideProgress);
+            q.ObserveOnDispatcher().Subscribe(review =>
+                {
+                    this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)); 
+                }, this.ShowError, this.HideProgress);
             prompt.Show();
         }
 

@@ -15,6 +15,9 @@
         [DataMember(Name = "user")]
         public UserContract User { get; set; }
 
+        [DataMember(Name = "user_id")]
+        public string UserId{ get; set; }
+
         [DataMember(Name = "created_at")]
         public string Created { get; set; }
     }

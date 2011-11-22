@@ -4,6 +4,9 @@ namespace FlatBeats.ViewModels
     using System;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
+
+    using Microsoft.Phone.Reactive;
 
     public class ReviewViewModel : ViewModel, INavigationItem
     {
@@ -74,27 +77,29 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public ReviewViewModel()
         {
-            
         }
 
         public ReviewViewModel(ReviewContract review)
         {
-            this.UserName = review.User.Name;
-            this.Body = review.Body.Trim();
-            this.AvatarUrl = new Uri(review.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-            if (!this.AvatarUrl.IsAbsoluteUri)
+            if (review.User != null)
             {
-                this.AvatarUrl = new Uri("http://8tracks.com" + review.User.Avatar.ImageUrl, UriKind.Absolute);
+                this.UserName = review.User.Name;
+                this.AvatarUrl = new Uri(review.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
+                if (!this.AvatarUrl.IsAbsoluteUri)
+                {
+                    this.AvatarUrl = new Uri("http://8tracks.com" + review.User.Avatar.ImageUrl, UriKind.Absolute);
+                }
+
+                this.NavigationUrl = new Uri(
+    "/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
             }
 
+            this.Body = review.Body.Trim();
             this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
             if (this.Created > DateTime.Now)
             {
                 this.Created = DateTime.Now.AddSeconds(-1);
             }
-
-            this.NavigationUrl = new Uri(
-                "/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
         }
 
         public DateTime Created

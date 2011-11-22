@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
+    using System.Net;
 
     using Microsoft.Phone.Reactive;
 
@@ -120,9 +121,19 @@
 
         public static IObservable<ReviewResponseContract> AddMixReview(string mixId, string review)
         {
-            var url = new Uri("http://8tracks.com/reviews.json", UriKind.Absolute);
-            string body = string.Format("review[mixid]={0}&review[body]={1}", mixId, Uri.EscapeDataString(review));
-            return Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body);
+            var url = new Uri("http://8tracks.com/reviews", UriKind.Absolute);
+            string body = string.Format("review%5Bbody%5D={0}&review%5Bmix_id%5D={1}&format=json", HttpUtility.UrlEncode(review), mixId);
+            return Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body).Select(
+                response =>
+                {
+                    if (response.Review.User == null)
+                    {
+                        response.Review.User =
+                            ProfileService.GetUserProfile(response.Review.UserId).Select(up => up.User).FirstOrDefault();
+                    }
+
+                    return response;
+                });
         }
 
         public static IObservable<Unit> Reset()

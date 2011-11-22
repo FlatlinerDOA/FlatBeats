@@ -200,7 +200,8 @@ namespace FlatBeats.DataModel
 #if DEBUG
                                        Debug.WriteLine("POST " + url.AbsoluteUri + "\r\n" + postData);
 #endif
-                                       client.UploadStringAsync(url, "POST", postData);
+                                       client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                                       client.UploadStringAsync(url, postData);
                                        return subscription;
                                    }).TrySelect(evt => evt.Result)
                            select completed;

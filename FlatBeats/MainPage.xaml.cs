@@ -71,6 +71,11 @@
                 return new TurnstileForwardInAnimator() { RootElement = this.LayoutRoot };
             }
 
+            if (animationType == AnimationType.NavigateForwardOut)
+            {
+                return new TurnstileForwardOutAnimator() { RootElement = this.LayoutRoot };
+            }
+
             if (animationType == AnimationType.NavigateBackwardIn)
             {
                 return new TurnstileBackwardInAnimator() { RootElement = this.LayoutRoot };
