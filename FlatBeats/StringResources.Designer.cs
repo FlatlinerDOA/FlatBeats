@@ -164,6 +164,51 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The server and I are having a disagreement at the moment, please come back after we&apos;ve both cooled off..
+        /// </summary>
+        internal static string Error_BadRequest {
+            get {
+                return ResourceManager.GetString("Error_BadRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, I can&apos;t connect to the network, maybe try again a bit later..
+        /// </summary>
+        internal static string Error_NoNetwork {
+            get {
+                return ResourceManager.GetString("Error_NoNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, I can&apos;t talk to our server at the moment, please try again soon..
+        /// </summary>
+        internal static string Error_ServerUnavailable {
+            get {
+                return ResourceManager.GetString("Error_ServerUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong....
+        /// </summary>
+        internal static string Error_Title {
+            get {
+                return ResourceManager.GetString("Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked next time you run this app..
+        /// </summary>
+        internal static string Error_UnknownError {
+            get {
+                return ResourceManager.GetString("Error_UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in or sign up to keep track of the mixes you like..
         /// </summary>
         internal static string Message_NoLikedMixes {
@@ -218,7 +263,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wait! If you sign out we will forget which mixes you played recently!.
+        ///   Looks up a localized string similar to Wait! If you sign out I will forget which mixes you played recently!.
         /// </summary>
         internal static string MessageBox_ResetSettings_Message {
             get {

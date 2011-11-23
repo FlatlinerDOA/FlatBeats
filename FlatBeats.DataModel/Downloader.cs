@@ -1,12 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Downloader.cs" company="">
-//   
+﻿//--------------------------------------------------------------------------------------------------
+// <copyright file="Downloader.cs" company="DNS Technology Pty Ltd.">
+//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
 // </copyright>
-// <summary>
-//   
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+//--------------------------------------------------------------------------------------------------
 namespace FlatBeats.DataModel
 {
     using System;
@@ -22,6 +18,7 @@ namespace FlatBeats.DataModel
         #region Constants and Fields
 
         private static readonly object syncRoot = new object();
+
         /// <summary>
         /// </summary>
         private static string userToken;
@@ -137,8 +134,7 @@ namespace FlatBeats.DataModel
                                      {
                                          var subscription =
                                              Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
-                                                 (observer);
+                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe(observer);
 #if DEBUG
                                          Debug.WriteLine("GET " + url.AbsoluteUri);
 #endif

@@ -388,6 +388,6 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True"
-                              IsMenuEnabled="True" BackgroundColor="#88000000" />
+                              IsMenuEnabled="True" BackgroundColor="#CC000000" />
     </phone:PhoneApplicationPage.ApplicationBar>
 </Controls1:AnimatedBasePage>

@@ -5,6 +5,8 @@ namespace FlatBeats.ViewModels
     using System.Collections.Generic;
     using System.Windows;
 
+    using Microsoft.Phone.Tasks;
+
     public abstract class PageViewModel : PanelViewModel
     {
         /// <summary>
@@ -40,8 +42,15 @@ namespace FlatBeats.ViewModels
 
         public override void ShowError(Exception error)
         {
+            bool sendReport;
+            var message = this.GetMessageForException(error, out sendReport);
+            MessageBox.Show(message, StringResources.Error_Title, MessageBoxButton.OK);
+            if (sendReport)
+            {
+                LittleWatson.ReportException(error, string.Empty);
+            }
+
             this.HideProgress();
-            MessageBox.Show(error.Message);
             base.ShowError(error);
         }
 

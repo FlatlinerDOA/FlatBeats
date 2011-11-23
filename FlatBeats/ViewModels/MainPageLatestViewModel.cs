@@ -1,9 +1,4 @@
-﻿//--------------------------------------------------------------------------------------------------
-// <copyright file="MainPageLatestViewModel.cs" company="DNS Technology Pty Ltd.">
-//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
-// </copyright>
-//--------------------------------------------------------------------------------------------------
-namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.Generic;

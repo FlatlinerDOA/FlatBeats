@@ -191,7 +191,7 @@ Link:
     <value>Flat Beats</value>
   </data>
   <data name="MessageBox_ResetSettings_Message" xml:space="preserve">
-    <value>Wait! If you sign out we will forget which mixes you played recently!</value>
+    <value>Wait! If you sign out I will forget which mixes you played recently!</value>
   </data>
   <data name="MessageBox_ResetSettings_Title" xml:space="preserve">
     <value>Sign out?</value>
@@ -225,5 +225,20 @@ Link:
   </data>
   <data name="Title_CreatedMixes" xml:space="preserve">
     <value>mixes</value>
+  </data>
+  <data name="Error_NoNetwork" xml:space="preserve">
+    <value>Sorry, I can't connect to the network, maybe try again a bit later.</value>
+  </data>
+  <data name="Error_ServerUnavailable" xml:space="preserve">
+    <value>Sorry, I can't talk to our server at the moment, please try again soon.</value>
+  </data>
+  <data name="Error_Title" xml:space="preserve">
+    <value>Something went wrong...</value>
+  </data>
+  <data name="Error_BadRequest" xml:space="preserve">
+    <value>The server and I are having a disagreement at the moment, please come back after we've both cooled off.</value>
+  </data>
+  <data name="Error_UnknownError" xml:space="preserve">
+    <value>Something really unexpected happened! Please report this when you are asked next time you run this app.</value>
   </data>
 </root>
