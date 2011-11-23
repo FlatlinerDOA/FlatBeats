@@ -72,6 +72,8 @@ namespace FlatBeats.ViewModels
             this.SignupLabelText = "create account";
             this.UserNameLabelText = "Username";
             this.PasswordLabelText = "Password";
+            this.CanLogin = false;
+            this.IsLoggedIn = false;
             this.Mixes = new ObservableCollection<MixViewModel>();
             this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);

@@ -134,8 +134,6 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            LittleWatson.CheckForPreviousException();
-
             this.ShowProgress();
             var load = from liked in this.Liked.LoadAsync()
                        from recent in this.Recent.LoadAsync()

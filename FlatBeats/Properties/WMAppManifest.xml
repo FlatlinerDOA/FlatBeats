@@ -7,8 +7,7 @@
        Author="Andrew Chisholm" 
        BitsPerPixel="32" 
        Description="Flat Beats is a music player powered by www.8tracks.com" 
-       Publisher="Andrew Chisholm"
-       HubType="1">
+       Publisher="Andrew Chisholm">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_MEDIALIB" />

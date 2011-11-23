@@ -71,34 +71,40 @@
         <controls:Pivot Title="FLAT BEATS">
             <controls:PivotItem Header="login">
                 <ScrollViewer>
-                    <StackPanel Margin="0,0,0,24">
-                        <TextBlock Text="{Binding UserNameLabelText}"
-                                   Margin="12,0" />
-                        <TextBox Text="{Binding UserName, Mode=TwoWay}"
-                                 IsReadOnly="{Binding IsLoggedIn}" />
-                        <TextBlock Text="{Binding PasswordLabelText}"
-                                   Margin="12,0" />
-                        <PasswordBox Password="{Binding Password, Mode=TwoWay}"
-                                     IsEnabled="{Binding CanLogin}" />
-                        <Button Command="{Binding LoginCommand}"
-                                Content="{Binding LoginLabelText}"
-                                Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
-                                Margin="0,0,8,8"
-                                MinWidth="250"
-                                HorizontalAlignment="Left" />
-                        <Button Command="{Binding SignupCommand}"
-                                Content="{Binding SignupLabelText}"
-                                Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
-                                Margin="0,0,8,8"
-                                MinWidth="250"
-                                HorizontalAlignment="Left" />
-                        <Button Command="{Binding ResetCommand}"
-                                Content="{Binding ResetLabelText}"
-                                Visibility="{Binding IsLoggedIn, Converter={StaticResource ShowConverter}}"
-                                Margin="0,0,8,8"
-                                MinWidth="250"
-                                HorizontalAlignment="Left" />
-                    </StackPanel>
+                    <Grid>
+                        <StackPanel Margin="0,0,0,24">
+                            <TextBlock Text="{Binding UserNameLabelText}"
+                                       Margin="12,0" />
+                            <TextBox Text="{Binding UserName, Mode=TwoWay}"
+                                     IsReadOnly="{Binding IsLoggedIn}" />
+                            <TextBlock Text="{Binding PasswordLabelText}"
+                                       Margin="12,0" />
+                            <PasswordBox Password="{Binding Password, Mode=TwoWay}"
+                                         IsEnabled="{Binding CanLogin}" />
+                            <Button Command="{Binding LoginCommand}"
+                                    Content="{Binding LoginLabelText}"
+                                    Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
+                                    Margin="0,0,8,8"
+                                    MinWidth="250"
+                                    HorizontalAlignment="Left" />
+                            <Button Command="{Binding SignupCommand}"
+                                    Content="{Binding SignupLabelText}"
+                                    Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
+                                    Margin="0,0,8,8"
+                                    MinWidth="250"
+                                    HorizontalAlignment="Left" />
+                            <Button Command="{Binding ResetCommand}"
+                                    Content="{Binding ResetLabelText}"
+                                    Visibility="{Binding IsLoggedIn, Converter={StaticResource ShowConverter}}"
+                                    Margin="0,0,8,8"
+                                    MinWidth="250"
+                                    HorizontalAlignment="Left" />
+                        </StackPanel>
+                        <HyperlinkButton Margin="8,32,8,8"
+                                         VerticalAlignment="Bottom"
+                                         Content="About this application"
+                                         NavigateUri="/AboutPage.xaml" />
+                    </Grid>
                 </ScrollViewer>
             </controls:PivotItem>
             <controls:PivotItem Header="my mixes">
@@ -109,11 +115,11 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap" />
-                    <local:NavigationList Margin="0,0,-12,0"
+                    <ListBox Margin="0,0,-12,0"
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Mixes}"
                                           ItemTemplate="{StaticResource MixTemplate}"
-                                          Navigation="NavigationList_OnNavigation" />
+                                          Tap="ListBoxTap" />
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

@@ -38,7 +38,13 @@
 
             // Set the data context of the listbox control to the sample data
             this.DataContext = App.ViewModel;
+            this.Loaded +=new RoutedEventHandler(MainPage_Loaded);
             this.Unloaded += this.MainPage_Unloaded;
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            LittleWatson.CheckForPreviousException();
         }
 
         public MainPageViewModel ViewModel

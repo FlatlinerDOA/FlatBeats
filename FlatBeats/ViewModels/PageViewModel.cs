@@ -42,13 +42,8 @@ namespace FlatBeats.ViewModels
 
         public override void ShowError(Exception error)
         {
-            bool sendReport;
-            var message = this.GetMessageForException(error, out sendReport);
+            var message = this.GetMessageForException(error);
             MessageBox.Show(message, StringResources.Error_Title, MessageBoxButton.OK);
-            if (sendReport)
-            {
-                LittleWatson.ReportException(error, string.Empty);
-            }
 
             this.HideProgress();
             base.ShowError(error);

@@ -42,13 +42,12 @@
                             "A problem occurred the last time you ran this application. Would you like to send an email to report it?",
                             "Problem Report",
                             MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-
                     {
                         EmailComposeTask email = new EmailComposeTask();
 
-                        email.To = "flatliner.doa@gmail.com";
+                        email.To = "flatlinerdoa@gmail.com";
 
-                        email.Subject = "FlatBeats error report - " + typeof(LittleWatson).Assembly.GetName().Version;
+                        email.Subject = "FlatBeats error report - 1.0";
 
                         email.Body = contents;
 
@@ -68,18 +67,14 @@
         }
 
         internal static void ReportException(Exception ex, string extra)
-
         {
             try
-
             {
                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-
                 {
                     SafeDeleteFile(store);
 
                     using (TextWriter output = new StreamWriter(store.CreateFile(filename)))
-
                     {
                         output.WriteLine(extra);
 
@@ -91,22 +86,18 @@
             }
 
             catch (Exception)
-
             {
             }
         }
 
         private static void SafeDeleteFile(IsolatedStorageFile store)
-
         {
             try
-
             {
                 store.DeleteFile(filename);
             }
 
             catch (Exception ex)
-
             {
             }
         }
@@ -115,4 +106,3 @@
     }
 }
 
-}

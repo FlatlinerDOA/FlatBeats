@@ -74,6 +74,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Animation\AnimatedBasePage.cs" />
     <Compile Include="Animation\AnimatorHelperBase.cs" />
     <Compile Include="Animation\ContinuumAnimator.cs" />
@@ -174,6 +177,10 @@
     <DesignData Include="SampleData\TagsPageViewModelSampleData.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </DesignData>
+    <Page Include="AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

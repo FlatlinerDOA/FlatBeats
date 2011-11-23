@@ -13,7 +13,6 @@ namespace FlatBeats.ViewModels
 {
     public class PanelViewModel : ViewModel
     {
-
         private string title;
 
         public string Title
@@ -81,7 +80,7 @@ namespace FlatBeats.ViewModels
 
         public virtual void ShowError(Exception error)
         {
-            this.Message = "Sorry, something went wrong, you might want to try again later.";
+            this.Message = this.GetMessageForException(error);
             this.ShowMessage = true;
         }
     }
