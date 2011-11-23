@@ -100,7 +100,7 @@
                                     MinWidth="250"
                                     HorizontalAlignment="Left" />
                         </StackPanel>
-                        <HyperlinkButton Margin="8,32,8,8"
+                        <HyperlinkButton Margin="8,8,8,32"
                                          VerticalAlignment="Bottom"
                                          Content="About this application"
                                          NavigateUri="/AboutPage.xaml" />

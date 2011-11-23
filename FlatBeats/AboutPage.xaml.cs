@@ -13,11 +13,21 @@ using Microsoft.Phone.Controls;
 
 namespace FlatBeats
 {
+    using Microsoft.Phone.Tasks;
+
     public partial class AboutPage : PhoneApplicationPage
     {
         public AboutPage()
         {
             InitializeComponent();
+        }
+
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (HyperlinkButton)sender;
+            WebBrowserTask task =new WebBrowserTask();
+            task.Uri = new Uri(button.Tag.ToString(), UriKind.Absolute);
+            task.Show();
         }
     }
 }
