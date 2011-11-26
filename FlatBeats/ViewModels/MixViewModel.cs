@@ -17,7 +17,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class MixViewModel : ViewModel, INavigationItem
+    public class MixViewModel : ListItemViewModel, INavigationItem
     {
         #region Constants and Fields
 

@@ -7,6 +7,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Text.RegularExpressions;
 
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
@@ -75,6 +76,46 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private string bioHtml;
+
+        public string BioHtml
+        {
+            get
+            {
+                return this.bioHtml;
+            }
+            set
+            {
+                if (this.bioHtml == value)
+                {
+                    return;
+                }
+
+                this.bioHtml = value;
+                this.OnPropertyChanged("BioHtml");
+            }
+        }
+
+        private string location;
+
+        public string Location
+        {
+            get
+            {
+                return this.location;
+            }
+            set
+            {
+                if (this.location == value)
+                {
+                    return;
+                }
+
+                this.location = value;
+                this.OnPropertyChanged("Location");
+            }
+        }
+
         public override void Load()
         {
             this.subscription.Dispose();
@@ -109,7 +150,6 @@ namespace FlatBeats.ViewModels
             return Observable.Return(new Unit());
         }
 
-
         private IObservable<Unit> LoadUserAsync()
         {
             var profile = from response in ProfileService.GetUserProfile(this.UserId)
@@ -121,12 +161,32 @@ namespace FlatBeats.ViewModels
         {
             if (userContract.Avatar != null)
             {
-                this.AvatarImageUrl = new Uri(userContract.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
+                this.AvatarImageUrl = new Uri(userContract.Avatar.LargeImageUrl, UriKind.RelativeOrAbsolute);
             }
 
+            this.Location = userContract.Location;
+            this.BioHtml = StripHtml(userContract.BioHtml);
             this.UserName = userContract.Name;
         }
 
+        private string StripHtml(string htmlString)
+        {
+            //This pattern Matches everything found inside html tags;
+            //(.|\n) - > Look for any character or a new line
+            // *?  -> 0 or more occurences, and make a non-greedy search meaning
+            //That the match will stop at the first available '>' it sees, and not at the last one
+            //(if it stopped at the last one we could have overlooked 
+            //nested HTML tags inside a bigger HTML tag..)
+            // Thanks to Oisin and Hugh Brown for helping on this one...
+
+            const string Pattern = @"<(.|\n)*?>";
+            if (htmlString == null)
+            {
+                return string.Empty;
+            }
+
+            return Regex.Replace(htmlString, Pattern, string.Empty);
+        }
 
         public ObservableCollection<MixViewModel> LikedMixes { get; private set; }
 

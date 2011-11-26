@@ -11,6 +11,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Text;
 
     using FlatBeats.DataModel;
@@ -241,7 +242,7 @@ namespace FlatBeats.ViewModels
         {
             this.Tracks.Clear();
             var tracks = from response in mixData.PlayedTracks()
-                         where response.Tracks != null
+                         where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);
             return tracks.ObserveOnDispatcher().Do(
@@ -263,6 +264,7 @@ namespace FlatBeats.ViewModels
             }
             else
             {
+                this.RemoveCurrentTrackFromList();
                 this.Message = null;
             }
         }
@@ -318,6 +320,8 @@ namespace FlatBeats.ViewModels
         {
             this.ShowNowPlaying = this.NowPlaying != null && this.NowPlaying.MixId == this.currentMixId;
             this.Title = this.ShowNowPlaying ? StringResources.Title_Playing : StringResources.Title_PlayedTracks;
+            this.MoveCurrentTrackToList();
+            
             if (this.NowPlaying != null && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
             {
                 this.CurrentTrack = new TrackViewModel(this.NowPlaying.Set.Track);
@@ -328,7 +332,36 @@ namespace FlatBeats.ViewModels
                 this.refreshSubscription.Dispose();
             }
 
+            this.RemoveCurrentTrackFromList();
+
             this.UpdateMessage();
+        }
+
+        private void MoveCurrentTrackToList()
+        {
+            if (this.CurrentTrack == null)
+            {
+                return;
+            }
+
+            if (!this.Tracks.Any(t => t.Id == this.CurrentTrack.Id))
+            {
+                this.Tracks.Insert(0, this.CurrentTrack);
+            }
+        }
+
+        private void RemoveCurrentTrackFromList()
+        {
+            if (this.CurrentTrack == null)
+            {
+                return;
+            }
+
+            var existing = this.Tracks.FirstOrDefault(t => t.Id == this.CurrentTrack.Id);
+            if (existing != null)
+            {
+                this.Tracks.Remove(existing);
+            }
         }
 
         /// <summary>

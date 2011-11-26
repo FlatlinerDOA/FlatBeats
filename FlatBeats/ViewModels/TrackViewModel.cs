@@ -15,10 +15,12 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
+    using Microsoft.Phone.Tasks;
 
     /// <summary>
     /// </summary>
-    public class TrackViewModel : ViewModel
+    public class TrackViewModel : ViewModel, INavigationItem
+
     {
         #region Constants and Fields
 
@@ -57,6 +59,13 @@ namespace FlatBeats.ViewModels
             this.isFavourite = track.IsFavourite;
             this.Id = track.Id;
             this.canFavouriteTrack = Downloader.IsAuthenticated;
+
+            this.NavigationUrl = new Uri("music://zune?" + track.Artist + " " + track.Name, UriKind.Absolute);
+            ////Uri url;
+            ////if (Uri.TryCreate(track.BuyLink, UriKind.Absolute, out url))
+            ////{
+            ////    this.NavigationUrl = url;
+            ////}
         }
 
         #endregion
@@ -158,5 +167,9 @@ namespace FlatBeats.ViewModels
         }
 
         #endregion
+
+        public Uri NavigationUrl
+        {
+            get; set; }
     }
 }

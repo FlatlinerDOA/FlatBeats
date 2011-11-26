@@ -55,6 +55,7 @@
                         }
                         else
                         {
+                            this.Mixes.SetLastItem();
                             this.Message = null;
                         }
                     }).FinallySelect(() => new Unit());

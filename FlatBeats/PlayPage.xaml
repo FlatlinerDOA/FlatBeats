@@ -369,8 +369,20 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <ContentControl Content="{Binding CurrentTrack}"
-                                            ContentTemplate="{StaticResource TrackTemplate}" Margin="0,4,0,4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                            <Button Tap="ButtonTap"
+                                    Padding="0"
+                                    Margin="0"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    DataContext="{Binding CurrentTrack}" BorderBrush="{x:Null}" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <ContentControl Content="{Binding}"
+                                                ContentTemplate="{StaticResource TrackTemplate}" Margin="0,4,0,4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                            </Button>
                             <ProgressBar Value="{Binding Progress}"
                                          Grid.Row="1"
                                          IsIndeterminate="{Binding IsProgressIndeterminate}" />
@@ -379,7 +391,8 @@
                         <ListBox Margin="0,0,-12,0"
                                                  Grid.Row="1"
                                                  ItemsSource="{Binding Tracks}"
-                                                 ItemTemplate="{StaticResource TrackTemplate}"
+                                 ItemTemplate="{StaticResource TrackTemplate}"
+                                 Tap="ListBoxTap"
                                                  Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" ItemContainerStyle="{StaticResource FullWidthListBoxItemStyle}" />
                     </Grid>
                 </Grid>

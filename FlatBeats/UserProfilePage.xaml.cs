@@ -67,26 +67,19 @@ namespace FlatBeats
         {
             base.OnNavigatedTo(e);
 
-            if (this.appBarBinder == null)
-            {
-                this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
-            }
+            ////if (this.appBarBinder == null)
+            ////{
+            ////    this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
+            ////}
 
             this.ViewModel.UserId = this.NavigationContext.QueryString["userid"];
             this.ViewModel.Load();
         }
 
+
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
-        }
-
-        private void NavigateTo(INavigationItem navItem)
-        {
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
+            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }
     }
 }

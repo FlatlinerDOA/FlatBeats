@@ -139,6 +139,7 @@
     </Compile>
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
+    <Compile Include="ViewModels\ListItemViewModel.cs" />
     <Compile Include="ViewModels\MainPageLatestViewModel.cs" />
     <Compile Include="ViewModels\MainPageLikedViewModel.cs" />
     <Compile Include="ViewModels\MainPageRecentViewModel.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
     <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\NavigationExtensions.cs" />
     <Compile Include="ViewModels\ObservableExtensions.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
@@ -175,6 +177,9 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </DesignData>
     <DesignData Include="SampleData\TagsPageViewModelSampleData.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </DesignData>
+    <DesignData Include="SampleData\UserProfilePageViewModelSampleData.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </DesignData>
     <Page Include="AboutPage.xaml">

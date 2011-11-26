@@ -25,7 +25,7 @@
             var pageData = from latest in MixesService.GetLatestMixes()
                            from mix in latest.Mixes.ToObservable(Scheduler.ThreadPool)
                            select new MixViewModel(mix);
-            return pageData.FlowIn()
+            return pageData.FlowIn(200)
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())
                 .Do(m => this.Mixes.Add(m), this.ShowError).Aggregate(

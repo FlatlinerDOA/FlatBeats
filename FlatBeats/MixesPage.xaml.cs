@@ -69,16 +69,9 @@
 
         private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
         {
-            NavigateTo(e.Item as INavigationItem);
+            this.NavigationService.NavigateTo(e.Item as INavigationItem);
         }
 
-        private void NavigateTo(INavigationItem navItem)
-        {
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
-        }
 
         private void PivotSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -87,12 +80,12 @@
 
         private void ListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }
 
         private void ListBoxTapped(object sender, GestureEventArgs e)
         {
-            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }
     }
 }

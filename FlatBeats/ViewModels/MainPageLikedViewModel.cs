@@ -3,6 +3,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading;
 
     using FlatBeats.DataModel;
@@ -43,6 +44,7 @@ namespace FlatBeats.ViewModels
                     }
                     else
                     {
+                        this.Mixes.SetLastItem();
                         this.Message = null;
                     }
                 }).FinallySelect(() => new Unit());

@@ -6,6 +6,8 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Windows.Threading;
 
@@ -20,7 +22,16 @@ namespace FlatBeats.ViewModels
                    select item;
         }
 
-        public static IObservable<T> FlowIn<T>(this IObservable<T> source)
+        public static void SetLastItem<T>(this IEnumerable<T> items) where T : ListItemViewModel
+        {
+            var last = items.LastOrDefault();
+            if (last != null)
+            {
+                last.IsLastItem = true;
+            }
+        }
+
+        public static IObservable<T> FlowIn<T>(this IObservable<T> source, int delay = 75)
         {
             bool hasBeenRun = false;
             return source.Do(
@@ -32,7 +43,7 @@ namespace FlatBeats.ViewModels
                         }
                         else
                         {
-                            Thread.Sleep(150);
+                            Thread.Sleep(delay);
                         }
                     });
         }

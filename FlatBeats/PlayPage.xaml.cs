@@ -100,7 +100,7 @@
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
         {
             var navItem = e.Item as INavigationItem;
-            this.NavigateTo(navItem);
+            this.NavigationService.NavigateTo(navItem);
         }
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -110,16 +110,13 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }
 
-        private void NavigateTo(INavigationItem navItem)
-        {
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
 
+        private void ButtonTap(object sender, GestureEventArgs e)
+        {
+            this.NavigationService.NavigateTo(((Button)sender).DataContext as INavigationItem);
         }
     }
 }

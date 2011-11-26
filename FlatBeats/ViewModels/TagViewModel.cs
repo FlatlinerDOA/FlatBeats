@@ -16,7 +16,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class TagViewModel : ViewModel, INavigationItem
+    public class TagViewModel : ListItemViewModel, INavigationItem
     {
         #region Constants and Fields
 
@@ -50,6 +50,7 @@ namespace FlatBeats.ViewModels
 
             if (this.TagName == "more...")
             {
+                this.IsLastItem = true;
                 this.NavigationUrl = new Uri("/TagsPage.xaml", UriKind.Relative);
             }
             else
@@ -95,6 +96,8 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("TagName");
             }
         }
+
+   
 
         #endregion
 

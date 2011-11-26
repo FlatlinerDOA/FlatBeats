@@ -80,6 +80,10 @@
             <!--Pivot item one-->
             <controls:PivotItem Header="profile">
                 <Grid>
+                	<Grid.RowDefinitions>
+                		<RowDefinition Height="Auto"/>
+                		<RowDefinition/>
+                	</Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -87,19 +91,25 @@
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
                                Style="{StaticResource MessageTextStyle}" />
-                    <Border Margin="8"
-                            Width="100"
-                            Height="100"
+                    <Border Margin="8,8,8,9"
+                            Width="200"
                             Background="{StaticResource PhoneChromeBrush}"
-                            Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                            VerticalAlignment="Top">
+                            Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" MinHeight="100">
                         <Image Source="{Binding AvatarImageUrl}"
                                Stretch="Uniform" />
                     </Border>
-                    <TextBlock Text="{Binding UserName}"
-                               Grid.Column="1"
-                               Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                               Style="{StaticResource PhoneTextTitle2Style}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding UserName}"
+                                   Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                                   Style="{StaticResource PhoneTextTitle2Style}" />
+                        <TextBlock Text="{Binding Location}"
+                                   Style="{StaticResource PhoneTextSmallStyle}" />
+                    </StackPanel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  Grid.Row="1"
+                                  Grid.ColumnSpan="2">
+                        <TextBlock Text="{Binding BioHtml}" TextWrapping="Wrap"  />
+                    </ScrollViewer>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Mixes}" Header="{Binding Title}">
@@ -115,9 +125,5 @@
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
-    </Grid>
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True"
-                              IsMenuEnabled="True" />
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </Grid> 
 </Controls:AnimatedBasePage>

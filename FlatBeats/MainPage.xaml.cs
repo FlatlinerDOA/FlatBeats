@@ -126,7 +126,7 @@
         private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
         {
             var navItem = e.Item as INavigationItem;
-            this.NavigateTo(navItem);
+            this.NavigationService.NavigateTo(navItem);
         }
 
         private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -179,15 +179,7 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
-        }
-
-        private void NavigateTo(INavigationItem navItem)
-        {
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
+            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }
     }
 }

@@ -17,5 +17,11 @@
         [DataMember(Name = "followed_by_current_user")]
         public bool IsFollowed { get; set; }
 
+        [DataMember(Name = "bio_html")]
+        public string BioHtml { get; set; }
+
+        [DataMember(Name = "location")]
+        public string Location { get; set; }
+
     }
 }

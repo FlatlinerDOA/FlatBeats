@@ -1,0 +1,290 @@
+<FlatBeats_ViewModels:UserProfilePageViewModel xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:FlatBeats_DataModel="clr-namespace:FlatBeats.DataModel;assembly=FlatBeats.DataModel" IsDataLoaded="True" IsInProgress="False" Message="Amet ante ultrices" ShowMessage="True" Title="Arcu sit sodales vestibulum vestibulum" UserId="Cras duis porta" UserName="Luctus penatibus parturient nunc">
+	<FlatBeats_ViewModels:UserProfilePageViewModel.Following>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Vestibulum euismod tristique ultricies venenatis" Name="Vulputate mollis">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Tincidunt eget elit vestibulum"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Feugiat montes enim sagittis nostra" Name="Phasellus dis senectus consequat">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Pulvinar curabitur lorem magna sed"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Iaculis parturient est" Name="Lacinia vestibulum dignissim">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Convallis massa gravida adipiscing"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Ornare platea morbi" Name="Posuere potenti pretium">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Laoreet elementum metus natoque"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Primis fermentum" Name="Nulla eros sociosqu">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Erat neque hac netus facilisis"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Nisi nisl porta" Name="Purus vestibulum nunc adipiscing risus">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Leo nibh rutrum"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Velit odio parturient" Name="Hendrerit vitae nec orci sodales">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Mus fringilla rhoncus habitasse"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Sapien quam" Name="Class non quis">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Pede suscipit"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Sociis donec urna taciti cras" Name="Sed tellus tempor viverra duis">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Per himenaeos semper curae imperdiet"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Quisque tempus amet vestibulum" Name="Tortor malesuada vivamus penatibus aliquam">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Nunc aliquam integer"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+	</FlatBeats_ViewModels:UserProfilePageViewModel.Following>
+	<FlatBeats_ViewModels:UserProfilePageViewModel.FollowedBy>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Adipiscing phasellus aenean mauris nullam" Name="Consequat aptent nam aliquam">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Curabitur vestibulum maecenas class cras"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Integer quisque" Name="Auctor accumsan dignissim parturient congue">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Convallis praesent curae"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Aliquam bibendum vestibulum" Name="Sed vestibulum fermentum">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Vivamus donec etiam elementum facilisis"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Cursus eleifend dictum lectus fringilla" Name="Dis libero lorem">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Aliquet dictumst fusce"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Facilisi ligula adipiscing est" Name="Hac nulla hendrerit parturient vestibulum">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Morbi habitasse"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Adipiscing habitant himenaeos" Name="Inceptos parturient augue leo">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Proin faucibus vestibulum blandit"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Duis imperdiet vestibulum" Name="Nunc non vestibulum per">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Interdum dolor mus nec"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Lobortis nascetur adipiscing pharetra arcu" Name="Malesuada conubia fames">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Amet sed commodo ante litora"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="True" Id="Penatibus parturient felis" Name="Egestas sit ipsum">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Cubilia luctus sem dapibus"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+		<FlatBeats_DataModel:UserContract IsFollowed="False" Id="Diam mattis placerat vestibulum adipiscing" Name="Lacus mauris parturient nam">
+			<FlatBeats_DataModel:UserContract.Avatar>
+				<FlatBeats_DataModel:AvatarContract ImageUrl="Vel magnis justo vestibulum porttitor"/>
+			</FlatBeats_DataModel:UserContract.Avatar>
+		</FlatBeats_DataModel:UserContract>
+	</FlatBeats_ViewModels:UserProfilePageViewModel.FollowedBy>
+	<FlatBeats_ViewModels:UserProfilePageViewModel.LikedMixes>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Etiam turpis porttitor sem" Description="Sit tincidunt vestibulum tristique varius" Liked="True" MixName="Vel adipiscing commodo ultrices lorem" MixId="Aliquet blandit torquent fusce" Tags="Convallis feugiat dignissim diam gravida" TileTitle="Morbi vestibulum">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Vehicula volutpat parturient vestibulum" TagName="Conubia ultricies maecenas venenatis cubilia"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum nam aenean" TagName="Dapibus praesent"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Adipiscing vulputate sed curabitur" TagName="Egestas dis est"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Accumsan mauris" TagName="Bibendum phasellus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Euismod parturient" TagName="Consequat ante nullam arcu aptent"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Vestibulum nulla" Description="Proin eget adipiscing dictumst hac" Liked="False" MixName="Facilisis auctor" MixId="Leo elementum" Tags="Sem lectus odio augue" TileTitle="Penatibus sit libero">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Parturient elit" TagName="Vestibulum iaculis enim mus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Erat eros" TagName="Nibh nec fermentum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Fringilla lacinia nisi habitasse" TagName="Eleifend facilisi non vestibulum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Faucibus nisl hendrerit himenaeos habitant" TagName="Imperdiet inceptos congue laoreet"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Per malesuada" TagName="Cursus nunc sed interdum dictum"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Vel adipiscing nam ligula" Description="Lobortis parturient orci" Liked="True" MixName="Vestibulum vestibulum dis fames" MixId="Sed dolor" Tags="Suscipit urna mollis ultricies cras" TileTitle="Metus duis">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Pede felis ipsum porttitor natoque" TagName="Posuere nascetur quam litora potenti"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Pharetra tincidunt adipiscing" TagName="Placerat pulvinar justo luctus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sagittis quis" TagName="Senectus tristique sociosqu"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Parturient pretium" TagName="Lacus vestibulum magnis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Lorem vestibulum mattis" TagName="Rhoncus magna adipiscing mauris massa"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Sodales morbi montes" Description="Torquent venenatis neque viverra" Liked="False" MixName="Nostra ornare platea phasellus primis" MixId="Vulputate parturient nunc curabitur netus" Tags="Vestibulum vestibulum aliquet class sit" TileTitle="Elementum taciti adipiscing tellus vehicula">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Aliquam est rutrum" TagName="Nulla hac vestibulum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Porta consequat sapien purus leo" TagName="Mus nec"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum adipiscing risus ultrices non" TagName="Integer per"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Quisque amet" TagName="Ante convallis arcu semper velit"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vivamus aliquam sed dignissim vitae" TagName="Sociis parturient diam sem"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Parturient eget facilisis vestibulum fermentum" Description="Tempor fringilla volutpat vestibulum tempus" Liked="True" MixName="Commodo maecenas habitasse elit" MixId="Adipiscing blandit vel" Tags="Vestibulum mauris" TileTitle="Habitant vestibulum porttitor nullam">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Tortor conubia hendrerit praesent nam" TagName="Accumsan himenaeos turpis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Bibendum cubilia enim" TagName="Sed dictumst"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Eleifend erat curae dapibus" TagName="Egestas dis facilisi"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Euismod eros" TagName="Varius aenean imperdiet est"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Malesuada nibh donec" TagName="Penatibus parturient faucibus etiam feugiat"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Adipiscing gravida hac tincidunt iaculis" Description="Lacinia nisi inceptos tristique fusce" Liked="False" MixName="Leo interdum nisl nunc" MixId="Laoreet parturient natoque" Tags="Sit parturient vel vestibulum" TileTitle="Nam sagittis sed">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Lorem vestibulum vestibulum adipiscing lobortis" TagName="Mus ultricies posuere potenti"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Nascetur nec pharetra placerat pretium" TagName="Rhoncus venenatis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Pulvinar vulputate non odio" TagName="Sodales parturient orci vestibulum per"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Morbi sed nulla vestibulum pede" TagName="Proin adipiscing curabitur augue"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Aptent sem phasellus viverra quam" TagName="Auctor quis urna"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Cras vestibulum dolor" Description="Senectus dis aliquam" Liked="True" MixName="Cursus hac integer quisque" MixId="Congue consequat est convallis" Tags="Blandit torquent hendrerit ligula" TileTitle="Adipiscing parturient">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Fames dictum duis adipiscing" TagName="Lectus nunc"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vivamus parturient leo" TagName="Aliquam aliquet"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum felis dignissim" TagName="Ipsum elementum amet justo lacus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Ante facilisis lorem" TagName="Mus magna sociosqu fermentum vestibulum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Arcu fringilla suscipit" TagName="Habitasse libero"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Commodo litora" Description="Conubia massa himenaeos" Liked="False" MixName="Non diam" MixId="Ultrices nec" Tags="Sit porttitor faucibus" TileTitle="Eros tincidunt">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Cubilia dapibus eget" TagName="Vehicula per volutpat"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Metus imperdiet vestibulum luctus malesuada" TagName="Morbi maecenas"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Neque netus sed magnis praesent" TagName="Elit nulla accumsan"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sem penatibus" TagName="Vestibulum enim bibendum adipiscing dictumst"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Mattis egestas porta erat" TagName="Euismod eleifend mauris facilisi feugiat"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Tristique vel nam habitant parturient" Description="Nibh nisi nisl mollis vestibulum" Liked="True" MixName="Gravida inceptos" MixId="Vestibulum ultricies montes" Tags="Vitae hac class curae phasellus" TileTitle="Nunc consequat leo">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Purus iaculis" TagName="Nostra venenatis interdum risus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Ornare sed" TagName="Lacinia lobortis dis vulputate"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Laoreet platea primis" TagName="Adipiscing rutrum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Est parturient velit" TagName="Nascetur curabitur"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sapien pharetra" TagName="Placerat semper"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Donec sociis etiam" Description="Vestibulum natoque taciti fusce vestibulum" Liked="False" MixName="Lorem pulvinar sagittis" MixId="Posuere adipiscing parturient" Tags="Torquent augue aliquam dignissim" TileTitle="Tortor elementum integer sem">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Mus vestibulum" TagName="Potenti senectus pretium"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Morbi vestibulum" TagName="Tellus nec"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sociosqu non odio" TagName="Per nulla suscipit"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Proin adipiscing convallis sed" TagName="Rhoncus orci"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Parturient sodales" TagName="Viverra tempor tempus vestibulum"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+	</FlatBeats_ViewModels:UserProfilePageViewModel.LikedMixes>
+	<FlatBeats_ViewModels:UserProfilePageViewModel.Mixes>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Dolor ultrices sit" Description="Vehicula quisque" Liked="True" MixName="Varius aenean adipiscing" MixId="Vel vestibulum turpis volutpat facilisis" Tags="Nec accumsan adipiscing parturient non" TileTitle="Bibendum vestibulum dictumst ante fringilla">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Fames pede nam quam felis" TagName="Quis vivamus urna ipsum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sed cras dis justo duis" TagName="Nunc aliquam parturient maecenas"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Lacus aliquet lorem" TagName="Magna blandit fermentum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Est mauris commodo amet nullam" TagName="Vestibulum praesent"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Hac leo" TagName="Vestibulum aptent mus auctor conubia"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Habitasse vestibulum eleifend" Description="Arcu diam hendrerit facilisi" Liked="False" MixName="Parturient cubilia massa habitant" MixId="Adipiscing faucibus eget per" Tags="Adipiscing nascetur parturient ligula" TileTitle="Litora laoreet nisi luctus natoque">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Congue metus elit" TagName="Vestibulum cursus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Himenaeos sed sem morbi inceptos" TagName="Interdum dapibus neque netus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum imperdiet dictum enim" TagName="Malesuada lectus egestas"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Nulla euismod penatibus erat" TagName="Eros feugiat libero porta"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Gravida nibh sit iaculis purus" TagName="Lacinia risus porttitor lobortis tincidunt"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Pharetra velit posuere placerat" Description="Tristique vestibulum nisl nunc ultricies" Liked="True" MixName="Potenti sagittis senectus magnis pretium" MixId="Vitae pulvinar odio orci" Tags="Phasellus mus" TileTitle="Curae consequat urna nec">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum vel" TagName="Sociosqu rhoncus nam"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Venenatis mattis vulputate suscipit" TagName="Sodales adipiscing sed class"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Dis torquent parturient ultrices vestibulum" TagName="Est mauris pede vehicula hac"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Mollis montes" TagName="Nostra vestibulum viverra curabitur leo"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Quam volutpat adipiscing parturient" TagName="Quis ornare"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Cras aliquam donec" Description="Convallis vestibulum maecenas platea" Liked="False" MixName="Primis duis parturient nunc" MixId="Etiam vestibulum dignissim praesent adipiscing" Tags="Adipiscing lorem sit commodo" TileTitle="Vel nam facilisi">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Amet integer elementum vestibulum vestibulum" TagName="Accumsan rutrum ante non sapien"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Facilisis fusce" TagName="Per quisque bibendum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Arcu diam" TagName="Sed vivamus aliquam"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Eget dictumst aliquet elit sem" TagName="Semper enim sociis adipiscing"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Parturient taciti vestibulum tellus blandit" TagName="Vestibulum eleifend"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Conubia parturient erat eros morbi" Description="Sed tempor fermentum nulla faucibus" Liked="True" MixName="Est habitant fringilla" MixId="Tempus dis tortor" Tags="Sed sem hendrerit feugiat lobortis" TileTitle="Sit lacus nascetur pharetra">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Turpis varius" TagName="Hac proin leo vestibulum habitasse"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum aenean inceptos mus" TagName="Augue adipiscing"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Parturient nec" TagName="Mauris nibh non vestibulum dolor"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum fames adipiscing felis nullam" TagName="Nisi nisl ipsum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Per cubilia dapibus egestas justo" TagName="Euismod interdum"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Vel nunc" Description="Parturient aptent" Liked="False" MixName="Himenaeos lorem" MixId="Placerat nam" Tags="Parturient laoreet libero natoque ligula" TileTitle="Vestibulum senectus ultricies sociosqu">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Odio magna" TagName="Vestibulum orci"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Gravida pulvinar imperdiet malesuada penatibus" TagName="Auctor porttitor vestibulum sed congue"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Dis massa metus adipiscing" TagName="Morbi cursus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Dictum neque pede iaculis lacinia" TagName="Netus nulla porta purus"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Tincidunt sagittis est tristique" TagName="Quam lectus"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Litora venenatis" Description="Posuere potenti hac pretium leo" Liked="True" MixName="Quis risus rhoncus velit" MixId="Suscipit torquent luctus vestibulum vulputate" Tags="Adipiscing nostra nunc" TileTitle="Fermentum fringilla">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Magnis mattis mauris mus curabitur" TagName="Phasellus urna adipiscing nec"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Cras consequat convallis" TagName="Vitae parturient mollis ultrices"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Montes sodales" TagName="Duis dignissim elementum vehicula class"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Facilisis volutpat vestibulum" TagName="Curae donec"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Etiam viverra" TagName="Maecenas fusce vestibulum lorem"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Aliquam praesent integer" Description="Quisque habitasse" Liked="False" MixName="Himenaeos parturient ante ornare accumsan" MixId="Hendrerit amet morbi" Tags="Taciti sit enim" TileTitle="Vel nam erat porttitor proin">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Arcu imperdiet" TagName="Platea bibendum diam"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Dictumst nulla" TagName="Malesuada vivamus penatibus eleifend primis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Aliquam aliquet" TagName="Vestibulum non vestibulum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Per rutrum blandit facilisi" TagName="Commodo sed eget elit sapien"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Sem semper" TagName="Faucibus sociis"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Eros conubia tellus adipiscing sed" Description="Parturient vestibulum" Liked="True" MixName="Fames felis" MixId="Dis augue dolor" Tags="Turpis varius mus laoreet natoque" TileTitle="Posuere phasellus aenean adipiscing potenti">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum adipiscing habitant" TagName="Tincidunt parturient cubilia"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Inceptos ipsum tempor tristique dapibus" TagName="Vestibulum nibh est justo"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Egestas lacus euismod tempus" TagName="Ultricies nisi feugiat venenatis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum hac" TagName="Vulputate gravida nisl"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Nunc odio leo curabitur" TagName="Orci tortor iaculis lacinia"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+		<FlatBeats_ViewModels:MixViewModel Created="11/26/2011 14:14:42" CreatedBy="Interdum parturient pretium mauris" Description="Consequat convallis vestibulum nullam" Liked="False" MixName="Dignissim lobortis quam" MixId="Nec lorem pede" Tags="Urna vestibulum vestibulum" TileTitle="Ligula torquent nulla adipiscing litora">
+			<FlatBeats_ViewModels:MixViewModel.TagList>
+				<FlatBeats_ViewModels:TagViewModel Key="Vestibulum aptent non magna" TagName="Elementum facilisis"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Nascetur fermentum auctor fringilla" TagName="Per habitasse congue hendrerit massa"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Pharetra himenaeos metus adipiscing" TagName="Cursus sed placerat pulvinar imperdiet"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Morbi quis parturient sagittis" TagName="Neque netus dictum"/>
+				<FlatBeats_ViewModels:TagViewModel Key="Senectus sociosqu malesuada suscipit sem" TagName="Lectus libero rhoncus"/>
+			</FlatBeats_ViewModels:MixViewModel.TagList>
+		</FlatBeats_ViewModels:MixViewModel>
+	</FlatBeats_ViewModels:UserProfilePageViewModel.Mixes>
+</FlatBeats_ViewModels:UserProfilePageViewModel>

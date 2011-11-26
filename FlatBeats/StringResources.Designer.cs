@@ -173,7 +173,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, I can&apos;t connect to the network, maybe try again a bit later..
+        ///   Looks up a localized string similar to Sorry, I can&apos;t connect to the network, maybe check your internet connection or try again a bit later..
         /// </summary>
         internal static string Error_NoNetwork {
             get {
@@ -182,7 +182,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, I can&apos;t talk to our server at the moment, please try again soon..
+        ///   Looks up a localized string similar to Sorry, I can&apos;t talk to the server at the moment, maybe check your internet connection or try again a bit later..
         /// </summary>
         internal static string Error_ServerUnavailable {
             get {
@@ -200,7 +200,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked next time you run this app..
+        ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked, next time you run this app..
         /// </summary>
         internal static string Error_UnknownError {
             get {
@@ -218,7 +218,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com to get started!.
+        ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com on your computer to get started!.
         /// </summary>
         internal static string Message_NoPersonalMixes {
             get {
