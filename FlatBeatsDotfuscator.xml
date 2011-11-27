@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE dotfuscator SYSTEM "http://www.preemptive.com/dotfuscator/dtd/dotfuscator_v2.3.dtd">
+<dotfuscator version="2.3">
+  <!--This is application generated code. Do not edit manually.-->
+  <input>
+    <loadpaths />
+    <asmlist>
+      <package refid="2450f6b2-8055-4759-bc69-191e9d4d1cfd">
+        <file dir="C:\ChizDev\FlatBeats\Dev\FlatBeats\Bin\Release" name="FlatBeats.xap" />
+        <asmlist>
+          <inputassembly refid="32e1bfd0-043b-4cac-a6b8-5171497f4213">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>transformxaml</option>
+            <file dir="" name="Coding4Fun.Phone.Controls.dll" />
+          </inputassembly>
+          <inputassembly refid="31601925-37ba-4b80-b67c-b595fdc3d422">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>transformxaml</option>
+            <file dir="" name="FlatBeats.DataModel.dll" />
+          </inputassembly>
+          <inputassembly refid="5669d5b2-4f9a-4e7d-9662-fc457f16f6ad">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>transformxaml</option>
+            <file dir="" name="FlatBeats.dll" />
+          </inputassembly>
+          <inputassembly refid="d09c4950-1071-42ff-9ff7-cdeb2d78cae3">
+            <option>honoroas</option>
+            <option>stripoa</option>
+            <option>library</option>
+            <option>transformxaml</option>
+            <file dir="" name="FlatBeatsPlaybackAgent.dll" />
+          </inputassembly>
+        </asmlist>
+      </package>
+    </asmlist>
+  </input>
+  <output>
+    <file dir="${configdir}\Dotfuscated" />
+  </output>
+  <renaming>
+    <option>disable</option>
+    <option>xmlserialization</option>
+    <mapping>
+      <mapoutput overwrite="false">
+        <file dir="${configdir}\Dotfuscated" name="Map.xml" />
+      </mapoutput>
+    </mapping>
+    <referencerulelist>
+      <referencerule rulekey="{6655B10A-FD58-462d-8D4F-5B1316DFF0FF}" />
+      <referencerule rulekey="{229FD6F8-5BCC-427b-8F72-A7A413ECDF1A}" />
+      <referencerule rulekey="{2B7E7C8C-A39A-4db8-9DFC-6AFD38509061}" />
+      <referencerule rulekey="{7D9C8B02-2383-420f-8740-A9760394C2C1}" />
+      <referencerule rulekey="{89769974-93E9-4e71-8D92-BE70E855ACFC}" />
+      <referencerule rulekey="{494EA3BA-B947-44B5-BEE8-A11CC85AAF9B}" />
+    </referencerulelist>
+  </renaming>
+  <stringencrypt>
+    <option>disable</option>
+    <includelist>
+      <namespace name="FlatBeats.DataModel.Services" />
+    </includelist>
+  </stringencrypt>
+  <sos mergeruntime="true">
+    <option>sendanalytics</option>
+    <option>dontsendtamper</option>
+  </sos>
+  <smartobfuscation>
+    <smartobfuscationreport verbosity="all" overwrite="false" />
+  </smartobfuscation>
+</dotfuscator>
