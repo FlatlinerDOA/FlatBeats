@@ -155,7 +155,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check out this 8tracks.com Mix!.
+        ///   Looks up a localized string similar to Check out this 8tracks.com mix!.
         /// </summary>
         internal static string EmailSubject_ShareMix {
             get {

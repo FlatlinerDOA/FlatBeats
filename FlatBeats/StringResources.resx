@@ -149,7 +149,7 @@ Link:
 {2} - Link address</comment>
   </data>
   <data name="EmailSubject_ShareMix" xml:space="preserve">
-    <value>Check out this 8tracks.com Mix!</value>
+    <value>Check out this 8tracks.com mix!</value>
   </data>
   <data name="Message_NoLikedMixes" xml:space="preserve">
     <value>Sign in or sign up to keep track of the mixes you like.</value>

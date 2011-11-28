@@ -43,5 +43,14 @@
             get;
             set;
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            var cmd = this.Command as DelegateCommand;
+            if (cmd != null)
+            {
+                cmd.RaiseCanExecuteChanged();
+            }
+        }
     }
 }

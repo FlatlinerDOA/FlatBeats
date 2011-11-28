@@ -66,17 +66,18 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.PlayedPanel = new MixPlayedTracksViewModel();
             this.ReviewsPanel = new ReviewsPanelViewModel();
-            this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
+            this.ReviewMixCommand = new CommandLink()
+                {
+                    Command = new DelegateCommand(this.AddReview, this.CanAddReview),
+                    Text = StringResources.Command_ReviewMix
+                };
+            this.PlayPauseCommand = new CommandLink() { Command = new DelegateCommand(this.Play, this.CanPlay), IconUri = "/icons/appbar.transport.play.rest.png", Text = StringResources.Command_PlayMix };
             this.NextTrackCommand = new CommandLink() { Command = new DelegateCommand(this.SkipNext, this.CanSkipNext), IconUri = "/icons/appbar.transport.ff.rest.png", Text = StringResources.Command_NextTrack, HideWhenInactive = true };
             this.LikeUnlikeCommand = new CommandLink() { Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike), IconUri = "/icons/appbar.heart2.empty.rest.png", Text = StringResources.Command_LikeMix };
             this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
-            this.ApplicationBarMenuCommands.Add(new CommandLink()
-                {
-                    Command = new DelegateCommand(this.AddReview, this.CanAddReview),
-                    Text = StringResources.Command_ReviewMix
-                });
+            this.ApplicationBarMenuCommands.Add(this.ReviewMixCommand);
             this.ApplicationBarMenuCommands.Add(
                 new CommandLink()
                     {
@@ -97,14 +98,21 @@ namespace FlatBeats.ViewModels
             this.Title = StringResources.Title_Mix;
         }
 
+        public CommandLink ReviewMixCommand { get; set; }
+
         private bool CanLikeUnlike()
         {
-            return Downloader.IsAuthenticated;
+            return Downloader.IsAuthenticated && this.mixData != null;
         }
 
         private bool CanAddReview()
         {
-            return Downloader.IsAuthenticated;
+            return Downloader.IsAuthenticated && this.mixData != null;
+        }
+
+        private bool CanPlay()
+        {
+            return this.mixData != null;
         }
 
         private void AddReview()
@@ -116,10 +124,10 @@ namespace FlatBeats.ViewModels
                     where response.EventArgs.PopUpResult == PopUpResult.Ok
                     from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
-            q.ObserveOnDispatcher().Subscribe(review =>
-                {
-                    this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)); 
-                }, this.ShowError, this.HideProgress);
+            q.ObserveOnDispatcher().Subscribe(
+                review => this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)), 
+                this.ShowError, 
+                this.HideProgress);
             prompt.Show();
         }
 
@@ -138,7 +146,7 @@ namespace FlatBeats.ViewModels
 
         private bool CanSkipNext()
         {
-            return this.NowPlaying != null;
+            return this.NowPlaying != null && this.mixData != null;
         }
 
         private void LikeUnlike()
@@ -254,7 +262,7 @@ namespace FlatBeats.ViewModels
         {
             var task = new EmailComposeTask
                 {
-                   Subject = StringResources.EmailBody_ShareMix,
+                   Subject = StringResources.EmailSubject_ShareMix,
                    Body = string.Format(
                        StringResources.EmailBody_ShareMix,
                        this.Mix.MixName,
@@ -412,6 +420,7 @@ namespace FlatBeats.ViewModels
             this.UpdateLikedState();
 
             this.UpdatePlayState();
+            this.ReviewMixCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateLikedState()
@@ -427,7 +436,7 @@ namespace FlatBeats.ViewModels
                 this.LikeUnlikeCommand.Text = StringResources.Command_LikeMix;
             }
 
-            ((DelegateCommand)this.LikeUnlikeCommand.Command).RaiseCanExecuteChanged();
+            this.LikeUnlikeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -459,10 +468,10 @@ namespace FlatBeats.ViewModels
                     this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
                     this.playStates.OnNext(false);
                 }
-
-                ((DelegateCommand)this.PlayPauseCommand.Command).RaiseCanExecuteChanged();
-                ((DelegateCommand)this.NextTrackCommand.Command).RaiseCanExecuteChanged();
             }
+
+            this.PlayPauseCommand.RaiseCanExecuteChanged();
+            this.NextTrackCommand.RaiseCanExecuteChanged();
         }
 
         #endregion

@@ -43,10 +43,14 @@ namespace FlatBeats.ViewModels
         public override void ShowError(Exception error)
         {
             var message = this.GetMessageForException(error);
-            MessageBox.Show(message, StringResources.Error_Title, MessageBoxButton.OK);
+            if (message != null)
+            {
+                MessageBox.Show(message, StringResources.Error_Title, MessageBoxButton.OK);
+            }
 
             this.HideProgress();
-            base.ShowError(error);
+            this.Message = message;
+            this.ShowMessage = true;
         }
 
         public IDictionary<string, string> NavigationParameters { get; private set; }
