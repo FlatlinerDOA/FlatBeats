@@ -13,6 +13,8 @@ using Microsoft.Phone.Controls;
 
 namespace FlatBeats
 {
+    using FlatBeats.ViewModels;
+
     using Microsoft.Phone.Tasks;
 
     public partial class AboutPage : PhoneApplicationPage
@@ -25,9 +27,8 @@ namespace FlatBeats
         private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
             var button = (HyperlinkButton)sender;
-            WebBrowserTask task =new WebBrowserTask();
-            task.Uri = new Uri(button.Tag.ToString(), UriKind.Absolute);
-            task.Show();
+            var uri = new Uri(button.Tag.ToString(), UriKind.Absolute);
+            this.NavigationService.NavigateTo(uri);
         }
     }
 }

@@ -11,29 +11,57 @@ namespace FlatBeats.ViewModels
     {
         public static void NavigateTo(this NavigationService navService, INavigationItem navItem)
         {
-            if (navItem != null && navItem.NavigationUrl != null)
+            if (navItem == null)
             {
-                if (navItem.NavigationUrl.IsAbsoluteUri)
+                return;
+            }
+
+            navService.NavigateTo(navItem.NavigationUrl);
+        }
+
+        public static void NavigateTo(this NavigationService navService, Uri url)
+        {
+            if (url == null)
+            {
+                return;
+            }
+
+            if (url.IsAbsoluteUri)
+            {
+                if (url.Scheme == Uri.UriSchemeHttp)
                 {
-                    if (navItem.NavigationUrl.Scheme == Uri.UriSchemeHttp)
-                    {
-                        WebBrowserTask task = new WebBrowserTask();
-                        task.Uri = navItem.NavigationUrl;
-                        task.Show();
-                    }
-                    else if (navItem.NavigationUrl.Scheme == "music")
-                    {
-                        MarketplaceSearchTask task = new MarketplaceSearchTask();
-                        task.ContentType = MarketplaceContentType.Music;
-                        task.SearchTerms = HttpUtility.UrlDecode(navItem.NavigationUrl.Query.TrimStart('?'));
-                        task.Show();
-                    }
+                    WebBrowserTask task = new WebBrowserTask();
+                    task.Uri = url;
+                    task.Show();
                 }
-                else
+                else if (url.Scheme == Uri.UriSchemeMailto)
                 {
-                    navService.Navigate(navItem.NavigationUrl);
+                    var email = url.OriginalString.Substring(Uri.UriSchemeMailto.Length);
+                    var emailComposeTask = new EmailComposeTask
+                        { 
+                            To = email, 
+                            Subject = "Feedback on Flat Beats" 
+                        };
+                    emailComposeTask.Show();
+                }
+                else if (url.Scheme == "music")
+                {
+                    MarketplaceSearchTask task = new MarketplaceSearchTask();
+                    task.ContentType = MarketplaceContentType.Music;
+                    task.SearchTerms = HttpUtility.UrlDecode(url.Query.TrimStart('?'));
+                    task.Show();
+                }
+                else if (url.Scheme == "rate")
+                {
+                    MarketplaceReviewTask reviewTask = new MarketplaceReviewTask();
+                    reviewTask.Show();
                 }
             }
+            else
+            {
+                navService.Navigate(url);
+            }
+            
         }
     }
 }

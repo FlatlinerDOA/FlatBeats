@@ -38,7 +38,7 @@
 
             // Set the data context of the listbox control to the sample data
             this.DataContext = App.ViewModel;
-            this.Loaded +=new RoutedEventHandler(MainPage_Loaded);
+            this.Loaded += this.MainPage_Loaded;
             this.Unloaded += this.MainPage_Unloaded;
         }
 
@@ -72,6 +72,7 @@
                 }
             }
 
+            return null; 
             if (animationType == AnimationType.NavigateForwardIn)
             {
                 return new TurnstileForwardInAnimator() { RootElement = this.LayoutRoot };

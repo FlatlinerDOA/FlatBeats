@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" shell:SystemTray.Opacity="0">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid>
@@ -20,47 +20,59 @@
     	</Grid.Background>
 
 		<!--LayoutRoot is the root grid where all page content is placed-->
-		<Grid x:Name="LayoutRoot" Background="#7F000000">
+		<Grid x:Name="LayoutRoot" Background="{StaticResource PhoneSemitransparentBrush}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 
 			<!--TitlePanel contains the name of the application and page title-->
-			<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-				<TextBlock x:Name="ApplicationTitle" Text="FLAT BEATS" Style="{StaticResource PhoneTextNormalStyle}"/>
+			<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,0">
+				<TextBlock x:Name="ApplicationTitle" Text="FLAT BEATS - VERSION 1.0" Style="{StaticResource PhoneTextNormalStyle}"/>
 				<TextBlock x:Name="PageTitle" Text="about" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
 			</StackPanel>
 
 			<!--ContentPanel - place additional content here-->
 			<Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-				<StackPanel Margin="8,0">
-					<TextBlock Text="Application" FontWeight="Bold" Margin="8,4"/>
-					<TextBlock Margin="8,4,8,8" TextWrapping="Wrap"><Run Text="Flat Beats is a internet music radio application powered by the 8tracks.com community. It is independent and not affiliated with or endorsed by 8tracks.com"/><Run Text="."/></TextBlock>
-                    <TextBlock Text="Developer"
-                               FontWeight="Bold"
-                               Margin="8,4" />
-                    <TextBlock Margin="8,4,8,8"
-                               TextWrapping="Wrap"><Run Text="Flat Beats was written by Andrew Chisholm." /></TextBlock>
-                    <HyperlinkButton HorizontalAlignment="Left"
-                                     Content="Follow on Twitter"
-                                     Margin="-3,8,0,8"
-                                     Click="HyperlinkButton_Click"
-                                     Tag="http://twitter.com/FlatlinerDOA/" />
-                    <TextBlock Text="Artwork" FontWeight="Bold" Margin="8,16,8,4"/>
-					<TextBlock Margin="8,4,8,8" TextWrapping="Wrap" Text="Headphones and earbuds photography by Fey Ilyas and is used under creative commons license, some rights reserved."/>
-                    <HyperlinkButton HorizontalAlignment="Left"
-                                     Content="Fey Ilyas on Flickr"
-                                     Margin="-3,8,0,8"
-                                     Click="HyperlinkButton_Click"
-                                     Tag="http://www.flickr.com/photos/renneville/"/>
-                    <HyperlinkButton Tag="http://creativecommons.org/licenses/by-sa/2.0/"
-                                     HorizontalAlignment="Left"
-                                     Margin="-3,8,0,8"
-                                     Content="Creative Commons License."
-                                     Click="HyperlinkButton_Click" />
-				</StackPanel>
-				<TextBlock Margin="12,0,24,32" Text="Copyright (c) Andrew Chisholm 2011" Padding="8,0,0,0" VerticalAlignment="Bottom"/>
+				<ScrollViewer Margin="8,0">
+					<StackPanel>
+						<TextBlock Text="Application" FontWeight="Bold" Margin="8,4"/>
+						<TextBlock Margin="8,4,8,8" TextWrapping="Wrap"><Run Text="Flat Beats is a internet music radio application powered by the 8tracks.com community. It is independent and not affiliated with or endorsed by 8tracks.com"/><Run Text="."/></TextBlock>
+                        <HyperlinkButton HorizontalAlignment="Left"
+                                         Content="Rate this application"
+                                         Margin="-3,8,0,8"
+                                         Click="HyperlinkButton_Click"
+                                         Tag="rate:application" />
+                        <TextBlock Text="Developer"
+							FontWeight="Bold"
+							Margin="8,4" />
+						<TextBlock Margin="8,4,8,8"
+							TextWrapping="Wrap"><Run Text="Flat Beats was written by Andrew Chisholm." /></TextBlock>
+						<HyperlinkButton HorizontalAlignment="Left"
+							Content="Contact via E-mail"
+							Margin="-3,8,0,8"
+							Click="HyperlinkButton_Click"
+							Tag="mailto:flatlinerdoa@gmail.com" />
+						<HyperlinkButton HorizontalAlignment="Left"
+							Content="Contact via Twitter"
+							Margin="-3,8,0,8"
+							Click="HyperlinkButton_Click"
+							Tag="http://twitter.com/FlatlinerDOA/" />
+						<TextBlock Text="Artwork" FontWeight="Bold" Margin="8,16,8,4"/>
+						<TextBlock Margin="8,4,8,8" TextWrapping="Wrap" Text="Headphones and earbuds photography by Fey Ilyas and is used under creative commons license, some rights reserved."/>
+						<HyperlinkButton HorizontalAlignment="Left"
+							Content="Fey Ilyas on Flickr"
+							Margin="-3,8,0,8"
+							Click="HyperlinkButton_Click"
+							Tag="http://www.flickr.com/photos/renneville/"/>
+						<HyperlinkButton Tag="http://creativecommons.org/licenses/by-sa/2.0/"
+							HorizontalAlignment="Left"
+							Margin="-3,8,0,8"
+							Content="Creative Commons License."
+							Click="HyperlinkButton_Click" />
+						<TextBlock Margin="0,0,20,0" Text="Copyright (c) Andrew Chisholm 2011" Padding="8,0,0,0" Style="{StaticResource PhoneTextSmallStyle}"/>
+					</StackPanel>
+				</ScrollViewer>
 			</Grid>
 		</Grid>
  

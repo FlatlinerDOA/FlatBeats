@@ -13,6 +13,8 @@ using Microsoft.Phone.Controls;
 
 namespace FlatBeats
 {
+    using System.Windows.Navigation;
+
     using Clarity.Phone.Controls;
 
     using FlatBeats.ViewModels;
@@ -41,6 +43,17 @@ namespace FlatBeats
             this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load()));
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (isGroupOpen)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnBackKeyPress(e);
+        }
+
         private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
         {
             var navItem = e.Item as INavigationItem;
@@ -55,8 +68,10 @@ namespace FlatBeats
             this.NavigationService.NavigateTo(tagsList.SelectedItem as INavigationItem);
         }
 
+        private bool isGroupOpen = false;
         private void LongListSelector_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
         {
+            isGroupOpen = true;
             //Hold a reference to the active long list selector.
             currentSelector = sender as LongListSelector;
 
@@ -101,7 +116,7 @@ namespace FlatBeats
 
         private void LongListSelector_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
         {
-            //Cancelling automatic closing and scrolling to do it manually.
+            // Cancelling automatic closing and scrolling to do it manually.
             e.Cancel = true;
             if (e.SelectedGroup != null)
             {
@@ -155,12 +170,14 @@ namespace FlatBeats
 
         private void SwivelHideCompleted(object sender, EventArgs e)
         {
-            //Close group view.
+            // Close group view.
             if (this.currentSelector != null)
             {
                 this.currentSelector.CloseGroupView();
                 this.currentSelector = null;
             }
+
+            isGroupOpen = false;
         }
     }
 }
