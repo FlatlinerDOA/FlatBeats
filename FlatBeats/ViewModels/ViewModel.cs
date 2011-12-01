@@ -55,9 +55,9 @@ namespace FlatBeats.ViewModels
                         case HttpStatusCode.HttpVersionNotSupported:
                             return StringResources.Error_BadRequest;
                     }
-
-                    return StringResources.Error_ServerUnavailable;
                 }
+               
+                return StringResources.Error_ServerUnavailable;
             }
 
             LittleWatson.ReportException(exception, this.GetType().FullName);

@@ -81,7 +81,7 @@ namespace FlatBeats.ViewModels
         public virtual void ShowError(Exception error)
         {
             this.Message = this.GetMessageForException(error);
-            this.ShowMessage = true;
+            this.ShowMessage = this.Message != null;
         }
     }
 }

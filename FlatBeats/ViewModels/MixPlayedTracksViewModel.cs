@@ -383,7 +383,7 @@ namespace FlatBeats.ViewModels
                     this.refreshSubscription.Dispose();
                     this.ProgressStatusText = "Stopped";
                     this.Progress = 0;
-                    this.IsProgressIndeterminate = true;
+                    this.IsProgressIndeterminate = false;
                     break;
                 case PlayState.Paused:
                     this.refreshSubscription.Dispose();
@@ -394,9 +394,12 @@ namespace FlatBeats.ViewModels
                     break;
                 case PlayState.BufferingStarted:
                     this.StartBufferingRefreshTimer();
+                    this.IsProgressIndeterminate = true;
                     break;
                 case PlayState.BufferingStopped:
                     this.refreshSubscription.Dispose();
+                    this.Progress = 0;
+                    this.IsProgressIndeterminate = false;
                     break;
                 case PlayState.TrackReady:
                     break;
@@ -416,6 +419,7 @@ namespace FlatBeats.ViewModels
                 case PlayState.Error:
                     this.refreshSubscription.Dispose();
                     this.ProgressStatusText = "Error";
+                    this.IsProgressIndeterminate = false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
