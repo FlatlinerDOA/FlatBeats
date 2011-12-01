@@ -478,7 +478,7 @@
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"
-                             VerticalAlignment="Center" />
+                             VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
                 </Grid>
             </controls:PanoramaItem>
             <controls:PanoramaItem DataContext="{Binding TagsPanel}"

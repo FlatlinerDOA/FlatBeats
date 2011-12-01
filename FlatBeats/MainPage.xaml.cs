@@ -7,6 +7,7 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Navigation;
     using System.Windows.Threading;
 
     using Clarity.Phone.Controls;
@@ -22,12 +23,15 @@
     using Microsoft.Phone.Reactive;
 
     using GestureEventArgs = System.Windows.Input.GestureEventArgs;
+    using NavigationEventArgs = FlatBeats.Controls.NavigationEventArgs;
 
     public partial class MainPage : AnimatedBasePage
     {
-        private string PlayMixKey = "MixId";
+        private const string PlayMixKey = "MixId";
 
         private bool historyItemLaunch;
+
+        private string playMixId;
 
         // Constructor
         public MainPage()
@@ -47,6 +51,16 @@
             LittleWatson.CheckForPreviousException();
         }
 
+        protected override void AnimationsComplete(AnimationType animationType)
+        {
+            base.AnimationsComplete(animationType);
+
+            if (historyItemLaunch)
+            {
+                this.NavigationService.Navigate(new Uri("/PlayPage.xaml?mix=" + this.playMixId + "&play=true", UriKind.Relative));
+            }
+        }
+
         public MainPageViewModel ViewModel
         {
             get
@@ -57,38 +71,7 @@
 
         protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
-            if (toOrFrom != null)
-            {
-                if (toOrFrom.OriginalString.Contains("PlayPage.xaml"))
-                {
-                    return null;
-                    ////var container = (PanoramaItem)this.pano.ItemContainerGenerator.ContainerFromIndex(this.pano.SelectedIndex);
-                    ////var listBox = ((FrameworkElement)container.Content).GetVisualChildren<ListBox>().FirstOrDefault();
-                    ////if (listBox != null)
-                    ////{
-                    ////    var listItem = (ListBoxItem)listBox.ItemContainerGenerator.ContainerFromIndex(listBox.SelectedIndex);
-                    ////    return this.GetContinuumAnimation(listItem, animationType);
-                    ////}
-                }
-            }
-
-            return null; 
-            if (animationType == AnimationType.NavigateForwardIn)
-            {
-                return new TurnstileForwardInAnimator() { RootElement = this.LayoutRoot };
-            }
-
-            if (animationType == AnimationType.NavigateForwardOut)
-            {
-                return new TurnstileForwardOutAnimator() { RootElement = this.LayoutRoot };
-            }
-
-            if (animationType == AnimationType.NavigateBackwardIn)
-            {
-                return new TurnstileBackwardInAnimator() { RootElement = this.LayoutRoot };
-            }
-
-            return new TurnstileBackwardOutAnimator() { RootElement = this.LayoutRoot };
+            return null;
         }
 
 
@@ -102,16 +85,16 @@
         {
             base.OnNavigatedTo(e);
 
-            if (NavigationContext.QueryString.ContainsKey(PlayMixKey))
+            this.historyItemLaunch = false;
+            this.playMixId = null;
+            if (e.NavigationMode == NavigationMode.New && NavigationContext.QueryString.ContainsKey(PlayMixKey))
             {
                 // We were launched from a history item.
                 // Change _playingSong even if something was already playing 
                 // because the user directly chose a song history item.
 
                 // Use the navigation context to find the song by name.
-                string mixId = NavigationContext.QueryString[PlayMixKey];
-
-                this.NavigationService.Navigate(new Uri("/PlayPage.xaml?mix=" + mixId + "&play=true", UriKind.Relative));
+                this.playMixId = NavigationContext.QueryString[PlayMixKey];
 
                 // Set a flag to indicate that we were started from a 
                 // history item and that we should immediately start 
@@ -124,23 +107,8 @@
             this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
         }
 
-        private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
-        {
-            var navItem = e.Item as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
-        }
-
         private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ////if (pano.SelectedIndex != 1 || this.ViewModel.IsInProgress)
-            ////{
-            ////    HubTileService.FreezeGroup("History");
-            ////}
-            ////else
-            ////{
-            ////    HubTileService.UnfreezeGroup("History");
-            ////}
-
             if (pano.SelectedIndex != 2 || this.ViewModel.IsInProgress)
             {
                 HubTileService.FreezeGroup("Latest");

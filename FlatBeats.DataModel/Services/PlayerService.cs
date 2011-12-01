@@ -88,10 +88,23 @@
                    from mixes in Observable.Start(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)))
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
-                           MediaHistoryItem item = new MediaHistoryItem();
-                           item.Title = mix.Name;
-                           item.ImageStream = Storage.LoadStream(imageFilePath);
-                           MediaHistory.Instance.WriteRecentPlay(item);
+                           using (var stream = Storage.LoadStream(imageFilePath))
+                           {
+                               MediaHistoryItem mediaHistoryItem = new MediaHistoryItem();
+                               mediaHistoryItem.ImageStream = stream;
+                               mediaHistoryItem.Title = mix.Name;
+                               mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
+                               MediaHistory.Instance.NowPlaying = mediaHistoryItem;
+                           }
+
+                           using (var secondStream = Storage.LoadStream(imageFilePath))
+                           {
+                               MediaHistoryItem item = new MediaHistoryItem();
+                               item.Title = mix.Name;
+                               item.ImageStream = secondStream;
+                               item.PlayerContext.Add("MixId", mix.Id);
+                               MediaHistory.Instance.WriteRecentPlay(item);
+                           }
                        })
                    select new Unit();
         }
