@@ -93,17 +93,27 @@
             }
         }
 
+        private const int ChunkSize = 4096;
+
         public static void Save(string file, Stream data)
         {
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 CreateFolderForFile(storage, file);
-                using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
+                using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
                 {
-                    data.CopyTo(stream);
-                    stream.Flush();
-                    stream.Close();
+                    byte[] bytes = new byte[ChunkSize];
+                    int byteCount;
+                    while ((byteCount = data.Read(bytes, 0, ChunkSize)) > 0)
+                    {
+                        fileStream.Write(bytes, 0, byteCount);
+                    }
+
+                    fileStream.Flush();
+                    fileStream.Close();
                 }
+
+                ////data.CopyTo(stream);
             }
         }
 

@@ -17,7 +17,7 @@ namespace FlatBeats.DataModel
     {
         #region Constants and Fields
 
-        private static readonly object syncRoot = new object();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// </summary>
@@ -27,7 +27,7 @@ namespace FlatBeats.DataModel
         {
             get
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
 
                     return userToken;
@@ -35,7 +35,7 @@ namespace FlatBeats.DataModel
             }
             set
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
                     userToken = value;
                 }
@@ -48,7 +48,7 @@ namespace FlatBeats.DataModel
         {
             get
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
 
                     return userCredentials;
@@ -56,7 +56,7 @@ namespace FlatBeats.DataModel
             }
             set
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
                     userCredentials = value;
                 }
@@ -90,20 +90,28 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<Unit> GetAndSaveFile(Uri url, string fileName)
         {
-            var webRequest = from client in Observable.Start<WebClient>(CreateClient)
+            var webRequest = from client in Observable.Return(CreateClient())
                              from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                                  observer =>
-                                     {
-                                         var subscription =
-                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
-                                                 (observer);
+                                 {
+                                     var subscription =
+                                         Observable.FromEvent<OpenReadCompletedEventArgs>(
+                                             client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
+                                             (observer);
 #if DEBUG
-                                         Debug.WriteLine("GET " + url.AbsoluteUri);
+                                     Debug.WriteLine("GET " + url.AbsoluteUri);
 #endif
-                                         client.OpenReadAsync(url);
-                                         return subscription;
-                                     }).TrySelect(evt => evt.Result).Do(data => Storage.Save(fileName, data))
+                                     client.OpenReadAsync(url);
+                                     return subscription;
+                                 }).TrySelect(evt =>
+                                     {
+                                         if (evt.Error != null)
+                                         {
+                                             Debug.WriteLine("DOWNLOAD: " + evt.Error.ToString());
+                                         }
+
+                                         return evt.Result;
+                                     }).Do(data => Storage.Save(fileName, data))
                              select new Unit();
 
             return webRequest;
@@ -128,7 +136,7 @@ namespace FlatBeats.DataModel
                     Observable.Start(() => Storage.Load(cacheFile)).Select(c => Json.Deserialize<T>(c)).Where(m => m != null);
             }
 
-            var webRequest = from client in Observable.Start<WebClient>(CreateClient)
+            var webRequest = from client in Observable.Return(CreateClient())
                              from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                                  observer =>
                                      {
@@ -185,7 +193,7 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<string> PostAndGetString(Uri url, string postData)
         {
-            var sequence = from client in Observable.Start<WebClient>(CreateClient)
+            var sequence = from client in Observable.Return(CreateClient())
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
                                    {

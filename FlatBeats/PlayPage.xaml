@@ -231,6 +231,7 @@
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"
                                FontSize="32"
+                               TextWrapping="Wrap"
                                Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                FontFamily="Segoe WP Light"
                                Margin="12,0" />

@@ -5,6 +5,7 @@
     using System.IO;
     using System.IO.IsolatedStorage;
     using System.Linq;
+    using System.Net;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
@@ -279,6 +280,20 @@
                                        new Uri(urlFormat, UriKind.Absolute))
                                select response;
             return playedTracks;
+        }
+
+        public static IObservable<Uri> GetTrackAddressAsync(TrackContract track)
+        {
+            var remoteTrackUrl = new Uri(track.TrackUrl, UriKind.Absolute);
+            var localFileName = "Track-" + track.Id + Path.GetExtension(track.TrackUrl);
+            var localFullPath = "Audio/" + localFileName;
+            if (Storage.Exists(localFullPath))
+            {
+                return Observable.Return(new Uri(localFullPath, UriKind.Relative));
+            }
+
+            return Downloader.GetAndSaveFile(remoteTrackUrl, localFullPath).Select(_ => new Uri(localFullPath, UriKind.Relative));
+            ////return Observable.Return(remoteTrackUrl);
         }
     }
 }

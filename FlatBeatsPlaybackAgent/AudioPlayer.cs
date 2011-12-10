@@ -222,21 +222,25 @@ namespace FlatBeatsPlaybackAgent
                     return this.NowPlaying.StopAsync(player.Position);
                 }
 
-                var trackUrl = new Uri(this.NowPlaying.Set.Track.TrackUrl, UriKind.Absolute);
-                var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
-                var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
-                                       ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext
-                                       : EnabledPlayerControls.Pause;
-                var track = new AudioTrack(
-                    trackUrl, 
-                    this.NowPlaying.Set.Track.Name, 
-                    this.NowPlaying.Set.Track.Artist, 
-                    this.NowPlaying.MixName, 
-                    coverUrl, 
-                    this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
-                    playControls);
-                player.Track = track;
-                player.Volume = 1;
+
+                return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
+                        trackUrl =>
+                            {
+                                var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
+                                var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
+                                                       ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext | EnabledPlayerControls.FastForward
+                                                       : EnabledPlayerControls.Pause;
+                                var track = new AudioTrack(
+                                    trackUrl,
+                                    this.NowPlaying.Set.Track.Name,
+                                    this.NowPlaying.Set.Track.Artist,
+                                    this.NowPlaying.MixName,
+                                    coverUrl,
+                                    this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
+                                    playControls);
+                                player.Track = track;
+                                player.Volume = 1;
+                            }).Select(_ => new Unit());
             }
 
             return Observable.Return(new Unit());
