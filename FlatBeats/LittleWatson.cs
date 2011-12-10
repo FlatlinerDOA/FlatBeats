@@ -11,7 +11,7 @@
     {
         #region Constants and Fields
 
-        private const string filename = "LittleWatson.txt";
+        private const string LogFileName = "LittleWatson.txt";
 
         #endregion
 
@@ -25,9 +25,9 @@
 
                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (store.FileExists(filename))
+                    if (store.FileExists(LogFileName))
                     {
-                        using (TextReader reader = new StreamReader(store.OpenFile(filename, FileMode.Open, FileAccess.Read, FileShare.None)))
+                        using (TextReader reader = new StreamReader(store.OpenFile(LogFileName, FileMode.Open, FileAccess.Read, FileShare.None)))
                         {
                             contents = reader.ReadToEnd();
                         }
@@ -74,7 +74,7 @@
                 {
                     SafeDeleteFile(store);
 
-                    using (TextWriter output = new StreamWriter(store.CreateFile(filename)))
+                    using (TextWriter output = new StreamWriter(store.CreateFile(LogFileName)))
                     {
                         output.WriteLine(extra);
 
@@ -94,7 +94,7 @@
         {
             try
             {
-                store.DeleteFile(filename);
+                store.DeleteFile(LogFileName);
             }
 
             catch (Exception ex)

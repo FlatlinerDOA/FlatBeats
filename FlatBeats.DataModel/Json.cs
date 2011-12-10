@@ -4,12 +4,13 @@ namespace FlatBeats.DataModel
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.IO.IsolatedStorage;
     using System.Runtime.Serialization.Json;
     using System.Text;
 
     public class Json
     {
-        public static string Serialize<T>(T obj) where T : class 
+        public static string Serialize<T>(T obj, params Type[] knownTypes) where T : class 
         {
             if (obj == null)
             {
@@ -19,7 +20,7 @@ namespace FlatBeats.DataModel
             string retVal; 
             using (var ms = new MemoryStream())
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), knownTypes);
                 serializer.WriteObject(ms, obj);
                 retVal = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
                 ms.Close();
@@ -28,7 +29,7 @@ namespace FlatBeats.DataModel
             return retVal;
         }
 
-        public static T Deserialize<T>(string json) where T : class 
+        public static T Deserialize<T>(string json, params Type[] knownTypes) where T : class 
         {
             T obj = null;
             if (string.IsNullOrWhiteSpace(json))
@@ -40,7 +41,7 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), knownTypes);
                     obj = (T)serializer.ReadObject(ms);
                     ms.Close();
                 }
@@ -83,6 +84,11 @@ namespace FlatBeats.DataModel
             }
 
             return obj;
+        }
+
+        public static void SerializeToStream<T>(T item, IsolatedStorageFileStream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

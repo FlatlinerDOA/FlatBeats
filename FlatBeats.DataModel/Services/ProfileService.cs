@@ -103,7 +103,7 @@
 
         private static void DeleteCredentials()
         {
-            PlayerService.Stop(null, TimeSpan.Zero);
+            PlayerService.StopAsync(null, TimeSpan.Zero);
             PlayerService.ClearRecentlyPlayed();
             PlayerService.DeletePlayToken();
             Storage.Delete(UserLoginFilePath);

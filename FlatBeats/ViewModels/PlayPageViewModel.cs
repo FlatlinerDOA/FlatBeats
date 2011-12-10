@@ -146,7 +146,7 @@ namespace FlatBeats.ViewModels
 
         private bool CanSkipNext()
         {
-            return this.NowPlaying != null && this.mixData != null;
+            return this.NowPlaying != null && this.mixData != null && !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed;
         }
 
         private void LikeUnlike()
@@ -284,27 +284,21 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.UpdatePlayState();
-                this.PlayedPanel.LoadAsync(this.mixData).Subscribe(_ => { }, this.HideProgress);
+                this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Finally(this.HideProgress).Subscribe();
                 return;
             }
 
             this.ShowProgress();
-            var loadProcess = from mix in this.LoadMixAsync()
+            var loadProcess = from mix in this.LoadMixAsync(this.MixId)
                               from reviews in this.ReviewsPanel.LoadAsync(mix.Id)
                               from played in this.PlayedPanel.LoadAsync(mix)
                               select mix;
             this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
         }
 
-        private IObservable<MixContract> LoadMixAsync()
+        private IObservable<MixContract> LoadMixAsync(string id)
         {
-            var downloadMix =
-               from response in
-                   Downloader.GetJson<MixResponseContract>(
-                       new Uri(
-                   string.Format("http://8tracks.com/mixes/{0}.json", this.MixId), UriKind.RelativeOrAbsolute))
-               select response.Mix;
-            return downloadMix.ObserveOnDispatcher().Do(this.LoadMix);
+            return MixesService.GetMixAsync(id).ObserveOnDispatcher().Do(this.LoadMix);
         }
 
         public override void Unload()
@@ -340,7 +334,7 @@ namespace FlatBeats.ViewModels
             }
 
             this.ShowProgress();
-            var playSequence = from playResponse in this.mixData.StartPlaying().ObserveOnDispatcher().Do(
+            var playSequence = from playResponse in this.mixData.StartPlayingAsync().ObserveOnDispatcher().Do(
                                 m =>
                                 {
                                     this.NowPlaying = m;
@@ -409,7 +403,7 @@ namespace FlatBeats.ViewModels
             if (this.PlayOnLoad)
             {
                 this.PlayOnLoad = false;
-                this.mixData.StartPlaying();
+                this.mixData.StartPlayingAsync();
             }
 
             if (this.Player.Track != null && this.Player.Track.Tag.StartsWith(loadMix.Id + "|"))

@@ -42,13 +42,13 @@ namespace FlatBeats.ViewModels
 
         public override void ShowError(Exception error)
         {
+            this.HideProgress();
             var message = this.GetMessageForException(error);
             if (message != null)
             {
                 MessageBox.Show(message, StringResources.Error_Title, MessageBoxButton.OK);
             }
 
-            this.HideProgress();
             this.Message = message;
             this.ShowMessage = true;
         }

@@ -125,7 +125,7 @@ namespace FlatBeats.DataModel
             if (cacheFile != null && Storage.Exists(cacheFile))
             {
                 sequence =
-                    Observable.Start(() => Storage.Load(cacheFile)).Select(Json.Deserialize<T>).Where(m => m != null);
+                    Observable.Start(() => Storage.Load(cacheFile)).Select(c => Json.Deserialize<T>(c)).Where(m => m != null);
             }
 
             var webRequest = from client in Observable.Start<WebClient>(CreateClient)

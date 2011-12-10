@@ -235,13 +235,13 @@ namespace FlatBeats.ViewModels
                     _ => this.UpdatePlayerState());
             this.UpdatePlayerState();
 
-            return RefreshPlayedTracks(mixData);
+            return RefreshPlayedTracksAsync(mixData);
         }
 
-        private IObservable<Unit> RefreshPlayedTracks(MixContract mixData)
+        private IObservable<Unit> RefreshPlayedTracksAsync(MixContract mixData)
         {
             this.Tracks.Clear();
-            var tracks = from response in mixData.PlayedTracks()
+            var tracks = from response in mixData.PlayedTracksAsync()
                          where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);

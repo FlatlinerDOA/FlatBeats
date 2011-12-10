@@ -24,7 +24,7 @@
 
         private const string RecentlyPlayedFilePath = "recentmixes.json";
 
-        public static IObservable<string> GetPlayToken()
+        public static IObservable<string> GetPlayTokenAsync()
         {
             return Downloader.GetJson<PlayTokenResponseContract>(
                 new Uri("http://8tracks.com/sets/new.json"), 
@@ -36,7 +36,7 @@
             Storage.Delete(PlayTokenFilePath);
         }
 
-        public static IObservable<Unit> Stop(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
+        public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
         {
             ResetNowPlayingTile();
             Storage.Delete(NowPlayingFilePath);
@@ -46,7 +46,7 @@
                 return Observable.Return(new Unit());
             }
 
-            return AddToMixTrackHistory(nowPlaying, timePlayed);
+            return AddToMixTrackHistoryAsync(nowPlaying, timePlayed);
         }
         
         public static void ClearRecentlyPlayed()
@@ -59,17 +59,17 @@
             Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
         }
 
-        public static IObservable<MixesResponseContract> RecentlyPlayed()
+        public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
             return Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
                     Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
-        public static IObservable<Unit> AddToRecentlyPlayed(MixContract mix)
+        public static IObservable<Unit> AddToRecentlyPlayedAsync(MixContract mix)
         {
             string imageFilePath = "/Shared/Media/" + mix.Id + "-Original.jpg";
 
-            return from recentlyPlayed in RecentlyPlayed().Do(
+            return from recentlyPlayed in RecentlyPlayedAsync().Do(
                        m =>
                         {
                             var duplicates = m.Mixes.Where(d => d.Id == mix.Id).ToList();
@@ -115,12 +115,12 @@
             return Json.Deserialize<PlayingMixContract>(data);
         }
 
-        public static IObservable<PlayingMixContract> StartPlaying(this MixContract mix)
+        public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
         {
-            var playingMix = from playToken in GetPlayToken()
+            var playingMix = from playToken in GetPlayTokenAsync()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
-                   from added in AddToRecentlyPlayed(mix)
+                   from added in AddToRecentlyPlayedAsync(mix)
                    select new PlayingMixContract
                    {
                        PlayToken = playToken,
@@ -131,7 +131,7 @@
                    };
 
             return from playing in playingMix
-                   from tile in SetNowPlayingTile(
+                   from tile in SetNowPlayingTileAsync(
                            playing, 
                            StringResources.Title_ApplicationName, 
                            StringResources.Title_NowPlaying)
@@ -154,7 +154,7 @@
             appTile.Update(newAppTile);
         }
 
-        public static IObservable<Unit> SetNowPlayingTile(PlayingMixContract mix, string title, string backTitle)
+        public static IObservable<Unit> SetNowPlayingTileAsync(PlayingMixContract mix, string title, string backTitle)
         {
             var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
             if (appTile == null)
@@ -162,7 +162,7 @@
                 return Observable.Empty<Unit>();
             }
 
-            return Observable.Defer(() => SaveFadedThumbnail(mix)).SubscribeOnDispatcher().Do(
+            return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Do(
                 url =>
                     {
                         var newAppTile = new StandardTileData
@@ -178,7 +178,7 @@
         }
         
 
-        private static IObservable<Uri> SaveFadedThumbnail(PlayingMixContract mix)
+        private static IObservable<Uri> SaveFadedThumbnailAsync(PlayingMixContract mix)
         {
             var bitmap = new BitmapImage();
             var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").Select(_ => new Unit()).Take(1);
@@ -223,18 +223,18 @@
                 });
         }
 
-        public static IObservable<PlayResponseContract> NextTrack(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var nextFormat = string.Format(
                 "http://8tracks.com/sets/{0}/next.json?mix_id={1}",
                 playing.PlayToken,
                 playing.MixId);
-            return from addToHistory in AddToMixTrackHistory(playing, timePlayed)
+            return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(nextFormat, UriKind.Absolute))
                    select response;
         }
 
-        private static IObservable<Unit> AddToMixTrackHistory(this PlayingMixContract playing, TimeSpan timePlayed)
+        private static IObservable<Unit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))
@@ -256,20 +256,20 @@
             return payment.OnErrorResumeNext(Observable.Return(new Unit()));
         }
 
-        public static IObservable<PlayResponseContract> SkipToNextTrack(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var skipFormat = string.Format(
                 "http://8tracks.com/sets/{0}/skip.json?mix_id={1}",
                 playing.PlayToken,
                 playing.MixId);
-            return from addToHistory in AddToMixTrackHistory(playing, timePlayed)
+            return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(skipFormat, UriKind.Absolute))
                    select response;
         }
 
-        public static IObservable<PlayedTracksResponseContract> PlayedTracks(this MixContract mix)
+        public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
-            var playedTracks = from playToken in GetPlayToken()
+            var playedTracks = from playToken in GetPlayTokenAsync()
                                let urlFormat = string.Format(
                                        "http://8tracks.com/sets/{0}/tracks_played.json?mix_id={1}",
                                        playToken,

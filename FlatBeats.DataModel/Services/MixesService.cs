@@ -11,6 +11,10 @@ using System.Windows.Shapes;
 
 namespace FlatBeats.DataModel.Services
 {
+    using System.Collections.Generic;
+
+    using Microsoft.Phone.Reactive;
+
     public static class MixesService
     {
         public static IObservable<MixesResponseContract> GetLatestMixes()
@@ -52,6 +56,13 @@ namespace FlatBeats.DataModel.Services
                 new Uri(
                     string.Format("http://8tracks.com/mixes.json?q={0}&sort={1}&page={2}", Uri.EscapeDataString(query), sort, pageNumber),
                     UriKind.RelativeOrAbsolute));
+        }
+
+        public static IObservable<MixContract> GetMixAsync(string mixId)
+        {
+            var mixUrl = new Uri(string.Format("http://8tracks.com/mixes/{0}.json", mixId), UriKind.RelativeOrAbsolute);
+            return from response in Downloader.GetJson<MixResponseContract>(mixUrl)
+                   select response.Mix;
         }
     }
 }

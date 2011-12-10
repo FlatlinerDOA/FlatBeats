@@ -36,7 +36,7 @@
             ////                             ThumbnailUrl = playingMix.Cover.ThumbnailUrl,
             ////                             NavigationUrl = new Uri("/PlayPage.xaml?mix=" + playingMix.MixId, UriKind.Relative)
             ////                         };
-            var recentMixes = from response in PlayerService.RecentlyPlayed()
+            var recentMixes = from response in PlayerService.RecentlyPlayedAsync()
                               let playing = PlayerService.LoadNowPlaying()
                               where response != null && response.Mixes != null
                               from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)

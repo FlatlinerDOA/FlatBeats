@@ -57,7 +57,7 @@ namespace FlatBeatsPlaybackAgent
         /// </summary>
         protected override void OnCancel()
         {
-            this.NotifyComplete();
+            this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
         }
 
         /// <summary>
@@ -81,15 +81,18 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            this.NowPlaying.Stop(player.Position);
-            if (isFatal)
-            {
-                this.Abort();
-            }
-            else
-            {
-                this.NotifyComplete();
-            }
+            this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Finally(
+                () =>
+                {
+                    if (isFatal)
+                    {
+                        this.Abort();
+                    }
+                    else
+                    {
+                        this.NotifyComplete();
+                    }
+                }).Subscribe();
         }
 
         /// <summary>
@@ -118,11 +121,11 @@ namespace FlatBeatsPlaybackAgent
                 case PlayState.Stopped:
                     break;
                 case PlayState.TrackEnded:
-                    this.PlayNextTrack(player);
-                    break;
+                    this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    return;
                 case PlayState.Error:
-                    this.NowPlaying.Stop(player.Position).First();
-                    break;
+                    this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    return;
             }
 
             this.NotifyComplete();
@@ -161,11 +164,11 @@ namespace FlatBeatsPlaybackAgent
                     player.Pause();
                     break;
                 case UserAction.Play:
-                    this.PlayTrack(player);
-                    break;
+                    this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(() => this.NotifyComplete()).Subscribe();
+                    return;
                 case UserAction.SkipNext:
-                    this.SkipToNextTrack(player);
-                    break;
+                    this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(() => this.NotifyComplete()).Subscribe();
+                    return;
             }
 
             this.NotifyComplete();
@@ -177,29 +180,30 @@ namespace FlatBeatsPlaybackAgent
         /// <param name="player">
         /// The BackgroundAudioPlayer
         /// </param>
-        private void PlayNextTrack(BackgroundAudioPlayer player)
+        private IObservable<Unit> PlayNextTrackAsync(BackgroundAudioPlayer player)
         {
             if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.IsLastTrack)
             {
                 player.Stop();
-                this.NowPlaying.Stop(player.Position).First();
-                return;
+                return this.NowPlaying.StopAsync(player.Position);
             }
 
-            var nextResponse = this.NowPlaying.NextTrack(player.Position).First();
+            var nextResponse = this.NowPlaying.NextTrackAsync(player.Position).First();
             if (nextResponse.Status.StartsWith("200"))
             {
                 this.NowPlaying.Set = nextResponse.Set;
                 this.NowPlaying.SaveNowPlaying();
-                this.PlayTrack(player);
+                return this.PlayTrackAsync(player);
             }
+
+            return Observable.Empty<Unit>();
         }
 
         /// <summary>
         /// </summary>
         /// <param name="player">
         /// </param>
-        private void PlayTrack(BackgroundAudioPlayer player)
+        private IObservable<Unit> PlayTrackAsync(BackgroundAudioPlayer player)
         {
             if (player.PlayerState == PlayState.Paused)
             {
@@ -215,25 +219,27 @@ namespace FlatBeatsPlaybackAgent
                 if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
                 {
                     player.Stop();
-                    this.NowPlaying.Stop(player.Position);
-                    return;
+                    return this.NowPlaying.StopAsync(player.Position);
                 }
-
 
                 var trackUrl = new Uri(this.NowPlaying.Set.Track.TrackUrl, UriKind.Absolute);
                 var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
-
+                var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
+                                       ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext
+                                       : EnabledPlayerControls.Pause;
                 var track = new AudioTrack(
                     trackUrl, 
                     this.NowPlaying.Set.Track.Name, 
                     this.NowPlaying.Set.Track.Artist, 
                     this.NowPlaying.MixName, 
                     coverUrl, 
-                    this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id, 
-                    EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext);
+                    this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
+                    playControls);
                 player.Track = track;
                 player.Volume = 1;
             }
+
+            return Observable.Return(new Unit());
         }
 
         /// <summary>
@@ -242,20 +248,25 @@ namespace FlatBeatsPlaybackAgent
         /// <param name="player">
         /// The BackgroundAudioPlayer
         /// </param>
-        private void SkipToNextTrack(BackgroundAudioPlayer player)
+        private IObservable<Unit> SkipToNextTrackAsync(BackgroundAudioPlayer player)
         {
             if (!this.NowPlaying.Set.SkipAllowed)
             {
-                return;
+                return Observable.Empty<Unit>();
             }
 
-            var skipResponse = this.NowPlaying.SkipToNextTrack(player.Position).First();
-            if (skipResponse.Status.StartsWith("200"))
-            {
-                this.NowPlaying.Set = skipResponse.Set;
-                this.NowPlaying.SaveNowPlaying();
-                this.PlayTrack(player);
-            }
+            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player.Position)
+                    where skipResponse.Status.StartsWith("200")
+                    select skipResponse;
+
+            return from y in x.Do(
+                response =>
+                    {
+                        this.NowPlaying.Set = response.Set;
+                        this.NowPlaying.SaveNowPlaying();
+                    }).ObserveOn(Scheduler.CurrentThread)
+                   from play in this.PlayTrackAsync(player)
+                   select play;
         }
 
         #endregion
