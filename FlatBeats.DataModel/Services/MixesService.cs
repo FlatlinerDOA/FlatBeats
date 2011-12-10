@@ -17,12 +17,17 @@ namespace FlatBeats.DataModel.Services
 
     public static class MixesService
     {
+        private const string LatestMixesCacheFile = "LatestMixes.xml";
+
+        public static IObservable<ReviewsResponseContract> GetMixReviews(string mixId)
+        {
+            return Downloader.GetJson<ReviewsResponseContract>(new Uri(string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", mixId), UriKind.RelativeOrAbsolute));
+        }
         public static IObservable<MixesResponseContract> GetLatestMixes()
         {
             //&hide_nsfw=1
-            return
-                Downloader.GetJson<MixesResponseContract>(
-                    new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute));
+            return Downloader.GetJson<MixesResponseContract>(
+                    new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), LatestMixesCacheFile);
         }
 
 

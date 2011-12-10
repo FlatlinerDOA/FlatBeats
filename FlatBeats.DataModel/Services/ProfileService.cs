@@ -7,6 +7,8 @@
 
     public static class ProfileService
     {
+        private const string LikedMixesCacheFile = "LikedMixes.xml";
+
         private const string CredentialsFilePath = "credentials.json";
 
         private const string UserLoginFilePath = "userlogin.json";
@@ -85,7 +87,7 @@
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked", userId);
             return
                 Downloader.GetJson<MixesResponseContract>(
-                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+                    new Uri(urlFormat, UriKind.RelativeOrAbsolute), LikedMixesCacheFile);
 
         }
 

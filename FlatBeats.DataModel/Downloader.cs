@@ -158,7 +158,7 @@ namespace FlatBeats.DataModel
                             {
                                 Storage.Save(cacheFile, Json.Serialize(cache));
                             }
-                        })).Take(1);
+                        }));
             return sequence;
         }
 

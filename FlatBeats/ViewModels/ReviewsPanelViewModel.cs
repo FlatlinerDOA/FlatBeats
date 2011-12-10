@@ -14,6 +14,7 @@ namespace FlatBeats.ViewModels
     using System.Collections.ObjectModel;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
 
@@ -42,14 +43,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private IObservable<Unit> LoadCommentsAsync()
         {
-            var downloadComments =
-                from response in
-                    Downloader.GetJson<ReviewsResponseContract>(
-                        new Uri(
-                    string.Format("http://8tracks.com/mixes/{0}/reviews.json?per_page=20", this.MixId),
-                    UriKind.RelativeOrAbsolute))
-                from review in response.Reviews.ToObservable()
-                select new ReviewViewModel(review);
+            var downloadComments = from response in MixesService.GetMixReviews(this.MixId)
+                                   from review in response.Reviews.ToObservable()
+                                   select new ReviewViewModel(review);
             return downloadComments.ObserveOnDispatcher().Do(
                 r => this.Reviews.Add(r),
                 this.ShowError, 

@@ -74,6 +74,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MixViewModel()
         {
+            this.MixName = string.Empty;
+            this.Description = string.Empty;
+            this.TileTitle = string.Empty;
         }
 
         /// <summary>
@@ -82,29 +85,7 @@ namespace FlatBeats.ViewModels
         /// </param>
         public MixViewModel(MixContract mix)
         {
-            this.MixName = mix.Name;
-            var lines =
-                mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
-                    .Where(t => !string.IsNullOrWhiteSpace(t));
-            this.Description = string.Join(Environment.NewLine, lines);
-            this.ThumbnailUrl = mix.Cover.ThumbnailUrl;
-            this.ImageUrl = mix.Cover.OriginalUrl;
-            this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
-            this.MixId = mix.Id;
-            this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
-            this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
-            this.Liked = mix.Liked;
-            this.CreatedBy = mix.User.Name;
-            this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-            this.Created = DateTimeOffset.Parse(mix.Created).ToLocalTime().DateTime;
-            if (this.Created > DateTime.Now)
-            {
-                this.Created = DateTime.Now.AddSeconds(-1);
-            }
-            this.Tags = mix.Tags;
-            this.TagList =
-                this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
-                    t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
+            this.Load(mix);
         }
 
         #endregion
@@ -239,11 +220,11 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public Uri LinkUrl { get; set; }
+        public Uri LinkUrl { get; private set; }
 
         /// <summary>
         /// </summary>
-        public string MixId { get; set; }
+        public string MixId { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -355,5 +336,34 @@ namespace FlatBeats.ViewModels
         }
 
         #endregion
+
+        public void Load(MixContract mix)
+        {
+            this.MixName = mix.Name;
+            var lines =
+                mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t));
+            this.Description = string.Join(Environment.NewLine, lines);
+            this.ThumbnailUrl = mix.Cover.ThumbnailUrl;
+            this.ImageUrl = mix.Cover.OriginalUrl;
+            this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
+            this.MixId = mix.Id;
+            this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
+            this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
+            this.Liked = mix.Liked;
+            this.CreatedBy = mix.User.Name;
+            this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
+            this.Created = DateTimeOffset.Parse(mix.Created).ToLocalTime().DateTime;
+            if (this.Created > DateTime.Now)
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
+
+            this.Tags = mix.Tags;
+            this.TagList =
+                this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
+                    t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
+
+        }
     }
 }

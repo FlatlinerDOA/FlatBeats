@@ -29,9 +29,9 @@
         {
             var load = from splitTags in Observable.Start(() => TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags)).OrderBy(t => t.TagName))
                        from t in splitTags.ToObservable(Scheduler.ThreadPool)
-                        select t;
+                       select t;
 
-            load.Concat(Observable.Return(new TagViewModel("more..."))).FlowIn()
+            load.Concat(Observable.Return(new TagViewModel("more..."))) //.FlowIn()
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Tags.Clear())
                 .Subscribe(
