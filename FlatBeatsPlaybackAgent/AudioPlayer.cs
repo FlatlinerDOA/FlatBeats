@@ -81,7 +81,7 @@ namespace FlatBeatsPlaybackAgent
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Finally(
+            this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
                 () =>
                 {
                     if (isFatal)
@@ -124,7 +124,7 @@ namespace FlatBeatsPlaybackAgent
                     this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
                     return;
                 case PlayState.Error:
-                    this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
                     return;
             }
 

@@ -142,6 +142,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to unpin from start.
+        /// </summary>
+        internal static string Command_UnpinStart {
+            get {
+                return ResourceManager.GetString("Command_UnpinStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mix: {0}
         ///Description:
         ///{1}

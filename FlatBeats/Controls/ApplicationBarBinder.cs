@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Specialized;
+    using System.ComponentModel;
 
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
@@ -173,6 +174,7 @@
         {
             bool canExecute = commandLink.Command.CanExecute(null);
             button.IsEnabled = canExecute;
+            button.Text = commandLink.Text;
             if (!commandLink.HideWhenInactive)
             {
                 return;
@@ -213,6 +215,9 @@
                 this.appBarSubscriptions.Add(
                     Observable.FromEvent<EventArgs>(commandLink.Command, "CanExecuteChanged").Subscribe(
                         ev => this.UpdateMenuItemCanExecute(commandLink, button)));
+                this.appBarSubscriptions.Add(
+                    Observable.FromEvent<PropertyChangedEventArgs>(commandLink, "PropertyChanged").Subscribe(
+                        ev => button.Text = commandLink.Text));
             }
 
             if (canExecute || !commandLink.HideWhenInactive)

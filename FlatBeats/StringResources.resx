@@ -241,4 +241,7 @@ Link:
   <data name="Error_UnknownError" xml:space="preserve">
     <value>Something really unexpected happened! Please report this when you are asked, next time you run this app.</value>
   </data>
+  <data name="Command_UnpinStart" xml:space="preserve">
+    <value>unpin from start</value>
+  </data>
 </root>

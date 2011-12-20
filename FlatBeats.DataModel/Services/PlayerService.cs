@@ -292,8 +292,8 @@
                 return Observable.Return(new Uri(localFullPath, UriKind.Relative));
             }
 
-            return Downloader.GetAndSaveFile(remoteTrackUrl, localFullPath).Select(_ => new Uri(localFullPath, UriKind.Relative));
-            ////return Observable.Return(remoteTrackUrl);
+            ////return Downloader.GetAndSaveFile(remoteTrackUrl, localFullPath).Select(_ => new Uri(localFullPath, UriKind.Relative));
+            return Observable.Return(remoteTrackUrl);
         }
     }
 }
