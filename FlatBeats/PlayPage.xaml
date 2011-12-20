@@ -115,31 +115,6 @@
                 </Border>
         	</Grid>
         </ControlTemplate>
-        <DataTemplate x:Key="TrackTemplate">
-            <Grid d:DesignWidth="218" d:DesignHeight="64" Margin="0,0,0,8">
-            	<Grid.ColumnDefinitions>
-            		<ColumnDefinition/>
-            		<ColumnDefinition Width="Auto"/>
-            	</Grid.ColumnDefinitions>
-                <StackPanel HorizontalAlignment="Left">
-                    <TextBlock Margin="8,4,4,4"
-                               TextWrapping="Wrap"
-                               Text="{Binding Artist}"
-                               d:LayoutOverrides="Width, Height"
-                               Style="{StaticResource PhoneTextAccentStyle}"
-                               FontSize="26.667" />
-                    <TextBlock Margin="8,0,12,4"
-                               TextWrapping="Wrap"
-                               Text="{Binding Title}"
-                               Style="{StaticResource PhoneTextNormalStyle}"
-                               Foreground="{StaticResource PhoneForegroundBrush}" />
-                </StackPanel>
-                <CheckBox Margin="4"
-                          IsChecked="{Binding IsFavourite, Mode=TwoWay}"
-                          Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center"  HorizontalAlignment="Right" Template="{StaticResource FavouriteCheckBoxControlTemplate}" Grid.Column="1" Padding="8" Width="60" Height="60"/>
-            </Grid>
-
-        </DataTemplate>
         <Style x:Key="WrapNavigationList"
                TargetType="ListBox">
             <Setter Property="ItemsPanel">
@@ -376,10 +351,12 @@
                             		<ColumnDefinition Width="Auto"/>
                             	</Grid.ColumnDefinitions>
                             	<Button Tap="ButtonTap"
-                            		Padding="0"
-                            		HorizontalContentAlignment="Stretch"
-                            		VerticalContentAlignment="Stretch"
-                            		DataContext="{Binding CurrentTrack}" BorderBrush="{x:Null}" BorderThickness="0">
+                            		    Padding="0"
+                            		    HorizontalContentAlignment="Stretch"
+                            		    VerticalContentAlignment="Stretch"
+                            		    DataContext="{Binding CurrentTrack}" 
+                                        BorderBrush="{x:Null}" 
+                                        BorderThickness="0">
                             		<Button.Template>
                             			<ControlTemplate>
                             				<ContentPresenter />
@@ -400,20 +377,76 @@
                             		</StackPanel>
                             	</Button>
                             	<CheckBox Margin="4"
-                            		IsChecked="{Binding IsFavourite, Mode=TwoWay}"
-                            		Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center"  HorizontalAlignment="Right" Template="{StaticResource FavouriteCheckBoxControlTemplate}" Grid.Column="1" Padding="8" Width="60" Height="60"/>
+                            		      IsChecked="{Binding IsFavourite, Mode=TwoWay}"
+                            		      Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" 
+                                          VerticalAlignment="Center" 
+                                          HorizontalAlignment="Right" 
+                                          Template="{StaticResource FavouriteCheckBoxControlTemplate}" 
+                                          Grid.Column="1" 
+                                          Padding="8" 
+                                          Width="60" 
+                                          Height="60" />
                             </Grid>
                             <ProgressBar Value="{Binding Progress}"
                                          Grid.Row="1"
-                                         IsIndeterminate="{Binding IsProgressIndeterminate}" Margin="-4,0,0,0" />
+                                         IsIndeterminate="{Binding IsProgressIndeterminate}" 
+                                         Margin="-4,0,0,0" />
                             <TextBlock Text="{Binding ProgressStatusText}" Grid.Row="2" Margin="8,4,8,16" />
                         </Grid>
                         <ListBox Margin="0,0,-12,0"
-                                                 Grid.Row="1"
-                                                 ItemsSource="{Binding Tracks}"
-                                 ItemTemplate="{StaticResource TrackTemplate}"
+                                 Grid.Row="1"
+                                 ItemsSource="{Binding Tracks}"
                                  Tap="ListBoxTap"
-                                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" ItemContainerStyle="{StaticResource FullWidthListBoxItemStyle}" />
+                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" 
+                                 ItemContainerStyle="{StaticResource FullWidthListBoxItemStyle}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid d:DesignWidth="218"
+                                          d:DesignHeight="64"
+                                          Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Tap="ButtonTap"
+                                                Padding="0"
+                                                HorizontalContentAlignment="Stretch"
+                                                VerticalContentAlignment="Stretch"
+                                                BorderBrush="{x:Null}"
+                                                BorderThickness="0">
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <StackPanel HorizontalAlignment="Left">
+                                                <TextBlock Margin="8,4,4,4"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding Artist}"
+                                                           d:LayoutOverrides="Width, Height"
+                                                           Style="{StaticResource PhoneTextAccentStyle}"
+                                                           FontSize="26.667" />
+                                                <TextBlock Margin="8,0,12,4"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding Title}"
+                                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                                           Foreground="{StaticResource PhoneForegroundBrush}" />
+                                            </StackPanel>
+                                        </Button>
+                                        <CheckBox Margin="8,4"
+                                                  IsChecked="{Binding IsFavourite, Mode=TwoWay}"
+                                                  Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Right"
+                                                  Template="{StaticResource FavouriteCheckBoxControlTemplate}"
+                                                  Grid.Column="1"
+                                                  Padding="16,8"
+                                                  Width="60"
+                                                  Height="60" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
                 </Grid>
             </controls:PivotItem>
