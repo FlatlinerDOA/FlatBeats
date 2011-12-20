@@ -46,8 +46,6 @@ namespace FlatBeats.ViewModels
                 this.Key = "#";
             }
 
-            Debug.WriteLine("Name '{0}' Key '{1}", this.TagName, this.Key);
-
             if (this.TagName == "more...")
             {
                 this.IsLastItem = true;

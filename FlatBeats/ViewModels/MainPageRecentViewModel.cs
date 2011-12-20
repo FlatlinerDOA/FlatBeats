@@ -24,23 +24,14 @@
 
         public IObservable<Unit> LoadAsync()
         {
-            ////var nowPlaying = from playingMix in Observable.Start(() => PlayerService.LoadNowPlaying())
-            ////                 where playingMix != null
-            ////                 select new RecentMixViewModel()
-            ////                         {
-            ////                             IsNowPlaying = true,
-            ////                             MixId = playingMix.MixId,
-            ////                             MixName = playingMix.MixName,
-            ////                             TileTitle = playingMix.MixName,
-            ////                             ImageUrl = playingMix.Cover.OriginalUrl,
-            ////                             ThumbnailUrl = playingMix.Cover.ThumbnailUrl,
-            ////                             NavigationUrl = new Uri("/PlayPage.xaml?mix=" + playingMix.MixId, UriKind.Relative)
-            ////                         };
             var recentMixes = from response in PlayerService.RecentlyPlayedAsync()
                               let playing = PlayerService.LoadNowPlaying()
                               where response != null && response.Mixes != null
                               from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
-                              select new RecentMixViewModel(mix) { IsNowPlaying = playing != null && playing.MixId == mix.Id };
+                              select new RecentMixViewModel(mix)
+                                  {
+                                      IsNowPlaying = playing != null && playing.MixId == mix.Id
+                                  };
             return recentMixes.FlowIn()
                 .ObserveOnDispatcher()
                 .FirstDo(_ => this.Mixes.Clear())

@@ -138,9 +138,9 @@ namespace FlatBeats.ViewModels
             var load = from liked in this.Liked.LoadAsync()
                        from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
-                       from tags in Observable.Start(() => this.TagsPanel.Load(latest))
-                       select new Unit();
-            this.subscription = load.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
+                       select latest;
+            this.subscription = load.ObserveOnDispatcher().Subscribe(
+                latest => this.TagsPanel.Load(latest), this.ShowError, this.LoadCompleted);
         }
 
         private void Refresh()

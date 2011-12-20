@@ -1,15 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TagsPageViewModel.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
+
+    using FlatBeats.DataModel;
 
     using Microsoft.Phone.Reactive;
 
@@ -34,7 +28,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public TagsPageViewModel()
         {
-            ////this.Tags = new ObservableCollection<Grouping<string, TagViewModel>>();
             this.Title = "tags";
         }
 
@@ -72,13 +65,20 @@ namespace FlatBeats.ViewModels
         public override void Load()
         {
             this.ShowProgress();
-            this.subscription = Observable.Start(() => new TagsByFirstLetter()).ObserveOnDispatcher().Subscribe(
-                t =>
-                    {
-                        this.Tags = t;
-                    }, 
-                    this.ShowError, 
-                    this.LoadCompleted);
+            var tagViewModels = from pageNumber in Observable.Range(1, 5)
+                                from response in Downloader.GetJson<TagsResponseContract>(new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + pageNumber))
+                                from tag in response.Tags.ToObservable()
+                                select new TagViewModel(tag.Name);
+
+
+            var list = new List<TagViewModel>();
+            this.subscription = tagViewModels.ObserveOnDispatcher().Subscribe(
+                list.Add, this.ShowError, () => 
+                { 
+                    var t = new TagsByFirstLetter(list);
+                    this.Tags = t;
+                    this.LoadCompleted();
+                });
         }
 
         public override void Unload()

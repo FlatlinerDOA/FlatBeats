@@ -376,14 +376,15 @@
                             				Foreground="{StaticResource PhoneForegroundBrush}" />
                             		</StackPanel>
                             	</Button>
-                            	<CheckBox Margin="4"
-                            		      IsChecked="{Binding IsFavourite, Mode=TwoWay}"
+                            	<CheckBox Margin="8,4"
+                                          DataContext="{Binding CurrentTrack}"
+                                          IsChecked="{Binding IsFavourite, Mode=TwoWay}"
                             		      Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" 
                                           VerticalAlignment="Center" 
                                           HorizontalAlignment="Right" 
                                           Template="{StaticResource FavouriteCheckBoxControlTemplate}" 
                                           Grid.Column="1" 
-                                          Padding="8" 
+                                          Padding="16,8" 
                                           Width="60" 
                                           Height="60" />
                             </Grid>

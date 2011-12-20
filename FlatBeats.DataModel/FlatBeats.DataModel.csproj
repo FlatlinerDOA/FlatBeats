@@ -64,7 +64,7 @@
     <Compile Include="Json.cs" />
     <Compile Include="MixContract.cs" />
     <Compile Include="MixesResponseContract.cs" />
-    <Compile Include="ObservableExtensions.cs" />
+    <Compile Include="ObservableEx.cs" />
     <Compile Include="PlayedTracksResponseContract.cs" />
     <Compile Include="Profile\MixTrackHistoryContract.cs" />
     <Compile Include="Profile\PlayHistoryContract.cs" />

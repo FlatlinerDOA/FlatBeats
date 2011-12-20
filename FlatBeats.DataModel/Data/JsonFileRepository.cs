@@ -69,21 +69,32 @@ namespace FlatBeats.DataModel.Data
                 return Observable.Return(new Unit());
             }
 
-            return Observable.Start(() =>
-            {
-                var key = this.getKeyFromItem(item);
-                var filePath = this.GetFilePath(key);
-                using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            return Observable.CreateWithDisposable<Unit>(
+               observer => Scheduler.ThreadPool.Schedule(() =>
                 {
-                    this.EnsureDirectoryExistsAsync(storage);
-                    using (var stream = new IsolatedStorageFileStream(filePath, FileMode.Create, storage))
+                    try
                     {
-                        serializer.WriteObject(stream, item);
-                        stream.Flush();
-                        stream.Close();
+                        var key = this.getKeyFromItem(item);
+                        var filePath = this.GetFilePath(key);
+                        using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            this.EnsureDirectoryExistsAsync(storage);
+                            using (var stream = new IsolatedStorageFileStream(filePath, FileMode.Create, storage))
+                            {
+                                serializer.WriteObject(stream, item);
+                                stream.Flush();
+                                stream.Close();
+                            }
+                        }
+
+                        observer.OnNext(new Unit());
+                        observer.OnCompleted();
                     }
-                }
-            }).Wait(this.syncLock, TimeSpan.FromSeconds(5));
+                    catch (IOException error)
+                    {
+                        observer.OnError(error);
+                    }
+                })).Wait(this.syncLock, TimeSpan.FromSeconds(5));
         }
 
         private string GetFilePath(string key)
@@ -99,7 +110,7 @@ namespace FlatBeats.DataModel.Data
 
         public IObservable<Unit> DeleteAsync(T item)
         {
-            return Observable.Start(
+            return Observable.Defer(
             () =>
             {
                 var key = this.getKeyFromItem(item);
@@ -112,6 +123,8 @@ namespace FlatBeats.DataModel.Data
                         storage.DeleteFile(filePath);
                     }
                 }
+
+                return Observable.Return(new Unit());
             }).Wait(this.syncLock, TimeSpan.FromSeconds(5));
         }
 
@@ -122,7 +135,7 @@ namespace FlatBeats.DataModel.Data
                 return Observable.Empty<T>();
             }
 
-            return Observable.Start<T>(
+            return Observable.Defer<T>(
                 () =>
                 {
                     var filePath = this.GetFilePath(key);
@@ -136,7 +149,7 @@ namespace FlatBeats.DataModel.Data
 
                         using (var stream = new IsolatedStorageFileStream(filePath, FileMode.Open, storage))
                         {
-                            return this.serializer.ReadObject(stream) as T;
+                            return Observable.Return(this.serializer.ReadObject(stream) as T);
                         }
                     }
                 }).Wait(this.syncLock, TimeSpan.FromSeconds(5)).Where(t => t != null);

@@ -110,9 +110,10 @@ namespace FlatBeats.DataModel
                                              Debug.WriteLine("DOWNLOAD: " + evt.Error.ToString());
                                          }
 
-                                         return evt.Result;
-                                     }).Do(data => Storage.Save(fileName, data))
-                             select new Unit();
+                                         Storage.Save(fileName, evt.Result);
+                                         return new Unit();
+                                     })
+                             select completed;
 
             return webRequest;
         }
@@ -132,8 +133,7 @@ namespace FlatBeats.DataModel
             IObservable<T> sequence = Observable.Empty<T>();
             if (cacheFile != null && Storage.Exists(cacheFile))
             {
-                sequence =
-                    Observable.Start(() => Storage.Load(cacheFile)).Select(c => Json.Deserialize<T>(c)).Where(m => m != null);
+                sequence = Observable.Defer(() => Observable.Return(Storage.Load(cacheFile))).Select(c => Json.Deserialize<T>(c)).Where(m => m != null);
             }
 
             var webRequest = from client in Observable.Return(CreateClient())
@@ -177,7 +177,7 @@ namespace FlatBeats.DataModel
         public static IObservable<TResponse> PostAndGetJson<TRequest, TResponse>(Uri url, TRequest postData)
             where TRequest : class where TResponse : class
         {
-            var sequence = from postString in Observable.Start(() => Json.Serialize(postData))
+            var sequence = from postString in ObservableEx.DeferredStart(() => Json.Serialize(postData))
                            from completed in PostAndGetString(url, postString)
                            select Json.Deserialize<TResponse>(completed);
             return sequence;

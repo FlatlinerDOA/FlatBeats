@@ -15,7 +15,6 @@ namespace FlatBeatsPlaybackAgent
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
-    using Microsoft.Devices;
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
 
@@ -184,19 +183,19 @@ namespace FlatBeatsPlaybackAgent
         {
             if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.IsLastTrack)
             {
-                player.Stop();
-                return this.NowPlaying.StopAsync(player.Position);
+                return this.NowPlaying.StopAsync(player.Position).Finally(player.Stop);
             }
 
-            var nextResponse = this.NowPlaying.NextTrackAsync(player.Position).First();
-            if (nextResponse.Status.StartsWith("200"))
-            {
-                this.NowPlaying.Set = nextResponse.Set;
-                this.NowPlaying.SaveNowPlaying();
-                return this.PlayTrackAsync(player);
-            }
-
-            return Observable.Empty<Unit>();
+            return from nextResponse in this.NowPlaying.NextTrackAsync(player.Position)
+                   where nextResponse != null && nextResponse.Status != null && nextResponse.Status.StartsWith("200")
+                   from d in ObservableEx.DeferredStart(
+                                   () =>
+                                       {
+                                           this.NowPlaying.Set = nextResponse.Set;
+                                           this.NowPlaying.SaveNowPlaying();
+                                       })
+                               from play in this.PlayTrackAsync(player)
+                               select play;
         }
 
         /// <summary>

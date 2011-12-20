@@ -61,7 +61,7 @@
             ////return from storage in Observable.Start(() => IsolatedStorageFile.GetUserStoreForApplication())
             ////       from stream in Observable.Start(() => new IsolatedStorageFileStream(file, FileMode.Open, storage))
             ////       from data in Observable.FromAsyncPattern(stream.BeginRead, stream.EndRead)
-            return Observable.Start(() => Load(file));
+            return ObservableEx.DeferredStart(() => Load(file));
         }
 
         /// <summary>

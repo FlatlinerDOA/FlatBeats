@@ -49,7 +49,7 @@
 
         public static IObservable<UserCredentialsContract> LoadCredentials()
         {
-            return Observable.Start(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
+            return ObservableEx.DeferredStart(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
         }
 
         private static void SaveUserToken(UserLoginResponseContract login)
@@ -59,8 +59,7 @@
 
         public static IObservable<UserLoginResponseContract> LoadUserToken()
         {
-            return
-                Observable.Start(() => Json.Deserialize<UserLoginResponseContract>(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
+            return ObservableEx.DeferredStart(() => Json.Deserialize<UserLoginResponseContract>(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
                     user => Downloader.UserToken = user.UserToken);
         }
 
@@ -140,7 +139,7 @@
 
         public static IObservable<Unit> Reset()
         {
-            return Observable.Start(DeleteCredentials);
+            return ObservableEx.DeferredStart(DeleteCredentials);
         }
     }
 }

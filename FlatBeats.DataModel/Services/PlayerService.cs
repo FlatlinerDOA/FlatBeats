@@ -62,7 +62,7 @@
 
         public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
-            return Observable.Start(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
+            return ObservableEx.DeferredStart(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
                     Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
@@ -86,7 +86,7 @@
                                 m.Mixes.Remove(m.Mixes.Last());
                             }
                         })
-                   from mixes in Observable.Start(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)))
+                   from mixes in ObservableEx.DeferredStart(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)), Scheduler.Immediate)
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
                            using (var stream = Storage.LoadStream(imageFilePath))
