@@ -52,7 +52,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private IDisposable refreshSubscription = Disposable.Empty;
+        private IDisposable refreshSubscription;
 
         /// <summary>
         /// </summary>
@@ -70,6 +70,8 @@ namespace FlatBeats.ViewModels
         public MixPlayedTracksViewModel()
         {
             this.Tracks = new ObservableCollection<TrackViewModel>();
+            this.Title = StringResources.Title_PlayedTracks;
+            this.UpdateMessage();
         }
 
         #endregion
@@ -136,7 +138,6 @@ namespace FlatBeats.ViewModels
 
                 this.nowPlaying = value;
                 this.OnPropertyChanged("NowPlaying");
-                this.UpdateIsNowPlaying();
             }
         }
 
@@ -229,13 +230,23 @@ namespace FlatBeats.ViewModels
         {
             this.currentMixId = mixData.Id;
             this.Player = BackgroundAudioPlayer.Instance;
-            this.UpdateIsNowPlaying();
-            this.playStateSubscription =
-                Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(
-                    _ => this.UpdatePlayerState());
+            this.LoadNowPlaying();
             this.UpdatePlayerState();
 
+            if (this.playStateSubscription != null)
+            {
+                this.playStateSubscription.Dispose();
+            }
+
+            this.playStateSubscription = Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(_ => this.UpdatePlayerState());
+
             return RefreshPlayedTracksAsync(mixData);
+        }
+
+        private void LoadNowPlaying()
+        {
+            this.NowPlaying = PlayerService.LoadNowPlaying();
+            this.UpdateIsNowPlaying();
         }
 
         private IObservable<Unit> RefreshPlayedTracksAsync(MixContract mixData)
@@ -273,7 +284,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Unload()
         {
-            this.refreshSubscription.Dispose();
+            this.StopRefreshTimer();
             this.playStateSubscription.Dispose();
         }
 
@@ -283,57 +294,63 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private void StartBufferingRefreshTimer()
+        private void StopRefreshTimer()
         {
-            this.UpdatBufferingProgress();
+            if (this.refreshSubscription == null)
+            {
+                return;
+            }
+
             this.refreshSubscription.Dispose();
-            this.refreshSubscription =
-                Observable.Interval(TimeSpan.FromMilliseconds(300), Scheduler.Dispatcher).Subscribe(
-                    _ => this.UpdatBufferingProgress());
+            this.refreshSubscription = null;
         }
 
         /// <summary>
         /// </summary>
-        private void StartPlayRefreshTimer()
+        private void StartRefreshTimer()
         {
-            this.NowPlaying = PlayerService.LoadNowPlaying();
+            if (!this.ShowNowPlaying)
+            {
+                return;
+            }
+
             this.Message = null;
             this.UpdatePlayingProgress();
-            this.refreshSubscription.Dispose();
-            this.refreshSubscription =
-                Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(
-                    _ => this.UpdatePlayingProgress());
+            if (this.refreshSubscription == null)
+            {
+                this.refreshSubscription =
+                    Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(
+                        _ => this.UpdatePlayerState());
+            }
         }
 
         /// <summary>
         /// </summary>
-        private void UpdatBufferingProgress()
+        private void UpdateBufferingProgress()
         {
             this.Progress = this.Player.BufferingProgress * 100D;
-            this.ProgressStatusText = "Buffering ({0}%)";
+            this.ProgressStatusText = "Buffering {0}%";
             this.IsProgressIndeterminate = false;
         }
 
         /// <summary>
         /// </summary>
-        private void UpdateIsNowPlaying()
+        public void UpdateIsNowPlaying()
         {
             this.ShowNowPlaying = this.NowPlaying != null && this.NowPlaying.MixId == this.currentMixId;
             this.Title = this.ShowNowPlaying ? StringResources.Title_Playing : StringResources.Title_PlayedTracks;
             this.MoveCurrentTrackToList();
-            
-            if (this.NowPlaying != null && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
+
+            if (this.ShowNowPlaying && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
             {
                 this.CurrentTrack = new TrackViewModel(this.NowPlaying.Set.Track);
             }
             else
             {
                 this.CurrentTrack = null;
-                this.refreshSubscription.Dispose();
             }
 
             this.RemoveCurrentTrackFromList();
-
             this.UpdateMessage();
         }
 
@@ -348,6 +365,8 @@ namespace FlatBeats.ViewModels
             {
                 this.Tracks.Insert(0, this.CurrentTrack);
             }
+
+            this.CurrentTrack = null;
         }
 
         private void RemoveCurrentTrackFromList()
@@ -380,44 +399,44 @@ namespace FlatBeats.ViewModels
                 case PlayState.Unknown:
                     break;
                 case PlayState.Stopped:
-                    this.refreshSubscription.Dispose();
+                    this.StopRefreshTimer();
                     this.ProgressStatusText = "Stopped";
                     this.Progress = 0;
                     this.IsProgressIndeterminate = false;
                     break;
                 case PlayState.Paused:
-                    this.refreshSubscription.Dispose();
+                    this.StopRefreshTimer();
                     this.ProgressStatusText = "Paused";
                     break;
                 case PlayState.Playing:
-                    this.StartPlayRefreshTimer();
+                    this.StartRefreshTimer();
                     break;
                 case PlayState.BufferingStarted:
-                    this.StartBufferingRefreshTimer();
-                    this.IsProgressIndeterminate = true;
+                    this.UpdateBufferingProgress();
                     break;
                 case PlayState.BufferingStopped:
-                    this.refreshSubscription.Dispose();
-                    this.Progress = 0;
-                    this.IsProgressIndeterminate = false;
+                    this.UpdateBufferingProgress();
                     break;
                 case PlayState.TrackReady:
                     break;
                 case PlayState.TrackEnded:
-                    this.Tracks.Insert(0, this.CurrentTrack);
-                    this.refreshSubscription.Dispose();
+                    this.LoadNowPlaying();
                     break;
                 case PlayState.Rewinding:
-                    this.refreshSubscription.Dispose();
+                    this.Progress = 0;
+                    this.IsProgressIndeterminate = false;
+                    this.ProgressStatusText = "Rewinding";
                     break;
                 case PlayState.FastForwarding:
-                    this.refreshSubscription.Dispose();
+                    this.Progress = 0;
+                    this.IsProgressIndeterminate = false;
+                    this.ProgressStatusText = "Fast forwarding";
                     break;
                 case PlayState.Shutdown:
-                    this.refreshSubscription.Dispose();
+                    this.StopRefreshTimer();
                     break;
                 case PlayState.Error:
-                    this.refreshSubscription.Dispose();
+                    this.StopRefreshTimer();
                     this.ProgressStatusText = "Error";
                     this.IsProgressIndeterminate = false;
                     break;

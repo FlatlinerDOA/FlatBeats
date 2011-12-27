@@ -196,7 +196,7 @@
     </toolkit:TransitionService.NavigationOutTransition>
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
-            <ImageBrush Opacity="0.3"
+            <ImageBrush Opacity="0.2"
                         Stretch="UniformToFill"
                         ImageSource="{Binding Mix.ImageUrl, Converter={StaticResource ImageConverter}}" />
         </Grid.Background>

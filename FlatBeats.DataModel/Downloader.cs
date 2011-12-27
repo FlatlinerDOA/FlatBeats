@@ -19,49 +19,12 @@ namespace FlatBeats.DataModel
 
         private static readonly object SyncRoot = new object();
 
+        private static UserCredentialsContract userCredentials;
+
         /// <summary>
         /// </summary>
         private static string userToken;
 
-        public static string UserToken
-        {
-            get
-            {
-                lock (SyncRoot)
-                {
-
-                    return userToken;
-                }
-            }
-            set
-            {
-                lock (SyncRoot)
-                {
-                    userToken = value;
-                }
-            }
-        }
-
-        private static UserCredentialsContract userCredentials;
-
-        public static UserCredentialsContract UserCredentials
-        {
-            get
-            {
-                lock (SyncRoot)
-                {
-
-                    return userCredentials;
-                }
-            }
-            set
-            {
-                lock (SyncRoot)
-                {
-                    userCredentials = value;
-                }
-            }
-        }
         #endregion
 
         #region Public Properties
@@ -76,15 +39,51 @@ namespace FlatBeats.DataModel
             }
         }
 
+        public static UserCredentialsContract UserCredentials
+        {
+            get
+            {
+                lock (SyncRoot)
+                {
+                    return userCredentials;
+                }
+            }
+            set
+            {
+                lock (SyncRoot)
+                {
+                    userCredentials = value;
+                }
+            }
+        }
+
+        public static string UserToken
+        {
+            get
+            {
+                lock (SyncRoot)
+                {
+                    return userToken;
+                }
+            }
+            set
+            {
+                lock (SyncRoot)
+                {
+                    userToken = value;
+                }
+            }
+        }
+
         #endregion
 
         #region Public Methods
 
         /// <summary>
         /// </summary>
-        /// <param name="url">
+        /// <param name = "url">
         /// </param>
-        /// <param name="fileName">
+        /// <param name = "fileName">
         /// </param>
         /// <returns>
         /// </returns>
@@ -93,26 +92,27 @@ namespace FlatBeats.DataModel
             var webRequest = from client in Observable.Return(CreateClient())
                              from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                                  observer =>
-                                 {
-                                     var subscription =
-                                         Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                             client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
-                                             (observer);
-#if DEBUG
-                                     Debug.WriteLine("GET " + url.AbsoluteUri);
-#endif
-                                     client.OpenReadAsync(url);
-                                     return subscription;
-                                 }).TrySelect(evt =>
                                      {
-                                         if (evt.Error != null)
-                                         {
-                                             Debug.WriteLine("DOWNLOAD: " + evt.Error.ToString());
-                                         }
+                                         var subscription =
+                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
+                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
+                                                 (observer);
+#if DEBUG
+                                         Debug.WriteLine("GET " + url.AbsoluteUri);
+#endif
+                                         client.OpenReadAsync(url);
+                                         return subscription;
+                                     }).TrySelect(
+                                         evt =>
+                                             {
+                                                 if (evt.Error != null)
+                                                 {
+                                                     Debug.WriteLine("DOWNLOAD: " + evt.Error.ToString());
+                                                 }
 
-                                         Storage.Save(fileName, evt.Result);
-                                         return new Unit();
-                                     })
+                                                 Storage.Save(fileName, evt.Result);
+                                                 return new Unit();
+                                             })
                              select completed;
 
             return webRequest;
@@ -120,11 +120,11 @@ namespace FlatBeats.DataModel
 
         /// <summary>
         /// </summary>
-        /// <typeparam name="T">
+        /// <typeparam name = "T">
         /// </typeparam>
-        /// <param name="url">
+        /// <param name = "url">
         /// </param>
-        /// <param name="cacheFile">
+        /// <param name = "cacheFile">
         /// </param>
         /// <returns>
         /// </returns>
@@ -133,7 +133,9 @@ namespace FlatBeats.DataModel
             IObservable<T> sequence = Observable.Empty<T>();
             if (cacheFile != null && Storage.Exists(cacheFile))
             {
-                sequence = Observable.Defer(() => Observable.Return(Storage.Load(cacheFile))).Select(c => Json.Deserialize<T>(c)).Where(m => m != null);
+                sequence =
+                    Observable.Defer(() => Observable.Return(Storage.Load(cacheFile))).Select(
+                        c => Json.Deserialize<T>(c)).Where(m => m != null);
             }
 
             var webRequest = from client in Observable.Return(CreateClient())
@@ -142,7 +144,8 @@ namespace FlatBeats.DataModel
                                      {
                                          var subscription =
                                              Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe(observer);
+                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
+                                                 (observer);
 #if DEBUG
                                          Debug.WriteLine("GET " + url.AbsoluteUri);
 #endif
@@ -164,13 +167,13 @@ namespace FlatBeats.DataModel
 
         /// <summary>
         /// </summary>
-        /// <param name="url">
+        /// <param name = "url">
         /// </param>
-        /// <param name="postData">
+        /// <param name = "postData">
         /// </param>
-        /// <typeparam name="TRequest">
+        /// <typeparam name = "TRequest">
         /// </typeparam>
-        /// <typeparam name="TResponse">
+        /// <typeparam name = "TResponse">
         /// </typeparam>
         /// <returns>
         /// </returns>
@@ -185,9 +188,9 @@ namespace FlatBeats.DataModel
 
         /// <summary>
         /// </summary>
-        /// <param name="url">
+        /// <param name = "url">
         /// </param>
-        /// <param name="postData">
+        /// <param name = "postData">
         /// </param>
         /// <returns>
         /// </returns>
@@ -197,14 +200,15 @@ namespace FlatBeats.DataModel
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
                                    {
-                                       var subscription = Observable.FromEvent<UploadStringCompletedEventArgs>(client, "UploadStringCompleted")
-                                           .Take(1)
-                                           .Select(e => e.EventArgs)
-                                           .Subscribe(observer);
+                                       var subscription =
+                                           Observable.FromEvent<UploadStringCompletedEventArgs>(
+                                               client, "UploadStringCompleted").Take(1).Select(e => e.EventArgs).
+                                               Subscribe(observer);
 #if DEBUG
                                        Debug.WriteLine("POST " + url.AbsoluteUri + "\r\n" + postData);
 #endif
-                                       client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                                       client.Headers[HttpRequestHeader.ContentType] =
+                                           "application/x-www-form-urlencoded";
                                        client.UploadStringAsync(url, postData);
                                        return subscription;
                                    }).TrySelect(evt => evt.Result)
@@ -214,11 +218,11 @@ namespace FlatBeats.DataModel
 
         /// <summary>
         /// </summary>
-        /// <param name="url">
+        /// <param name = "url">
         /// </param>
-        /// <param name="postData">
+        /// <param name = "postData">
         /// </param>
-        /// <typeparam name="TResponse">
+        /// <typeparam name = "TResponse">
         /// </typeparam>
         /// <returns>
         /// </returns>
@@ -229,7 +233,6 @@ namespace FlatBeats.DataModel
                            select Json.Deserialize<TResponse>(completed);
             return sequence;
         }
-
 
         #endregion
 
@@ -254,13 +257,13 @@ namespace FlatBeats.DataModel
 
         /// <summary>
         /// </summary>
-        /// <param name="items">
+        /// <param name = "items">
         /// </param>
-        /// <param name="selector">
+        /// <param name = "selector">
         /// </param>
-        /// <typeparam name="T">
+        /// <typeparam name = "T">
         /// </typeparam>
-        /// <typeparam name="TResult">
+        /// <typeparam name = "TResult">
         /// </typeparam>
         /// <returns>
         /// </returns>
@@ -279,8 +282,8 @@ namespace FlatBeats.DataModel
                             {
                                 d.OnError(ex);
                             }
-                        }, 
-                    d.OnError, 
+                        },
+                    d.OnError,
                     d.OnCompleted));
         }
 

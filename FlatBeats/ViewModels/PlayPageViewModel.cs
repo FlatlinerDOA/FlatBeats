@@ -225,6 +225,8 @@ namespace FlatBeats.ViewModels
             {
                 this.nowPlaying = value;
                 this.PlayedPanel.NowPlaying = value;
+                this.PlayedPanel.UpdateIsNowPlaying();
+
             }
         }
 
