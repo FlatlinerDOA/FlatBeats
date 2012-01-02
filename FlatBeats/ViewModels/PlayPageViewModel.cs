@@ -186,13 +186,13 @@ namespace FlatBeats.ViewModels
 
             this.ShowProgress();
             var loadProcess = from mix in this.LoadMixAsync(this.MixId)
-                              from reviews in this.ReviewsPanel.LoadAsync(mix.Id)
                               from played in this.PlayedPanel.LoadAsync(mix)
                               select mix;
             this.AddToLifetime(
                 loadProcess.ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.ShowError, this.LoadCompleted));
 
+            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => {}, this.ShowError));
             this.ReviewsPanel.LoadNextPage();
         }
 
