@@ -7,6 +7,7 @@ namespace FlatBeats.DataModel
 {
     using System;
     using System.Diagnostics;
+    using System.IO;
     using System.Net;
 
     using Microsoft.Phone.Reactive;
@@ -118,51 +119,49 @@ namespace FlatBeats.DataModel
             return webRequest;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <typeparam name = "T">
-        /// </typeparam>
-        /// <param name = "url">
-        /// </param>
-        /// <param name = "cacheFile">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static IObservable<T> GetJson<T>(Uri url, string cacheFile = null) where T : class
+        public static IObservable<T> GetJsonCachedAndRefreshed<T>(Uri url, string cacheFile) where T : class
         {
             IObservable<T> sequence = Observable.Empty<T>();
-            if (cacheFile != null && Storage.Exists(cacheFile))
+            if (Storage.Exists(cacheFile))
             {
-                sequence =
-                    Observable.Defer(() => Observable.Return(Storage.Load(cacheFile))).Select(
-                        c => Json.Deserialize<T>(c)).Where(m => m != null);
+                sequence = Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
             }
 
-            var webRequest = from client in Observable.Return(CreateClient())
-                             from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
-                                 observer =>
-                                     {
-                                         var subscription =
-                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
-                                                 (observer);
+            return sequence.Concat(GetJson<T>(url).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache))));
+        }
+
+
+        public static IObservable<T> GetJsonCached<T>(Uri url, string cacheFile) where T : class
+        {
+            if (Storage.Exists(cacheFile))
+            {
+                return Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
+            }
+
+            return GetJson<T>(url).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache)));
+        }
+
+        public static IObservable<Stream> GetStream<T>(Uri url) where T : class
+        {
+            return from client in Observable.Return(CreateClient())
+                   from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
+                       observer =>
+                           {
+                               var subscription =
+                                   Observable.FromEvent<OpenReadCompletedEventArgs>(client, "OpenReadCompleted").Take(1)
+                                       .Select(e => e.EventArgs).Subscribe(observer);
 #if DEBUG
-                                         Debug.WriteLine("GET " + url.AbsoluteUri);
+                               Debug.WriteLine("GET " + url.AbsoluteUri);
 #endif
-                                         client.OpenReadAsync(url);
-                                         return subscription;
-                                     }).TrySelect(evt => evt.Result)
-                             select Json.DeserializeAndClose<T>(completed);
-            sequence = sequence.Concat(
-                webRequest.Do(
-                    cache =>
-                        {
-                            if (cacheFile != null)
-                            {
-                                Storage.Save(cacheFile, Json.Serialize(cache));
-                            }
-                        }));
-            return sequence;
+                               client.OpenReadAsync(url);
+                               return subscription;
+                           }).TrySelect(evt => evt.Result)
+                       select completed;
+        }
+
+        public static IObservable<T> GetJson<T>(Uri url) where T : class
+        {
+            return GetStream<T>(url).Select(Json<T>.DeserializeAndClose);
         }
 
         /// <summary>
@@ -180,9 +179,9 @@ namespace FlatBeats.DataModel
         public static IObservable<TResponse> PostAndGetJson<TRequest, TResponse>(Uri url, TRequest postData)
             where TRequest : class where TResponse : class
         {
-            var sequence = from postString in ObservableEx.DeferredStart(() => Json.Serialize(postData))
+            var sequence = from postString in ObservableEx.DeferredStart(() => Json<TRequest>.Serialize(postData))
                            from completed in PostAndGetString(url, postString)
-                           select Json.Deserialize<TResponse>(completed);
+                           select Json<TResponse>.Deserialize(completed);
             return sequence;
         }
 
@@ -230,7 +229,7 @@ namespace FlatBeats.DataModel
             where TResponse : class
         {
             var sequence = from completed in PostAndGetString(url, postData)
-                           select Json.Deserialize<TResponse>(completed);
+                           select Json<TResponse>.Deserialize(completed);
             return sequence;
         }
 

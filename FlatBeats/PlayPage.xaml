@@ -11,7 +11,7 @@
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:Controls="clr-namespace:FlatBeats.Controls" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            xmlns:Controls="clr-namespace:FlatBeats.Controls" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
@@ -319,7 +319,11 @@
                     <ListBox Margin="0,0,-12,0"
                                              ItemsSource="{Binding Reviews}"
                                              ItemTemplate="{StaticResource ReviewItemTemplate}"
-                                             Tap="ListBoxTap" />
+                             Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem Header="{Binding Title}"

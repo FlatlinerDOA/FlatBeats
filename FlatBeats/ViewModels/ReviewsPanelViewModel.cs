@@ -18,7 +18,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
 
-    public class ReviewsPanelViewModel : PanelViewModel
+    public class ReviewsPanelViewModel : PanelViewModel, IInfiniteScroll
     {
         /// <summary>
         /// Initializes a new instance of the ReviewsPanelViewModel class.
@@ -43,7 +43,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private IObservable<Unit> LoadCommentsAsync()
         {
-            var downloadComments = from response in MixesService.GetMixReviews(this.MixId)
+            var downloadComments = from page in this.pageRequests
+                                   from response in MixesService.GetMixReviews(this.MixId, page, 20)
                                    from review in response.Reviews.ToObservable()
                                    select new ReviewViewModel(review);
             return downloadComments.ObserveOnDispatcher().Do(
@@ -63,6 +64,14 @@ namespace FlatBeats.ViewModels
                 }).FinallySelect(() => new Unit());
         }
 
+        private readonly Subject<int> pageRequests = new Subject<int>();
 
+        private int currentPage;
+
+        public void LoadNextPage()
+        {
+            this.currentPage++;
+            this.pageRequests.OnNext(currentPage);
+        }
     }
 }

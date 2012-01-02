@@ -57,8 +57,6 @@ namespace FlatBeats.ViewModels
 
         public abstract void Load();
 
-        public abstract void Unload();
-
         protected void LoadCompleted()
         {
             this.HideProgress();

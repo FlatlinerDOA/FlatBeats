@@ -14,6 +14,7 @@ namespace FlatBeats.ViewModels
     using System.Linq;
     using System.Text;
 
+    using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
@@ -40,10 +41,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private IDisposable playStateSubscription = Disposable.Empty;
-
-        /// <summary>
-        /// </summary>
         private double progress;
 
         /// <summary>
@@ -58,7 +55,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private bool showNowPlaying;
 
-        private string currentMixId;
+        private MixContract currentMix;
 
         #endregion
 
@@ -71,6 +68,20 @@ namespace FlatBeats.ViewModels
         {
             this.Tracks = new ObservableCollection<TrackViewModel>();
             this.Title = StringResources.Title_PlayedTracks;
+            this.PlayPauseCommand = new CommandLink()
+            {
+                Command = new DelegateCommand(this.Play, this.CanPlay),
+                IconUri = "/icons/appbar.transport.play.rest.png",
+                Text = StringResources.Command_PlayMix
+            };
+            this.NextTrackCommand = new CommandLink()
+            {
+                Command = new DelegateCommand(this.SkipNext, this.CanSkipNext),
+                IconUri = "/icons/appbar.transport.ff.rest.png",
+                Text = StringResources.Command_NextTrack,
+                HideWhenInactive = true
+            };
+
             this.UpdateMessage();
         }
 
@@ -208,6 +219,74 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public ObservableCollection<TrackViewModel> Tracks { get; private set; }
 
+        private bool CanPlay()
+        {
+            return this.currentMix != null;
+        }
+
+        private bool CanSkipNext()
+        {
+            return this.NowPlaying != null && this.currentMix != null && !this.NowPlaying.Set.IsLastTrack
+                   && this.NowPlaying.Set.SkipAllowed;
+        }
+
+        /// <summary>
+        /// </summary>
+        public void Play()
+        {
+            if (this.NowPlaying != null)
+            {
+                if (this.Player.PlayerState == PlayState.Playing)
+                {
+                    this.Player.Pause();
+                }
+                else
+                {
+                    this.Player.Play();
+                }
+
+                return;
+            }
+
+            this.ShowProgress();
+            var playSequence = from playResponse in this.currentMix.StartPlayingAsync().ObserveOnDispatcher().Do(
+                m =>
+                {
+                    this.NowPlaying = m;
+                    this.NowPlaying.SaveNowPlaying();
+                    this.Player.Play();
+                    this.UpdateIsNowPlaying();
+                })
+                select true;
+
+            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.ShowError, this.HideProgress);
+        }
+
+        private void ShowProgress()
+        {
+            // TODO: Implement
+        }
+
+        private void HideProgress()
+        {
+            // TODO: Implement
+        }
+
+        private void SkipNext()
+        {
+            this.Player.SkipNext();
+        }
+
+        private readonly Subject<bool> isPlayingChanges = new Subject<bool>();
+
+        public IObservable<bool> IsPlayingChanges 
+        { 
+            get
+            {
+                return this.isPlayingChanges;
+            } 
+        }
+
         #endregion
 
         #region Properties
@@ -222,41 +301,56 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        /// <param name="mixData">
+        /// <param name="loadMix">
         /// </param>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> LoadAsync(MixContract mixData)
+        public IObservable<Unit> LoadAsync(MixContract loadMix)
         {
-            this.currentMixId = mixData.Id;
-            this.Player = BackgroundAudioPlayer.Instance;
+            this.currentMix = loadMix;
+
+            this.InitializeBackgroundAudioPlayer();
+
             this.LoadNowPlaying();
             this.UpdatePlayerState();
 
-            if (this.playStateSubscription != null)
+            if (this.PlayOnLoad)
             {
-                this.playStateSubscription.Dispose();
+                this.PlayOnLoad = false;
+                this.currentMix.StartPlayingAsync();
             }
 
-            this.playStateSubscription = Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(_ => this.UpdatePlayerState());
+            return RefreshPlayedTracksAsync(currentMix);
+        }
 
-            return RefreshPlayedTracksAsync(mixData);
+        private void InitializeBackgroundAudioPlayer()
+        {
+            this.Player = BackgroundAudioPlayer.Instance;
+            this.AddToLifetime(Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(_ => this.UpdatePlayerState()));
         }
 
         private void LoadNowPlaying()
         {
-            this.NowPlaying = PlayerService.LoadNowPlaying();
+            if (this.IsPlayingTrackForThisMix)
+            {
+                this.NowPlaying = PlayerService.LoadNowPlaying();
+            }
+            else
+            {
+                this.NowPlaying = null;
+            }
+
             this.UpdateIsNowPlaying();
         }
 
-        private IObservable<Unit> RefreshPlayedTracksAsync(MixContract mixData)
+        private IObservable<Unit> RefreshPlayedTracksAsync(MixContract loadMix)
         {
             this.Tracks.Clear();
-            var tracks = from response in mixData.PlayedTracksAsync()
+            var tracks = from response in loadMix.PlayedTracksAsync()
                          where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);
-            return tracks.ObserveOnDispatcher().Do(
+            return tracks.Do(
                 t => this.Tracks.Add(t), 
                 this.UpdateMessage).FinallySelect(() => new Unit()).Catch<Unit, Exception>(
                     ex =>
@@ -278,14 +372,6 @@ namespace FlatBeats.ViewModels
                 this.RemoveCurrentTrackFromList();
                 this.Message = null;
             }
-        }
-
-        /// <summary>
-        /// </summary>
-        public void Unload()
-        {
-            this.StopRefreshTimer();
-            this.playStateSubscription.Dispose();
         }
 
         #endregion
@@ -318,9 +404,8 @@ namespace FlatBeats.ViewModels
             this.UpdatePlayingProgress();
             if (this.refreshSubscription == null)
             {
-                this.refreshSubscription =
-                    Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(
-                        _ => this.UpdatePlayerState());
+                this.refreshSubscription = Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(_ => this.UpdatePlayingProgress());
+                this.AddToLifetime(this.refreshSubscription);
             }
         }
 
@@ -333,25 +418,62 @@ namespace FlatBeats.ViewModels
             this.IsProgressIndeterminate = false;
         }
 
+        public CommandLink NextTrackCommand { get; private set; }
+
+        public CommandLink PlayPauseCommand { get; private set; }
+
+        public bool PlayOnLoad { get; set; }
+
         /// <summary>
         /// </summary>
         public void UpdateIsNowPlaying()
         {
-            this.ShowNowPlaying = this.NowPlaying != null && this.NowPlaying.MixId == this.currentMixId;
+            this.ShowNowPlaying = this.IsPlayingTrackForThisMix;
             this.Title = this.ShowNowPlaying ? StringResources.Title_Playing : StringResources.Title_PlayedTracks;
-            this.MoveCurrentTrackToList();
 
-            if (this.ShowNowPlaying && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
+            if (this.ShowNowPlaying)
             {
-                this.CurrentTrack = new TrackViewModel(this.NowPlaying.Set.Track);
-            }
-            else
-            {
-                this.CurrentTrack = null;
+                if (this.Player.PlayerState == PlayState.Playing)
+                {
+                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.pause.rest.png";
+                    this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
+                    //this.playStates.OnNext(true);
+                }
+                else
+                {
+                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.play.rest.png";
+                    this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
+                    //this.playStates.OnNext(false);
+                }
             }
 
-            this.RemoveCurrentTrackFromList();
+            this.PlayPauseCommand.RaiseCanExecuteChanged();
+            this.NextTrackCommand.RaiseCanExecuteChanged();
             this.UpdateMessage();
+        }
+
+        /// <summary>
+        /// Checks the current track matches the playing track and if not
+        /// will move the current track to the played list.
+        /// </summary>
+        private void EnsureCurrentTrackMatchesPlayingTrack()
+        {
+            if (!this.IsPlayingTrackForThisMix)
+            {
+                this.MoveCurrentTrackToList();
+                return;
+            }
+
+            if (!this.IsPlayingTrackTheCurrentTrack)
+            {
+                this.MoveCurrentTrackToList();
+
+                if (this.NowPlaying != null && this.NowPlaying.Set != null && this.NowPlaying.Set.Track != null)
+                {
+                    this.CurrentTrack = new TrackViewModel(this.NowPlaying.Set.Track);
+                    this.RemoveCurrentTrackFromList();
+                }
+            }
         }
 
         private void MoveCurrentTrackToList()
@@ -389,11 +511,6 @@ namespace FlatBeats.ViewModels
         /// </exception>
         private void UpdatePlayerState()
         {
-            if (this.NowPlaying == null)
-            {
-                return;
-            }
-
             switch (this.Player.PlayerState)
             {
                 case PlayState.Unknown:
@@ -409,10 +526,13 @@ namespace FlatBeats.ViewModels
                     this.ProgressStatusText = "Paused";
                     break;
                 case PlayState.Playing:
+                    this.LoadNowPlaying();
                     this.StartRefreshTimer();
+                    this.EnsureCurrentTrackMatchesPlayingTrack();
                     break;
                 case PlayState.BufferingStarted:
                     this.UpdateBufferingProgress();
+                    this.EnsureCurrentTrackMatchesPlayingTrack();
                     break;
                 case PlayState.BufferingStopped:
                     this.UpdateBufferingProgress();
@@ -443,13 +563,58 @@ namespace FlatBeats.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the playing track is part of the current mix
+        /// </summary>
+        private bool IsPlayingTrackForThisMix
+        {
+            get
+            {
+                if (this.Player == null)
+                {
+                    return false;
+                }
+
+                if (this.Player.Track == null)
+                {
+                    return false;
+                }
+
+                return this.Player.Track.Tag.StartsWith(this.currentMix.Id + "|");
+            }
+        }
+
+        private bool IsPlayingTrackTheCurrentTrack
+        {
+            get
+            {
+                if (this.Player == null)
+                {
+                    return false;
+                }
+                
+                if (this.Player.Track == null)
+                {
+                    return false;
+                }
+
+                if (this.CurrentTrack == null)
+                {
+                    return false;
+                }
+
+                return this.Player.Track.Tag.EndsWith("|" + this.CurrentTrack.Id);
+            }
         }
 
         /// <summary>
         /// </summary>
         private void UpdatePlayingProgress()
         {
-            if (this.Player.Track == null)
+            if (!this.IsPlayingTrackTheCurrentTrack)
             {
                 return;
             }

@@ -25,11 +25,10 @@
 
         private const string RecentlyPlayedFilePath = "recentmixes.json";
 
-        public static IObservable<string> GetPlayTokenAsync()
+        public static IObservable<string> GetOrCreatePlayTokenAsync()
         {
-            return Downloader.GetJson<PlayTokenResponseContract>(
-                new Uri("http://8tracks.com/sets/new.json"), 
-                PlayTokenFilePath).Select(p => p.PlayToken);
+            return Downloader.GetJsonCached<PlayTokenResponseContract>(
+                new Uri("http://8tracks.com/sets/new.json", UriKind.Absolute), PlayTokenFilePath).Take(1).Select(p => p.PlayToken);
         }
 
         public static void DeletePlayToken()
@@ -57,12 +56,12 @@
 
         public static void SaveNowPlaying(this PlayingMixContract playing)
         {
-            Storage.Save(NowPlayingFilePath, Json.Serialize(playing));
+            Storage.Save(NowPlayingFilePath, Json<PlayingMixContract>.Serialize(playing));
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
-            return ObservableEx.DeferredStart(() => Json.Deserialize<MixesResponseContract>(Storage.Load(RecentlyPlayedFilePath))).
+            return ObservableEx.DeferredStart(() => Json<MixesResponseContract>.Deserialize(Storage.Load(RecentlyPlayedFilePath))).
                     Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
@@ -86,7 +85,7 @@
                                 m.Mixes.Remove(m.Mixes.Last());
                             }
                         })
-                   from mixes in ObservableEx.DeferredStart(() => Storage.Save(RecentlyPlayedFilePath, Json.Serialize(recentlyPlayed)), Scheduler.Immediate)
+                   from mixes in ObservableEx.DeferredStart(() => Storage.Save(RecentlyPlayedFilePath, Json<MixesResponseContract>.Serialize(recentlyPlayed)), Scheduler.Immediate)
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
                            using (var stream = Storage.LoadStream(imageFilePath))
@@ -113,12 +112,12 @@
         public static PlayingMixContract LoadNowPlaying()
         {
             var data = Storage.Load(NowPlayingFilePath);
-            return Json.Deserialize<PlayingMixContract>(data);
+            return Json<PlayingMixContract>.Deserialize(data);
         }
 
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
         {
-            var playingMix = from playToken in GetPlayTokenAsync()
+            var playingMix = from playToken in GetOrCreatePlayTokenAsync()
                    let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
                    from added in AddToRecentlyPlayedAsync(mix)
@@ -270,7 +269,7 @@
 
         public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
-            var playedTracks = from playToken in GetPlayTokenAsync()
+            var playedTracks = from playToken in GetOrCreatePlayTokenAsync()
                                let urlFormat = string.Format(
                                        "http://8tracks.com/sets/{0}/tracks_played.json?mix_id={1}",
                                        playToken,

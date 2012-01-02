@@ -8,9 +8,16 @@ namespace FlatBeats.DataModel
     using System.Runtime.Serialization.Json;
     using System.Text;
 
-    public class Json
+    public static class Json<T> where T : class 
     {
-        public static string Serialize<T>(T obj, params Type[] knownTypes) where T : class 
+        private static readonly DataContractJsonSerializer Serializer;
+        
+        static Json()
+        {
+            Serializer = new DataContractJsonSerializer(typeof(T));
+        }
+
+        public static string Serialize(T obj)
         {
             if (obj == null)
             {
@@ -20,8 +27,7 @@ namespace FlatBeats.DataModel
             string retVal; 
             using (var ms = new MemoryStream())
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), knownTypes);
-                serializer.WriteObject(ms, obj);
+                Serializer.WriteObject(ms, obj);
                 retVal = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
                 ms.Close();
             }
@@ -29,7 +35,7 @@ namespace FlatBeats.DataModel
             return retVal;
         }
 
-        public static T Deserialize<T>(string json, params Type[] knownTypes) where T : class 
+        public static T Deserialize(string json) 
         {
             T obj = null;
             if (string.IsNullOrWhiteSpace(json))
@@ -41,8 +47,7 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), knownTypes);
-                    obj = (T)serializer.ReadObject(ms);
+                    obj = (T)Serializer.ReadObject(ms);
                     ms.Close();
                 }
                 catch (ArgumentException) { }
@@ -51,7 +56,7 @@ namespace FlatBeats.DataModel
             return obj;
         }
 
-        public static T DeserializeAndClose<T>(Stream json) where T : class 
+        public static T DeserializeAndClose(Stream json)
         {
             T obj = default(T);
             using (json)
@@ -73,8 +78,7 @@ namespace FlatBeats.DataModel
                     json = data;
 #endif
 
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                    obj = (T)serializer.ReadObject(json);
+                    obj = (T)Serializer.ReadObject(json);
                     json.Close();
                 }
                 catch (ArgumentException)
@@ -86,7 +90,7 @@ namespace FlatBeats.DataModel
             return obj;
         }
 
-        public static void SerializeToStream<T>(T item, IsolatedStorageFileStream stream)
+        public static void SerializeToStream(T item, IsolatedStorageFileStream stream)
         {
             throw new NotImplementedException();
         }

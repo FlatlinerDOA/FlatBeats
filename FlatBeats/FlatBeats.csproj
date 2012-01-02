@@ -139,6 +139,8 @@
     </Compile>
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
+    <Compile Include="ViewModels\IInfiniteScroll.cs" />
+    <Compile Include="ViewModels\InfiniteScrollBehavior.cs" />
     <Compile Include="ViewModels\ListItemViewModel.cs" />
     <Compile Include="ViewModels\MainPageLatestViewModel.cs" />
     <Compile Include="ViewModels\MainPageLikedViewModel.cs" />

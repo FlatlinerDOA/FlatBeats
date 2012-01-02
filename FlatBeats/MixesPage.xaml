@@ -8,7 +8,7 @@
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
                             xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:local="clr-namespace:FlatBeats.Controls" mc:Ignorable="d"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" d:DesignWidth="480"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" d:DesignWidth="480"
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -109,7 +109,11 @@
                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                 ItemsSource="{Binding Mixes}"
                                ItemTemplate="{StaticResource MixTemplate}"
-                             Tap="ListBoxTapped" />
+                             Tap="ListBoxTapped">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Hot}" Header="{Binding Title}">
@@ -122,7 +126,11 @@
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Mixes}"
                                           ItemTemplate="{StaticResource MixTemplate}"
-                             Tap="ListBoxTapped" />
+                             Tap="ListBoxTapped">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Popular}" Header="{Binding Title}">
@@ -135,7 +143,11 @@
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Mixes}"
                                           ItemTemplate="{StaticResource MixTemplate}"
-                             Tap="ListBoxTapped" />
+                             Tap="ListBoxTapped">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

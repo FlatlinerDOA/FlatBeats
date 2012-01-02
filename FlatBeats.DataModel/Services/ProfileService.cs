@@ -28,7 +28,7 @@
                 Uri.EscapeDataString(userCredentials.UserName), 
                 Uri.EscapeDataString(userCredentials.Password));
             var userLogin = from response in Downloader.PostAndGetString(url, postData)
-                            let user = Json.Deserialize<UserLoginResponseContract>(response)
+                            let user = Json<UserLoginResponseContract>.Deserialize(response)
                             where !string.IsNullOrWhiteSpace(user.UserToken)
                             select user;
 
@@ -44,22 +44,22 @@
 
         private static void SaveCredentials(UserCredentialsContract userCredentials)
         {
-            Storage.Save(CredentialsFilePath, Json.Serialize(userCredentials));
+            Storage.Save(CredentialsFilePath, Json<UserCredentialsContract>.Serialize(userCredentials));
         }
 
         public static IObservable<UserCredentialsContract> LoadCredentials()
         {
-            return ObservableEx.DeferredStart(() => Json.Deserialize<UserCredentialsContract>(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
+            return ObservableEx.DeferredStart(() => Json<UserCredentialsContract>.Deserialize(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
         }
 
         private static void SaveUserToken(UserLoginResponseContract login)
         {
-            Storage.Save(UserLoginFilePath, Json.Serialize(login));
+            Storage.Save(UserLoginFilePath, Json<UserLoginResponseContract>.Serialize(login));
         }
 
         public static IObservable<UserLoginResponseContract> LoadUserToken()
         {
-            return ObservableEx.DeferredStart(() => Json.Deserialize<UserLoginResponseContract>(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
+            return ObservableEx.DeferredStart(() => Json<UserLoginResponseContract>.Deserialize(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
                     user => Downloader.UserToken = user.UserToken);
         }
 
@@ -83,10 +83,8 @@
 
         public static IObservable<MixesResponseContract> GetLikedMixes(string userId)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked", userId);
-            return
-                Downloader.GetJson<MixesResponseContract>(
-                    new Uri(urlFormat, UriKind.RelativeOrAbsolute), LikedMixesCacheFile);
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&per_page=20", userId);
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), LikedMixesCacheFile);
 
         }
 
@@ -104,7 +102,7 @@
 
         private static void DeleteCredentials()
         {
-            PlayerService.StopAsync(null, TimeSpan.Zero);
+            PlayerService.StopAsync(null, TimeSpan.Zero).Subscribe();
             PlayerService.ClearRecentlyPlayed();
             PlayerService.DeletePlayToken();
             Storage.Delete(UserLoginFilePath);

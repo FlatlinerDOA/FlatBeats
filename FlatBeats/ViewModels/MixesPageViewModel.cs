@@ -134,6 +134,8 @@ namespace FlatBeats.ViewModels
 
         public override void Unload()
         {
+            base.Unload();
+            this.AddToLifetime(null);
         }
 
         /// <summary>
@@ -182,12 +184,13 @@ namespace FlatBeats.ViewModels
             this.ShowProgress();
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
-                mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.ShowError, this.HideProgress);
+                this.AddToLifetime(mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.ShowError, this.HideProgress));
+                mixList.LoadNextPage();
                 return;
             }
 
-            mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.ShowError, this.HideProgress);
-
+            this.AddToLifetime(mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.ShowError, this.HideProgress));
+            mixList.LoadNextPage();
         }
         #endregion
 

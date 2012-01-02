@@ -28,15 +28,7 @@ namespace FlatBeats.ViewModels
     {
         #region Constants and Fields
 
-        /// <summary>
-        /// </summary>
-        private readonly Subject<bool> playStates = new Subject<bool>();
-
         private int currentPanelIndex;
-
-        /// <summary>
-        /// </summary>
-        private bool hasPlayedTracks;
 
         /// <summary>
         /// </summary>
@@ -45,10 +37,6 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         private MixContract mixData;
-
-        private PlayingMixContract nowPlaying;
-
-        private IDisposable subscription = Disposable.Empty;
 
         #endregion
 
@@ -68,19 +56,6 @@ namespace FlatBeats.ViewModels
                     Command = new DelegateCommand(this.AddReview, this.CanAddReview),
                     Text = StringResources.Command_ReviewMix
                 };
-            this.PlayPauseCommand = new CommandLink()
-                {
-                    Command = new DelegateCommand(this.Play, this.CanPlay),
-                    IconUri = "/icons/appbar.transport.play.rest.png",
-                    Text = StringResources.Command_PlayMix
-                };
-            this.NextTrackCommand = new CommandLink()
-                {
-                    Command = new DelegateCommand(this.SkipNext, this.CanSkipNext),
-                    IconUri = "/icons/appbar.transport.ff.rest.png",
-                    Text = StringResources.Command_NextTrack,
-                    HideWhenInactive = true
-                };
             this.LikeUnlikeCommand = new CommandLink()
                 {
                     Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike),
@@ -92,8 +67,8 @@ namespace FlatBeats.ViewModels
                     Command = new DelegateCommand(this.PinToStart), 
                     Text = StringResources.Command_PinToStart
                 };
-            this.ApplicationBarButtonCommands.Add(this.PlayPauseCommand);
-            this.ApplicationBarButtonCommands.Add(this.NextTrackCommand);
+            this.ApplicationBarButtonCommands.Add(this.PlayedPanel.PlayPauseCommand);
+            this.ApplicationBarButtonCommands.Add(this.PlayedPanel.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
             this.ApplicationBarMenuCommands.Add(this.ReviewMixCommand);
             this.ApplicationBarMenuCommands.Add(this.PinToStartCommand);
@@ -133,27 +108,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        /// <summary>
-        /// </summary>
-        public bool HasPlayedTracks
-        {
-            get
-            {
-                return this.hasPlayedTracks;
-            }
-
-            set
-            {
-                if (this.hasPlayedTracks == value)
-                {
-                    return;
-                }
-
-                this.hasPlayedTracks = value;
-                this.OnPropertyChanged("HasPlayedTracks");
-            }
-        }
-
         public CommandLink LikeUnlikeCommand { get; private set; }
 
         /// <summary>
@@ -181,29 +135,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public string MixId { get; set; }
 
-        public CommandLink NextTrackCommand { get; private set; }
-
         public CommandLink PinToStartCommand { get; private set; }
 
-        public bool PlayOnLoad { get; set; }
-
-        public CommandLink PlayPauseCommand { get; private set; }
-
-        /// <summary>
-        /// </summary>
-        public IObservable<bool> PlayStates
-        {
-            get
-            {
-                return this.playStates;
-            }
-        }
-
         public MixPlayedTracksViewModel PlayedPanel { get; private set; }
-
-        /// <summary>
-        /// </summary>
-        public BackgroundAudioPlayer Player { get; set; }
 
         public CommandLink ReviewMixCommand { get; set; }
 
@@ -211,26 +145,6 @@ namespace FlatBeats.ViewModels
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// </summary>
-        protected PlayingMixContract NowPlaying
-        {
-            get
-            {
-                return this.nowPlaying;
-            }
-            set
-            {
-                this.nowPlaying = value;
-                this.PlayedPanel.NowPlaying = value;
-                this.PlayedPanel.UpdateIsNowPlaying();
-
-            }
-        }
-
-        #endregion
 
         #region Public Methods
 
@@ -255,15 +169,18 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
-            this.subscription.Dispose();
-
-            this.Player = BackgroundAudioPlayer.Instance;
-            this.Player.PlayStateChanged += this.PlayStateChanged;
+            this.AddToLifetime(
+                this.PlayedPanel.IsPlayingChanges.Where(playing => playing).Subscribe(
+                    _ => 
+                    { 
+                        this.CurrentPanelIndex = 2; 
+                    }));
 
             if (this.IsDataLoaded)
             {
-                this.UpdatePlayState();
-                this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Finally(this.HideProgress).Subscribe();
+                this.UpdatePinnedState();
+                this.AddToLifetime(
+                    this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Finally(this.HideProgress).Subscribe());
                 return;
             }
 
@@ -272,39 +189,11 @@ namespace FlatBeats.ViewModels
                               from reviews in this.ReviewsPanel.LoadAsync(mix.Id)
                               from played in this.PlayedPanel.LoadAsync(mix)
                               select mix;
-            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(
-                _ => { }, this.ShowError, this.LoadCompleted);
-        }
+            this.AddToLifetime(
+                loadProcess.ObserveOnDispatcher().Subscribe(
+                    _ => this.UpdatePinnedState(), this.ShowError, this.LoadCompleted));
 
-        /// <summary>
-        /// </summary>
-        public void Play()
-        {
-            if (this.NowPlaying != null)
-            {
-                if (this.Player.PlayerState == PlayState.Playing)
-                {
-                    this.Player.Pause();
-                }
-                else
-                {
-                    this.Player.Play();
-                }
-
-                return;
-            }
-
-            this.ShowProgress();
-            var playSequence = from playResponse in this.mixData.StartPlayingAsync().ObserveOnDispatcher().Do(
-                m =>
-                    {
-                        this.NowPlaying = m;
-                        this.NowPlaying.SaveNowPlaying();
-                        this.Player.Play();
-                    })
-                               select new Unit();
-
-            playSequence.Subscribe(_ => { this.CurrentPanelIndex = 2; }, this.ShowError, this.HideProgress);
+            this.ReviewsPanel.LoadNextPage();
         }
 
         /// <summary>
@@ -312,15 +201,17 @@ namespace FlatBeats.ViewModels
         public void Share()
         {
             var task = new ShareLinkTask
-                { Title = StringResources.Title_ShareMix, Message = this.Mix.MixName, LinkUri = this.Mix.LinkUrl };
+                {
+                    Title = StringResources.Title_ShareMix, 
+                    Message = this.Mix.MixName, 
+                    LinkUri = this.Mix.LinkUrl
+                };
             task.Show();
         }
 
         public override void Unload()
         {
-            this.Player.PlayStateChanged -= this.PlayStateChanged;
             this.PlayedPanel.Unload();
-            this.subscription.Dispose();
         }
 
         #endregion
@@ -355,17 +246,6 @@ namespace FlatBeats.ViewModels
             return Downloader.IsAuthenticated && this.mixData != null;
         }
 
-        private bool CanPlay()
-        {
-            return this.mixData != null;
-        }
-
-        private bool CanSkipNext()
-        {
-            return this.NowPlaying != null && this.mixData != null && !this.NowPlaying.Set.IsLastTrack
-                   && this.NowPlaying.Set.SkipAllowed;
-        }
-
         private void LikeUnlike()
         {
             this.Mix.Liked = !this.Mix.Liked;
@@ -384,20 +264,9 @@ namespace FlatBeats.ViewModels
             this.mixData = loadMix;
             this.CreatedByUserId = loadMix.User.Id;
             this.Mix = new MixViewModel(loadMix);
-            if (this.PlayOnLoad)
-            {
-                this.PlayOnLoad = false;
-                this.mixData.StartPlayingAsync();
-            }
-
-            if (this.Player.Track != null && this.Player.Track.Tag.StartsWith(loadMix.Id + "|"))
-            {
-                this.NowPlaying = PlayerService.LoadNowPlaying();
-            }
-
             this.UpdateLikedState();
 
-            this.UpdatePlayState();
+            this.UpdatePinnedState();
             this.ReviewMixCommand.RaiseCanExecuteChanged();
         }
 
@@ -417,23 +286,7 @@ namespace FlatBeats.ViewModels
                 MixesService.PinToStart(this.mixData);
             }
 
-            this.UpdatePlayState();
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name = "sender">
-        /// </param>
-        /// <param name = "e">
-        /// </param>
-        private void PlayStateChanged(object sender, EventArgs e)
-        {
-            this.UpdatePlayState();
-        }
-
-        private void SkipNext()
-        {
-            this.Player.SkipNext();
+            this.UpdatePinnedState();
         }
 
         private void UpdateLikedState()
@@ -454,27 +307,8 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private void UpdatePlayState()
+        private void UpdatePinnedState()
         {
-            if (this.NowPlaying != null)
-            {
-                if (this.Player.PlayerState == PlayState.Playing)
-                {
-                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.pause.rest.png";
-                    this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
-                    this.playStates.OnNext(true);
-                }
-                else
-                {
-                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.play.rest.png";
-                    this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
-                    this.playStates.OnNext(false);
-                }
-            }
-
-            this.PlayPauseCommand.RaiseCanExecuteChanged();
-            this.NextTrackCommand.RaiseCanExecuteChanged();
-
             if (MixesService.IsPinned(this.mixData))
             {
                 this.PinToStartCommand.Text = StringResources.Command_UnpinStart;

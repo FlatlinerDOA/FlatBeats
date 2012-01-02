@@ -136,15 +136,15 @@
             storage.CreateDirectory(folder);
         }
 
-        public static Stream LoadStream(string imageFilePath)
+        public static Stream LoadStream(string filePath)
         {
             var storage = IsolatedStorageFile.GetUserStoreForApplication();
-                if (!storage.FileExists(imageFilePath))
+                if (!storage.FileExists(filePath))
                 {
                     return null;
                 }
 
-            return new IsolatedStorageFileStream(imageFilePath, FileMode.Open, storage);                
+            return new IsolatedStorageFileStream(filePath, FileMode.Open, storage);                
         }
     }
 }

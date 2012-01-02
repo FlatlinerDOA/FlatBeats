@@ -10,11 +10,6 @@
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
-    using Microsoft.Phone.BackgroundAudio;
-    using Microsoft.Phone.Controls;
-    using Microsoft.Phone.Reactive;
-    using Microsoft.Phone.Shell;
-
     using GestureEventArgs = System.Windows.Input.GestureEventArgs;
     using NavigationEventArgs = System.Windows.Navigation.NavigationEventArgs;
 
@@ -84,7 +79,7 @@
             }
 
             this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
-            this.ViewModel.PlayOnLoad = this.NavigationContext.QueryString.ContainsKey("play")
+            this.ViewModel.PlayedPanel.PlayOnLoad = this.NavigationContext.QueryString.ContainsKey("play")
                                         && this.NavigationContext.QueryString["play"] == "true";
             this.ViewModel.Load();
         }

@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 
 namespace FlatBeats.ViewModels
 {
+    using Microsoft.Phone.Reactive;
+
     public class PanelViewModel : ViewModel
     {
         private string title;
@@ -82,6 +84,28 @@ namespace FlatBeats.ViewModels
         {
             this.Message = this.GetMessageForException(error);
             this.ShowMessage = this.Message != null;
+        }
+
+        private CompositeDisposable lifetime;
+
+        protected void AddToLifetime(IDisposable disposable)
+        {
+            if (this.lifetime == null)
+            {
+                this.lifetime = new CompositeDisposable();
+            }
+
+            this.lifetime.Add(disposable);
+        }
+
+        public virtual void Unload()
+        {
+            if (this.lifetime == null)
+            {
+                return;
+            }
+
+            this.lifetime.Dispose();
         }
     }
 }
