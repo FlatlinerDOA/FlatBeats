@@ -17,6 +17,8 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
@@ -259,7 +261,7 @@ namespace FlatBeats.ViewModels
             this.CanLogin = true;
             this.ShowProgress();
             this.subscription = ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
-                this.LoadProfile, this.ShowError, this.LoadCompleted);
+                this.LoadProfile, this.HandleError, this.LoadCompleted);
         }
 
         public override void Unload()
@@ -332,7 +334,7 @@ namespace FlatBeats.ViewModels
             q.Subscribe(profile => { 
                 this.IsLoggedIn = true;
                                      this.CanLogin = false;
-            }, this.ShowError, this.HideProgress);
+            }, this.HandleError, this.HideProgress);
         }
 
         private IObservable<Unit> LoadMixes(string userId)
@@ -343,7 +345,7 @@ namespace FlatBeats.ViewModels
                         
             return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(
                 this.Mixes.Add, 
-                this.ShowError, 
+                this.HandleError, 
                 () =>
                 {
                     if (this.Mixes.Count == 0)
@@ -411,7 +413,7 @@ namespace FlatBeats.ViewModels
                 this.IsLoggedIn = true;
                 this.CanLogin = false;
             }, 
-            this.ShowError, 
+            this.HandleError, 
             this.HideProgress);
         }
 

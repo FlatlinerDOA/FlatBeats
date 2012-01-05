@@ -18,9 +18,14 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone;
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
+
+    using CommandLink = FlatBeats.Controls.CommandLink;
 
     /// <summary>
     /// </summary>
@@ -190,9 +195,9 @@ namespace FlatBeats.ViewModels
                               select mix;
             this.AddToLifetime(
                 loadProcess.ObserveOnDispatcher().Subscribe(
-                    _ => this.UpdatePinnedState(), this.ShowError, this.LoadCompleted));
+                    _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
 
-            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => {}, this.ShowError));
+            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe());
             this.ReviewsPanel.LoadNextPage();
         }
 
@@ -231,7 +236,7 @@ namespace FlatBeats.ViewModels
                     select reviewAdded;
             q.ObserveOnDispatcher().Subscribe(
                 review => this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)),
-                this.ShowError,
+                this.HandleError,
                 this.HideProgress);
             prompt.Show();
         }
@@ -252,7 +257,7 @@ namespace FlatBeats.ViewModels
             this.UpdateLikedState();
             this.ShowProgress();
             ProfileService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
-                _ => { }, this.ShowError, this.HideProgress);
+                _ => { }, this.HandleError, this.HideProgress);
         }
 
         /// <summary>

@@ -19,6 +19,8 @@ namespace FlatBeats
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
+    using Flatliner.Phone.ViewModels;
+
     using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
     public partial class UserProfilePage : AnimatedBasePage

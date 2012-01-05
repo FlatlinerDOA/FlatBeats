@@ -3,6 +3,9 @@
     using System;
     using System.Windows;
     using System.Windows.Navigation;
+
+    using Flatliner.Phone;
+
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Shell;
     using FlatBeats.ViewModels;
@@ -41,7 +44,7 @@
         public App()
         {
             // Global handler for uncaught exceptions. 
-            this.UnhandledException += this.Application_UnhandledException;
+            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 1);
 
             // Standard Silverlight initialization
             InitializeComponent();
@@ -110,17 +113,6 @@
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
-                System.Diagnostics.Debugger.Break();
-            }
-        }
-
-        // Code to execute on Unhandled Exceptions
-        private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
-        {
-            LittleWatson.ReportException(e.ExceptionObject, string.Empty);
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
         }

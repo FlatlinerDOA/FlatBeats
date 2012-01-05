@@ -5,6 +5,8 @@
 
     using FlatBeats.DataModel;
 
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -73,7 +75,7 @@
 
             var list = new List<TagViewModel>();
             this.subscription = tagViewModels.ObserveOnDispatcher().Subscribe(
-                list.Add, this.ShowError, () => 
+                list.Add, this.HandleError, () => 
                 { 
                     var t = new TagsByFirstLetter(list);
                     this.Tags = t;

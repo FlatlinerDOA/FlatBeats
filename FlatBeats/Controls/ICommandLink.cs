@@ -1,7 +1,7 @@
 ﻿namespace FlatBeats.Controls
 {
     using System.Windows.Input;
-
+    /*
     public interface ICommandLink
     {
         ICommand Command
@@ -23,5 +23,5 @@
         {
             get;
         }
-    }
+    }*/
 }

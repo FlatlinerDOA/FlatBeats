@@ -10,6 +10,8 @@
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
+    using Flatliner.Phone.ViewModels;
+
     using GestureEventArgs = System.Windows.Input.GestureEventArgs;
     using NavigationEventArgs = System.Windows.Navigation.NavigationEventArgs;
 

@@ -6,6 +6,9 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone.Data;
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
 
     public class ReviewViewModel : ViewModel, INavigationItem
@@ -90,11 +93,10 @@ namespace FlatBeats.ViewModels
                     this.AvatarUrl = new Uri("http://8tracks.com" + review.User.Avatar.ImageUrl, UriKind.Absolute);
                 }
 
-                this.NavigationUrl = new Uri(
-    "/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
+                this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
             }
 
-            this.Body = review.Body.Trim();
+            this.Body = Html.ConvertToPlainText(review.Body).Trim();
             this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
             if (this.Created > DateTime.Now)
             {

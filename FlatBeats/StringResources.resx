@@ -211,7 +211,7 @@ Link:
   <data name="Message_NoReviews" xml:space="preserve">
     <value>Hmmm... no one's said anything about this mix.</value>
   </data>
-  <data name="TItle_Reviews" xml:space="preserve">
+  <data name="Title_Reviews" xml:space="preserve">
     <value>reviews</value>
   </data>
   <data name="Title_Mix" xml:space="preserve">
@@ -227,16 +227,16 @@ Link:
     <value>mixes</value>
   </data>
   <data name="Error_NoNetwork" xml:space="preserve">
-    <value>Sorry, I can't connect to the network, maybe check your internet connection or try again a bit later.</value>
+    <value>Sorry, we can't connect to the network, maybe check your internet connection or try again a bit later.</value>
   </data>
   <data name="Error_ServerUnavailable" xml:space="preserve">
-    <value>Sorry, I can't talk to the server at the moment, maybe check your internet connection or try again a bit later.</value>
+    <value>Sorry, we can't communicate with the server at the moment, please check your internet connection or try again later.</value>
   </data>
   <data name="Error_Title" xml:space="preserve">
     <value>Something went wrong...</value>
   </data>
   <data name="Error_BadRequest" xml:space="preserve">
-    <value>The server and I are having a disagreement at the moment, please come back after we've both cooled off.</value>
+    <value>We are having a disagreement with the server by attempting this, please report this if it continues to happen.</value>
   </data>
   <data name="Error_UnknownError" xml:space="preserve">
     <value>Something really unexpected happened! Please report this when you are asked, next time you run this app.</value>

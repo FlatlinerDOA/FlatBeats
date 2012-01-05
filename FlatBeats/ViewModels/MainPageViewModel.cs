@@ -10,6 +10,9 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -140,7 +143,7 @@ namespace FlatBeats.ViewModels
                        from latest in this.Latest.LoadAsync()
                        select latest;
             this.subscription = load.ObserveOnDispatcher().Subscribe(
-                latest => this.TagsPanel.Load(latest), this.ShowError, this.LoadCompleted);
+                latest => this.TagsPanel.Load(latest), this.HandleError, this.LoadCompleted);
         }
 
         private void Refresh()
@@ -150,7 +153,7 @@ namespace FlatBeats.ViewModels
             var reload = from liked in this.Liked.LoadAsync()
                          from recent in this.Recent.LoadAsync()
                          select new Unit();
-            this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
+            this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
         }
 
         /// <summary>

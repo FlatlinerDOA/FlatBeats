@@ -2,7 +2,7 @@
 namespace FlatBeats.Controls
 {
     using System.Collections.ObjectModel;
-
+    /*
     public interface IApplicationBarViewModel
     {
         ObservableCollection<ICommandLink> ApplicationBarButtonCommands
@@ -14,5 +14,5 @@ namespace FlatBeats.Controls
         {
             get;
         }
-    }
+    }*/
 }

@@ -14,6 +14,8 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
 

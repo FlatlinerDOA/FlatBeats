@@ -1,111 +1,58 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.ViewModels
 {
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
+    using Flatliner.Phone;
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
-
-    public class PanelViewModel : ViewModel
+    
+    public abstract class PanelViewModel : Flatliner.Phone.ViewModels.PanelViewModel
     {
-        private string title;
-
-        public string Title
+        /// <summary>
+        /// Initializes a new instance of the PanelViewModel class.
+        /// </summary>
+        protected PanelViewModel()
         {
-            get
-            {
-                return this.title;
-            }
-            set
-            {
-                if (this.title == value)
+            this.RegisterErrorHandler<SocketException>(ex => StringResources.Error_NoNetwork);
+            this.RegisterErrorHandler<WebException>(GetWebExceptionMessage);
+            this.RegisterErrorHandler<Exception>(ex => StringResources.Error_UnknownError);
+        }
+
+        internal static string GetWebExceptionMessage(WebException webException)
+        {
+                var webResponse = webException.Response as HttpWebResponse;
+                if (webResponse != null)
                 {
-                    return;
+                    var statusCode = webResponse.StatusCode;
+                    switch (statusCode)
+                    {
+                        case HttpStatusCode.MovedPermanently:
+                        case HttpStatusCode.Unauthorized:
+                        case HttpStatusCode.PaymentRequired:
+                        case HttpStatusCode.Forbidden:
+                        case HttpStatusCode.NotFound:
+                        case HttpStatusCode.MethodNotAllowed:
+                        case HttpStatusCode.Gone:
+                        case HttpStatusCode.ExpectationFailed:
+                        case HttpStatusCode.BadGateway:
+                        case HttpStatusCode.ServiceUnavailable:
+                        case HttpStatusCode.GatewayTimeout:
+                            return StringResources.Error_ServerUnavailable;
+                        case HttpStatusCode.RequestEntityTooLarge:
+                        case HttpStatusCode.BadRequest:
+                        case HttpStatusCode.RequestUriTooLong:
+                        case HttpStatusCode.InternalServerError:
+                        case HttpStatusCode.NotImplemented:
+                        case HttpStatusCode.HttpVersionNotSupported:
+                            return StringResources.Error_BadRequest;
+                    }
                 }
 
-                this.title = value;
-                this.OnPropertyChanged("Title");
-            }
+                return StringResources.Error_ServerUnavailable;
         }
 
-        private string message;
-
-        public string Message
-        {
-            get
-            {
-                return this.message;
-            }
-            set
-            {
-                if (this.message == value)
-                {
-                    return;
-                }
-
-                this.message = value;
-                this.OnPropertyChanged("Message");
-
-                if (this.message == null)
-                {
-                    this.ShowMessage = false;
-                }
-            }
-        }
-
-        private bool showMessage;
-
-        public bool ShowMessage
-        {
-            get
-            {
-                return this.showMessage;
-            }
-            set
-            {
-                if (this.showMessage == value)
-                {
-                    return;
-                }
-
-                this.showMessage = value;
-                this.OnPropertyChanged("ShowMessage");
-            }
-        }
-
-        public virtual void ShowError(Exception error)
-        {
-            this.Message = this.GetMessageForException(error);
-            this.ShowMessage = this.Message != null;
-        }
-
-        private CompositeDisposable lifetime;
-
-        protected void AddToLifetime(IDisposable disposable)
-        {
-            if (this.lifetime == null)
-            {
-                this.lifetime = new CompositeDisposable();
-            }
-
-            this.lifetime.Add(disposable);
-        }
-
-        public virtual void Unload()
-        {
-            if (this.lifetime == null)
-            {
-                return;
-            }
-
-            this.lifetime.Dispose();
-        }
     }
 }

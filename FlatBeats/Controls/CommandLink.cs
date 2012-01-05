@@ -2,7 +2,8 @@
 {
     using System.Windows.Input;
 
-    using FlatBeats.ViewModels;
+    using Flatliner.Phone;
+    using Flatliner.Phone.ViewModels;
 
     public class CommandLink : ViewModel, ICommandLink
     {

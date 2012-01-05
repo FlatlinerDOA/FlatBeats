@@ -13,6 +13,10 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone;
+    using Flatliner.Phone.Data;
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
 
     public class UserProfilePageViewModel : PageViewModel, IApplicationBarViewModel
@@ -130,7 +134,7 @@ namespace FlatBeats.ViewModels
                               ////from following in this.LoadFollowingAsync()
                               ////from followedBy in this.LoadFollowedByAsync()
                               select new Unit();
-            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.ShowError, this.LoadCompleted);
+            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
         }
 
         public override void Unload()
@@ -165,28 +169,10 @@ namespace FlatBeats.ViewModels
             }
 
             this.Location = userContract.Location;
-            this.BioHtml = StripHtml(userContract.BioHtml);
+            this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
             this.UserName = userContract.Name;
         }
 
-        private string StripHtml(string htmlString)
-        {
-            //This pattern Matches everything found inside html tags;
-            //(.|\n) - > Look for any character or a new line
-            // *?  -> 0 or more occurences, and make a non-greedy search meaning
-            //That the match will stop at the first available '>' it sees, and not at the last one
-            //(if it stopped at the last one we could have overlooked 
-            //nested HTML tags inside a bigger HTML tag..)
-            // Thanks to Oisin and Hugh Brown for helping on this one...
-
-            const string Pattern = @"<(.|\n)*?>";
-            if (htmlString == null)
-            {
-                return string.Empty;
-            }
-
-            return Regex.Replace(htmlString, Pattern, string.Empty);
-        }
 
         public ObservableCollection<MixViewModel> LikedMixes { get; private set; }
 

@@ -10,6 +10,9 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+
+    using Flatliner.Phone.ViewModels;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -184,12 +187,12 @@ namespace FlatBeats.ViewModels
             this.ShowProgress();
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
-                this.AddToLifetime(mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.ShowError, this.HideProgress));
+                this.AddToLifetime(mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.HandleError, this.HideProgress));
                 mixList.LoadNextPage();
                 return;
             }
 
-            this.AddToLifetime(mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.ShowError, this.HideProgress));
+            this.AddToLifetime(mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             mixList.LoadNextPage();
         }
         #endregion

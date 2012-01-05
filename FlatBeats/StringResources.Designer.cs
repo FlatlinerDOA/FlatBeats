@@ -173,7 +173,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The server and I are having a disagreement at the moment, please come back after we&apos;ve both cooled off..
+        ///   Looks up a localized string similar to We are having a disagreement with the server by attempting this, please report this if it continues to happen..
         /// </summary>
         internal static string Error_BadRequest {
             get {
@@ -182,7 +182,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, I can&apos;t connect to the network, maybe check your internet connection or try again a bit later..
+        ///   Looks up a localized string similar to Sorry, we can&apos;t connect to the network, maybe check your internet connection or try again a bit later..
         /// </summary>
         internal static string Error_NoNetwork {
             get {
@@ -191,7 +191,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, I can&apos;t talk to the server at the moment, maybe check your internet connection or try again a bit later..
+        ///   Looks up a localized string similar to Sorry, we can&apos;t communicate with the server at the moment, please check your internet connection or try again later..
         /// </summary>
         internal static string Error_ServerUnavailable {
             get {
@@ -400,9 +400,9 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to reviews.
         /// </summary>
-        internal static string TItle_Reviews {
+        internal static string Title_Reviews {
             get {
-                return ResourceManager.GetString("TItle_Reviews", resourceCulture);
+                return ResourceManager.GetString("Title_Reviews", resourceCulture);
             }
         }
         

@@ -19,6 +19,8 @@
     using FlatBeats.Controls;
     using FlatBeats.ViewModels;
 
+    using Flatliner.Phone;
+
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
 

@@ -34,7 +34,7 @@
                 .FirstDo(_ => this.Tags.Clear())
                 .Subscribe(
                     t => this.Tags.Add(t), 
-                    this.ShowError);
+                    this.HandleError);
         }
     }
 }

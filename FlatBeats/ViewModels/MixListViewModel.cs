@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -37,24 +38,36 @@
 
             // TODO: Update in progress when page loads occur
             var mixes = from page in pageRequests
-                        from response in MixesService.DownloadTagMixes(tag, this.Sort, currentPage, 20)
+                        from response in MixesService.DownloadTagMixes(tag, this.Sort, currentPage, 20).Do(r =>
+                        {
+                            if (r.Mixes == null || !r.Mixes.Any())
+                            {
+                                this.pageRequests.OnCompleted();
+                            }
+                        })
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool) 
                         let mixViewModel = new MixViewModel(mix)
                         select mixViewModel;
-            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
+            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.HandleError).Select(_ => new Unit());
         }
 
 
         public IObservable<Unit> Search(string searchQuery)
         {
             this.IsDataLoaded = true;
+
             // TODO: Update in progress when page loads occur
             var mixes = from page in pageRequests
-                        from response in MixesService.DownloadSearchMixes(searchQuery, this.Sort, currentPage, 20).ObserveOnDispatcher()
+                        from response in MixesService.DownloadSearchMixes(searchQuery, this.Sort, currentPage, 20).Do(r =>
+                        {
+                            if (r.Mixes == null || !r.Mixes.Any())
+                            {
+                                this.pageRequests.OnCompleted();
+                            }
+                        })
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
-                        let mixViewModel = new MixViewModel(mix)
-                        select mixViewModel;
-            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.ShowError).Select(_ => new Unit());
+                        select new MixViewModel(mix);
+            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.HandleError).Select(_ => new Unit());
         }
 
         public void LoadNextPage()

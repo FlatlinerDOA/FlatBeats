@@ -259,7 +259,7 @@ namespace FlatBeats.ViewModels
                 })
                 select true;
 
-            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.ShowError, this.HideProgress);
+            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.HandleError, this.HideProgress);
         }
 
         private void ShowProgress()
@@ -365,7 +365,7 @@ namespace FlatBeats.ViewModels
                 this.UpdateMessage).FinallySelect(() => new Unit()).Catch<Unit, Exception>(
                     ex =>
                         {
-                            this.ShowError(ex);
+                            this.HandleError(ex);
                             return Observable.Return(new Unit());
                         });
         }

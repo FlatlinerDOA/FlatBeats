@@ -7,7 +7,7 @@
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
-
+    /*
     public class ApplicationBarBinder : IDisposable
     {
         private readonly CompositeDisposable appBarSubscriptions = new CompositeDisposable();
@@ -236,5 +236,5 @@
 
             this.appBarSubscriptions.Dispose();
         }
-    }
+    }*/
 }

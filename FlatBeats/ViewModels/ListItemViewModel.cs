@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 
 namespace FlatBeats.ViewModels
 {
+    using Flatliner.Phone.ViewModels;
+
     public class ListItemViewModel : ViewModel
     {
         private bool isLastItem;

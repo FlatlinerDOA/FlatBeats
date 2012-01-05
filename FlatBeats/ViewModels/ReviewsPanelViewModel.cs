@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 namespace FlatBeats.ViewModels
 {
     using System.Collections.ObjectModel;
+    using System.Linq;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -26,12 +27,20 @@ namespace FlatBeats.ViewModels
         public ReviewsPanelViewModel()
         {
             this.Reviews = new ObservableCollection<ReviewViewModel>();
-            this.Title = StringResources.TItle_Reviews;
+            this.Title = StringResources.Title_Reviews;
         }
 
         public IObservable<Unit> LoadAsync(string mixId)
         {
             this.MixId = mixId;
+
+            if (this.IsDataLoaded)
+            {
+                return Observable.Return(new Unit());
+            }
+
+            this.IsDataLoaded = true;
+
             return this.LoadCommentsAsync();
         }
 
@@ -44,12 +53,18 @@ namespace FlatBeats.ViewModels
         private IObservable<Unit> LoadCommentsAsync()
         {
             var downloadComments = from page in this.pageRequests
-                                   from response in MixesService.GetMixReviews(this.MixId, page, 20)
+                                   from response in MixesService.GetMixReviews(this.MixId, page, 20).Do(r =>
+                                       {
+                                           if (r.Reviews == null || !r.Reviews.Any())
+                                           {
+                                               this.pageRequests.OnCompleted();
+                                           }
+                                       })
                                    from review in response.Reviews.ToObservable()
                                    select new ReviewViewModel(review);
             return downloadComments.ObserveOnDispatcher().Do(
                 r => this.Reviews.Add(r),
-                this.ShowError, 
+                this.HandleError, 
                 () =>
                 {
                     if (this.Reviews.Count == 0)
@@ -63,6 +78,8 @@ namespace FlatBeats.ViewModels
                     }
                 }).FinallySelect(() => new Unit());
         }
+
+        protected bool IsDataLoaded { get; set; }
 
         private readonly Subject<int> pageRequests = new Subject<int>();
 

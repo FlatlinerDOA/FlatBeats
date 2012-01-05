@@ -37,7 +37,7 @@
                 .FirstDo(_ => this.Mixes.Clear())
                 .Do(
                     this.Mixes.Add, 
-                    this.ShowError, 
+                    this.HandleError, 
                     () =>
                     {
                         if (this.Mixes.Count == 0)

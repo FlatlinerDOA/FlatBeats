@@ -13,6 +13,8 @@ namespace FlatBeats.ViewModels
 {
     using System.Collections.Generic;
 
+    using Flatliner.Phone.ViewModels;
+
     public class DualTileRowViewModel<T> : ViewModel where T : ViewModel
     {
         private T left;
