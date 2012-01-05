@@ -157,8 +157,8 @@ namespace FlatBeatsPlaybackAgent
             switch (action)
             {
                 case UserAction.Stop:
-                    player.Stop();
-                    break;
+                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(player.Stop).Finally(this.NotifyComplete).Subscribe();
+                    return;
                 case UserAction.Pause:
                     player.Pause();
                     break;

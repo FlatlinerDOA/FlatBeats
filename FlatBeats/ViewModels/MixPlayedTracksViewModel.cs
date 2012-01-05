@@ -279,6 +279,8 @@ namespace FlatBeats.ViewModels
 
         private readonly Subject<bool> isPlayingChanges = new Subject<bool>();
 
+        private bool isDataLoaded;
+
         public IObservable<bool> IsPlayingChanges 
         { 
             get
@@ -308,6 +310,14 @@ namespace FlatBeats.ViewModels
         public IObservable<Unit> LoadAsync(MixContract loadMix)
         {
             this.currentMix = loadMix;
+
+            if (this.isDataLoaded)
+            {
+                this.UpdatePlayerState();
+                return Observable.Return(new Unit());
+            }
+
+            this.isDataLoaded = true;
 
             this.InitializeBackgroundAudioPlayer();
 
@@ -517,13 +527,12 @@ namespace FlatBeats.ViewModels
                     break;
                 case PlayState.Stopped:
                     this.StopRefreshTimer();
-                    this.ProgressStatusText = "Stopped";
-                    this.Progress = 0;
-                    this.IsProgressIndeterminate = false;
+                    this.LoadNowPlaying();
                     break;
                 case PlayState.Paused:
                     this.StopRefreshTimer();
                     this.ProgressStatusText = "Paused";
+                    this.UpdateIsNowPlaying();
                     break;
                 case PlayState.Playing:
                     this.LoadNowPlaying();
