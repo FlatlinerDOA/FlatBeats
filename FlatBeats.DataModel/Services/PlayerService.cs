@@ -118,7 +118,7 @@
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
         {
             var playingMix = from playToken in GetOrCreatePlayTokenAsync()
-                   let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}", playToken, mix.Id)
+                             let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}&skip_aac_v2=1", playToken, mix.Id)
                    from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
                    from added in AddToRecentlyPlayedAsync(mix)
                    select new PlayingMixContract
@@ -226,7 +226,7 @@
         public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var nextFormat = string.Format(
-                "http://8tracks.com/sets/{0}/next.json?mix_id={1}",
+                "http://8tracks.com/sets/{0}/next.json?mix_id={1}&skip_aac_v2=1",
                 playing.PlayToken,
                 playing.MixId);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
@@ -259,7 +259,7 @@
         public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var skipFormat = string.Format(
-                "http://8tracks.com/sets/{0}/skip.json?mix_id={1}",
+                "http://8tracks.com/sets/{0}/skip.json?mix_id={1}&skip_aac_v2=1",
                 playing.PlayToken,
                 playing.MixId);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)

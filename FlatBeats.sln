@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeatsPlaybackAgent", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeats.DataModel", "FlatBeats.DataModel\FlatBeats.DataModel.csproj", "{92D3291E-4113-4E79-A817-6428F8DCE8B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Phone", "..\..\Flatliner\Dev\Flatliner.Phone\Flatliner.Phone.csproj", "{90246C22-25B6-41A1-AE6F-6F1762DCB619}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

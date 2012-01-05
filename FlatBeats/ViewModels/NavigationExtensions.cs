@@ -61,7 +61,6 @@ namespace FlatBeats.ViewModels
             {
                 navService.Navigate(url);
             }
-            
         }
     }
 }
