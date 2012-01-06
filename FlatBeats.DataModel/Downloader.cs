@@ -141,7 +141,7 @@ namespace FlatBeats.DataModel
             return GetJson<T>(url).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache)));
         }
 
-        public static IObservable<Stream> GetStream<T>(Uri url) where T : class
+        public static IObservable<Stream> GetStream(Uri url)
         {
             return from client in Observable.Return(CreateClient())
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
@@ -161,7 +161,7 @@ namespace FlatBeats.DataModel
 
         public static IObservable<T> GetJson<T>(Uri url) where T : class
         {
-            return GetStream<T>(url).Select(Json<T>.DeserializeAndClose);
+            return GetStream(url).Select(Json<T>.DeserializeAndClose);
         }
 
         /// <summary>

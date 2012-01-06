@@ -157,7 +157,7 @@ namespace FlatBeatsPlaybackAgent
             switch (action)
             {
                 case UserAction.Stop:
-                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(() => StopPlayingMix(player)).Finally(this.NotifyComplete).Subscribe();
+                    this.StopPlayingAsync(player).Finally(this.NotifyComplete).Subscribe();
                     return;
                 case UserAction.Pause:
                     player.Pause();
@@ -175,8 +175,11 @@ namespace FlatBeatsPlaybackAgent
 
         private void StopPlayingMix(BackgroundAudioPlayer player)
         {
-            player.Stop();
-            player.Track = null;
+            if (player.PlayerState != PlayState.Unknown)
+            {
+                player.Stop();
+                player.Track = null;
+            }
         }
 
         /// <summary>
@@ -187,12 +190,12 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         private IObservable<Unit> PlayNextTrackAsync(BackgroundAudioPlayer player)
         {
-            if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.IsLastTrack)
+            if (this.NowPlaying == null || this.NowPlaying.Set == null ||  this.NowPlaying.Set.Track.TrackUrl == null)
             {
-                return this.NowPlaying.StopAsync(player.Position).Finally(player.Stop);
+                return this.StopPlayingAsync(player);
             }
 
-            return from nextResponse in this.NowPlaying.NextTrackAsync(player.Position)
+            var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player)
                    where nextResponse != null && nextResponse.Status != null && nextResponse.Status.StartsWith("200")
                    from d in ObservableEx.DeferredStart(
                                    () =>
@@ -202,6 +205,13 @@ namespace FlatBeatsPlaybackAgent
                                        })
                                from play in this.PlayTrackAsync(player)
                                select play;
+
+            return playNextTrack.OnErrorResumeNext(this.StopPlayingAsync(player));
+        }
+
+        private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
+        {
+            return this.NowPlaying.StopAsync(player).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }
 
         /// <summary>
@@ -219,15 +229,15 @@ namespace FlatBeatsPlaybackAgent
             }
             else
             {
-                // Set which track to play. When the TrackReady state is received 
-                // in the OnPlayStateChanged handler, call player.Play().
                 if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
                 {
-                    player.Stop();
-                    return this.NowPlaying.StopAsync(player.Position);
+                    // Reset as we don't know what we're playing anymore.
+                    return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
                 }
 
 
+                // Set which track to play. When the TrackReady state is received 
+                // in the OnPlayStateChanged handler, call player.Play().
                 return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
                         trackUrl =>
                             {
@@ -264,7 +274,7 @@ namespace FlatBeatsPlaybackAgent
                 return Observable.Empty<Unit>();
             }
 
-            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player.Position)
+            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player)
                     where skipResponse.Status.StartsWith("200")
                     select skipResponse;
 

@@ -2,15 +2,15 @@
 	<FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
 		<FlatBeats_ViewModels:MixPlayedTracksViewModel ShowNowPlaying="True" IsProgressIndeterminate="False" Progress="50" ProgressStatusText="00:00 / 00:00">
 			<FlatBeats_ViewModels:MixPlayedTracksViewModel.CurrentTrack>
-				<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam adipiscing maecenas aenean" Artist="Vestibulum aliquam" CanFavouriteTrack="True"/>
+				<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam adipiscing maecenas aenean" Artist="Vestibulum aliquam" />
 			</FlatBeats_ViewModels:MixPlayedTracksViewModel.CurrentTrack>
 			<FlatBeats_ViewModels:MixPlayedTracksViewModel.Tracks>
-				<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum" Artist="Faucibus phasellus" CanFavouriteTrack="True"/>
-				<FlatBeats_ViewModels:TrackViewModel Title="Donec nunc est aptent" Artist="Donec nunc" CanFavouriteTrack="True"/>
-				<FlatBeats_ViewModels:TrackViewModel Title="Adipiscing auctor amet vivamus habitant" Artist="Vivamus habitant" CanFavouriteTrack="True"/>
-				<FlatBeats_ViewModels:TrackViewModel Title="Hac aliquam congue leo mus" Artist="Congue leo mus" CanFavouriteTrack="True"/>
-				<FlatBeats_ViewModels:TrackViewModel Title="Ante consequat" Artist="Ante consequat" CanFavouriteTrack="True"/>
-				<FlatBeats_ViewModels:TrackViewModel Title="Nec arcu convallis aliquet" Artist="Nec arcu" CanFavouriteTrack="True" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum" Artist="Faucibus phasellus" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Donec nunc est aptent" Artist="Donec nunc" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Adipiscing auctor amet vivamus habitant" Artist="Vivamus habitant" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Hac aliquam congue leo mus" Artist="Congue leo mus" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Ante consequat" Artist="Ante consequat" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Nec arcu convallis aliquet" Artist="Nec arcu" />
 				<FlatBeats_ViewModels:TrackViewModel Title="Diam blandit parturient vestibulum" Artist="Diam blandit"/>
 				<FlatBeats_ViewModels:TrackViewModel Title="Commodo cursus vestibulum dictum lectus" Artist="Commodo cursus"/>
 				<FlatBeats_ViewModels:TrackViewModel Title="Eget adipiscing dignissim" Artist="Eget"/>

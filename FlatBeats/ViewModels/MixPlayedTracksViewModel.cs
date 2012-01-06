@@ -252,7 +252,9 @@ namespace FlatBeats.ViewModels
 
             if (this.Player.IsPlayingATrack())
             {
+                this.AddToLifetime(this.Player.PlayStateChanges().Where(s => s == PlayState.Stopped).Take(1).Finally(this.StartPlayingMixFromBeginning).Subscribe());
                 this.Player.Stop();
+                return;
             }
 
             this.StartPlayingMixFromBeginning();
@@ -450,7 +452,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void UpdateIsNowPlaying()
         {
-            this.ShowNowPlaying = this.IsPlayingTrackForThisMix;
+            this.EnsureCurrentTrackMatchesPlayingTrack();
+            this.ShowNowPlaying = this.IsPlayingTrackForThisMix && this.CurrentTrack != null;
             this.Title = this.ShowNowPlaying ? StringResources.Title_Playing : StringResources.Title_PlayedTracks;
 
             if (this.ShowNowPlaying)
@@ -534,7 +537,6 @@ namespace FlatBeats.ViewModels
             switch (this.Player.PlayerState)
             {
                 case PlayState.Unknown:
-                    break;
                 case PlayState.Stopped:
                     this.StopRefreshTimer();
                     this.LoadNowPlaying();
@@ -547,11 +549,11 @@ namespace FlatBeats.ViewModels
                 case PlayState.Playing:
                     this.LoadNowPlaying();
                     this.StartRefreshTimer();
-                    this.EnsureCurrentTrackMatchesPlayingTrack();
+                    this.UpdateIsNowPlaying();
                     break;
                 case PlayState.BufferingStarted:
                     this.UpdateBufferingProgress();
-                    this.EnsureCurrentTrackMatchesPlayingTrack();
+                    this.UpdateIsNowPlaying();
                     break;
                 case PlayState.BufferingStopped:
                     this.UpdateBufferingProgress();

@@ -14,6 +14,7 @@
     using FlatBeats.DataModel.Profile;
 
     using Microsoft.Devices;
+    using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
 
@@ -34,6 +35,23 @@
         public static void DeletePlayToken()
         {
             Storage.Delete(PlayTokenFilePath);
+        }
+
+        public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, BackgroundAudioPlayer player)
+        {
+            TimeSpan playedDuration = GetPlayedDuration(player);
+            return nowPlaying.StopAsync(playedDuration);
+        }
+
+        private static TimeSpan GetPlayedDuration(BackgroundAudioPlayer player)
+        {
+            TimeSpan playedDuration = TimeSpan.Zero;
+            if (player.PlayerState != PlayState.Unknown && player.Track != null)
+            {
+                playedDuration = player.Position;
+            }
+
+            return playedDuration;
         }
 
         public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
@@ -223,7 +241,13 @@
                 });
         }
 
-        public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)
+        {
+            var time = GetPlayedDuration(player);
+            return playing.NextTrackAsync(time);
+        }
+
+        private static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var nextFormat = string.Format(
                 "http://8tracks.com/sets/{0}/next.json?mix_id={1}&skip_aac_v2=1",
@@ -256,7 +280,13 @@
             return payment.OnErrorResumeNext(Observable.Return(new Unit()));
         }
 
-        public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)
+        {
+            var time = GetPlayedDuration(player);
+            return playing.SkipToNextTrackAsync(time);
+        }
+    
+        private static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             var skipFormat = string.Format(
                 "http://8tracks.com/sets/{0}/skip.json?mix_id={1}&skip_aac_v2=1",

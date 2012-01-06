@@ -55,8 +55,14 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public TrackViewModel()
         {
-            this.ToggleFavouriteCommand = new CommandLink() { Command = new DelegateCommand(this.ToggleFavourite, () => Downloader.IsAuthenticated), HideWhenInactive = true };
-
+            this.ToggleFavouriteCommand = new CommandLink()
+                {
+                    Command = new DelegateCommand(
+                        this.ToggleFavourite, 
+                        () => Downloader.IsAuthenticated), 
+                    IconUrl = AddToFavouritesIcon, 
+                    HideWhenInactive = !IsInDesignMode
+                };
         }
 
         /// <summary>

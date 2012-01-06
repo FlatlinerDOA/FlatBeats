@@ -23,6 +23,7 @@
                             toolkit:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
+		<Controls:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
         <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
         <Controls:BooleanToVisibilityConverter x:Key="HideConverter" WhenFalse="Visible" WhenTrue="Collapsed" />
         <Controls:UrlToBitmapConverter x:Key="ImageConverter" />
@@ -381,15 +382,20 @@
                             		</StackPanel>
                             	</Button>
                                 <Button Style="{StaticResource CircleButtonStyle}"
-                                        Margin="8,4"
+                                        Margin="12,4,24,4"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Right"
                                         Grid.Column="1"
-                                        Foreground="{StaticResource PhoneForegroundBrush}"
                                         DataContext="{Binding CurrentTrack}"
+										Foreground="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
+                                        Command="{Binding ToggleFavouriteCommand.Command}"
                                         Visibility="{Binding ToggleFavouriteCommand.Visibility}">
-                                    <Image Source="{Binding ToggleFavouriteCommand.IconUrl}"
-                                           Stretch="None" />
+                                    <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
+                                            Width="48" Height="48">
+                                        <Border.OpacityMask>
+<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}"
+                                    Stretch="None" />                                        </Border.OpacityMask>
+                                    </Border>
                                 </Button>
                             </Grid>
                             <ProgressBar Value="{Binding Progress}"
@@ -439,14 +445,19 @@
                                             </StackPanel>
                                         </Button>
                                         <Button Style="{StaticResource CircleButtonStyle}"
-                                                Margin="8,4"
+                                                Margin="12,4,24,4"
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Right"
                                                 Grid.Column="1"
-                                                Foreground="{StaticResource PhoneForegroundBrush}"
+                                                Command="{Binding ToggleFavouriteCommand.Command}"
+                                                Foreground="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
                                                 Visibility="{Binding ToggleFavouriteCommand.Visibility}">
-                                            <Image Source="{Binding ToggleFavouriteCommand.IconUrl}"
-                                                   Stretch="None" />
+                                            <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
+                                            Width="48" Height="48">
+                                        <Border.OpacityMask>
+<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}"
+                                    Stretch="None" />                                        </Border.OpacityMask>
+                                    </Border>
                                         </Button>
                                     </Grid>
                                 </DataTemplate>
