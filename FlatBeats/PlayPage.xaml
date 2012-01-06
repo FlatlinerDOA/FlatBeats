@@ -393,8 +393,8 @@
                                     <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
                                             Width="48" Height="48">
                                         <Border.OpacityMask>
-<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}"
-                                    Stretch="None" />                                        </Border.OpacityMask>
+                                        	<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}" Stretch="None" />
+										</Border.OpacityMask>
                                     </Border>
                                 </Button>
                             </Grid>

@@ -277,7 +277,7 @@
                        UriKind.Absolute))
                    select new Unit();
 
-            return payment.OnErrorResumeNext(Observable.Return(new Unit()));
+            return payment.Catch<Unit, Exception>(ex => Observable.Return(new Unit()));
         }
 
         public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)

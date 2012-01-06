@@ -12,8 +12,12 @@ using System;
 
 namespace FlatBeatsPlaybackAgent
 {
+    using System.Diagnostics;
+
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+
+    using Flatliner.Phone;
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
@@ -190,8 +194,11 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         private IObservable<Unit> PlayNextTrackAsync(BackgroundAudioPlayer player)
         {
+            Debug.WriteLine("Player: PlayNextTrackAsync");
+
             if (this.NowPlaying == null || this.NowPlaying.Set == null ||  this.NowPlaying.Set.Track.TrackUrl == null)
             {
+                Debug.WriteLine("Player: PlayNextTrackAsync (Current track not set)");
                 return this.StopPlayingAsync(player);
             }
 
@@ -206,11 +213,24 @@ namespace FlatBeatsPlaybackAgent
                                from play in this.PlayTrackAsync(player)
                                select play;
 
-            return playNextTrack.OnErrorResumeNext(this.StopPlayingAsync(player));
+            return playNextTrack.Catch<Unit, Exception>(
+                ex =>
+                    {
+                        var data = "PlayNextTrack error, stopping!";
+                        if (this.NowPlaying != null)
+                        {
+                            data += Json<PlayingMixContract>.Serialize(this.NowPlaying);
+                        }
+
+                        LittleWatson.ReportException(ex, data);
+                        Debug.WriteLine("Player: PlayNextTrackAsync (Playback Error, stopping!)");
+                        return this.StopPlayingAsync(player);
+                    });
         }
 
         private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
         {
+            Debug.WriteLine("Player: StopPlayingAsync");
             return this.NowPlaying.StopAsync(player).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }
 
@@ -222,43 +242,45 @@ namespace FlatBeatsPlaybackAgent
         {
             if (player.PlayerState == PlayState.Paused)
             {
+                Debug.WriteLine("Player: PlayTrackAsync (Resume from Paused)");
+
                 // If we're paused, we already have 
                 // the track set, so just resume playing.
                 player.Volume = 1;
                 player.Play();
+
+                return Observable.Return(new Unit());
             }
-            else
+
+            Debug.WriteLine("Player: PlayTrackAsync");
+
+            if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
             {
-                if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
-                {
-                    // Reset as we don't know what we're playing anymore.
-                    return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
-                }
-
-
-                // Set which track to play. When the TrackReady state is received 
-                // in the OnPlayStateChanged handler, call player.Play().
-                return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
-                        trackUrl =>
-                            {
-                                var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
-                                var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
-                                                       ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext | EnabledPlayerControls.FastForward
-                                                       : EnabledPlayerControls.Pause;
-                                var track = new AudioTrack(
-                                    trackUrl,
-                                    this.NowPlaying.Set.Track.Name,
-                                    this.NowPlaying.Set.Track.Artist,
-                                    this.NowPlaying.MixName,
-                                    coverUrl,
-                                    this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
-                                    playControls);
-                                player.Track = track;
-                                player.Volume = 1;
-                            }).Select(_ => new Unit());
+                // Reset as we don't know what we're playing anymore.
+                return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
             }
 
-            return Observable.Return(new Unit());
+
+            // Set which track to play. When the TrackReady state is received 
+            // in the OnPlayStateChanged handler, call player.Play().
+            return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
+                    trackUrl =>
+                        {
+                            var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
+                            var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
+                                                    ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext | EnabledPlayerControls.FastForward
+                                                    : EnabledPlayerControls.Pause;
+                            var track = new AudioTrack(
+                                trackUrl,
+                                this.NowPlaying.Set.Track.Name,
+                                this.NowPlaying.Set.Track.Artist,
+                                this.NowPlaying.MixName,
+                                coverUrl,
+                                this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
+                                playControls);
+                            player.Track = track;
+                            player.Volume = 1;
+                        }).Select(_ => new Unit());
         }
 
         /// <summary>
@@ -269,6 +291,8 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         private IObservable<Unit> SkipToNextTrackAsync(BackgroundAudioPlayer player)
         {
+            Debug.WriteLine("Player: SkipToNextTrackAsync");
+
             if (!this.NowPlaying.Set.SkipAllowed)
             {
                 return Observable.Empty<Unit>();
@@ -277,8 +301,7 @@ namespace FlatBeatsPlaybackAgent
             var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player)
                     where skipResponse.Status.StartsWith("200")
                     select skipResponse;
-
-            return from y in x.Do(
+            return from y in x.OnErrorResumeNext(Observable.Empty<PlayResponseContract>()).Do(
                 response =>
                     {
                         this.NowPlaying.Set = response.Set;

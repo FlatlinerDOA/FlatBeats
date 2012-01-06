@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone\Flatliner.Phone.csproj">
+      <Project>{90246C22-25B6-41A1-AE6F-6F1762DCB619}</Project>
+      <Name>Flatliner.Phone</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlatBeats.DataModel\FlatBeats.DataModel.csproj">
       <Project>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</Project>
       <Name>FlatBeats.DataModel</Name>

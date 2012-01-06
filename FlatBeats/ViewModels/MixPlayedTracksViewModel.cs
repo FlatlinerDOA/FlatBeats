@@ -11,6 +11,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text;
 
@@ -228,7 +229,12 @@ namespace FlatBeats.ViewModels
 
         private bool CanSkipNext()
         {
-            return this.NowPlaying != null && this.currentMix != null && !this.NowPlaying.Set.IsLastTrack
+            if (this.NowPlaying == null || this.NowPlaying.Set == null)
+            {
+                return false;
+            }
+
+            return this.IsPlayingTrackForThisMix && !this.NowPlaying.Set.IsLastTrack
                    && this.NowPlaying.Set.SkipAllowed;
         }
 
@@ -534,12 +540,15 @@ namespace FlatBeats.ViewModels
         /// </exception>
         private void UpdatePlayerState()
         {
+            Debug.WriteLine("UpdatePlayerState to " + Enum.GetName(typeof(PlayState), this.Player.PlayerState));
+
             switch (this.Player.PlayerState)
             {
                 case PlayState.Unknown:
                 case PlayState.Stopped:
                     this.StopRefreshTimer();
-                    this.LoadNowPlaying();
+                    this.NowPlaying = null;
+                    this.UpdateIsNowPlaying();
                     break;
                 case PlayState.Paused:
                     this.StopRefreshTimer();
@@ -573,6 +582,7 @@ namespace FlatBeats.ViewModels
                     this.IsProgressIndeterminate = false;
                     this.ProgressStatusText = "Fast forwarding";
                     break;
+
                 case PlayState.Shutdown:
                     this.StopRefreshTimer();
                     break;
@@ -607,12 +617,12 @@ namespace FlatBeats.ViewModels
         {
             get
             {
-                if (!this.Player.IsPlayingATrack())
+                if (this.CurrentTrack == null)
                 {
                     return false;
                 }
 
-                if (this.CurrentTrack == null)
+                if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
                 {
                     return false;
                 }
@@ -630,13 +640,30 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.Progress = this.Player.Position.TotalSeconds / Math.Max(1, this.Player.Track.Duration.TotalSeconds) * 100D;
-            var sb = new StringBuilder();
-            sb.AppendFormat("{0:00}:{1:00}", (int)this.Player.Position.TotalMinutes, this.Player.Position.Seconds);
-            sb.Append(" / ");
-            sb.AppendFormat("{0:00}:{1:00}", (int)this.Player.Track.Duration.TotalMinutes, this.Player.Track.Duration.Seconds);
-            this.ProgressStatusText = sb.ToString();
-            this.IsProgressIndeterminate = false;
+            try
+            {
+                var track = this.Player.Track;
+                if (track == null)
+                {
+                    return;
+                }
+
+                var duration = track.Duration;
+                var position = this.Player.Position;
+
+                this.Progress = position.TotalSeconds / Math.Max(1, duration.TotalSeconds) * 100D;
+                var sb = new StringBuilder();
+                sb.AppendFormat("{0:00}:{1:00}", (int)position.TotalMinutes, position.Seconds);
+                sb.Append(" / ");
+                sb.AppendFormat("{0:00}:{1:00}", (int)duration.TotalMinutes, duration.Seconds);
+                this.ProgressStatusText = sb.ToString();
+                this.IsProgressIndeterminate = false;
+
+            }
+            catch (Exception)
+            {
+                // Ignore issues accessing the track.
+            }
         }
 
         #endregion
