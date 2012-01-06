@@ -92,8 +92,6 @@
     <Compile Include="Controls\ApplicationBarBinder.cs" />
     <Compile Include="Controls\BooleanToBrushConverter.cs" />
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Controls\CommandLink.cs" />
-    <Compile Include="Controls\DelegateCommand.cs" />
     <Compile Include="Controls\IApplicationBarViewModel.cs" />
     <Compile Include="Controls\ICommandLink.cs" />
     <Compile Include="Controls\SearchPrompt.cs" />
@@ -136,6 +134,7 @@
     <Compile Include="UserProfilePage.xaml.cs">
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BackgroundAudioPlayerExtensions.cs" />
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
     <Compile Include="ViewModels\IInfiniteScroll.cs" />

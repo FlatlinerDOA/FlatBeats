@@ -14,7 +14,13 @@
     			<ContentPresenter/>
     		</Grid>
     	</ControlTemplate>
-		   <Style x:Key="FullWidthListBoxItemStyle" TargetType="ListBoxItem">
+        <Style x:Key="CircleButtonStyle" TargetType="Button">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Template"
+                    Value="{StaticResource CircleButtonControlTemplate}" />
+        </Style>
+        <Style x:Key="FullWidthListBoxItemStyle" TargetType="ListBoxItem">
         	<Setter Property="Background" Value="Transparent"/>
         	<Setter Property="BorderThickness" Value="0"/>
         	<Setter Property="BorderBrush" Value="Transparent"/>

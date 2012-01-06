@@ -18,6 +18,8 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone;
+
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
 
@@ -71,13 +73,13 @@ namespace FlatBeats.ViewModels
             this.PlayPauseCommand = new CommandLink()
             {
                 Command = new DelegateCommand(this.Play, this.CanPlay),
-                IconUri = "/icons/appbar.transport.play.rest.png",
+                IconUrl = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative),
                 Text = StringResources.Command_PlayMix
             };
             this.NextTrackCommand = new CommandLink()
             {
                 Command = new DelegateCommand(this.SkipNext, this.CanSkipNext),
-                IconUri = "/icons/appbar.transport.ff.rest.png",
+                IconUrl = new Uri("/icons/appbar.transport.ff.rest.png", UriKind.Relative),
                 Text = StringResources.Command_NextTrack,
                 HideWhenInactive = true
             };
@@ -234,7 +236,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public void Play()
         {
-            if (this.NowPlaying != null)
+            if (this.IsPlayingTrackForThisMix)
             {
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
@@ -248,16 +250,26 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            if (this.Player.IsPlayingATrack())
+            {
+                this.Player.Stop();
+            }
+
+            this.StartPlayingMixFromBeginning();
+        }
+
+        private void StartPlayingMixFromBeginning()
+        {
             this.ShowProgress();
             var playSequence = from playResponse in this.currentMix.StartPlayingAsync().ObserveOnDispatcher().Do(
                 m =>
-                {
-                    this.NowPlaying = m;
-                    this.NowPlaying.SaveNowPlaying();
-                    this.Player.Play();
-                    this.UpdateIsNowPlaying();
-                })
-                select true;
+                    {
+                        this.NowPlaying = m;
+                        this.NowPlaying.SaveNowPlaying();
+                        this.Player.Play();
+                        this.UpdateIsNowPlaying();
+                    })
+                               select true;
 
             playSequence.Subscribe(this.isPlayingChanges.OnNext, this.HandleError, this.HideProgress);
         }
@@ -445,15 +457,13 @@ namespace FlatBeats.ViewModels
             {
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
-                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.pause.rest.png";
+                    this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
                     this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
-                    //this.playStates.OnNext(true);
                 }
                 else
                 {
-                    this.PlayPauseCommand.IconUri = "/icons/appbar.transport.play.rest.png";
+                    this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
                     this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
-                    //this.playStates.OnNext(false);
                 }
             }
 
@@ -582,12 +592,7 @@ namespace FlatBeats.ViewModels
         {
             get
             {
-                if (this.Player == null)
-                {
-                    return false;
-                }
-
-                if (this.Player.Track == null)
+                if (!this.Player.IsPlayingATrack())
                 {
                     return false;
                 }
@@ -600,12 +605,7 @@ namespace FlatBeats.ViewModels
         {
             get
             {
-                if (this.Player == null)
-                {
-                    return false;
-                }
-                
-                if (this.Player.Track == null)
+                if (!this.Player.IsPlayingATrack())
                 {
                     return false;
                 }

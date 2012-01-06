@@ -80,14 +80,13 @@
     				d:LayoutOverrides="Width, Height"
     				FontFamily="Segoe WP SemiLight"
     				Margin="8,4" Foreground="#FFFFFFFF"/>
-    			<Button Background="Transparent"
-    				Foreground="White"
+                <Button  Style="{StaticResource CircleButtonStyle}"
+                         Foreground="White"
     				HorizontalAlignment="Right"
     				Margin="4,8,4,22"
     				d:LayoutOverrides="Height"
     				VerticalAlignment="Bottom"
-    				Click="SettingsButton_Click"
-    				Template="{StaticResource CircleButtonControlTemplate}">
+    				Click="SettingsButton_Click">
     				<Image Source="/icons/appbar.feature.settings.rest.png"
     					HorizontalAlignment="Center"
     					VerticalAlignment="Center"
@@ -111,14 +110,13 @@
     				d:LayoutOverrides="Width, Height"
     				FontFamily="Segoe WP SemiLight"
     				Margin="8,4" Foreground="#FFFFFFFF"/>
-    			<Button Background="Transparent"
+                <Button Style="{StaticResource CircleButtonStyle}"
     				HorizontalAlignment="Right"
     				Margin="4,4,4,22"
     				d:LayoutOverrides="Height"
     				VerticalAlignment="Bottom"
     				Click="SearchButton_Click"
-    				Foreground="White"
-    				Template="{StaticResource CircleButtonControlTemplate}">
+    				Foreground="White">
     				<Image Source="icons/appbar.feature.search.rest.png"
     					HorizontalAlignment="Center"
     					VerticalAlignment="Center"

@@ -157,20 +157,26 @@ namespace FlatBeatsPlaybackAgent
             switch (action)
             {
                 case UserAction.Stop:
-                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(player.Stop).Finally(this.NotifyComplete).Subscribe();
+                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(() => StopPlayingMix(player)).Finally(this.NotifyComplete).Subscribe();
                     return;
                 case UserAction.Pause:
                     player.Pause();
                     break;
                 case UserAction.Play:
-                    this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(() => this.NotifyComplete()).Subscribe();
+                    this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
                     return;
                 case UserAction.SkipNext:
-                    this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(() => this.NotifyComplete()).Subscribe();
+                    this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
                     return;
             }
 
             this.NotifyComplete();
+        }
+
+        private void StopPlayingMix(BackgroundAudioPlayer player)
+        {
+            player.Stop();
+            player.Track = null;
         }
 
         /// <summary>

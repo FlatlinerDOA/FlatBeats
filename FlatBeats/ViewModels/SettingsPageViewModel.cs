@@ -17,6 +17,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.BackgroundAudio;
@@ -324,6 +325,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.CanLogin = false;
             this.UserName = creds.UserName;
             this.Password = creds.Password;
 
@@ -331,10 +333,12 @@ namespace FlatBeats.ViewModels
             var q = from user in ProfileService.LoadUserToken()
                     from loaded in this.LoadMixes(user.CurentUser.Id)
                     select new Unit();
-            q.Subscribe(profile => { 
-                this.IsLoggedIn = true;
-                                     this.CanLogin = false;
-            }, this.HandleError, this.HideProgress);
+            q.Subscribe(
+                profile => 
+                { 
+                    this.IsLoggedIn = true;
+                    this.CanLogin = false;
+                }, this.HandleError, this.HideProgress);
         }
 
         private IObservable<Unit> LoadMixes(string userId)

@@ -380,17 +380,17 @@
                             				Foreground="{StaticResource PhoneForegroundBrush}" />
                             		</StackPanel>
                             	</Button>
-                            	<CheckBox Margin="8,4"
-                                          DataContext="{Binding CurrentTrack}"
-                                          IsChecked="{Binding IsFavourite, Mode=TwoWay}"
-                            		      Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}" 
-                                          VerticalAlignment="Center" 
-                                          HorizontalAlignment="Right" 
-                                          Template="{StaticResource FavouriteCheckBoxControlTemplate}" 
-                                          Grid.Column="1" 
-                                          Padding="16,8" 
-                                          Width="60" 
-                                          Height="60" />
+                                <Button Style="{StaticResource CircleButtonStyle}"
+                                        Margin="8,4"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Grid.Column="1"
+                                        Foreground="{StaticResource PhoneForegroundBrush}"
+                                        DataContext="{Binding CurrentTrack}"
+                                        Visibility="{Binding ToggleFavouriteCommand.Visibility}">
+                                    <Image Source="{Binding ToggleFavouriteCommand.IconUrl}"
+                                           Stretch="None" />
+                                </Button>
                             </Grid>
                             <ProgressBar Value="{Binding Progress}"
                                          Grid.Row="1"
@@ -438,16 +438,16 @@
                                                            Foreground="{StaticResource PhoneForegroundBrush}" />
                                             </StackPanel>
                                         </Button>
-                                        <CheckBox Margin="8,4"
-                                                  IsChecked="{Binding IsFavourite, Mode=TwoWay}"
-                                                  Visibility="{Binding CanFavouriteTrack, Converter={StaticResource VisibilityConverter}}"
-                                                  VerticalAlignment="Center"
-                                                  HorizontalAlignment="Right"
-                                                  Template="{StaticResource FavouriteCheckBoxControlTemplate}"
-                                                  Grid.Column="1"
-                                                  Padding="16,8"
-                                                  Width="60"
-                                                  Height="60" />
+                                        <Button Style="{StaticResource CircleButtonStyle}"
+                                                Margin="8,4"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Right"
+                                                Grid.Column="1"
+                                                Foreground="{StaticResource PhoneForegroundBrush}"
+                                                Visibility="{Binding ToggleFavouriteCommand.Visibility}">
+                                            <Image Source="{Binding ToggleFavouriteCommand.IconUrl}"
+                                                   Stretch="None" />
+                                        </Button>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

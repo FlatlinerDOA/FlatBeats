@@ -10,10 +10,15 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Text.RegularExpressions;
+    using System.Windows.Input;
 
+    using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
+    using Flatliner.Phone;
+    using Flatliner.Phone.Data;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
@@ -22,9 +27,12 @@ namespace FlatBeats.ViewModels
     /// <summary>
     /// </summary>
     public class TrackViewModel : ViewModel, INavigationItem
-
     {
         #region Constants and Fields
+
+        private static readonly Uri AddToFavouritesIcon = new Uri("/icons/appbar.favs.addto.rest.png", UriKind.Relative);
+
+        private static readonly Uri RemoveFromFavouritesIcon = new Uri("/icons/appbar.favs.removefrom.rest.png", UriKind.Relative);
 
         /// <summary>
         /// </summary>
@@ -47,6 +55,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public TrackViewModel()
         {
+            this.ToggleFavouriteCommand = new CommandLink() { Command = new DelegateCommand(this.ToggleFavourite, () => Downloader.IsAuthenticated), HideWhenInactive = true };
+
         }
 
         /// <summary>
@@ -54,20 +64,40 @@ namespace FlatBeats.ViewModels
         /// </summary>
         /// <param name="track">
         /// </param>
-        public TrackViewModel(TrackContract track)
+        public TrackViewModel(TrackContract track) : this()
         {
             this.title = track.Name;
             this.artist = track.Artist;
-            this.isFavourite = track.IsFavourite;
             this.Id = track.Id;
-            this.canFavouriteTrack = Downloader.IsAuthenticated;
+            const string Pattern = @"\((.|\n)*?\)";
 
-            this.NavigationUrl = new Uri("music://zune?" + track.Artist + " " + track.Name, UriKind.Absolute);
-            ////Uri url;
-            ////if (Uri.TryCreate(track.BuyLink, UriKind.Absolute, out url))
-            ////{
-            ////    this.NavigationUrl = url;
-            ////}
+            var simplifiedArtistName = Regex.Replace(track.Artist, Pattern, string.Empty);
+            var simplifiedTrackName = Regex.Replace(track.Name, Pattern, string.Empty);
+            this.NavigationUrl = new Uri("music://zune?" + simplifiedArtistName + " " + simplifiedTrackName, UriKind.Absolute);
+            this.IsFavourite = track.IsFavourite;
+        }
+
+        private void ToggleFavourite()
+        {
+            this.IsFavourite = !this.IsFavourite;
+            ProfileService.SetTrackFavourite(this.Id, this.IsFavourite).ObserveOnDispatcher().Subscribe(
+                _ => { },
+                ex => this.IsFavourite = !this.IsFavourite);
+        }
+
+        private void UpdateFavouriteState()
+        {
+            if (this.IsFavourite)
+            {
+                this.ToggleFavouriteCommand.IconUrl = RemoveFromFavouritesIcon;
+            }
+            else
+            {
+                this.ToggleFavouriteCommand.IconUrl = AddToFavouritesIcon;
+            }
+
+            this.ToggleFavouriteCommand.RaiseCanExecuteChanged();
+
         }
 
         #endregion
@@ -117,35 +147,12 @@ namespace FlatBeats.ViewModels
 
                 this.isFavourite = value;
                 this.OnPropertyChanged("IsFavourite");
-                ProfileService.SetTrackFavourite(this.Id, this.isFavourite).ObserveOnDispatcher().Subscribe(
-                    _ => { }, 
-                    ex =>
-                        {
-                            this.isFavourite = !this.isFavourite;
-                            this.OnPropertyChanged("IsFavourite");
-                        });
+                this.UpdateFavouriteState();
+
             }
         }
 
-        private bool canFavouriteTrack;
-
-        public bool CanFavouriteTrack
-        {
-            get
-            {
-                return this.canFavouriteTrack;
-            }
-            set
-            {
-                if (this.canFavouriteTrack == value)
-                {
-                    return;
-                }
-
-                this.canFavouriteTrack = value;
-                this.OnPropertyChanged("CanFavouriteTrack");
-            }
-        }
+        public CommandLink ToggleFavouriteCommand { get; private set; }
 
         /// <summary>
         /// </summary>

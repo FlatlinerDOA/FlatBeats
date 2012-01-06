@@ -25,8 +25,6 @@ namespace FlatBeats.ViewModels
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
 
-    using CommandLink = FlatBeats.Controls.CommandLink;
-
     /// <summary>
     /// </summary>
     public class PlayPageViewModel : PageViewModel, IApplicationBarViewModel
@@ -64,7 +62,7 @@ namespace FlatBeats.ViewModels
             this.LikeUnlikeCommand = new CommandLink()
                 {
                     Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike),
-                    IconUri = "/icons/appbar.heart2.empty.rest.png",
+                    IconUrl = new Uri("/icons/appbar.heart2.empty.rest.png", UriKind.Relative),
                     Text = StringResources.Command_LikeMix
                 };
             this.PinToStartCommand = new CommandLink()
@@ -298,12 +296,12 @@ namespace FlatBeats.ViewModels
         {
             if (this.Mix.Liked)
             {
-                this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.rest.png";
+                this.LikeUnlikeCommand.IconUrl = new Uri("/icons/appbar.heart2.rest.png", UriKind.Relative);
                 this.LikeUnlikeCommand.Text = StringResources.Command_UnlikeMix;
             }
             else
             {
-                this.LikeUnlikeCommand.IconUri = "/icons/appbar.heart2.empty.rest.png";
+                this.LikeUnlikeCommand.IconUrl = new Uri("/icons/appbar.heart2.empty.rest.png", UriKind.Relative);
                 this.LikeUnlikeCommand.Text = StringResources.Command_LikeMix;
             }
 

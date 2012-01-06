@@ -2,7 +2,7 @@
 {
     using System;
     using System.Windows.Input;
-
+    /*
     public class DelegateCommand : ICommand
     {
         /// <summary>
@@ -137,5 +137,5 @@
         ////}
 
         public event EventHandler CanExecuteChanged;
-    }
+    }*/
 }

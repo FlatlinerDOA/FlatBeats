@@ -1,10 +1,11 @@
 ﻿namespace FlatBeats.Controls
 {
+    using System;
     using System.Windows.Input;
 
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
-
+    /*
     public class CommandLink : ViewModel, ICommandLink
     {
         public ICommand Command
@@ -33,7 +34,7 @@
             }
         }
 
-        public string IconUri
+        public Uri IconUrl
         {
             get;
             set;
@@ -53,5 +54,6 @@
                 cmd.RaiseCanExecuteChanged();
             }
         }
-    }
+
+    }*/
 }
