@@ -252,14 +252,15 @@ namespace FlatBeatsPlaybackAgent
                 return Observable.Return(new Unit());
             }
 
-            Debug.WriteLine("Player: PlayTrackAsync");
 
             if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
             {
+                Debug.WriteLine("Player: PlayTrackAsync (Invalid Track)");
                 // Reset as we don't know what we're playing anymore.
                 return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
             }
 
+            Debug.WriteLine("Player: PlayTrackAsync (Playing)");
 
             // Set which track to play. When the TrackReady state is received 
             // in the OnPlayStateChanged handler, call player.Play().

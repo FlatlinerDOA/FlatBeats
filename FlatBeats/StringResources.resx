@@ -244,4 +244,10 @@ Link:
   <data name="Command_UnpinStart" xml:space="preserve">
     <value>unpin from start</value>
   </data>
+  <data name="Title_LatestTags" xml:space="preserve">
+    <value>latest tags</value>
+  </data>
+  <data name="Title_LikedTags" xml:space="preserve">
+    <value>liked tags</value>
+  </data>
 </root>

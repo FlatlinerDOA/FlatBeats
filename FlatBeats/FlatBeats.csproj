@@ -229,6 +229,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="SampleData\dnic.json" />
     <None Include="SampleData\login.json" />
     <None Include="SampleData\mixes.json" />
     <None Include="SampleData\recentmixes.json" />

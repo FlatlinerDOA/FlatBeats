@@ -326,11 +326,29 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to latest tags.
+        /// </summary>
+        internal static string Title_LatestTags {
+            get {
+                return ResourceManager.GetString("Title_LatestTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to liked.
         /// </summary>
         internal static string Title_LikedMixes {
             get {
                 return ResourceManager.GetString("Title_LikedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to liked tags.
+        /// </summary>
+        internal static string Title_LikedTags {
+            get {
+                return ResourceManager.GetString("Title_LikedTags", resourceCulture);
             }
         }
         

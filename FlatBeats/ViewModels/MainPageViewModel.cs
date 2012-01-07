@@ -10,6 +10,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Linq;
 
     using Flatliner.Phone.ViewModels;
 
@@ -44,7 +45,7 @@ namespace FlatBeats.ViewModels
         /// <summary>
         ///   Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainPageViewModel()
+        public MainPageViewModel() 
         {
             this.Liked = new MainPageLikedViewModel();
             this.Recent = new MainPageRecentViewModel();
@@ -130,7 +131,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
-            this.subscription.Dispose();
             if (this.IsDataLoaded)
             {
                 this.Refresh();
@@ -141,9 +141,29 @@ namespace FlatBeats.ViewModels
             var load = from liked in this.Liked.LoadAsync()
                        from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
-                       select latest;
-            this.subscription = load.ObserveOnDispatcher().Subscribe(
-                latest => this.TagsPanel.Load(latest), this.HandleError, this.LoadCompleted);
+                       select new
+                           {
+                               Latest = latest, 
+                               Liked = liked
+                           };
+            
+            this.AddToLifetime(
+                load.ObserveOnDispatcher().Subscribe(
+                    results =>
+                        {
+                            if (results.Liked.Any())
+                            {
+                                this.TagsPanel.Title = StringResources.Title_LikedTags;
+                                this.TagsPanel.Load(results.Liked);
+                            }
+                            else
+                            {
+                                this.TagsPanel.Title = StringResources.Title_LatestTags;
+                                this.TagsPanel.Load(results.Latest);
+                            }
+                        }, 
+                        this.HandleError, 
+                        this.LoadCompleted));
         }
 
         private void Refresh()

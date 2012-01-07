@@ -2,6 +2,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
@@ -24,7 +25,7 @@ namespace FlatBeats.ViewModels
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }
 
-        public IObservable<Unit> LoadAsync()
+        public IObservable<IList<MixViewModel>> LoadAsync()
         {
             var liked = from userCredentials in ProfileService.LoadCredentials()
                         from userToken in ProfileService.LoadUserToken()
@@ -43,24 +44,8 @@ namespace FlatBeats.ViewModels
                         this.Message = null;
                     }
 
-                    return new Unit();
+                    return (IList<MixViewModel>)this.Mixes;
                 });
-            ////return liked.FlowIn().ObserveOnDispatcher()
-            ////    .FirstDo(_ => this.Mixes.Clear())
-            ////    .Do(
-            ////    this.Mixes.Add, 
-            ////    () =>
-            ////    {
-            ////        if (this.Mixes.Count == 0)
-            ////        {
-            ////            this.Message = StringResources.Message_NoLikedMixes;
-            ////        }
-            ////        else
-            ////        {
-            ////            this.Mixes.SetLastItem();
-            ////            this.Message = null;
-            ////        }
-            ////    }).FinallySelect(() => new Unit());
         }
     }
 }
