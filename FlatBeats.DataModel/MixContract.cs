@@ -31,5 +31,12 @@
 
         [DataMember(Name = "first_published_at")]
         public string Created { get; set; }
+
+        [DataMember(Name = "plays_count")]
+        public int PlaysCount { get; set; }
+
+        [DataMember(Name = "likes_count")]
+        public int LikesCount { get; set; }
+
     }
 }

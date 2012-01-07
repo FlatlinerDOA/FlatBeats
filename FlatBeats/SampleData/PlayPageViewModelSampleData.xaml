@@ -19,7 +19,13 @@
 		</FlatBeats_ViewModels:MixPlayedTracksViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
 	<FlatBeats_ViewModels:PlayPageViewModel.Mix>
-		<FlatBeats_ViewModels:MixViewModel Description="Class nam aenean cras curae donec aliquam mauris integer nullam quisque sed dis maecenas praesent accumsan duis etiam bibendum vivamus aliquam nunc amet dictumst fusce aliquet est hac blandit commodo lorem leo aptent eleifend auctor facilisi morbi mus faucibus nec congue non conubia habitant ante nulla per proin inceptos sed augue cubilia dapibus interdum arcu sem egestas euismod feugiat gravida diam cursus lobortis sit vel dictum lectus nam dolor sed libero dis ligula iaculis est lacinia litora fames laoreet nascetur luctus natoque eget magnis felis posuere elit mattis potenti ipsum enim pretium justo" Liked="False" MixName="Dictumst curae dis" MixId="Integer curabitur class vestibulum" Tags="Adipiscing parturient" TileTitle="Quisque eleifend vestibulum facilisi">
+		<FlatBeats_ViewModels:MixViewModel 
+		PlaysCount="123456"
+		LikesCount="123456"
+		LikesCountLabel="likes"
+		PlaysCountLabel="plays"
+		CreatedBy="Josephine Bloggs"
+		Description="Class nam aenean cras curae donec aliquam mauris integer nullam quisque sed dis maecenas praesent accumsan duis etiam bibendum vivamus aliquam nunc amet dictumst fusce aliquet est hac blandit commodo lorem leo aptent eleifend auctor facilisi morbi mus faucibus nec congue non conubia habitant ante nulla per proin inceptos sed augue cubilia dapibus interdum arcu sem egestas euismod feugiat gravida diam cursus lobortis sit vel dictum lectus nam dolor sed libero dis ligula iaculis est lacinia litora fames laoreet nascetur luctus natoque eget magnis felis posuere elit mattis potenti ipsum enim pretium justo" Liked="False" MixName="Dictumst curae dis" MixId="Integer curabitur class vestibulum" Tags="Adipiscing parturient" TileTitle="Quisque eleifend vestibulum facilisi">
 			<FlatBeats_ViewModels:MixViewModel.TagList>
 				<FlatBeats_ViewModels:TagViewModel TagName="design one"/>
 				<FlatBeats_ViewModels:TagViewModel TagName="design two"/>

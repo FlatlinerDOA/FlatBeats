@@ -254,7 +254,7 @@
                                        Margin="12,2,12,4"
                                        d:LayoutOverrides="Height" />
                         </ScrollViewer>
-                        <ListBox Margin="12,4,12,8"
+                        <ListBox Margin="12,9,0,12"
                                                  Grid.ColumnSpan="2"
                                                  Grid.Row="2"
                                                  ItemsSource="{Binding Mix.TagList}"
@@ -294,13 +294,48 @@
                                            Style="{StaticResource PhoneTextAccentStyle}"
                                	           FontSize="26.667"
 								           VerticalAlignment="Top"  />
-							        <TextBlock Margin="8,4,4,12"
+							        <TextBlock Margin="8,4,4,4"
                                        TextWrapping="Wrap"
                                        Text="{Binding Mix.Created, Converter={StaticResource RelativeDateConverter}}"
                                        d:LayoutOverrides="Height"
                                        Style="{StaticResource PhoneTextSmallStyle}"
                                        FontSize="16" />
-						        </StackPanel>								   
+                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="92.333" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.PlaysCountLabel}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16" />
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.PlaysCount}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16" Grid.Column="1" />
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.LikesCountLabel}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16" Grid.Column="2" />
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.LikesCount}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16"
+                                                   Grid.Column="3" />
+                                    </Grid>
+                                    
+
+                                </StackPanel>								   
                             </Grid>
                         </Button>
                     </Grid>

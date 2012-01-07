@@ -74,19 +74,20 @@
             </Setter>-->
     	</Style>
     	<DataTemplate x:Key="LikedHeaderTemplate">
-    		<Grid Background="{StaticResource HeaderBackgroundBrush}">
-    			<TextBlock TextWrapping="Wrap"
+    		<Grid>
+    			<Grid.ColumnDefinitions>
+    				<ColumnDefinition Width="0.877*"/>
+    				<ColumnDefinition Width="0.123*"/>
+    			</Grid.ColumnDefinitions>
+    			<TextBlock
     				Text="{Binding}"
-    				d:LayoutOverrides="Width, Height"
+    				d:LayoutOverrides="Width"
     				FontFamily="Segoe WP SemiLight"
-    				Margin="8,4" Foreground="#FFFFFFFF"/>
+    				Margin="16,0,12,0" Foreground="#FFFFFFFF" VerticalAlignment="Top"/>
                 <Button  Style="{StaticResource CircleButtonStyle}"
                          Foreground="White"
-    				HorizontalAlignment="Right"
-    				Margin="4,8,4,22"
-    				d:LayoutOverrides="Height"
-    				VerticalAlignment="Bottom"
-    				Click="SettingsButton_Click">
+    				VerticalAlignment="Center"
+    				Click="SettingsButton_Click" Grid.Column="1" Margin="0,12,0,0" Width="48" Height="48">
     				<Image Source="/icons/appbar.feature.settings.rest.png"
     					HorizontalAlignment="Center"
     					VerticalAlignment="Center"
@@ -95,28 +96,29 @@
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="RecentHeaderTemplate">
-    		<Grid Background="{StaticResource HeaderBackgroundBrush}">
-    			<TextBlock TextWrapping="Wrap"
+    		<Grid>
+    			<TextBlock
     				Text="{Binding}"
     				d:LayoutOverrides="Width, Height"
     				FontFamily="Segoe WP SemiLight"
-    				Margin="8,4" Foreground="#FFFFFFFF"/>
+    				Margin="16,0,12,0" Foreground="#FFFFFFFF"/>
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="TagsHeaderTemplate">
-    		<Grid Background="{StaticResource HeaderBackgroundBrush}">
-    			<TextBlock TextWrapping="Wrap"
+    		<Grid>
+    			<Grid.ColumnDefinitions>
+    				<ColumnDefinition Width="0.856*"/>
+    				<ColumnDefinition Width="0.144*"/>
+    			</Grid.ColumnDefinitions>
+    			<TextBlock
     				Text="{Binding}"
-    				d:LayoutOverrides="Width, Height"
+    				d:LayoutOverrides="Width"
     				FontFamily="Segoe WP SemiLight"
-    				Margin="8,4" Foreground="#FFFFFFFF"/>
+    				Margin="16,0,12,0" Foreground="#FFFFFFFF" VerticalAlignment="Top"/>
                 <Button Style="{StaticResource CircleButtonStyle}"
-    				HorizontalAlignment="Right"
-    				Margin="4,4,4,22"
-    				d:LayoutOverrides="Height"
-    				VerticalAlignment="Bottom"
+    				Margin="4,12,4,0"
     				Click="SearchButton_Click"
-    				Foreground="White">
+    				Foreground="White" Grid.Column="1" Height="48" Width="48">
     				<Image Source="icons/appbar.feature.search.rest.png"
     					HorizontalAlignment="Center"
     					VerticalAlignment="Center"
@@ -132,11 +134,11 @@
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="LatestHeaderTemplate">
-    		<Grid Background="{StaticResource HeaderBackgroundBrush}">
-    			<TextBlock TextWrapping="Wrap"
+    		<Grid>
+    			<TextBlock
     				Text="{Binding}"
     				d:LayoutOverrides="Width, Height"
-    				Margin="8,4" Foreground="#FFFFFFFF"/>
+    				Margin="16,0,8,0" Foreground="#FFFFFFFF"/>
     		</Grid>
     	</DataTemplate>
     	<Style x:Key="PanoramaItemStyle1"
@@ -240,29 +242,28 @@
                                         	<RowDefinition />
                                         	<RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <Grid Background="#7F000000"
-                                              Height="64">
+                                        <Grid Background="#00000000">
                                             <Grid.ColumnDefinitions>
                                             	<ColumnDefinition Width="Auto" />
                                             	<ColumnDefinition />
                                             </Grid.ColumnDefinitions>
-                                            <Image Margin="0"
-                                                   Width="64"
-                                                   Height="64"
-                                                   Stretch="Uniform"
-                                                   VerticalAlignment="Top"
-                                                   Source="{Binding ThumbnailUrl}"
-                                                   HorizontalAlignment="Left" />
+                                            <Border Margin="0,0,8,8"
+                                            	Background="{StaticResource PhoneChromeBrush}">
+                                            	<Image Width="100"
+                                            		Stretch="Uniform"
+                                            		Height="100"
+                                            		Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                                            </Border>
                                             <TextBlock Text="{Binding MixName}"
                                                        Style="{StaticResource PhoneTextTitle2Style}"
                                                        Foreground="White"
-                                                       VerticalAlignment="Center"
+                                                       VerticalAlignment="Top"
                                                        Margin="8,0"
                                                        d:LayoutOverrides="Width"
-                                                       Grid.Column="1" />
+                                                       Grid.Column="1" Height="100" />
 
                                         </Grid>
-                                        <Grid Height="64"
+                                        <Grid x:Name="lastItemSeparator" Height="64"
                                               Grid.Row="1"
                                               Visibility="{Binding IsLastItem, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
@@ -289,16 +290,16 @@
                              Style="{StaticResource TiltedNavigationListStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl Margin="16,8,16,0">
+                                <local:AnimatingContentControl Margin="16,0">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                         	<RowDefinition />
                                         	<RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <Grid Background="#7F000000">
+                                        <Grid Background="#00000000">
                                             <Grid.RowDefinitions>
                                             	<RowDefinition Height="Auto" />
-                                            	<RowDefinition Height="64" />
+                                            	<RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
                                             	<ColumnDefinition Width="Auto" />
@@ -308,25 +309,28 @@
                                                        Style="{StaticResource PhoneTextTitle2Style}"
                                                        Foreground="{StaticResource PhoneAccentBrush}"
                                                        Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"
-                                                       FontFamily="Segoe WP"
+                                                       FontFamily="Segoe WP Black"
                                                        Grid.ColumnSpan="2"
-                                                       Margin="16,8" />
-                                            <Image Margin="0"
-                                                   Width="64"
-                                                   Height="64"
-                                                   Stretch="Uniform"
-                                                   Source="{Binding ThumbnailUrl}"
-                                                   Grid.Row="1" />
+                                                       Margin="0,24,16,0" FontSize="42.667" />
+                                            <Border Margin="0,0,8,12"
+                                            	Grid.RowSpan="2"
+                                            	VerticalAlignment="Top"
+                                            	Background="{StaticResource PhoneChromeBrush}" d:LayoutOverrides="GridBox" Grid.Row="1">
+                                            	<Image Width="133"
+                                            		Stretch="Uniform"
+                                            		Height="133"
+                                            		Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                                            </Border>
                                             <TextBlock Text="{Binding MixName}"
                                                        Style="{StaticResource PhoneTextTitle2Style}"
                                                        Foreground="White"
-                                                       VerticalAlignment="Center"
-                                                       Margin="8,0"
+                                                       Margin="8,0,8,12"
                                                        Grid.Column="1"
-                                                       Grid.Row="1" />
+                                                       Grid.Row="1" TextWrapping="Wrap" Height="133" VerticalAlignment="Top" />
 
                                         </Grid>
-                                        <Grid Height="64"
+                                        <Grid x:Name="nowPlayingSeparator" Height="16" Grid.Row="1" Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"/>
+                                        <Grid x:Name="lastItemSeparator" Height="64"
                                               Grid.Row="2"
                                               Visibility="{Binding IsLastItem, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
@@ -350,7 +354,7 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
                                Margin="12,8,12,0" />
-                    <ListBox Margin="0,4,-12,0"
+                    <ListBox Margin="12,32,-12,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"
@@ -379,15 +383,14 @@
                                         	<RowDefinition />
                                         	<RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <Border Background="#7F000000"
+                                        <Border Background="#00000000"
                                                 Height="64">
                                             <TextBlock Text="{Binding TagName}"
                                                        TextWrapping="NoWrap"
                                                        Style="{StaticResource PhoneTextExtraLargeStyle}"
                                                        Foreground="White"
-                                                       Margin="12,4"
-                                                       d:LayoutOverrides="Height, VerticalMargin"
-                                                       VerticalAlignment="Center" />
+                                                       Margin="0"
+                                                       d:LayoutOverrides="Height" />
                                         </Border>
                                         <Grid Height="64"
                                               Grid.Row="1"

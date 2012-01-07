@@ -77,13 +77,15 @@ namespace FlatBeats.ViewModels
             this.MixName = string.Empty;
             this.Description = string.Empty;
             this.TileTitle = string.Empty;
+            this.PlaysCountLabel = "plays";
+            this.LikesCountLabel = "likes";
         }
 
         /// <summary>
         /// </summary>
         /// <param name="mix">
         /// </param>
-        public MixViewModel(MixContract mix)
+        public MixViewModel(MixContract mix) : this()
         {
             this.Load(mix);
         }
@@ -272,6 +274,46 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private int likesCount;
+
+        public int LikesCount
+        {
+            get
+            {
+                return this.likesCount;
+            }
+            set
+            {
+                if (this.likesCount == value)
+                {
+                    return;
+                }
+
+                this.likesCount = value;
+                this.OnPropertyChanged("LikesCount");
+            }
+        }
+
+        private int playsCount;
+
+        public int PlaysCount
+        {
+            get
+            {
+                return this.playsCount;
+            }
+            set
+            {
+                if (this.playsCount == value)
+                {
+                    return;
+                }
+
+                this.playsCount = value;
+                this.OnPropertyChanged("PlaysCount");
+            }
+        }
+
         /// <summary>
         /// </summary>
         public string Tags
@@ -311,6 +353,46 @@ namespace FlatBeats.ViewModels
 
                 this.thumbnailUrl = value;
                 this.OnPropertyChanged("ThumbnailUrl");
+            }
+        }
+
+        private string playsCountLabel;
+
+        public string PlaysCountLabel
+        {
+            get
+            {
+                return this.playsCountLabel;
+            }
+            set
+            {
+                if (this.playsCountLabel == value)
+                {
+                    return;
+                }
+
+                this.playsCountLabel = value;
+                this.OnPropertyChanged(() => this.PlaysCountLabel);
+            }
+        }
+
+        private string likesCountLabel;
+
+        public string LikesCountLabel
+        {
+            get
+            {
+                return this.likesCountLabel;
+            }
+            set
+            {
+                if (this.likesCountLabel == value)
+                {
+                    return;
+                }
+
+                this.likesCountLabel = value;
+                this.OnPropertyChanged(() => this.LikesCountLabel);
             }
         }
 
@@ -354,6 +436,9 @@ namespace FlatBeats.ViewModels
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
             this.Created = DateTimeOffset.Parse(mix.Created).ToLocalTime().DateTime;
+            this.PlaysCount = mix.PlaysCount;
+            this.LikesCount = mix.LikesCount;
+
             if (this.Created > DateTime.Now)
             {
                 this.Created = DateTime.Now.AddSeconds(-1);
