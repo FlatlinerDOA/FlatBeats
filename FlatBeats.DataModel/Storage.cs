@@ -5,6 +5,8 @@
     using System.IO.IsolatedStorage;
     using System.Text;
 
+    using Flatliner.Phone;
+
     using Microsoft.Phone.Reactive;
 
     public static class Storage

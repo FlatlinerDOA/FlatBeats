@@ -1,17 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AudioPlayer.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-using System;
-
-namespace FlatBeatsPlaybackAgent
+﻿namespace FlatBeatsPlaybackAgent
 {
+    using System;
     using System.Diagnostics;
 
     using FlatBeats.DataModel;
@@ -196,14 +185,13 @@ namespace FlatBeatsPlaybackAgent
         {
             Debug.WriteLine("Player: PlayNextTrackAsync");
 
-            if (this.NowPlaying == null || this.NowPlaying.Set == null ||  this.NowPlaying.Set.Track.TrackUrl == null)
+            if (this.NowPlaying == null || this.NowPlaying.Set == null)
             {
-                Debug.WriteLine("Player: PlayNextTrackAsync (Current track not set)");
+                Debug.WriteLine("Player: PlayNextTrackAsync (Now Playing not set)");
                 return this.StopPlayingAsync(player);
             }
 
             var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player)
-                   where nextResponse != null && nextResponse.Status != null && nextResponse.Status.StartsWith("200")
                    from d in ObservableEx.DeferredStart(
                                    () =>
                                        {
@@ -227,6 +215,8 @@ namespace FlatBeatsPlaybackAgent
                         return this.StopPlayingAsync(player);
                     });
         }
+
+        
 
         private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
         {
@@ -253,11 +243,19 @@ namespace FlatBeatsPlaybackAgent
             }
 
 
-            if (this.NowPlaying == null || this.NowPlaying.Set == null || this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
+            if (this.NowPlaying == null || this.NowPlaying.Set == null)
             {
-                Debug.WriteLine("Player: PlayTrackAsync (Invalid Track)");
+                Debug.WriteLine("Player: PlayTrackAsync (Now Playing not set)");
+
                 // Reset as we don't know what we're playing anymore.
                 return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
+            }
+
+            if (this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
+            {
+                this.PlayNextTrackAsync(player);
+                return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
+
             }
 
             Debug.WriteLine("Player: PlayTrackAsync (Playing)");

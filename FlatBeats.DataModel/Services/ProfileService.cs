@@ -3,6 +3,8 @@
     using System;
     using System.Net;
 
+    using Flatliner.Phone;
+
     using Microsoft.Phone.Reactive;
 
     public static class ProfileService

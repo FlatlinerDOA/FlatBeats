@@ -13,6 +13,8 @@
 
     using FlatBeats.DataModel.Profile;
 
+    using Flatliner.Phone;
+
     using Microsoft.Devices;
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
@@ -137,16 +139,20 @@
         {
             var playingMix = from playToken in GetOrCreatePlayTokenAsync()
                              let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}&skip_aac_v2=1", playToken, mix.Id)
-                   from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
-                   from added in AddToRecentlyPlayedAsync(mix)
-                   select new PlayingMixContract
-                   {
-                       PlayToken = playToken,
-                       MixId = mix.Id,
-                       MixName = mix.Name,
-                       Cover = mix.Cover,
-                       Set = response.Set
-                   };
+                             from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
+                                 .Repeat(8)
+                                 .Log("StartPlayingAsync: Attempting")
+                                 .TakeFirst(ValidResponse)
+                                 .Log("StartPlayingAsync: Valid Response")
+                             from added in AddToRecentlyPlayedAsync(mix)
+                             select new PlayingMixContract
+                             {
+                                 PlayToken = playToken,
+                                 MixId = mix.Id,
+                                 MixName = mix.Name,
+                                 Cover = mix.Cover,
+                                 Set = response.Set
+                             };
 
             return from playing in playingMix
                    from tile in SetNowPlayingTileAsync(
@@ -253,9 +259,20 @@
                 "http://8tracks.com/sets/{0}/next.json?mix_id={1}&skip_aac_v2=1",
                 playing.PlayToken,
                 playing.MixId);
+            var url = new Uri(nextFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
-                   from response in Downloader.GetJson<PlayResponseContract>(new Uri(nextFormat, UriKind.Absolute))
+                   from response in Downloader.GetJson<PlayResponseContract>(url)
+                        .Repeat(8)
+                       .Log("NextTrackAsync: Attempting")
+                       .TakeFirst(ValidResponse)
+                       .Log("NextTrackAsync: ValidResponse")
                    select response;
+        }
+
+        private static bool ValidResponse(PlayResponseContract response)
+        {
+            return response != null && response.Status != null && response.Status.StartsWith("200")
+            && response.Set.Track != null && response.Set.Track.TrackUrl != null;
         }
 
         private static IObservable<Unit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
@@ -292,8 +309,11 @@
                 "http://8tracks.com/sets/{0}/skip.json?mix_id={1}&skip_aac_v2=1",
                 playing.PlayToken,
                 playing.MixId);
+            var url = new Uri(skipFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
-                   from response in Downloader.GetJson<PlayResponseContract>(new Uri(skipFormat, UriKind.Absolute))
+                   from response in Downloader.GetJson<PlayResponseContract>(url)
+                       .Repeat(2)
+                       .TakeFirst(ValidResponse)
                    select response;
         }
 
@@ -304,9 +324,8 @@
                                        "http://8tracks.com/sets/{0}/tracks_played.json?mix_id={1}",
                                        playToken,
                                        mix.Id)
-                               from response in
-                                   Downloader.GetJson<PlayedTracksResponseContract>(
-                                       new Uri(urlFormat, UriKind.Absolute))
+                               let url = new Uri(urlFormat, UriKind.Absolute)
+                               from response in Downloader.GetJson<PlayedTracksResponseContract>(url)
                                select response;
             return playedTracks;
         }

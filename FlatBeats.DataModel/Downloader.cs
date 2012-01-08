@@ -10,6 +10,8 @@ namespace FlatBeats.DataModel
     using System.IO;
     using System.Net;
 
+    using Flatliner.Phone;
+
     using Microsoft.Phone.Reactive;
 
     /// <summary>
