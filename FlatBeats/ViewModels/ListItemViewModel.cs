@@ -15,6 +15,26 @@ namespace FlatBeats.ViewModels
 
     public class ListItemViewModel : ViewModel
     {
+        private bool isFirstItem;
+
+        public bool IsFirstItem
+        {
+            get
+            {
+                return this.isFirstItem;
+            }
+            set
+            {
+                if (this.isFirstItem == value)
+                {
+                    return;
+                }
+
+                this.isFirstItem = value;
+                this.OnPropertyChanged(() => this.IsFirstItem);
+            }
+        }
+
         private bool isLastItem;
 
         public bool IsLastItem

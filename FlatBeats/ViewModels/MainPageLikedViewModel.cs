@@ -27,21 +27,17 @@ namespace FlatBeats.ViewModels
 
         public IObservable<IList<MixViewModel>> LoadAsync()
         {
+            this.Message = null;
             var liked = from userCredentials in ProfileService.LoadCredentials()
                         from userToken in ProfileService.LoadUserToken()
                         from response in ProfileService.GetLikedMixes(userToken.CurentUser.Id)
-                        from mix in response.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadByPosition(this.Mixes, (vm, d) => vm.Load(d))
+                        from mix in response.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadListItems(this.Mixes, (vm, d) => vm.Load(d))
                         select mix;
             return liked.FinallySelect(() =>
                 {
                     if (this.Mixes.Count == 0)
                     {
                         this.Message = StringResources.Message_NoLikedMixes;
-                    }
-                    else
-                    {
-                        this.Mixes.SetLastItem();
-                        this.Message = null;
                     }
 
                     return (IList<MixViewModel>)this.Mixes;

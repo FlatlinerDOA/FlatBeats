@@ -28,33 +28,36 @@ namespace FlatBeats.ViewModels
 
             if (url.IsAbsoluteUri)
             {
-                if (url.Scheme == Uri.UriSchemeHttp)
+                try
                 {
-                    WebBrowserTask task = new WebBrowserTask();
-                    task.Uri = url;
-                    task.Show();
+                    if (url.Scheme == Uri.UriSchemeHttp)
+                    {
+                        WebBrowserTask task = new WebBrowserTask();
+                        task.Uri = url;
+                        task.Show();
+                    }
+                    else if (url.Scheme == Uri.UriSchemeMailto)
+                    {
+                        var email = url.OriginalString.Substring(Uri.UriSchemeMailto.Length);
+                        var emailComposeTask = new EmailComposeTask { To = email, Subject = "Feedback on Flat Beats" };
+                        emailComposeTask.Show();
+                    }
+                    else if (url.Scheme == "music")
+                    {
+                        MarketplaceSearchTask task = new MarketplaceSearchTask();
+                        task.ContentType = MarketplaceContentType.Music;
+                        task.SearchTerms = HttpUtility.UrlDecode(url.Query.TrimStart('?'));
+                        task.Show();
+                    }
+                    else if (url.Scheme == "rate")
+                    {
+                        MarketplaceReviewTask reviewTask = new MarketplaceReviewTask();
+                        reviewTask.Show();
+                    }
                 }
-                else if (url.Scheme == Uri.UriSchemeMailto)
+                catch (InvalidOperationException)
                 {
-                    var email = url.OriginalString.Substring(Uri.UriSchemeMailto.Length);
-                    var emailComposeTask = new EmailComposeTask
-                        { 
-                            To = email, 
-                            Subject = "Feedback on Flat Beats" 
-                        };
-                    emailComposeTask.Show();
-                }
-                else if (url.Scheme == "music")
-                {
-                    MarketplaceSearchTask task = new MarketplaceSearchTask();
-                    task.ContentType = MarketplaceContentType.Music;
-                    task.SearchTerms = HttpUtility.UrlDecode(url.Query.TrimStart('?'));
-                    task.Show();
-                }
-                else if (url.Scheme == "rate")
-                {
-                    MarketplaceReviewTask reviewTask = new MarketplaceReviewTask();
-                    reviewTask.Show();
+                    // Thrown when task is not in the foreground.
                 }
             }
             else

@@ -29,12 +29,18 @@
         {
             var tagList = TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags)).OrderBy(t => t.TagName).ToList();
             tagList.Add(new TagViewModel("more..."));
-            tagList.ToObservable() //.FlowIn()
-                .ObserveOnDispatcher()
-                .FirstDo(_ => this.Tags.Clear())
-                .Subscribe(
-                    t => this.Tags.Add(t), 
-                    this.HandleError);
+
+            this.Tags.Clear();
+            foreach (var tagViewModel in tagList.SetListItemPositions())
+            {
+                this.Tags.Add(tagViewModel);
+            }
+            ////tagList.ToObservable() //.FlowIn()
+            ////    .ObserveOnDispatcher()
+            ////    .FirstDo(_ => this.Tags.Clear())
+            ////    .Subscribe(
+            ////        t => this.Tags.Add(t), 
+            ////        this.HandleError);
         }
     }
 }

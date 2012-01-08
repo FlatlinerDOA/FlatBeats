@@ -432,11 +432,13 @@ namespace FlatBeats.ViewModels
 
             this.Message = null;
             this.UpdatePlayingProgress();
-            if (this.refreshSubscription == null)
+            if (this.refreshSubscription != null)
             {
-                this.refreshSubscription = Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(_ => this.UpdatePlayingProgress());
-                this.AddToLifetime(this.refreshSubscription);
+                this.refreshSubscription.Dispose();
             }
+
+            this.refreshSubscription = Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(_ => this.UpdatePlayingProgress());
+            this.AddToLifetime(this.refreshSubscription);
         }
 
         /// <summary>
