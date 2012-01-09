@@ -270,7 +270,6 @@
                                     <Controls:PhoneTextBox x:Name="inputBox"
                                                            Hint="search mixes by name, tag or artist"
                                                            Binding:TextBinding.UpdateSourceOnChange="True"
-                                                           InputScope="{TemplateBinding InputScope}"
                                                            Text="{TemplateBinding Value}"
                                                            Margin="0,0,1,0"
                                                            d:LayoutOverrides="Width, Height" />

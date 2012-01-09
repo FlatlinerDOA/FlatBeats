@@ -27,37 +27,46 @@
         <local:UrlToBitmapConverter x:Key="ImageConverter" />
         <DataTemplate x:Key="MixTemplate">
             <local:AnimatingContentControl>
-            <Grid Height="149">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="149"  />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                    <Border Margin="8"
-                            Grid.RowSpan="2"
-                            VerticalAlignment="Top"
-                            Height="133"
-                            Width="133"
-                            Background="{StaticResource PhoneChromeBrush}">
-                        <Image Width="133"
-                               Stretch="Uniform"
-                               Height="133"
-                               Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
-                    </Border>
-                    <TextBlock Text="{Binding MixName}" 
-                           Style="{StaticResource PhoneTextTitle2Style}"
-                           Grid.Column="1" />
-                <TextBlock Text="{Binding Description}"
-                           Style="{StaticResource PhoneTextSmallStyle}"
-                           TextWrapping="Wrap"
-                           TextTrimming="WordEllipsis"
-                           VerticalAlignment="Top"
-                           Grid.Column="1"
-                           Grid.Row="1" />
-            </Grid>
+                <StackPanel>
+                    <Grid Height="149">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="149" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border Margin="8"
+                                Grid.RowSpan="2"
+                                VerticalAlignment="Top"
+                                Height="133"
+                                Width="133"
+                                Background="{StaticResource PhoneChromeBrush}">
+                            <Image Width="133"
+                                   Stretch="Uniform"
+                                   Height="133"
+                                   Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                        </Border>
+                        <TextBlock Text="{Binding MixName}"
+                                   Style="{StaticResource PhoneTextTitle2Style}"
+                                   Grid.Column="1" />
+                        <TextBlock Text="{Binding Description}"
+                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                   TextWrapping="Wrap"
+                                   TextTrimming="WordEllipsis"
+                                   VerticalAlignment="Top"
+                                   Grid.Column="1"
+                                   Grid.Row="1" />
+                    </Grid>
+                    <Grid x:Name="lastItemSeparator"
+                          Height="64"
+                          Visibility="{Binding IsLastItem, Converter={StaticResource ShowConverter}}">
+                        <TextBlock Text="Loading more..."
+                                   Visibility="{Binding IsLoading, Converter={StaticResource ShowConverter}}" />
+                    </Grid>
+                </StackPanel>
+           
             </local:AnimatingContentControl>
         </DataTemplate>
         <Style x:Key="MessageTextStyle" TargetType="TextBlock"

@@ -1,8 +1,8 @@
-﻿<FlatBeats_ViewModels:PlayPageViewModel xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:Microsoft_Phone_BackgroundAudio="clr-namespace:Microsoft.Phone.BackgroundAudio;assembly=Microsoft.Phone" xmlns:System="clr-namespace:System;assembly=mscorlib" IsInProgress="True" Message="Nam praesent cras mauris" MixId="Nullam duis" Title="Cras nam maecenas sed">
+﻿<FlatBeats_ViewModels:PlayPageViewModel xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:Microsoft_Phone_BackgroundAudio="clr-namespace:Microsoft.Phone.BackgroundAudio;assembly=Microsoft.Phone" xmlns:System="clr-namespace:System;assembly=mscorlib" IsInProgress="True" Message="Nam praesent cras mauris" MixId="Nullam duis" Title="design mix">
 	<FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
-		<FlatBeats_ViewModels:MixPlayedTracksViewModel ShowNowPlaying="True" IsProgressIndeterminate="False" Progress="50" ProgressStatusText="00:00 / 00:00">
+		<FlatBeats_ViewModels:MixPlayedTracksViewModel Title="design playing" ShowNowPlaying="True" IsProgressIndeterminate="False" Progress="50" ProgressStatusText="00:00 / 00:00">
 			<FlatBeats_ViewModels:MixPlayedTracksViewModel.CurrentTrack>
-				<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam adipiscing maecenas aenean" Artist="Vestibulum aliquam" />
+				<FlatBeats_ViewModels:TrackViewModel Title="Vestibulum aliquam" Artist="Vestibulum aliquam" />
 			</FlatBeats_ViewModels:MixPlayedTracksViewModel.CurrentTrack>
 			<FlatBeats_ViewModels:MixPlayedTracksViewModel.Tracks>
 				<FlatBeats_ViewModels:TrackViewModel Title="Faucibus phasellus vestibulum" Artist="Faucibus phasellus" />
@@ -18,7 +18,7 @@
 			</FlatBeats_ViewModels:MixPlayedTracksViewModel.Tracks>
 		</FlatBeats_ViewModels:MixPlayedTracksViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.PlayedPanel>
-	<FlatBeats_ViewModels:PlayPageViewModel.Mix>
+	<FlatBeats_ViewModels:PlayPageViewModel.Mix Title="design mix">
 		<FlatBeats_ViewModels:MixViewModel 
 		PlaysCount="123456"
 		LikesCount="123456"
@@ -41,7 +41,7 @@
 		</FlatBeats_ViewModels:MixViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.Mix>
 	<FlatBeats_ViewModels:PlayPageViewModel.ReviewsPanel>
-		<FlatBeats_ViewModels:ReviewsPanelViewModel>
+		<FlatBeats_ViewModels:ReviewsPanelViewModel Title="design reviews">
 			<FlatBeats_ViewModels:ReviewsPanelViewModel.Reviews>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Fusce nisi vestibulum lorem" Created="08/28/2011 15:30:30" UserName="Malesuada penatibus sem"/>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Sit vestibulum" Created="08/28/2011 15:30:30" UserName="Gravida vel porttitor morbi"/>

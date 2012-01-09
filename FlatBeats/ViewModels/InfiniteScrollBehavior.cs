@@ -1,85 +1,201 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InfiniteScrollBehavior.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
 
 namespace FlatBeats.ViewModels
 {
     using System.Collections;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Input;
     using System.Windows.Interactivity;
+    using System.Windows.Media;
 
+    /// <summary>
+    /// </summary>
     public class InfiniteScrollBehavior : Behavior<ListBox>
     {
+        #region Constants and Fields
+
+        /// <summary>
+        /// </summary>
         private bool alreadyHookedScrollEvents;
 
+        /// <summary>
+        /// </summary>
         private ScrollBar sb;
 
+        /// <summary>
+        /// </summary>
         private ScrollViewer sv;
 
+        #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// </summary>
         protected override void OnAttached()
         {
             base.OnAttached();
             this.AssociatedObject.Loaded += this.AssociatedObjectLoaded;
         }
 
+        /// <summary>
+        /// </summary>
         protected override void OnDetaching()
         {
             this.AssociatedObject.Loaded -= this.AssociatedObjectLoaded;
             base.OnDetaching();
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
         private void AssociatedObjectLoaded(object sender, RoutedEventArgs e)
         {
-         if(alreadyHookedScrollEvents) 
-             return; 
+            if (this.alreadyHookedScrollEvents)
+            {
+                return;
+            }
 
-         alreadyHookedScrollEvents = true; 
-         AssociatedObject.AddHandler(UIElement.ManipulationCompletedEvent, (EventHandler<ManipulationCompletedEventArgs>)LB_ManipulationCompleted, true); 
-         sb = (ScrollBar)FindElementRecursive(AssociatedObject, typeof(ScrollBar)); 
-         sv = (ScrollViewer)FindElementRecursive(AssociatedObject, typeof(ScrollViewer)); 
+            this.alreadyHookedScrollEvents = true;
+            this.AssociatedObject.AddHandler(
+                UIElement.ManipulationCompletedEvent, 
+                (EventHandler<ManipulationCompletedEventArgs>)this.LB_ManipulationCompleted, 
+                true);
+            this.sb = (ScrollBar)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollBar));
+            this.sv = (ScrollViewer)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollViewer));
 
-         if(sv != null) 
-         { 
-             // Visual States are always on the first child of the control template 
-            FrameworkElement element = VisualTreeHelper.GetChild(sv, 0) as FrameworkElement; 
-             if(element != null) 
-             { 
-                 VisualStateGroup group = FindVisualState(element, "ScrollStates"); 
-                 if(group != null) 
-                 { 
-                     group.CurrentStateChanging += this.group_CurrentStateChanging; 
-                 } 
-                 VisualStateGroup vgroup = FindVisualState(element, "VerticalCompression"); 
-                 VisualStateGroup hgroup = FindVisualState(element, "HorizontalCompression"); 
-                 if(vgroup != null) 
-                 { 
-                     vgroup.CurrentStateChanging += this.vgroup_CurrentStateChanging; 
-                 } 
-                 if(hgroup != null) 
-                 { 
-                     hgroup.CurrentStateChanging += this.hgroup_CurrentStateChanging; 
-                 } 
-             } 
-         }           
+            if (this.sv != null)
+            {
+                // Visual States are always on the first child of the control template 
+                FrameworkElement element = VisualTreeHelper.GetChild(this.sv, 0) as FrameworkElement;
+                if (element != null)
+                {
+                    VisualStateGroup group = this.FindVisualState(element, "ScrollStates");
+                    if (group != null)
+                    {
+                        group.CurrentStateChanging += this.group_CurrentStateChanging;
+                    }
 
-     }
+                    VisualStateGroup vgroup = this.FindVisualState(element, "VerticalCompression");
+                    VisualStateGroup hgroup = this.FindVisualState(element, "HorizontalCompression");
+                    if (vgroup != null)
+                    {
+                        vgroup.CurrentStateChanging += this.vgroup_CurrentStateChanging;
+                    }
 
-        private void hgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
-        {
-            
+                    if (hgroup != null)
+                    {
+                        hgroup.CurrentStateChanging += this.hgroup_CurrentStateChanging;
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="parent">
+        /// </param>
+        /// <param name="targetType">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private UIElement FindElementRecursive(FrameworkElement parent, Type targetType)
+        {
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            UIElement returnElement = null;
+            if (childCount > 0)
+            {
+                for (int i = 0; i < childCount; i++)
+                {
+                    object element = VisualTreeHelper.GetChild(parent, i);
+                    if (element.GetType() == targetType)
+                    {
+                        return element as UIElement;
+                    }
+                    else
+                    {
+                        returnElement =
+                            this.FindElementRecursive(
+                                VisualTreeHelper.GetChild(parent, i) as FrameworkElement, targetType);
+                    }
+                }
+            }
+
+            return returnElement;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="element">
+        /// </param>
+        /// <param name="name">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private VisualStateGroup FindVisualState(FrameworkElement element, string name)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+
+            IList groups = VisualStateManager.GetVisualStateGroups(element);
+            return groups.Cast<VisualStateGroup>().FirstOrDefault(group => group.Name == name);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
+        private void LB_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
+        private void group_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
+        private void hgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender">
+        /// </param>
+        /// <param name="e">
+        /// </param>
         private void vgroup_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
         {
             if (e.NewState.Name == "CompressionBottom")
@@ -91,49 +207,8 @@ namespace FlatBeats.ViewModels
                     i.LoadNextPage();
                 }
             }
-            
         }
 
-        private void group_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
-        {
-        }
-
-        private void LB_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
-        {
-            
-        }
-
-        private UIElement FindElementRecursive(FrameworkElement parent, Type targetType) 
-       { 
-           int childCount = VisualTreeHelper.GetChildrenCount(parent); 
-           UIElement returnElement = null; 
-           if (childCount > 0) 
-           { 
-               for (int i = 0; i < childCount; i++) 
-               { 
-                   object element = VisualTreeHelper.GetChild(parent, i); 
-                   if (element.GetType() == targetType) 
-                   { 
-                       return element as UIElement; 
-                   } 
-                   else 
-                   { 
-                       returnElement = FindElementRecursive(VisualTreeHelper.GetChild(parent, i) as FrameworkElement, targetType); 
-                   } 
-               } 
-           } 
-           return returnElement; 
-       }
-
-
-       private VisualStateGroup FindVisualState(FrameworkElement element, string name) 
-       { 
-           if (element == null) 
-               return null; 
-
-           IList groups = VisualStateManager.GetVisualStateGroups(element);
-           return groups.Cast<VisualStateGroup>().FirstOrDefault(group => group.Name == name);
-       } 
-
+        #endregion
     }
 }

@@ -137,7 +137,7 @@
                 });
         }
 
-        public static IObservable<Unit> Reset()
+        public static IObservable<Unit> ResetAsync()
         {
             return ObservableEx.DeferredStart(DeleteCredentials);
         }

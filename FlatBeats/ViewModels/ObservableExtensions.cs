@@ -129,6 +129,7 @@ namespace FlatBeats.ViewModels
         public static IObservable<TData> AddOrReloadListItems<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
         {
             int removeAfter = 0;
+            TViewModel previous = null;
             return dataItems.Indexed().Do(
                 dataItem =>
                 {
@@ -143,8 +144,14 @@ namespace FlatBeats.ViewModels
                     {
                         load(existing, dataItem.Item);
                     }
+
                     existing.IsFirstItem = dataItem.Index == 0;
-                    existing.IsLastItem = false;
+                    if (previous != null)
+                    {
+                        previous.IsLastItem = false;
+                    }
+
+                    previous = existing;
                     removeAfter = Math.Max(removeAfter, dataItem.Index);
                 }).Finally(() =>
                 {

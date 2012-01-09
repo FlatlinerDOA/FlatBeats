@@ -6,7 +6,7 @@
     <ViewModels:MainPageViewModel.TagsPanel>
     	<ViewModels:MainPageTagsViewModel Title="design tags">
     		<ViewModels:MainPageTagsViewModel.Tags>
-			<ViewModels:TagViewModel TagName="design one" />
+			<ViewModels:TagViewModel TagName="design one" IsFirstItem="True" />
         <ViewModels:TagViewModel TagName="design two" />
         <ViewModels:TagViewModel TagName="design three" />
         <ViewModels:TagViewModel TagName="design four" />
@@ -19,7 +19,7 @@
         <ViewModels:TagViewModel TagName="design eleven" />
         <ViewModels:TagViewModel TagName="design twelve" />
         <ViewModels:TagViewModel TagName="design thirteen" />
-        <ViewModels:TagViewModel TagName="design fourteen" />
+        <ViewModels:TagViewModel TagName="design fourteen" IsLastItem="True" />
 			</ViewModels:MainPageTagsViewModel.Tags>  	
 		</ViewModels:MainPageTagsViewModel>
         
@@ -27,13 +27,13 @@
     <ViewModels:MainPageViewModel.Recent >
     	<ViewModels:MainPageRecentViewModel Title="design recent">
     		<ViewModels:MainPageRecentViewModel.Mixes>
-    			 		 <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" />
+    			 		 <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" IsFirstItem="True" />
         <ViewModels:RecentMixViewModel MixName="design two"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"  />
         <ViewModels:RecentMixViewModel MixName="design three"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
         <ViewModels:RecentMixViewModel MixName="design four"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
         <ViewModels:RecentMixViewModel MixName="design five"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
         <ViewModels:RecentMixViewModel MixName="design six"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-        <ViewModels:RecentMixViewModel MixName="design seven"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+        <ViewModels:RecentMixViewModel MixName="design seven"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
 			</ViewModels:MainPageRecentViewModel.Mixes>  	
 		</ViewModels:MainPageRecentViewModel>
        
@@ -41,7 +41,7 @@
         <ViewModels:MainPageViewModel.Latest >
         	<ViewModels:MainPageLatestViewModel Title="design latest mixes">
         		<ViewModels:MainPageLatestViewModel.Mixes>
-        			    		 <ViewModels:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+        			    		 <ViewModels:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True"/>
         <ViewModels:MixViewModel MixName="design two" TileTitle="design two" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/957/6476.sq133.jpg" />
         <ViewModels:MixViewModel MixName="design three" TileTitle="design three" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/677/91967.sq133.jpg" />
         <ViewModels:MixViewModel MixName="design four" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
@@ -52,7 +52,7 @@
         <ViewModels:MixViewModel MixName="design nine" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
         <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
         <ViewModels:MixViewModel MixName="design eleven" TileTitle="design eleven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design twelve" TileTitle="design twelve" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+        <ViewModels:MixViewModel MixName="design twelve" TileTitle="design twelve" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True"/>
 				</ViewModels:MainPageLatestViewModel.Mixes>
 			</ViewModels:MainPageLatestViewModel>
        
@@ -60,7 +60,7 @@
         <ViewModels:MainPageViewModel.Liked >
         	<ViewModels:MainPageLikedViewModel Title="design liked">
         		<ViewModels:MainPageLikedViewModel.Mixes>
-					<ViewModels:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+					<ViewModels:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True" />
 			        <ViewModels:MixViewModel MixName="design two" TileTitle="design two" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
 			        <ViewModels:MixViewModel MixName="design three" TileTitle="design three" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
 			        <ViewModels:MixViewModel MixName="design four" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
@@ -69,7 +69,7 @@
 			        <ViewModels:MixViewModel MixName="design seven" TileTitle="design seven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
 			        <ViewModels:MixViewModel MixName="design eight" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
 			        <ViewModels:MixViewModel MixName="design nine" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
 				</ViewModels:MainPageLikedViewModel.Mixes>
 			</ViewModels:MainPageLikedViewModel>
     </ViewModels:MainPageViewModel.Liked>

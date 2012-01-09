@@ -373,7 +373,7 @@
                                TextWrapping="Wrap"
                                Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                VerticalAlignment="Top" />
-                    <Grid>
+                    <Grid Margin="4,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -402,8 +402,8 @@
                             				<ContentPresenter />
                             			</ControlTemplate>
                             		</Button.Template>
-                            		<StackPanel HorizontalAlignment="Left">
-                            			<TextBlock Margin="8,0,4,4"
+                            		<StackPanel>
+                            			<TextBlock Margin="8,0,12,4"
                             				TextWrapping="Wrap"
                             				Text="{Binding Artist}"
                             				d:LayoutOverrides="Width, Height"
@@ -417,8 +417,8 @@
                             		</StackPanel>
                             	</Button>
                                 <Button Style="{StaticResource CircleButtonStyle}"
-                                        Margin="12,4,24,4"
-                                        VerticalAlignment="Center"
+                                        Margin="12,12,24,12"
+                                        VerticalAlignment="Top"
                                         HorizontalAlignment="Right"
                                         Grid.Column="1"
                                         DataContext="{Binding CurrentTrack}"
@@ -437,19 +437,18 @@
                                          Grid.Row="1"
                                          IsIndeterminate="{Binding IsProgressIndeterminate}" 
                                          Margin="-4,0,0,0" />
-                            <TextBlock Text="{Binding ProgressStatusText}" Grid.Row="2" Margin="8,4,8,16" />
+                            <TextBlock Text="{Binding ProgressStatusText}" Grid.Row="2" Margin="8,8,8,24" />
                         </Grid>
                         <ListBox Margin="0,0,-12,0"
                                  Grid.Row="1"
                                  ItemsSource="{Binding Tracks}"
-                                 Tap="ListBoxTap"
                                  Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" 
                                  ItemContainerStyle="{StaticResource FullWidthListBoxItemStyle}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid d:DesignWidth="218"
                                           d:DesignHeight="64"
-                                          Margin="0,0,0,8">
+                                          Margin="0,0,0,12">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
@@ -480,19 +479,18 @@
                                             </StackPanel>
                                         </Button>
                                         <Button Style="{StaticResource CircleButtonStyle}"
-                                                Margin="12,4,24,4"
-                                                VerticalAlignment="Center"
+                                                Margin="12,12,24,0"
+                                                VerticalAlignment="Top"
                                                 HorizontalAlignment="Right"
                                                 Grid.Column="1"
                                                 Command="{Binding ToggleFavouriteCommand.Command}"
                                                 Foreground="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
                                                 Visibility="{Binding ToggleFavouriteCommand.Visibility}">
-                                            <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
-                                            Width="48" Height="48">
-                                        <Border.OpacityMask>
-<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}"
-                                    Stretch="None" />                                        </Border.OpacityMask>
-                                    </Border>
+                                            <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}" Width="48" Height="48">
+                                        		<Border.OpacityMask>
+                                        			<ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}" Stretch="None" />
+												</Border.OpacityMask>
+                                    		</Border>
                                         </Button>
                                     </Grid>
                                 </DataTemplate>

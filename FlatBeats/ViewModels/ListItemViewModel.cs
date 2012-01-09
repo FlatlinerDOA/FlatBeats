@@ -31,7 +31,7 @@ namespace FlatBeats.ViewModels
                 }
 
                 this.isFirstItem = value;
-                this.OnPropertyChanged(() => this.IsFirstItem);
+                this.OnPropertyChanged("IsFirstItem");
             }
         }
 
@@ -52,6 +52,26 @@ namespace FlatBeats.ViewModels
 
                 this.isLastItem = value;
                 this.OnPropertyChanged("IsLastItem");
+            }
+        }
+
+        private bool isLoading;
+
+        public bool IsLoading
+        {
+            get
+            {
+                return this.isLoading;
+            }
+            set
+            {
+                if (this.isLoading == value)
+                {
+                    return;
+                }
+
+                this.isLoading = value;
+                this.OnPropertyChanged("IsLoading");
             }
         }
     }

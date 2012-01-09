@@ -16,12 +16,23 @@
         /// </summary>
         protected PanelViewModel()
         {
-            this.RegisterErrorHandler<SocketException>(ex => StringResources.Error_NoNetwork);
-            this.RegisterErrorHandler<WebException>(GetWebExceptionMessage);
-            this.RegisterErrorHandler<Exception>(ex => StringResources.Error_UnknownError);
+            this.RegisterErrorHandler<SocketException>(GetSocketErrorMessage);
+            this.RegisterErrorHandler<WebException>(GetWebErrorMessage);
+            this.RegisterErrorHandler<Exception>(GetUnknownErrorMessage);
         }
 
-        internal static string GetWebExceptionMessage(WebException webException)
+        internal static ErrorMessage GetUnknownErrorMessage(Exception error)
+        {
+            return new ErrorMessage(
+                StringResources.Error_UnknownError_Title, StringResources.Error_UnknownError_Message) { IsCritical = true };
+        }
+
+        internal static ErrorMessage GetSocketErrorMessage(SocketException ex)
+        {
+            return new ErrorMessage(StringResources.Error_NoNetwork_Title, StringResources.Error_NoNetwork_Message);
+        }
+
+        internal static ErrorMessage GetWebErrorMessage(WebException webException)
         {
                 var webResponse = webException.Response as HttpWebResponse;
                 if (webResponse != null)
@@ -40,19 +51,18 @@
                         case HttpStatusCode.BadGateway:
                         case HttpStatusCode.ServiceUnavailable:
                         case HttpStatusCode.GatewayTimeout:
-                            return StringResources.Error_ServerUnavailable;
+                            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
                         case HttpStatusCode.RequestEntityTooLarge:
                         case HttpStatusCode.BadRequest:
                         case HttpStatusCode.RequestUriTooLong:
                         case HttpStatusCode.InternalServerError:
                         case HttpStatusCode.NotImplemented:
                         case HttpStatusCode.HttpVersionNotSupported:
-                            return StringResources.Error_BadRequest;
+                            return new ErrorMessage(StringResources.Error_BadRequest_Title, StringResources.Error_BadRequest_Message);
                     }
                 }
 
-                return StringResources.Error_ServerUnavailable;
+                return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
         }
-
     }
 }

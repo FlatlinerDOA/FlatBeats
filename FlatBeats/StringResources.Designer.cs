@@ -175,45 +175,72 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to We are having a disagreement with the server by attempting this, please report this if it continues to happen..
         /// </summary>
-        internal static string Error_BadRequest {
+        internal static string Error_BadRequest_Message {
             get {
-                return ResourceManager.GetString("Error_BadRequest", resourceCulture);
+                return ResourceManager.GetString("Error_BadRequest_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We made a bad request.
+        /// </summary>
+        internal static string Error_BadRequest_Title {
+            get {
+                return ResourceManager.GetString("Error_BadRequest_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sorry, we can&apos;t connect to the network, maybe check your internet connection or try again a bit later..
         /// </summary>
-        internal static string Error_NoNetwork {
+        internal static string Error_NoNetwork_Message {
             get {
-                return ResourceManager.GetString("Error_NoNetwork", resourceCulture);
+                return ResourceManager.GetString("Error_NoNetwork_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where did the internet go?.
+        /// </summary>
+        internal static string Error_NoNetwork_Title {
+            get {
+                return ResourceManager.GetString("Error_NoNetwork_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sorry, we can&apos;t communicate with the server at the moment, please check your internet connection or try again later..
         /// </summary>
-        internal static string Error_ServerUnavailable {
+        internal static string Error_ServerUnavailable_Message {
             get {
-                return ResourceManager.GetString("Error_ServerUnavailable", resourceCulture);
+                return ResourceManager.GetString("Error_ServerUnavailable_Message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Something went wrong....
+        ///   Looks up a localized string similar to Server unavailable.
         /// </summary>
-        internal static string Error_Title {
+        internal static string Error_ServerUnavailable_Title {
             get {
-                return ResourceManager.GetString("Error_Title", resourceCulture);
+                return ResourceManager.GetString("Error_ServerUnavailable_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked, next time you run this app..
         /// </summary>
-        internal static string Error_UnknownError {
+        internal static string Error_UnknownError_Message {
             get {
-                return ResourceManager.GetString("Error_UnknownError", resourceCulture);
+                return ResourceManager.GetString("Error_UnknownError_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong....
+        /// </summary>
+        internal static string Error_UnknownError_Title {
+            get {
+                return ResourceManager.GetString("Error_UnknownError_Title", resourceCulture);
             }
         }
         
@@ -254,7 +281,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hmmm... no one&apos;s said anything about this mix..
+        ///   Looks up a localized string similar to No one&apos;s said anything about this mix yet..
         /// </summary>
         internal static string Message_NoReviews {
             get {
@@ -272,7 +299,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wait! If you sign out I will forget which mixes you played recently!.
+        ///   Looks up a localized string similar to Wait! If you sign out we will forget which mixes you played recently!.
         /// </summary>
         internal static string MessageBox_ResetSettings_Message {
             get {

@@ -191,7 +191,7 @@ Link:
     <value>Flat Beats</value>
   </data>
   <data name="MessageBox_ResetSettings_Message" xml:space="preserve">
-    <value>Wait! If you sign out I will forget which mixes you played recently!</value>
+    <value>Wait! If you sign out we will forget which mixes you played recently!</value>
   </data>
   <data name="MessageBox_ResetSettings_Title" xml:space="preserve">
     <value>Sign out?</value>
@@ -209,7 +209,7 @@ Link:
     <value>review mix</value>
   </data>
   <data name="Message_NoReviews" xml:space="preserve">
-    <value>Hmmm... no one's said anything about this mix.</value>
+    <value>No one's said anything about this mix yet.</value>
   </data>
   <data name="Title_Reviews" xml:space="preserve">
     <value>reviews</value>
@@ -226,19 +226,19 @@ Link:
   <data name="Title_CreatedMixes" xml:space="preserve">
     <value>mixes</value>
   </data>
-  <data name="Error_NoNetwork" xml:space="preserve">
+  <data name="Error_NoNetwork_Message" xml:space="preserve">
     <value>Sorry, we can't connect to the network, maybe check your internet connection or try again a bit later.</value>
   </data>
-  <data name="Error_ServerUnavailable" xml:space="preserve">
+  <data name="Error_ServerUnavailable_Message" xml:space="preserve">
     <value>Sorry, we can't communicate with the server at the moment, please check your internet connection or try again later.</value>
   </data>
-  <data name="Error_Title" xml:space="preserve">
+  <data name="Error_UnknownError_Title" xml:space="preserve">
     <value>Something went wrong...</value>
   </data>
-  <data name="Error_BadRequest" xml:space="preserve">
+  <data name="Error_BadRequest_Message" xml:space="preserve">
     <value>We are having a disagreement with the server by attempting this, please report this if it continues to happen.</value>
   </data>
-  <data name="Error_UnknownError" xml:space="preserve">
+  <data name="Error_UnknownError_Message" xml:space="preserve">
     <value>Something really unexpected happened! Please report this when you are asked, next time you run this app.</value>
   </data>
   <data name="Command_UnpinStart" xml:space="preserve">
@@ -249,5 +249,14 @@ Link:
   </data>
   <data name="Title_LikedTags" xml:space="preserve">
     <value>liked tags</value>
+  </data>
+  <data name="Error_BadRequest_Title" xml:space="preserve">
+    <value>We made a bad request</value>
+  </data>
+  <data name="Error_NoNetwork_Title" xml:space="preserve">
+    <value>Where did the internet go?</value>
+  </data>
+  <data name="Error_ServerUnavailable_Title" xml:space="preserve">
+    <value>Server unavailable</value>
   </data>
 </root>

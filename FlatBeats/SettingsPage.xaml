@@ -76,7 +76,7 @@
                             <TextBlock Text="{Binding UserNameLabelText}"
                                        Margin="12,0" />
                             <TextBox Text="{Binding UserName, Mode=TwoWay}"
-                                     IsReadOnly="{Binding IsLoggedIn}" />
+                                     IsReadOnly="{Binding IsLoggedIn}" InputScope="LogOnName" />
                             <TextBlock Text="{Binding PasswordLabelText}"
                                        Margin="12,0" />
                             <PasswordBox Password="{Binding Password, Mode=TwoWay}"
@@ -119,7 +119,8 @@
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Mixes}"
                                           ItemTemplate="{StaticResource MixTemplate}"
-                                          Tap="ListBoxTap" />
+                                          Tap="ListBoxTap">
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

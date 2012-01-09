@@ -395,12 +395,19 @@ namespace FlatBeats.ViewModels
                     break;
             }
 
-            ProfileService.Reset();
-            this.UserName = null;
-            this.Password = null;
-            this.Mixes.Clear();
-            this.CanLogin = true;
-            this.IsLoggedIn = false;
+            this.ShowProgress();
+            this.AddToLifetime(
+                ProfileService.ResetAsync().ObserveOnDispatcher().Subscribe(
+                    _ => { }, 
+                    () =>
+                    {
+                        this.UserName = null;
+                        this.Password = null;
+                        this.Mixes.Clear();
+                        this.CanLogin = true;
+                        this.IsLoggedIn = false;
+                        this.HideProgress();
+                    }));
         }
 
         /// <summary>

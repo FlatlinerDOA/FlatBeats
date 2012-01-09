@@ -46,9 +46,9 @@
                             }
                         })
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool) 
-                        let mixViewModel = new MixViewModel(mix)
-                        select mixViewModel;
-            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.HandleError).Select(_ => new Unit());
+                        select mix;
+            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Do(_ =>
+            { }, this.HandleError).Select(_ => new Unit());
         }
 
 
@@ -66,13 +66,20 @@
                             }
                         })
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
-                        select new MixViewModel(mix);
-            return mixes.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(this.Mixes.Add, this.HandleError).Select(_ => new Unit());
+                        select mix;
+            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Do(_ =>
+                { }, this.HandleError).Select(_ => new Unit());
         }
 
         public void LoadNextPage()
         {
             // TODO: Check if in progress
+            var lastMix = this.Mixes.LastOrDefault();
+            if (lastMix != null)
+            {
+                lastMix.IsLoading = true;
+            }
+
             this.currentPage++;
             this.pageRequests.OnNext(this.currentPage);
         }

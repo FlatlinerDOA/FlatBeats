@@ -31,7 +31,7 @@
     						<toolkit:HubTile x:Name="hubTile"
     							Message="{Binding Description}"
     							Title="{Binding TileTitle}"
-    							Margin="0,0,12,12"
+    							Margin="0,0,20,20"
     							GroupTag="Latest"
     							Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}"
     							IsFrozen="True" />
@@ -47,29 +47,6 @@
     				</ItemsPanelTemplate>
     			</Setter.Value>
     		</Setter>
-    		<!--<Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <local:ItemsControlEx x:Name="itemsControl"
-                                              ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
-                            <local:ItemsControlEx.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <toolkit:WrapPanel Height="370"
-                                                       ItemWidth="181"
-                                                       ItemHeight="181"
-                                                       Orientation="Vertical" />
-                                </ItemsPanelTemplate>
-                            </local:ItemsControlEx.ItemsPanel>
-                            <local:ItemsControlEx.Template>
-                                <ControlTemplate>
-                                    <ItemsPresenter />
-                                </ControlTemplate>
-                            </local:ItemsControlEx.Template>
-                        </local:ItemsControlEx>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>-->
     	</Style>
     	<DataTemplate x:Key="LikedHeaderTemplate">
     		<Grid>
@@ -125,7 +102,7 @@
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="TitleTemplate">
-    		<Grid Margin="0,62,0,0">
+    		<Grid Margin="0,24,0,-20">
     			<TextBlock TextWrapping="Wrap"
     				Text="flat beats"
     				d:LayoutOverrides="Width, Height" Margin="12,0,0,0" />
@@ -184,6 +161,9 @@
     		<Setter Property="Margin" Value="0,0,-12,12"/>
     		<Setter Property="ItemContainerStyle" Value="{StaticResource FullWidthListBoxItemStyle}" />
     	</Style>
+    	<Style x:Key="FirstItemSeparatorStyle" TargetType="Grid">
+    		<Setter Property="Height" Value="30"/>
+    	</Style>
     </Controls1:AnimatedBasePage.Resources>
     <Controls1:AnimatedBasePage.FontFamily>
         <StaticResource ResourceKey="PhoneFontFamilyNormal" />
@@ -236,14 +216,14 @@
                             <DataTemplate>
                                 <local:AnimatingContentControl>
                                     <StackPanel Margin="-2,0,0,0">
-                                		<Grid x:Name="firstItemSeparator" Height="30"
-                                			Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" d:LayoutOverrides="VerticalAlignment" />
+                                		<Grid x:Name="firstItemSeparator"
+                                			Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" d:LayoutOverrides="VerticalAlignment" Style="{StaticResource FirstItemSeparatorStyle}" />
                                 		<Grid Background="#00000000">
                                 			<Grid.ColumnDefinitions>
                                 				<ColumnDefinition Width="Auto" />
                                 				<ColumnDefinition />
                                 			</Grid.ColumnDefinitions>
-                                			<Border Margin="0,0,12,12"
+                                			<Border Margin="0,0,12,8"
                                 				Background="{StaticResource PhoneChromeBrush}">
                                 				<Image Width="100"
                                 					Stretch="Uniform"
@@ -277,7 +257,7 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
-                               Foreground="LightGray" Margin="12,8,12,0" />
+                               Foreground="LightGray" Margin="24,20,0,0" />
                     <ListBox Margin="12,0,-12,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
@@ -286,19 +266,19 @@
                             <DataTemplate>
                                 <local:AnimatingContentControl Margin="16,0">
                                     <StackPanel Margin="-2,0,0,0">
-                                		<Grid x:Name="firstItemSeparator" Height="24" d:LayoutOverrides="VerticalAlignment, GridBox" Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" />
+                                		<Grid x:Name="firstItemSeparator" d:LayoutOverrides="VerticalAlignment, GridBox" Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" Style="{StaticResource FirstItemSeparatorStyle}" />
                                 		<TextBlock x:Name="nowPlaying" Text="NOW PLAYING"
                                 			Style="{StaticResource PhoneTextTitle2Style}"
                                 			Foreground="{StaticResource PhoneAccentBrush}"
                                 			Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"
                                 			FontFamily="Segoe WP Black"
-                                			Margin="0,-6,0,0" FontSize="42.667" />
+                                			Margin="0,-12,0,8" FontSize="48" />
                                 		<Grid Background="#00000000">
                                 			<Grid.ColumnDefinitions>
                                 				<ColumnDefinition Width="Auto" />
                                 				<ColumnDefinition />
                                 			</Grid.ColumnDefinitions>
-                                			<Border Margin="2,0,12,12"
+                                			<Border Margin="2,0,12,11"
                                 				Grid.RowSpan="2"
                                 				VerticalAlignment="Top"
                                 				Background="{StaticResource PhoneChromeBrush}" d:LayoutOverrides="GridBox" Grid.Row="1">
@@ -312,7 +292,7 @@
                                 				Foreground="White"
                                 				Margin="0,0,0,12"
                                 				Grid.Column="1"
-                                				Grid.Row="1" TextWrapping="Wrap" Height="133" VerticalAlignment="Top" />
+                                				Grid.Row="1" VerticalAlignment="Top" />
 
                                 		</Grid>
                                 		<Grid x:Name="nowPlayingSeparator" Height="12" Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"/>
@@ -328,7 +308,7 @@
             <controls:PanoramaItem DataContext="{Binding Latest}"
                                    Header="{Binding Title}"
                                    Orientation="Horizontal"
-                                   Width="1124"
+                                   Width="1158"
                                    Margin="0"
                                    HeaderTemplate="{StaticResource LatestHeaderTemplate}">
                 <Grid>
@@ -338,8 +318,8 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
-                               Margin="12,8,12,0" />
-                    <ListBox Margin="24,24,-12,0"
+                               Margin="24,20,0,0" />
+                    <ListBox Margin="24,32,0,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"
@@ -356,25 +336,22 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
                                Foreground="LightGray" 
-                               Margin="12,8,12,0" />
-                    <ListBox Margin="24,0,-12,0"
+                               Margin="24,20,0,0" />
+                    <ListBox Margin="24,2,-12,0"
                              ItemsSource="{Binding Tags}"
                              Tap="ListBoxTap"
                              Style="{StaticResource TiltedNavigationListStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="0,0,0,0">
-                                	<Grid x:Name="firstItemSeparator" 
-                                          Height="24"
-                                          Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" />
-                                	<Border Background="#00000000" Margin="0">
-                                		<TextBlock Text="{Binding TagName}"
-                                			TextWrapping="NoWrap"
-                                			Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                			Foreground="White"
-                                			Margin="0"
-                                			d:LayoutOverrides="Height" />
-                                	</Border>
+                                <StackPanel Margin="0,0,0,0" Background="#00000000">
+                                	<Grid x:Name="firstItemSeparator"
+                                          Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" Style="{StaticResource FirstItemSeparatorStyle}" />
+                                	<TextBlock Text="{Binding TagName}"
+                                		TextWrapping="NoWrap"
+                                		Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                		Foreground="White"
+                                		Margin="0" Height="60"
+                                			/>
                                 	<Grid x:Name="lastItemSeparator" 
                                           Height="64"
                                 		  Visibility="{Binding IsLastItem, Converter={StaticResource VisibilityConverter}}" />
