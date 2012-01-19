@@ -17,6 +17,8 @@
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
                             shell:SystemTray.Opacity="0"
+							shell:SystemTray.BackgroundColor="Transparent"
+                            shell:SystemTray.ForegroundColor="LightGray"
                             toolkit:TiltEffect.IsTiltEnabled="True">
     <Controls1:AnimatedBasePage.Resources>
     	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
@@ -210,7 +212,7 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                Foreground="LightGray"
-                               TextWrapping="Wrap" Margin="12,8,12,0" />
+                               TextWrapping="Wrap" Margin="24,8,12,0" />
                     <ListBox ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource TiltedNavigationListStyle}" 

@@ -195,7 +195,10 @@ namespace FlatBeats.ViewModels
                         viewModels.RemoveAt(removeAfter + 1);
                     }
 
-                    viewModels.Last().IsLastItem = true;
+                    if (viewModels.Count != 0)
+                    {
+                        viewModels.Last().IsLastItem = true;
+                    }
                 }).Select(t => t.Item);
         }
 
