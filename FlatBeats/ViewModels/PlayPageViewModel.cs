@@ -185,14 +185,14 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.UpdatePinnedState();
-                this.ShowProgress();
+                this.ShowProgress(StringResources.Progress_Loading);
                 this.AddToLifetime(
                     this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(
                     _ => { }, this.HandleError, this.HideProgress));
                 return;
             }
 
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             var loadProcess = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
                               from played in this.PlayedPanel.LoadAsync(mix)
                               select mix;
@@ -206,9 +206,13 @@ namespace FlatBeats.ViewModels
 
         private void UpdateIsInProgress()
         {
-            if (this.ReviewsPanel.IsInProgress || this.PlayedPanel.IsInProgress || this.Mix.IsLoading)
+            if (this.PlayedPanel.IsInProgress)
             {
-                this.ShowProgress();
+                this.ShowProgress(this.PlayedPanel.InProgressMessage);
+            }
+            else if (this.ReviewsPanel.IsInProgress)
+            {
+                this.ShowProgress(this.ReviewsPanel.InProgressMessage);
             }
             else
             {
@@ -270,7 +274,7 @@ namespace FlatBeats.ViewModels
         {
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             ProfileService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
                 _ => { }, this.HandleError, this.HideProgress);
         }

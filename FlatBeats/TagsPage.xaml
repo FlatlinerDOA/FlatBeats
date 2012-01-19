@@ -32,7 +32,8 @@
     </phone:PhoneApplicationPage.DataContext>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
-                                 IsIndeterminate="True" />
+                                 IsIndeterminate="True"
+                                 Text="{Binding InProgressMessage}" />
     </shell:SystemTray.ProgressIndicator>
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>

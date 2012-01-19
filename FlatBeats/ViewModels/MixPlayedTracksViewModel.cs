@@ -246,10 +246,12 @@ namespace FlatBeats.ViewModels
             {
                 if (this.Player.PlayerState == PlayState.Playing)
                 {
+                    this.ShowProgress("Pausing...");
                     this.Player.Pause();
                 }
                 else
                 {
+                    this.ShowProgress("Playing...");
                     this.Player.Play();
                 }
 
@@ -258,6 +260,7 @@ namespace FlatBeats.ViewModels
 
             if (this.Player.IsPlayingATrack())
             {
+                this.ShowProgress("Stopping previous mix...");
                 this.AddToLifetime(this.Player.PlayStateChanges().Where(s => s == PlayState.Stopped).Take(1).Finally(this.StartPlayingMixFromBeginning).Subscribe());
                 this.Player.Stop();
                 return;
@@ -268,7 +271,7 @@ namespace FlatBeats.ViewModels
 
         private void StartPlayingMixFromBeginning()
         {
-            this.ShowProgress();
+            this.ShowProgress("Playing...");
             var playSequence = from playResponse in this.currentMix.StartPlayingAsync().ObserveOnDispatcher().Do(
                 m =>
                     {
@@ -277,23 +280,14 @@ namespace FlatBeats.ViewModels
                         this.Player.Play();
                         this.UpdateIsNowPlaying();
                     })
-                               select true;
+                    select true;
 
-            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.HandleError, this.HideProgress);
-        }
-
-        private void ShowProgress()
-        {
-            // TODO: Implement
-        }
-
-        private void HideProgress()
-        {
-            // TODO: Implement
+            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.HandleError);
         }
 
         private void SkipNext()
         {
+            this.ShowProgress("Skipping... (you can only do this twice)");
             this.Player.SkipNext();
         }
 
@@ -374,6 +368,7 @@ namespace FlatBeats.ViewModels
         private IObservable<Unit> RefreshPlayedTracksAsync(MixContract loadMix)
         {
             this.Tracks.Clear();
+            this.ShowProgress(StringResources.Progress_Loading);
             var tracks = from response in loadMix.PlayedTracksAsync()
                          where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
@@ -545,7 +540,7 @@ namespace FlatBeats.ViewModels
         private void UpdatePlayerState()
         {
             Debug.WriteLine("UpdatePlayerState to " + Enum.GetName(typeof(PlayState), this.Player.PlayerState));
-
+            this.HideProgress();
             switch (this.Player.PlayerState)
             {
                 case PlayState.Unknown:

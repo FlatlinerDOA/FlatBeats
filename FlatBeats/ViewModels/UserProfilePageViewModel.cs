@@ -128,7 +128,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             var loadProcess = from userProfile in this.LoadUserAsync()
                               from mixes in this.Mixes.LoadMixesAsync(this.UserId)
                               ////from following in this.LoadFollowingAsync()

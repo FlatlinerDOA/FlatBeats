@@ -135,10 +135,16 @@ namespace FlatBeats.ViewModels
             this.Load(this.NavigationParameters["tag"], this.NavigationParameters["query"]);
         }
 
-        public override void Unload()
+        private void UpdateIsInProgress()
         {
-            base.Unload();
-            this.AddToLifetime(null);
+            if (this.CurrentPanel.IsInProgress)
+            {
+                this.ShowProgress(this.CurrentPanel.InProgressMessage);
+            }
+            else
+            {
+                this.HideProgress();
+            }
         }
 
         /// <summary>
@@ -147,34 +153,46 @@ namespace FlatBeats.ViewModels
         /// </param>
         public void Load(string loadTag, string loadQuery)
         {
+            this.AddToLifetime(this.Hot.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Popular.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
             {
                 return;
             }
 
+            this.LoadCompleted();
+
+            
             this.Tag = loadTag;
             this.SearchQuery = loadQuery;
             this.Title = (this.Tag ?? this.SearchQuery ?? string.Empty).ToUpper();
 
             this.SearchPanel(this.Recent);
-            this.LoadCompleted();
         }
 
-
-        private void LoadCurrentPanelSearchResults()
+        public MixListViewModel CurrentPanel 
+        {
+            get
         {
             switch (this.currentPanelIndex)
             {
                 case 0:
-                    this.SearchPanel(this.Recent);
-                    break;
+                    return this.Recent;
                 case 1:
-                    this.SearchPanel(this.Hot);
-                    break;
+                    return this.Hot;
                 case 2:
-                    this.SearchPanel(this.Popular);
-                    break;
+                    return this.Popular;
             }
+
+            return null;
+        }
+        }
+
+        private void LoadCurrentPanelSearchResults()
+        {
+            this.SearchPanel(this.CurrentPanel);
         }
 
         private void SearchPanel(MixListViewModel mixList)
@@ -184,7 +202,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.ShowProgress();
+            this.ShowProgress(mixList.InProgressMessage);
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
                 this.AddToLifetime(mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.HandleError, this.HideProgress));

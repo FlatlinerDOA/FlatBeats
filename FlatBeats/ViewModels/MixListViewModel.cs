@@ -10,12 +10,8 @@
 
     using Microsoft.Phone.Reactive;
 
-    public class MixListViewModel : PanelViewModel, IInfiniteScroll
+    public class MixListViewModel : InfiniteScrollPanelViewModel
     {
-        private int currentPage;
-
-        private readonly Subject<int> pageRequests = new Subject<int>();
-
         /// <summary>
         /// Initializes a new instance of the MixListViewModel class.
         /// </summary>
@@ -36,19 +32,13 @@
         {
             this.IsDataLoaded = true;
 
-            // TODO: Update in progress when page loads occur
-            var mixes = from page in pageRequests
-                        from response in MixesService.DownloadTagMixes(tag, this.Sort, currentPage, 20).Do(r =>
-                        {
-                            if (r.Mixes == null || !r.Mixes.Any())
-                            {
-                                this.pageRequests.OnCompleted();
-                            }
-                        })
+            var mixes = from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
+                        from response in MixesService.DownloadTagMixes(tag, this.Sort, page, this.PageSize)
+                            .Do(_ => this.HideProgress(), this.HideProgress)
+                            .ContinueWhile(r => r.Mixes != null && r.Mixes.Count == this.PageSize, this.StopLoadingPages)
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool) 
                         select mix;
-            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Do(_ =>
-            { }, this.HandleError).Select(_ => new Unit());
+            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Select(_ => new Unit());
         }
 
 
@@ -56,32 +46,13 @@
         {
             this.IsDataLoaded = true;
 
-            // TODO: Update in progress when page loads occur
-            var mixes = from page in pageRequests
-                        from response in MixesService.DownloadSearchMixes(searchQuery, this.Sort, currentPage, 20).Do(r =>
-                        {
-                            if (r.Mixes == null || !r.Mixes.Any())
-                            {
-                                this.pageRequests.OnCompleted();
-                            }
-                        })
+            var mixes = from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
+                        from response in MixesService.DownloadSearchMixes(searchQuery, this.Sort, page, this.PageSize)
+                            .Do(_ => this.HideProgress(), this.HideProgress)
+                            .ContinueWhile(r => r.Mixes != null && r.Mixes.Count == this.PageSize, this.StopLoadingPages)
                         from mix in response.Mixes.ToObservable(Scheduler.ThreadPool)
                         select mix;
-            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Do(_ =>
-                { }, this.HandleError).Select(_ => new Unit());
-        }
-
-        public void LoadNextPage()
-        {
-            // TODO: Check if in progress
-            var lastMix = this.Mixes.LastOrDefault();
-            if (lastMix != null)
-            {
-                lastMix.IsLoading = true;
-            }
-
-            this.currentPage++;
-            this.pageRequests.OnNext(this.currentPage);
+            return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Select(_ => new Unit());
         }
     }
 }

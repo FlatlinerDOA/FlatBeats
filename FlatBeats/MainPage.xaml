@@ -7,6 +7,7 @@
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:local="clr-namespace:FlatBeats.Controls"
                             xmlns:Controls1="clr-namespace:Clarity.Phone.Controls"
+                            xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels"
                             x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
@@ -14,9 +15,11 @@
                             d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
-                            shell:SystemTray.IsVisible="False"
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="0"
                             toolkit:TiltEffect.IsTiltEnabled="True">
     <Controls1:AnimatedBasePage.Resources>
+    	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
     	<local:UrlToBitmapConverter x:Key="ImageConverter" />
     	<SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
     	<local:BooleanToVisibilityConverter x:Key="VisibilityConverter"
@@ -223,19 +226,23 @@
                                 				<ColumnDefinition Width="Auto" />
                                 				<ColumnDefinition />
                                 			</Grid.ColumnDefinitions>
-                                			<Border Margin="0,0,12,8"
-                                				Background="{StaticResource PhoneChromeBrush}">
-                                				<Image Width="100"
+                                			<Border Margin="0,0,11,11"
+                                				Background="{StaticResource PhoneChromeBrush}" VerticalAlignment="Top">
+                                				<Image Width="133"
                                 					Stretch="Uniform"
-                                					Height="100"
+                                					Height="133"
                                 					Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
                                 			</Border>
-                                			<TextBlock Text="{Binding MixName}"
-                                				Style="{StaticResource PhoneTextTitle2Style}"
-                                				Foreground="White"
-                                				Margin="0,4"
-                                				d:LayoutOverrides="Width"
-                                				Grid.Column="1" VerticalAlignment="Top" />
+                                			<StackPanel Grid.Column="1" Margin="0,1,0,10" Orientation="Vertical" VerticalAlignment="Top">
+                                				<TextBlock Text="{Binding MixName, Converter={StaticResource UpperCaseConverter}}"
+                                					Style="{StaticResource PhoneTextTitle2Style}"
+                                					Foreground="White"
+                                					Margin="0"
+                                					d:LayoutOverrides="Width"
+                                					VerticalAlignment="Top" FontSize="32" FontFamily="Segoe WP Black" TextWrapping="Wrap" />
+                                				<TextBlock TextWrapping="Wrap" d:LayoutOverrides="Width" Text="{Binding Tags}" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,8,0,0" VerticalAlignment="Top"/>
+
+                                			</StackPanel>
 
                                 		</Grid>
                                 		<Grid x:Name="lastItemSeparator" Height="64"
@@ -287,12 +294,18 @@
                                 					Height="133"
                                 					Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
                                 			</Border>
-                                			<TextBlock Text="{Binding MixName}"
-                                				Style="{StaticResource PhoneTextTitle2Style}"
-                                				Foreground="White"
-                                				Margin="0,0,0,12"
-                                				Grid.Column="1"
-                                				Grid.Row="1" VerticalAlignment="Top" />
+                                			<StackPanel Grid.Column="1" Margin="0,0,12,12" Orientation="Vertical" Height="132">
+                                				<TextBlock Text="{Binding MixName}"
+                                					Style="{StaticResource PhoneTextTitle2Style}"
+                                					Foreground="White"
+                                					Margin="0"
+                                					TextWrapping="Wrap" VerticalAlignment="Top" />
+                                				<TextBlock Text="{Binding Description}"
+                                					Style="{StaticResource PhoneTextSubtleStyle}"
+                                					Margin="0"
+                                					TextWrapping="Wrap" />
+
+                                			</StackPanel>
 
                                 		</Grid>
                                 		<Grid x:Name="nowPlayingSeparator" Height="12" Visibility="{Binding IsNowPlaying, Converter={StaticResource VisibilityConverter}}"/>

@@ -317,6 +317,24 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        internal static string Progress_Loading {
+            get {
+                return ResourceManager.GetString("Progress_Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing in....
+        /// </summary>
+        internal static string Progress_SigningIn {
+            get {
+                return ResourceManager.GetString("Progress_SigningIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flat Beats.
         /// </summary>
         internal static string Title_ApplicationName {

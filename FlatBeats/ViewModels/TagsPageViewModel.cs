@@ -66,7 +66,7 @@
         /// </summary>
         public override void Load()
         {
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             var tagViewModels = from pageNumber in Observable.Range(1, 5)
                                 from response in Downloader.GetJson<TagsResponseContract>(new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + pageNumber))
                                 from tag in response.Tags.ToObservable()

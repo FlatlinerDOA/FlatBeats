@@ -1,17 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.DataModel.Services
+﻿namespace FlatBeats.DataModel.Services
 {
-    using System.Collections.Generic;
+    using System;
     using System.Linq;
 
     using Microsoft.Phone.Reactive;
@@ -28,7 +17,6 @@ namespace FlatBeats.DataModel.Services
 
         public static IObservable<MixesResponseContract> GetLatestMixes()
         {
-            //&hide_nsfw=1
             return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(
                     new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), LatestMixesCacheFile);
         }

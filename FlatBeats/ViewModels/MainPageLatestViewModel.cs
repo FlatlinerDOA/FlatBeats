@@ -33,16 +33,6 @@
                            from mix in latest.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadByPosition(this.Mixes, (vm, d) => vm.Load(d))
                            select mix;
             return pageData.FinallySelect(() => (IList<MixViewModel>)this.Mixes);
-            ////return pageData.FlowIn(200)
-            ////    .ObserveOnDispatcher()
-            ////    .FirstDo(_ => this.Mixes.Clear())
-            ////    .Do(m => this.Mixes.Add(m), this.ShowError).Aggregate(
-            ////        new List<MixViewModel>(), 
-            ////        (a, m) =>
-            ////        {
-            ////            a.Add(m);
-            ////            return a;
-            ////        });
         }
     }
 }

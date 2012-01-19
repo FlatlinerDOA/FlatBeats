@@ -109,6 +109,11 @@ namespace FlatBeats.ViewModels
 
         public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate)
         {
+            return sequence.ContinueWhile(predicate, null);
+        }
+
+        public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate, Action onExit)
+        {
             return Observable.CreateWithDisposable<T>(
                 observer =>
                     {
@@ -125,6 +130,10 @@ namespace FlatBeats.ViewModels
                             if (!isRunning)
                             {
                                 observer.OnCompleted();
+                                if (onExit != null)
+                                {
+                                    onExit();
+                                }
                             }
                         }, 
                         observer.OnError, 

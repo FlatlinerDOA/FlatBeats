@@ -137,7 +137,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             var load = from liked in this.Liked.LoadAsync()
                        from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
@@ -168,7 +168,7 @@ namespace FlatBeats.ViewModels
 
         private void Refresh()
         {
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
 
             var reload = from liked in this.Liked.LoadAsync()
                          from recent in this.Recent.LoadAsync()

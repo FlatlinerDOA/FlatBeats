@@ -257,7 +257,7 @@ namespace FlatBeats.ViewModels
         public override void Load()
         {
             this.CanLogin = true;
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
                 this.LoadProfile, this.HandleError, this.LoadCompleted));
         }
@@ -321,7 +321,7 @@ namespace FlatBeats.ViewModels
             this.UserName = creds.UserName;
             this.Password = creds.Password;
 
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             var q = from user in ProfileService.LoadUserToken()
                     from loaded in this.LoadMixes(user.CurentUser.Id)
                     select new Unit();
@@ -387,7 +387,7 @@ namespace FlatBeats.ViewModels
                     break;
             }
 
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(
                 ProfileService.ResetAsync().ObserveOnDispatcher().Subscribe(
                     _ => { }, 
@@ -407,7 +407,7 @@ namespace FlatBeats.ViewModels
         private void SignIn()
         {
             var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
-            this.ShowProgress();
+            this.ShowProgress(StringResources.Progress_SigningIn);
             var q = from auth in ProfileService.Authenticate(creds)
                     from mixLoaded in this.LoadMixes(auth.CurentUser.Id)
                     select new Unit();
