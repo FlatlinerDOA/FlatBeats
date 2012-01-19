@@ -107,6 +107,32 @@ namespace FlatBeats.ViewModels
                     });
         }
 
+        public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate)
+        {
+            return Observable.CreateWithDisposable<T>(
+                observer =>
+                    {
+                        bool isRunning = true;
+                        return sequence.Subscribe(item =>
+                        {
+                            if (!isRunning)
+                            {
+                                return;
+                            }
+
+                            isRunning = predicate(item);
+                            observer.OnNext(item);
+                            if (!isRunning)
+                            {
+                                observer.OnCompleted();
+                            }
+                        }, 
+                        observer.OnError, 
+                        observer.OnCompleted);
+                    });
+
+        }
+
         public static IObservable<T> FirstDo<T>(this IObservable<T> sequence, Action<T> firstAction)
         {
             bool hasBeenRun = false;

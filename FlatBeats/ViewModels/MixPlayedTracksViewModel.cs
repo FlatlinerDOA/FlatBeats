@@ -330,17 +330,15 @@ namespace FlatBeats.ViewModels
         public IObservable<Unit> LoadAsync(MixContract loadMix)
         {
             this.currentMix = loadMix;
+            this.InitializeBackgroundAudioPlayer();
 
             if (this.isDataLoaded)
             {
                 this.UpdatePlayerState();
-                return Observable.Return(new Unit());
+                return this.RefreshPlayedTracksAsync(currentMix);
             }
 
             this.isDataLoaded = true;
-
-            this.InitializeBackgroundAudioPlayer();
-
             this.LoadNowPlaying();
             this.UpdatePlayerState();
 
@@ -350,7 +348,7 @@ namespace FlatBeats.ViewModels
                 this.currentMix.StartPlayingAsync();
             }
 
-            return RefreshPlayedTracksAsync(currentMix);
+            return this.RefreshPlayedTracksAsync(currentMix);
         }
 
         private void InitializeBackgroundAudioPlayer()
@@ -380,14 +378,18 @@ namespace FlatBeats.ViewModels
                          where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);
-            return tracks.Do(
-                t => this.Tracks.Add(t), 
-                this.UpdateMessage).FinallySelect(() => new Unit()).Catch<Unit, Exception>(
-                    ex =>
-                        {
-                            this.HandleError(ex);
-                            return Observable.Return(new Unit());
-                        });
+            return tracks.Do(this.AddToTrackToList, this.UpdateMessage).FinallySelect(() => new Unit());
+        }
+
+        private void AddToTrackToList(TrackViewModel track)
+        {
+            var existing = this.Tracks.FirstOrDefault(t => t.Id == track.Id);
+            if (existing != null)
+            {
+                this.Tracks.Remove(existing);
+            }
+
+            this.Tracks.Add(track);
         }
 
         private void UpdateMessage()
@@ -547,6 +549,7 @@ namespace FlatBeats.ViewModels
             switch (this.Player.PlayerState)
             {
                 case PlayState.Unknown:
+                    break;
                 case PlayState.Stopped:
                     this.StopRefreshTimer();
                     this.NowPlaying = null;
@@ -584,7 +587,6 @@ namespace FlatBeats.ViewModels
                     this.IsProgressIndeterminate = false;
                     this.ProgressStatusText = "Fast forwarding";
                     break;
-
                 case PlayState.Shutdown:
                     this.StopRefreshTimer();
                     break;

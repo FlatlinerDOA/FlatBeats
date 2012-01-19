@@ -58,8 +58,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private string userNameLabelText;
 
-        private IDisposable subscription = Disposable.Empty;
-
         #endregion
 
         #region Constructors and Destructors
@@ -258,16 +256,10 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
-            this.subscription.Dispose();
             this.CanLogin = true;
             this.ShowProgress();
-            this.subscription = ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
-                this.LoadProfile, this.HandleError, this.LoadCompleted);
-        }
-
-        public override void Unload()
-        {
-            this.subscription.Dispose();
+            this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
+                this.LoadProfile, this.HandleError, this.LoadCompleted));
         }
 
         #endregion

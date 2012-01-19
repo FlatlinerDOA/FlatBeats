@@ -35,12 +35,6 @@
             {
                 this.Tags.Add(tagViewModel);
             }
-            ////tagList.ToObservable() //.FlowIn()
-            ////    .ObserveOnDispatcher()
-            ////    .FirstDo(_ => this.Tags.Clear())
-            ////    .Subscribe(
-            ////        t => this.Tags.Add(t), 
-            ////        this.HandleError);
         }
     }
 }

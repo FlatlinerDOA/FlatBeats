@@ -179,24 +179,41 @@ namespace FlatBeats.ViewModels
                         this.CurrentPanelIndex = 2; 
                     }));
 
+            this.AddToLifetime(this.PlayedPanel.IsInProgressChanges.Subscribe(t => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.ReviewsPanel.IsInProgressChanges.Subscribe(t => this.UpdateIsInProgress()));
+
             if (this.IsDataLoaded)
             {
                 this.UpdatePinnedState();
+                this.ShowProgress();
                 this.AddToLifetime(
-                    this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Finally(this.HideProgress).Subscribe());
+                    this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(
+                    _ => { }, this.HandleError, this.HideProgress));
                 return;
             }
 
             this.ShowProgress();
-            var loadProcess = from mix in this.LoadMixAsync(this.MixId)
+            var loadProcess = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
                               from played in this.PlayedPanel.LoadAsync(mix)
                               select mix;
             this.AddToLifetime(
                 loadProcess.ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
 
-            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe());
+            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
             this.ReviewsPanel.LoadNextPage();
+        }
+
+        private void UpdateIsInProgress()
+        {
+            if (this.ReviewsPanel.IsInProgress || this.PlayedPanel.IsInProgress || this.Mix.IsLoading)
+            {
+                this.ShowProgress();
+            }
+            else
+            {
+                this.HideProgress();
+            }
         }
 
         /// <summary>

@@ -548,7 +548,7 @@ namespace FlatBeats.Controls
                         BitmapImage bmp = newImageBrush.ImageSource as BitmapImage;
                         if (bmp != null)
                         {
-                            Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1).Subscribe(_ => this.TransitionNow());
+                            Observable.FromEvent<RoutedEventArgs>(bmp, "ImageFailed").Take(1).Amb(Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1)).Take(1).Subscribe(_ => this.TransitionNow());
                             return;
                         }
                     }

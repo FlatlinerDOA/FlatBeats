@@ -92,14 +92,11 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<Unit> GetAndSaveFile(Uri url, string fileName)
         {
-            var webRequest = from client in Observable.Return(CreateClient())
+            var webRequest = from client in Observable.Return(CreateClient(false))
                              from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                                  observer =>
                                      {
-                                         var subscription =
-                                             Observable.FromEvent<OpenReadCompletedEventArgs>(
-                                                 client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe
-                                                 (observer);
+                                         var subscription = Observable.FromEvent<OpenReadCompletedEventArgs>(client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe(observer);
 #if DEBUG
                                          Debug.WriteLine("GET " + url.AbsoluteUri);
 #endif
@@ -129,7 +126,7 @@ namespace FlatBeats.DataModel
                 sequence = Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
             }
 
-            return sequence.Concat(GetJson<T>(url).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache))));
+            return sequence.Concat(GetStream(url, false).Select(Json<T>.DeserializeAndClose).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache))));
         }
 
 
@@ -140,12 +137,12 @@ namespace FlatBeats.DataModel
                 return Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
             }
 
-            return GetJson<T>(url).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache)));
+            return GetStream(url, false).Select(Json<T>.DeserializeAndClose).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache)));
         }
 
-        public static IObservable<Stream> GetStream(Uri url)
+        public static IObservable<Stream> GetStream(Uri url, bool disableCache)
         {
-            return from client in Observable.Return(CreateClient())
+            return from client in Observable.Return(CreateClient(disableCache))
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                        observer =>
                            {
@@ -163,7 +160,7 @@ namespace FlatBeats.DataModel
 
         public static IObservable<T> GetJson<T>(Uri url) where T : class
         {
-            return GetStream(url).Select(Json<T>.DeserializeAndClose);
+            return GetStream(url, true).Select(Json<T>.DeserializeAndClose);
         }
 
         /// <summary>
@@ -197,7 +194,7 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<string> PostAndGetString(Uri url, string postData)
         {
-            var sequence = from client in Observable.Return(CreateClient())
+            var sequence = from client in Observable.Return(CreateClient(true))
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
                                    {
@@ -243,7 +240,7 @@ namespace FlatBeats.DataModel
         /// </summary>
         /// <returns>
         /// </returns>
-        private static WebClient CreateClient()
+        private static WebClient CreateClient(bool noCache)
         {
             var client = new WebClient();
             client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
@@ -251,6 +248,11 @@ namespace FlatBeats.DataModel
             if (IsAuthenticated)
             {
                 client.Headers["X-User-Token"] = UserToken;
+            }
+
+            if (noCache)
+            {
+                client.Headers[HttpRequestHeader.Pragma] = "no-cache";
             }
 
             return client;

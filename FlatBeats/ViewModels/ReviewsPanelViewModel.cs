@@ -46,20 +46,17 @@ namespace FlatBeats.ViewModels
 
         public string MixId { get; private set; }
 
+
         public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
         
         /// <summary>
         /// </summary>
         private IObservable<Unit> LoadCommentsAsync()
         {
-            var downloadComments = from page in this.pageRequests
-                                   from response in MixesService.GetMixReviews(this.MixId, page, 20).Do(r =>
-                                       {
-                                           if (r.Reviews == null || !r.Reviews.Any())
-                                           {
-                                               this.pageRequests.OnCompleted();
-                                           }
-                                       })
+            var downloadComments = from page in this.pageRequests.Do(_ => this.IsInProgress = true)
+                                   from response in MixesService.GetMixReviews(this.MixId, page, 20)
+                                   .Do(_ => this.IsInProgress = false)
+                                   .ContinueWhile(r => r.Reviews != null && r.Reviews.Count != 0)
                                    from review in response.Reviews.ToObservable()
                                    select new ReviewViewModel(review);
             return downloadComments.ObserveOnDispatcher().Do(
