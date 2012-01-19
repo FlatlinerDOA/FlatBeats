@@ -240,7 +240,7 @@
                                 					Margin="0"
                                 					d:LayoutOverrides="Width"
                                 					VerticalAlignment="Top" FontSize="32" FontFamily="Segoe WP Black" TextWrapping="Wrap" />
-                                				<TextBlock TextWrapping="Wrap" d:LayoutOverrides="Width" Text="{Binding Tags}" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,8,0,0" VerticalAlignment="Top"/>
+                                				<TextBlock TextWrapping="Wrap" d:LayoutOverrides="Width" Text="{Binding Tags}" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,8,0,0" VerticalAlignment="Top" Foreground="#99FFFFFF"/>
 
                                 			</StackPanel>
 
@@ -300,10 +300,6 @@
                                 					Foreground="White"
                                 					Margin="0"
                                 					TextWrapping="Wrap" VerticalAlignment="Top" />
-                                				<TextBlock Text="{Binding Description}"
-                                					Style="{StaticResource PhoneTextSubtleStyle}"
-                                					Margin="0"
-                                					TextWrapping="Wrap" />
 
                                 			</StackPanel>
 

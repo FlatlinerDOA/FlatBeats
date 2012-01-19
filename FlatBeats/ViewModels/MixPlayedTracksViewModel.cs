@@ -373,7 +373,7 @@ namespace FlatBeats.ViewModels
                          where response != null && response.Tracks != null
                          from track in response.Tracks.ToObservable()
                          select new TrackViewModel(track);
-            return tracks.Do(this.AddToTrackToList, this.UpdateMessage).FinallySelect(() => new Unit());
+            return tracks.Do(this.AddToTrackToList, this.UpdateMessage).FinallySelect(() => new Unit()).Finally(this.HideProgress);
         }
 
         private void AddToTrackToList(TrackViewModel track)

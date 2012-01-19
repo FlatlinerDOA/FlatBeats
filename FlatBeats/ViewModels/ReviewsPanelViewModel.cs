@@ -42,7 +42,7 @@
             this.Reviews.Clear();
             var downloadComments = from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
                                    from response in MixesService.GetMixReviews(this.MixId, page, this.PageSize)
-                                       .Finally(this.HideProgress)
+                                       .Do(_ => this.HideProgress(), this.HideProgress)
                                        .ContinueWhile(r => r.Reviews != null && r.Reviews.Count == this.PageSize, this.StopLoadingPages)
                                    where response.Reviews != null
                                    from review in response.Reviews.ToObservable()
