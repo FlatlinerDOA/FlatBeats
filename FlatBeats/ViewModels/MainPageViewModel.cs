@@ -34,10 +34,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private int currentSectionIndex;
 
-        /// <summary>
-        /// </summary>
-        private IDisposable subscription = Disposable.Empty;
-
         #endregion
 
         #region Constructors and Destructors
@@ -137,52 +133,59 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.LoadLikedPanel();
+        }
+
+        private void LoadRecentAndLatestPanels()
+        {
             this.ShowProgress(StringResources.Progress_Loading);
-            var load = from liked in this.Liked.LoadAsync()
-                       from recent in this.Recent.LoadAsync()
+            var load = from recent in this.Recent.LoadAsync()
                        from latest in this.Latest.LoadAsync()
-                       select new
-                           {
-                               Latest = latest, 
-                               Liked = liked
-                           };
+                       select latest;
             
             this.AddToLifetime(
                 load.ObserveOnDispatcher().Subscribe(
-                    results =>
-                        {
-                            if (this.Liked.Items.Any())
-                            {
-                                this.TagsPanel.Title = StringResources.Title_LikedTags;
-                                this.TagsPanel.Load(this.Liked.Items);
-                            }
-                            else
-                            {
-                                this.TagsPanel.Title = StringResources.Title_LatestTags;
-                                this.TagsPanel.Load(this.Latest.Mixes);
-                            }
-                        }, 
-                        this.HandleError, 
-                        this.LoadCompleted));
-            this.Liked.LoadNextPage();
+                    results => { }, 
+                    this.HandleError,
+                    this.LoadAllDataCompleted));
+        }
+
+        private void LoadAllDataCompleted()
+        {
+            if (this.Liked.Items.Any())
+            {
+                this.TagsPanel.Title = StringResources.Title_LikedTags;
+                this.TagsPanel.Load(this.Liked.Items);
+            }
+            else
+            {
+                this.TagsPanel.Title = StringResources.Title_LatestTags;
+                this.TagsPanel.Load(this.Latest.Mixes);
+            }
+
+            this.LoadCompleted();
+        }
+
+        private void LoadLikedPanel()
+        {
+            this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => this.LoadRecentAndLatestPanels(), this.HandleError, this.HideProgress));
+            this.Liked.LoadFirstPage();
+        }
+
+        private void UpdateIsInProgress()
+        {
+            if (this.Liked.IsInProgress)
+            {
+                this.ShowProgress(StringResources.Progress_Loading);
+            }
+
+            this.HideProgress();
         }
 
         private void Refresh()
         {
-            this.ShowProgress(StringResources.Progress_Loading);
-
-            var reload = from liked in this.Liked.LoadAsync()
-                         from recent in this.Recent.LoadAsync()
-                         select new Unit();
-            this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
-            this.Liked.LoadNextPage();
-        }
-
-        /// <summary>
-        /// </summary>
-        public override void Unload()
-        {
-            this.subscription.Dispose();
+            this.LoadLikedPanel();
         }
 
         #endregion

@@ -11,7 +11,7 @@
 
     public class InfiniteScrollPanelViewModel : PanelViewModel, IInfiniteScroll
     {
-        private readonly Subject<int> pageRequests = new Subject<int>();
+        private Subject<int> pageRequests = new Subject<int>();
 
         /// <summary>
         /// Initializes a new instance of the InfiniteScrollPanelViewModel class.
@@ -36,6 +36,7 @@
         public virtual void StopLoadingPages()
         {
             this.pageRequests.OnCompleted();
+            this.pageRequests = new Subject<int>();
         }
 
         protected string GetLoadingPageMessage()
@@ -64,10 +65,19 @@
             return "Loading more...";
         }
 
+
+        public void LoadFirstPage()
+        {
+            if (this.CurrentPage == 0)
+            {
+                this.LoadNextPage();
+            }
+        }
+
         public virtual void LoadNextPage()
         {
             this.CurrentPage++;
-            this.pageRequests.OnNext(CurrentPage);
+            this.pageRequests.OnNext(this.CurrentPage);
         }
     }
 
@@ -87,7 +97,6 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
-            this.CurrentPage = 0;
             this.Items.Clear();
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
@@ -106,6 +115,13 @@
         {
             this.AddBufferedPageOfItems();
             this.LoadItemsCompleted();
+        }
+
+        public void Reset()
+        {
+            this.CurrentPage = 0;
+            this.Items.Clear();
+            this.nextPage.Clear();
         }
 
         protected abstract TViewModel CreateItem(TData data);

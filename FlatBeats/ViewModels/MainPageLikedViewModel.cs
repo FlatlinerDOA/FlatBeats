@@ -22,8 +22,18 @@ namespace FlatBeats.ViewModels
             this.Title = StringResources.Title_LikedMixes;
         }
 
+        public bool IsDataLoaded { get; set; }
+
         public IObservable<Unit> LoadAsync()
         {
+            if (this.IsDataLoaded)
+            {
+                this.Reset();
+                return this.LoadItemsAsync();
+            }
+
+            this.IsDataLoaded = true;
+
             var load = from userCredentials in ProfileService.LoadCredentials()
                        from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
                        select new Unit();

@@ -47,7 +47,7 @@
 
         protected override IObservable<IList<UserContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetFollowsUsers(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
+            return ProfileService.GetFollowedByUsers(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
         }
 
         protected override UserListItemViewModel CreateItem(UserContract data)
@@ -65,7 +65,7 @@
                 }
                 else
                 {
-                    this.Message = StringResources.Message_UserNotFollowingAnyone;
+                    this.Message = StringResources.Message_UserNotFollowedByAnyone;
                 }
 
                 this.ShowMessage = true;

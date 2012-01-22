@@ -7,6 +7,25 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Tasks;
 
+    public static class Avatar
+    {
+        public static Uri ParseUrl(string imageUrl)
+        {
+            Uri url;
+            if (!Uri.TryCreate(imageUrl, UriKind.RelativeOrAbsolute, out url))
+            {
+                return new Uri("/ApplicationIcon.png", UriKind.Relative);
+            }
+
+            if (!url.IsAbsoluteUri)
+            {
+                url = new Uri("http://8tracks.com" + imageUrl, UriKind.Absolute);
+            }
+
+            return url;
+        }
+    }
+
     public static class NavigationExtensions
     {
         public static void NavigateTo(this NavigationService navService, INavigationItem navItem)

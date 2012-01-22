@@ -87,12 +87,7 @@ namespace FlatBeats.ViewModels
             if (review.User != null)
             {
                 this.UserName = review.User.Name;
-                this.AvatarUrl = new Uri(review.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-                if (!this.AvatarUrl.IsAbsoluteUri)
-                {
-                    this.AvatarUrl = new Uri("http://8tracks.com" + review.User.Avatar.ImageUrl, UriKind.Absolute);
-                }
-
+                this.AvatarUrl = Avatar.ParseUrl(review.User.Avatar.ImageUrl);
                 this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
             }
 

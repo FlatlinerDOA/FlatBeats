@@ -231,7 +231,7 @@ namespace FlatBeats.ViewModels
         }
 
 
-        public static IObservable<TData> AddOrReload<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Func<TViewModel, TData, bool> match, Action<TViewModel, TData> load) where TViewModel : new()
+        public static IObservable<TData> AddOrReload<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Func<TViewModel, TData, bool> match, Action<TViewModel, TData> load) where TViewModel : class, new() 
         {
             return dataItems.Do(
                 dataItem =>

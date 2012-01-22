@@ -328,30 +328,27 @@ namespace FlatBeats.ViewModels
             this.Password = creds.Password;
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var q = from user in ProfileService.LoadUserToken()
-                    from load in this.LoadUserProfile(user)
-                    select new Unit();
-            this.AddToLifetime(
-                q.Subscribe(
-                profile => 
-                { 
-                }, 
+            var q = ProfileService.LoadUserToken();
+
+            this.AddToLifetime(        
+            q.Subscribe(
+                this.LoadPanels, 
                 this.HandleError, 
                 this.HideProgress));
-            this.Mixes.LoadNextPage();
-            this.FollowsUsers.LoadNextPage();
-            this.FollowedByUsers.LoadNextPage();
         }
 
-        private IObservable<Unit> LoadUserProfile(UserLoginResponseContract user)
+        private void LoadPanels(UserLoginResponseContract user)
         {
             this.IsLoggedIn = true;
             this.CanLogin = false;
 
-            return from mixes in this.Mixes.LoadAsync(user.CurrentUser.Id, true)
-                   from follows in this.FollowsUsers.LoadAsync(user.CurrentUser.Id, true)
-                   from followedBy in this.FollowedByUsers.LoadAsync(user.CurrentUser.Id, true)
-                   select new Unit();
+            this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => {}, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => {}, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+
+            this.Mixes.LoadNextPage();
+            this.FollowsUsers.LoadNextPage();
+            this.FollowedByUsers.LoadNextPage();
         }
 
         ////private IObservable<Unit> LoadMixes(string userId)
@@ -431,16 +428,10 @@ namespace FlatBeats.ViewModels
         {
             var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
             this.ShowProgress(StringResources.Progress_SigningIn);
-            var q = from auth in ProfileService.Authenticate(creds)
-                    from load in this.LoadUserProfile(auth)
-                    select new Unit();
+            var q = ProfileService.Authenticate(creds);
             q.ObserveOnDispatcher()
                 .Subscribe(
-                profile => 
-                { 
-                    this.IsLoggedIn = true;
-                    this.CanLogin = false;
-                }, 
+                this.LoadPanels, 
                 this.HandleError, 
                 this.HideProgress);
         }

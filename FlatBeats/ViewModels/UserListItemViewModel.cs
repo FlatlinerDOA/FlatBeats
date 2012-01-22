@@ -55,17 +55,8 @@ namespace FlatBeats.ViewModels
             this.Name = data.Name;
             this.Location = data.Location;
             this.Bio = Html.ConvertToPlainText(data.BioHtml);
-
-            Uri url;
-            if (Uri.TryCreate(data.Avatar.ImageUrl, UriKind.RelativeOrAbsolute, out url))
-            {
-                this.AvatarUrl = url;
-            }
-            else
-            {
-                this.AvatarUrl = null;
-            }
-
+            this.AvatarUrl = Avatar.ParseUrl(data.Avatar.ImageUrl);
+            this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + this.userId, UriKind.Relative);
         }
 
         #endregion
@@ -160,10 +151,6 @@ namespace FlatBeats.ViewModels
 
         public Uri NavigationUrl
         {
-            get
-            {
-                return new Uri("/UserProfilePage.xaml?userid=" + this.userId);
-            }
-        }
+            get; private set; }
     }
 }

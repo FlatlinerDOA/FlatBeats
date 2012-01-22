@@ -7,8 +7,7 @@
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels"
-                            xmlns:local="clr-namespace:FlatBeats.Controls"
-                            mc:Ignorable="d"
+                            xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -28,7 +27,7 @@
         <local:UrlToBitmapConverter x:Key="ImageConverter" />
         <DataTemplate x:Key="UserItemTemplate">
             <local:AnimatingContentControl>
-                <Grid>
+                <Grid toolkit:TiltEffect.IsTiltEnabled="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="0.779*" />
@@ -49,7 +48,7 @@
                                    VerticalAlignment="Top" />
                         <TextBlock Margin="8,4,4,4"
                                    TextWrapping="Wrap"
-                                   Text="{Binding Bio, Converter={StaticResource RelativeDateConverter}}"
+                                   Text="{Binding Bio}"
                                    Style="{StaticResource PhoneTextSmallStyle}"
                                    FontSize="16" />
                     </StackPanel>
@@ -151,6 +150,9 @@
                                           ItemsSource="{Binding Items}"
                                           ItemTemplate="{StaticResource MixTemplate}"
                                           Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
@@ -168,6 +170,10 @@
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource UserItemTemplate}"
                              Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
@@ -185,6 +191,10 @@
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource UserItemTemplate}"
                              Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+
                     </ListBox>
                 </Grid>
             </controls:PivotItem>

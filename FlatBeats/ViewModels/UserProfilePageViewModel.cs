@@ -129,12 +129,21 @@ namespace FlatBeats.ViewModels
             }
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var loadProcess = from userProfile in this.LoadUserAsync()
-                              from mixes in this.Mixes.LoadAsync(this.UserId, false)
-                              from following in this.FollowsUsers.LoadAsync(this.UserId, false)
-                              from followedBy in this.FollowedByUsers.LoadAsync(this.UserId, false)
-                              select new Unit();
-            this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
+            this.AddToLifetime(
+            this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
+        }
+
+        private void LoadPanels()
+        {
+            this.AddToLifetime(
+                this.Mixes.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(
+                this.FollowsUsers.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(
+                this.FollowedByUsers.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.Mixes.LoadNextPage();
+            this.FollowsUsers.LoadNextPage();
+            this.FollowedByUsers.LoadNextPage();
         }
 
         public override void Unload()
