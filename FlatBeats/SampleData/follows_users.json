@@ -1,0 +1,27 @@
+{
+"users":[
+{
+"id":302987,
+"login":"dnic",
+"popup_prefs":"ask",
+"next_mix_prefs":"ask",
+"slug":"dnic",
+"bio_html":"<p>I'm Dana, an English major at Mercer University. I love music, everything about it. And most of all I love sharing music with other people who appreciate just as much as I do :)</p>",
+"location":"Macon, Ga, US",
+"path":"/dnic",
+"avatar_urls":
+{"sq56":"http://cf3.8tracks.us/avatars/000/302/987/69141.sq56.jpg",
+"sq72":"http://cf3.8tracks.us/avatars/000/302/987/69141.sq72.jpg",
+"sq100":"http://cf3.8tracks.us/avatars/000/302/987/69141.sq100.jpg",
+"max200":"http://cf3.8tracks.us/avatars/000/302/987/69141.max200.jpg"
+},
+"subscribed":false,
+"followed_by_current_user":false,
+"follows_count":14
+}],
+"total_entries":1,
+"status":"200 OK",
+"errors":null,
+"notices":null,
+"logged_in":false,
+"api_warning":["You didn't pass an API version, defaulting to api_version=2.","You must use a valid API key. You can pass it as a parameter named 'api_key'.\nJust go to http://8tracks.com/developers to get one."],"api_version":2}
