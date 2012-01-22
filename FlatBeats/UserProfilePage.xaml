@@ -113,7 +113,7 @@
         <!--Pivot Control-->
         <controls:Pivot Title="{Binding Title}">
             <!--Pivot item one-->
-            <controls:PivotItem Header="profile">
+            <controls:PivotItem Header="profile" Margin="12,28,12,84">
                 <Grid>
                 	<Grid.RowDefinitions>
                 		<RowDefinition Height="Auto"/>
@@ -148,7 +148,7 @@
                     </ScrollViewer>
                 </Grid>
             </controls:PivotItem>
-            <controls:PivotItem DataContext="{Binding Mixes}" Header="{Binding Title}">
+            <controls:PivotItem DataContext="{Binding Mixes}" Header="{Binding Title}" Margin="12,28,12,84">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
@@ -166,7 +166,7 @@
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding FollowsUsers}"
-                                Header="{Binding Title}">
+                                Header="{Binding Title}" Margin="12,28,12,84">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
@@ -186,7 +186,7 @@
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding FollowedByUsers}"
-                                Header="{Binding Title}">
+                                Header="{Binding Title}" Margin="12,28,12,84">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"

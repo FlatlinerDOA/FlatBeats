@@ -31,7 +31,7 @@
 
         public int PageSize { get; set; }
         
-        public int CurrentPage { get; set; }
+        public int CurrentRequestedPage { get; set; }
 
         public virtual void StopLoadingPages()
         {
@@ -41,7 +41,7 @@
 
         protected string GetLoadingPageMessage()
         {
-            switch (this.CurrentPage)
+            switch (this.CurrentRequestedPage)
             {
                 case 0:
                 case 1:
@@ -71,7 +71,7 @@
 
         public void LoadFirstPage()
         {
-            if (this.CurrentPage == 0)
+            if (this.CurrentRequestedPage == 0)
             {
                 this.LoadNextPage();
             }
@@ -79,8 +79,8 @@
 
         public virtual void LoadNextPage()
         {
-            this.CurrentPage++;
-            this.pageRequests.OnNext(this.CurrentPage);
+            this.CurrentRequestedPage++;
+            this.pageRequests.OnNext(this.CurrentRequestedPage);
         }
     }
 
@@ -123,7 +123,8 @@
 
         public void Reset()
         {
-            this.CurrentPage = 0;
+            this.CurrentDisplayedPage = 0;
+            this.CurrentRequestedPage = 0;
             this.Items.Clear();
             this.nextPage.Clear();
         }
@@ -137,16 +138,13 @@
         private void AddToList(IList<TData> pageOfItems)
         {
             this.nextPage.EnqueueRange(pageOfItems.Select(this.CreateItem));
-            
-            if (this.Items.Count == 0)
-            {
-                this.AddBufferedPageOfItems();
-            }
+
+            this.AddBufferedPageOfItems();
         }
 
         public override void StopLoadingPages()
         {
-            this.AddBufferedPageOfItems();
+            this.DisplayAllItems();
             base.StopLoadingPages();
         }
 
@@ -155,6 +153,8 @@
             this.AddBufferedPageOfItems();
             base.LoadNextPage();
         }
+
+        public int CurrentDisplayedPage { get; set; }
 
         private void AddBufferedPageOfItems()
         {
@@ -165,6 +165,17 @@
             ////            this.nextPage.TryDequeue(out item);
             ////            return item;
             ////        }).ContinueWhile(t => t != null).ObserveOnDispatcher().Subscribe(this.Items.Add);
+
+            if (this.CurrentDisplayedPage == 0 || this.CurrentDisplayedPage < this.CurrentRequestedPage - 1)
+            {
+                this.DisplayAllItems();
+            }
+        }
+
+        private void DisplayAllItems()
+        {
+            this.CurrentDisplayedPage = this.CurrentRequestedPage;
+
             TViewModel item;
             while (this.nextPage.TryDequeue(out item))
             {
