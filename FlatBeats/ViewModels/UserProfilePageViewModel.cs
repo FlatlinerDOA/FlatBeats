@@ -28,8 +28,8 @@ namespace FlatBeats.ViewModels
         {
             this.Mixes = new UserProfileMixesViewModel();
             this.LikedMixes = new ObservableCollection<MixViewModel>();
-            this.FollowedBy = new ObservableCollection<UserContract>();
-            this.Following = new ObservableCollection<UserContract>();
+            this.FollowedByUsers = new FollowedByUsersViewModel();
+            this.FollowsUsers = new FollowsUsersViewModel();
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
         }
@@ -130,9 +130,9 @@ namespace FlatBeats.ViewModels
 
             this.ShowProgress(StringResources.Progress_Loading);
             var loadProcess = from userProfile in this.LoadUserAsync()
-                              from mixes in this.Mixes.LoadMixesAsync(this.UserId)
-                              ////from following in this.LoadFollowingAsync()
-                              ////from followedBy in this.LoadFollowedByAsync()
+                              from mixes in this.Mixes.LoadAsync(this.UserId, false)
+                              from following in this.FollowsUsers.LoadAsync(this.UserId, false)
+                              from followedBy in this.FollowedByUsers.LoadAsync(this.UserId, false)
                               select new Unit();
             this.subscription = loadProcess.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
         }
@@ -140,18 +140,6 @@ namespace FlatBeats.ViewModels
         public override void Unload()
         {
             this.subscription.Dispose();
-        }
-
-        private IObservable<Unit> LoadFollowedByAsync()
-        {
-            // TODO: Load followed by
-            return Observable.Return(new Unit());
-        }
-
-        private IObservable<Unit> LoadFollowingAsync()
-        {
-            // TODO: Load following
-            return Observable.Return(new Unit());
         }
 
         private IObservable<Unit> LoadUserAsync()
@@ -173,12 +161,11 @@ namespace FlatBeats.ViewModels
             this.UserName = userContract.Name;
         }
 
-
         public ObservableCollection<MixViewModel> LikedMixes { get; private set; }
 
-        public ObservableCollection<UserContract> Following { get; private set; }
+        public FollowsUsersViewModel FollowsUsers { get; private set; }
 
-        public ObservableCollection<UserContract> FollowedBy { get; private set; }
+        public FollowedByUsersViewModel FollowedByUsers { get; private set; }
 
         public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
 

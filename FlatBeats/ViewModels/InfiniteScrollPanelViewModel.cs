@@ -1,6 +1,11 @@
 ﻿namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+
+    using Flatliner.Phone.Data;
 
     using Microsoft.Phone.Reactive;
 
@@ -26,10 +31,9 @@
 
         public int PageSize { get; set; }
         
-        public int CurrentPage { get; private set; }
+        public int CurrentPage { get; set; }
 
-      
-        public void StopLoadingPages()
+        public virtual void StopLoadingPages()
         {
             this.pageRequests.OnCompleted();
         }
@@ -64,6 +68,84 @@
         {
             this.CurrentPage++;
             this.pageRequests.OnNext(CurrentPage);
+        }
+    }
+
+    public abstract class InfiniteScrollPanelViewModel<TViewModel, TData> : InfiniteScrollPanelViewModel
+    {
+        /// <summary>
+        /// Initializes a new instance of the InfiniteScrollPanelViewModel class.
+        /// </summary>
+        public InfiniteScrollPanelViewModel()
+        {
+            this.Items = new ObservableCollection<TViewModel>();
+        }
+
+        public ObservableCollection<TViewModel> Items { get; private set; }
+
+        protected abstract IObservable<IList<TData>> GetPageOfItemsAsync(int pageNumber, int pageSize);
+
+        protected IObservable<Unit> LoadItemsAsync()
+        {
+            this.CurrentPage = 0;
+            this.Items.Clear();
+            var getItems =
+                from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
+                from response in
+                    this.GetPageOfItemsAsync(page, this.PageSize).Do(_ => this.HideProgress(), this.HideProgress)
+                    .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
+                where response != null
+                select response;
+            return getItems.ObserveOnDispatcher().Do(
+                this.AddToList,
+                this.HandleError,
+                this.LoadCompleted).FinallySelect(() => new Unit());
+        }
+
+        private void LoadCompleted()
+        {
+            this.AddBufferedPageOfItems();
+            this.LoadItemsCompleted();
+        }
+
+        protected abstract TViewModel CreateItem(TData data);
+
+        private readonly List<TViewModel> nextPage = new List<TViewModel>();
+
+        protected abstract void LoadItemsCompleted();
+
+        private void AddToList(IList<TData> pageOfItems)
+        {
+            if (this.Items.Count == 0)
+            {
+                this.Items.AddAll(pageOfItems.Select(this.CreateItem));
+                base.LoadNextPage();
+            }
+            else
+            {
+                this.nextPage.AddRange(pageOfItems.Select(this.CreateItem));
+            }
+        }
+
+        public override void StopLoadingPages()
+        {
+            this.AddBufferedPageOfItems();
+            base.StopLoadingPages();
+        }
+
+        public override void LoadNextPage()
+        {
+            this.AddBufferedPageOfItems();
+            base.LoadNextPage();
+        }
+
+        private void AddBufferedPageOfItems()
+        {
+            if (this.nextPage.Count != 0)
+            {
+                this.Items.AddAll(this.nextPage);
+                this.nextPage.Clear();
+            }
         }
     }
 }

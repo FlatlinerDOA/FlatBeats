@@ -151,19 +151,20 @@ namespace FlatBeats.ViewModels
                 load.ObserveOnDispatcher().Subscribe(
                     results =>
                         {
-                            if (results.Liked.Any())
+                            if (this.Liked.Items.Any())
                             {
                                 this.TagsPanel.Title = StringResources.Title_LikedTags;
-                                this.TagsPanel.Load(results.Liked);
+                                this.TagsPanel.Load(this.Liked.Items);
                             }
                             else
                             {
                                 this.TagsPanel.Title = StringResources.Title_LatestTags;
-                                this.TagsPanel.Load(results.Latest);
+                                this.TagsPanel.Load(this.Latest.Mixes);
                             }
                         }, 
                         this.HandleError, 
                         this.LoadCompleted));
+            this.Liked.LoadNextPage();
         }
 
         private void Refresh()
@@ -174,6 +175,7 @@ namespace FlatBeats.ViewModels
                          from recent in this.Recent.LoadAsync()
                          select new Unit();
             this.subscription = reload.ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted);
+            this.Liked.LoadNextPage();
         }
 
         /// <summary>

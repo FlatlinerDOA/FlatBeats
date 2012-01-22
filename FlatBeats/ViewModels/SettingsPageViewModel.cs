@@ -75,7 +75,9 @@ namespace FlatBeats.ViewModels
             this.PasswordLabelText = "Password";
             this.CanLogin = false;
             this.IsLoggedIn = false;
-            this.Mixes = new ObservableCollection<MixViewModel>();
+            this.Mixes = new UserProfileMixesViewModel();
+            this.FollowedByUsers = new FollowedByUsersViewModel();
+            this.FollowsUsers = new FollowsUsersViewModel();
             this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);
             this.ResetCommand = new DelegateCommand(this.Reset);
@@ -112,7 +114,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
+        public UserProfileMixesViewModel Mixes { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -259,7 +261,7 @@ namespace FlatBeats.ViewModels
             this.CanLogin = true;
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
-                this.LoadProfile, this.HandleError, this.LoadCompleted));
+                this.LoadCredentials, this.HandleError, this.LoadCompleted));
         }
 
         #endregion
@@ -304,13 +306,17 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        public FollowsUsersViewModel FollowsUsers { get; private set; }
+
+        public FollowedByUsersViewModel FollowedByUsers { get; private set; }
+
         #region Methods
 
         /// <summary>
         /// </summary>
         /// <param name="creds">
         /// </param>
-        private void LoadProfile(UserCredentialsContract creds)
+        private void LoadCredentials(UserCredentialsContract creds)
         {
             if (creds == null)
             {
@@ -323,38 +329,53 @@ namespace FlatBeats.ViewModels
 
             this.ShowProgress(StringResources.Progress_Loading);
             var q = from user in ProfileService.LoadUserToken()
-                    from loaded in this.LoadMixes(user.CurentUser.Id)
+                    from load in this.LoadUserProfile(user)
                     select new Unit();
-            q.Subscribe(
+            this.AddToLifetime(
+                q.Subscribe(
                 profile => 
                 { 
-                    this.IsLoggedIn = true;
-                    this.CanLogin = false;
-                }, this.HandleError, this.HideProgress);
+                }, 
+                this.HandleError, 
+                this.HideProgress));
+            this.Mixes.LoadNextPage();
+            this.FollowsUsers.LoadNextPage();
+            this.FollowedByUsers.LoadNextPage();
         }
 
-        private IObservable<Unit> LoadMixes(string userId)
+        private IObservable<Unit> LoadUserProfile(UserLoginResponseContract user)
         {
-            var q = from mixes in ProfileService.GetUserMixes(userId)
-                    from mix in mixes.Mixes.ToObservable(Scheduler.ThreadPool)
-                    select new MixViewModel(mix);
-                        
-            return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(
-                this.Mixes.Add, 
-                this.HandleError, 
-                () =>
-                {
-                    if (this.Mixes.Count == 0)
-                    {
-                        this.Message = StringResources.Message_NoPersonalMixes;
-                        this.ShowMessage = true;
-                    }
-                    else
-                    {
-                        this.ShowMessage = false;
-                    }
-                }).FinallySelect(() => new Unit());
+            this.IsLoggedIn = true;
+            this.CanLogin = false;
+
+            return from mixes in this.Mixes.LoadAsync(user.CurrentUser.Id, true)
+                   from follows in this.FollowsUsers.LoadAsync(user.CurrentUser.Id, true)
+                   from followedBy in this.FollowedByUsers.LoadAsync(user.CurrentUser.Id, true)
+                   select new Unit();
         }
+
+        ////private IObservable<Unit> LoadMixes(string userId)
+        ////{
+        ////    var q = from mixes in ProfileService.GetUserMixes(userId)
+        ////            from mix in mixes.Mixes.ToObservable(Scheduler.ThreadPool)
+        ////            select new MixViewModel(mix);
+                        
+        ////    return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(
+        ////        this.Mixes.Add, 
+        ////        this.HandleError, 
+        ////        () =>
+        ////        {
+        ////            if (this.Mixes.Count == 0)
+        ////            {
+        ////                this.Message = StringResources.Message_YouHaveNoMixes;
+        ////                this.ShowMessage = true;
+        ////            }
+        ////            else
+        ////            {
+        ////                this.ShowMessage = false;
+        ////            }
+        ////        }).FinallySelect(() => new Unit());
+        ////}
 
         /// <summary>
         /// </summary>
@@ -395,7 +416,9 @@ namespace FlatBeats.ViewModels
                     {
                         this.UserName = null;
                         this.Password = null;
-                        this.Mixes.Clear();
+                        this.Mixes.Items.Clear();
+                        this.FollowedByUsers.Items.Clear();
+                        this.FollowedByUsers.Items.Clear();
                         this.CanLogin = true;
                         this.IsLoggedIn = false;
                         this.HideProgress();
@@ -409,15 +432,17 @@ namespace FlatBeats.ViewModels
             var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
             this.ShowProgress(StringResources.Progress_SigningIn);
             var q = from auth in ProfileService.Authenticate(creds)
-                    from mixLoaded in this.LoadMixes(auth.CurentUser.Id)
+                    from load in this.LoadUserProfile(auth)
                     select new Unit();
-            q.ObserveOnDispatcher().Subscribe(profile => 
-            { 
-                this.IsLoggedIn = true;
-                this.CanLogin = false;
-            }, 
-            this.HandleError, 
-            this.HideProgress);
+            q.ObserveOnDispatcher()
+                .Subscribe(
+                profile => 
+                { 
+                    this.IsLoggedIn = true;
+                    this.CanLogin = false;
+                }, 
+                this.HandleError, 
+                this.HideProgress);
         }
 
         /// <summary>

@@ -7,8 +7,7 @@
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:local="clr-namespace:FlatBeats.Controls"
                             xmlns:Controls1="clr-namespace:Clarity.Phone.Controls"
-                            xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels"
-                            x:Class="FlatBeats.MainPage"
+                            xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="800"
@@ -213,10 +212,13 @@
                                FontFamily="Segoe WP Light"
                                Foreground="LightGray"
                                TextWrapping="Wrap" Margin="24,8,12,0" />
-                    <ListBox ItemsSource="{Binding Mixes}"
+                    <ListBox ItemsSource="{Binding Items}"
                              Tap="ListBoxTap"
                              Style="{StaticResource TiltedNavigationListStyle}" 
                              Margin="24,0,-12,0">
+                        <i:Interaction.Behaviors>
+                            <FlatBeats_ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <local:AnimatingContentControl>

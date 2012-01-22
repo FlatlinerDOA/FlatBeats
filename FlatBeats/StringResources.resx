@@ -217,7 +217,7 @@ Link:
   <data name="Title_Mix" xml:space="preserve">
     <value>mix</value>
   </data>
-  <data name="Message_NoPersonalMixes" xml:space="preserve">
+  <data name="Message_YouHaveNoMixes" xml:space="preserve">
     <value>You haven't created any mixes yet, visit 8tracks.com on your computer to get started!</value>
   </data>
   <data name="Message_UserHasNoMixes" xml:space="preserve">
@@ -264,5 +264,23 @@ Link:
   </data>
   <data name="Progress_SigningIn" xml:space="preserve">
     <value>Signing in...</value>
+  </data>
+  <data name="Message_UserNotFollowedByAnyone" xml:space="preserve">
+    <value>This person doesn't have any followers</value>
+  </data>
+  <data name="Message_UserNotFollowingAnyone" xml:space="preserve">
+    <value>This person isn't following anyone.</value>
+  </data>
+  <data name="Message_YouAreNotFollowedByAnyone" xml:space="preserve">
+    <value>Sorry, there's no one following you.</value>
+  </data>
+  <data name="Message_YouAreNotFollowingAnyone" xml:space="preserve">
+    <value>You haven't found anyone to follow yet.</value>
+  </data>
+  <data name="Title_FollowedByUsers" xml:space="preserve">
+    <value>followers</value>
+  </data>
+  <data name="Title_FollowsUsers" xml:space="preserve">
+    <value>follows</value>
   </data>
 </root>

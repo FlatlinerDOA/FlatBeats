@@ -254,15 +254,6 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com on your computer to get started!.
-        /// </summary>
-        internal static string Message_NoPersonalMixes {
-            get {
-                return ResourceManager.GetString("Message_NoPersonalMixes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Check back here after listening to some mixes..
         /// </summary>
         internal static string Message_NoRecentlyPlayedMixes {
@@ -295,6 +286,51 @@ namespace FlatBeats {
         internal static string Message_UserHasNoMixes {
             get {
                 return ResourceManager.GetString("Message_UserHasNoMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This person doesn&apos;t have any followers.
+        /// </summary>
+        internal static string Message_UserNotFollowedByAnyone {
+            get {
+                return ResourceManager.GetString("Message_UserNotFollowedByAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This person isn&apos;t following anyone..
+        /// </summary>
+        internal static string Message_UserNotFollowingAnyone {
+            get {
+                return ResourceManager.GetString("Message_UserNotFollowingAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, there&apos;s no one following you..
+        /// </summary>
+        internal static string Message_YouAreNotFollowedByAnyone {
+            get {
+                return ResourceManager.GetString("Message_YouAreNotFollowedByAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t found anyone to follow yet..
+        /// </summary>
+        internal static string Message_YouAreNotFollowingAnyone {
+            get {
+                return ResourceManager.GetString("Message_YouAreNotFollowingAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com on your computer to get started!.
+        /// </summary>
+        internal static string Message_YouHaveNoMixes {
+            get {
+                return ResourceManager.GetString("Message_YouHaveNoMixes", resourceCulture);
             }
         }
         
@@ -349,6 +385,24 @@ namespace FlatBeats {
         internal static string Title_CreatedMixes {
             get {
                 return ResourceManager.GetString("Title_CreatedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to followers.
+        /// </summary>
+        internal static string Title_FollowedByUsers {
+            get {
+                return ResourceManager.GetString("Title_FollowedByUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to follows.
+        /// </summary>
+        internal static string Title_FollowsUsers {
+            get {
+                return ResourceManager.GetString("Title_FollowsUsers", resourceCulture);
             }
         }
         

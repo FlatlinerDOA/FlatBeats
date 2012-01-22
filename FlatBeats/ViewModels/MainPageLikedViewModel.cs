@@ -12,36 +12,60 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
 
-    public class MainPageLikedViewModel : PanelViewModel
+    public class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
         /// <summary>
         /// Initializes a new instance of the MainPageLikedViewModel class.
         /// </summary>
         public MainPageLikedViewModel()
         {
-            this.Mixes = new ObservableCollection<MixViewModel>();
             this.Title = StringResources.Title_LikedMixes;
         }
 
-        public ObservableCollection<MixViewModel> Mixes { get; private set; }
-
-        public IObservable<IList<MixViewModel>> LoadAsync()
+        public IObservable<Unit> LoadAsync()
         {
-            this.Message = null;
-            var liked = from userCredentials in ProfileService.LoadCredentials()
-                        from userToken in ProfileService.LoadUserToken()
-                        from response in ProfileService.GetLikedMixes(userToken.CurentUser.Id)
-                        from mix in response.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadListItems(this.Mixes, (vm, d) => vm.Load(d))
-                        select mix;
-            return liked.FinallySelect(() =>
-                {
-                    if (this.Mixes.Count == 0)
-                    {
-                        this.Message = StringResources.Message_NoLikedMixes;
-                    }
+            var load = from userCredentials in ProfileService.LoadCredentials()
+                       from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
+                       select new Unit();
+            return from result in load 
+                   from items in this.LoadItemsAsync() 
+                   select new Unit();
+            ////this.Message = null;
+            ////var liked = 
+            ////            from response in 
+            ////            from mix in response.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadListItems(this.Mixes, (vm, d) => vm.Load(d))
+            ////            select mix;
+            ////return liked.FinallySelect(() =>
+            ////    {
 
-                    return (IList<MixViewModel>)this.Mixes;
-                });
+            ////        return (IList<MixViewModel>)this.Mixes;
+            ////    });
+        }
+
+        protected string UserId { get; set; }
+
+        protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
+        {
+            return ProfileService.GetLikedMixes(this.UserId, pageNumber, pageSize).Select(t => (IList<MixContract>)t.Mixes);
+        }
+
+        protected override MixViewModel CreateItem(MixContract data)
+        {
+            return new MixViewModel(data);
+        }
+
+        protected override void LoadItemsCompleted()
+        {
+            if (this.Items.Count == 0)
+            {
+                this.Message = StringResources.Message_NoLikedMixes;
+                this.ShowMessage = true;
+            }
+            else
+            {
+                this.Message = null;
+            }
+
         }
     }
 }

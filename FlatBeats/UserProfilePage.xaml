@@ -130,6 +130,40 @@
                              Tap="ListBoxTap" />
                 </Grid>
             </controls:PivotItem>
+            <controls:PivotItem DataContext="{Binding FollowsUsers}"
+                                Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <ListBox Margin="0,0,-12,0"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource UserItemTemplate}"
+                             Tap="ListBoxTap">
+                    </ListBox>
+                </Grid>
+            </controls:PivotItem>
+            <controls:PivotItem DataContext="{Binding FollowedByUsers}"
+                                Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <ListBox Margin="0,0,-12,0"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource UserItemTemplate}"
+                             Tap="ListBoxTap">
+                    </ListBox>
+                </Grid>
+            </controls:PivotItem>
         </controls:Pivot>
     </Grid> 
 </Controls:AnimatedBasePage>

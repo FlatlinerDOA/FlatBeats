@@ -6,7 +6,7 @@
     public class UserLoginResponseContract
     {
         [DataMember(Name = "current_user")]
-        public UserContract CurentUser { get; set; }
+        public UserContract CurrentUser { get; set; }
 
         [DataMember(Name = "user_token")]
         public string UserToken { get; set; }

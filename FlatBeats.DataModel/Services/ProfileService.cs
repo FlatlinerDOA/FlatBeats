@@ -1,7 +1,9 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
+    using System.Runtime.Serialization;
 
     using Flatliner.Phone;
 
@@ -9,7 +11,8 @@
 
     public static class ProfileService
     {
-        private const string LikedMixesCacheFile = "LikedMixes.xml";
+        private const string LikedMixesCacheFile = "{0}\\liked.json";
+        private const string MixFeedCacheFile = "{0}\\mixfeed.json";
 
         private const string CredentialsFilePath = "credentials.json";
 
@@ -71,23 +74,26 @@
             return
                 Downloader.GetJson<UserProfileResponseContract>(
                     new Uri(urlFormat, UriKind.Absolute));
-
         }
 
-        public static IObservable<MixesResponseContract> GetUserMixes(string userId)
+        public static IObservable<MixesResponseContract> GetUserMixes(string userId, int pageNumber, int pageSize)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json", userId);
-            return
-                Downloader.GetJson<MixesResponseContract>(
-                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
-
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
+            return Downloader.GetJson<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
-        public static IObservable<MixesResponseContract> GetLikedMixes(string userId)
+        public static IObservable<MixesResponseContract> GetLikedMixes(string userId, int pageNumber, int pageSize)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&per_page=20", userId);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), LikedMixesCacheFile);
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&page={1}&per_page={2}", userId, pageNumber, pageSize);
+            var cacheFile = string.Format(LikedMixesCacheFile, userId);
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
+        }
 
+        public static IObservable<MixesResponseContract> GetMixFeed(string userId, int pageNumber, int pageSize)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=mix_feed&page={1}&per_page={2}", userId, pageNumber, pageSize);
+            var cacheFile = string.Format(MixFeedCacheFile, userId);
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
         }
 
         public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)
@@ -111,6 +117,25 @@
             Storage.Delete(CredentialsFilePath);
             Downloader.UserToken = null;
             Downloader.UserCredentials = null;
+        }
+
+        public static IObservable<ReviewsResponseContract> GetReviewsByUser(string userId, int pageNumber, int pageSize)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/reviews.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
+            return Downloader.GetJson<ReviewsResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+        }
+
+        public static IObservable<FollowingUserResponseContract> GetFollowedByUsers(string userId, int pageNumber, int pageSize)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/followed_by_users.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
+            return Downloader.GetJson<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+
+        }
+
+        public static IObservable<FollowingUserResponseContract> GetFollowsUsers(string userId, int pageNumber, int pageSize)
+        {
+            var urlFormat = string.Format("http://8tracks.com/users/{0}/follows_users.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
+            return Downloader.GetJson<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<FollowUserResponseContract> SetFollowUser(string userId, bool isFollowed)
@@ -141,5 +166,12 @@
         {
             return ObservableEx.DeferredStart(DeleteCredentials);
         }
+    }
+
+    [DataContract]
+    public class FollowingUserResponseContract : ResponseContract
+    {
+        [DataMember(Name = "users")]
+        public List<UserContract> Users { get; set; }
     }
 }

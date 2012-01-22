@@ -136,6 +136,8 @@
     </Compile>
     <Compile Include="ViewModels\BackgroundAudioPlayerExtensions.cs" />
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
+    <Compile Include="ViewModels\FollowedByUsersViewModel.cs" />
+    <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
     <Compile Include="ViewModels\IInfiniteScroll.cs" />
     <Compile Include="ViewModels\InfiniteScrollBehavior.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\UpperCaseConverter.cs" />
+    <Compile Include="ViewModels\UserListItemViewModel.cs" />
     <Compile Include="ViewModels\UserProfileMixesViewModel.cs" />
     <Compile Include="ViewModels\UserProfilePageViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />

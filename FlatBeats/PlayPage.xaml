@@ -334,7 +334,7 @@
                                Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                VerticalAlignment="Top" />
                     <ListBox Margin="0,0,-12,0"
-                                             ItemsSource="{Binding Reviews}"
+                                             ItemsSource="{Binding Items}"
                                              ItemTemplate="{StaticResource ReviewItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
