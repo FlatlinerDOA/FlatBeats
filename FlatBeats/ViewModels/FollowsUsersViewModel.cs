@@ -16,9 +16,17 @@
         /// <summary>
         /// Initializes a new instance of the FollowsUsersViewModel class.
         /// </summary>
-        public FollowsUsersViewModel()
+        public FollowsUsersViewModel(bool isCurrentUser)
         {
-            this.Title = StringResources.Title_FollowsUsers;
+            this.IsCurrentUser = isCurrentUser;
+            if (this.IsCurrentUser)
+            {
+                this.Title = StringResources.Title_YouFollow;
+            }
+            else 
+            {
+                this.Title = StringResources.Title_FollowsUsers;
+            }
         }
 
         /// <summary>
@@ -26,10 +34,9 @@
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public IObservable<Unit> LoadAsync(string userId, bool isCurrentUser)
+        public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            this.IsCurrentUser = isCurrentUser;
             if (this.IsDataLoaded)
             {
                 return Observable.Return(new Unit());

@@ -75,9 +75,9 @@ namespace FlatBeats.ViewModels
             this.PasswordLabelText = "Password";
             this.CanLogin = false;
             this.IsLoggedIn = false;
-            this.Mixes = new UserProfileMixesViewModel();
-            this.FollowedByUsers = new FollowedByUsersViewModel();
-            this.FollowsUsers = new FollowsUsersViewModel();
+            this.Mixes = new UserProfileMixesViewModel(true);
+            this.FollowedByUsers = new FollowedByUsersViewModel(true);
+            this.FollowsUsers = new FollowsUsersViewModel(true);
             this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);
             this.ResetCommand = new DelegateCommand(this.Reset);
@@ -342,13 +342,40 @@ namespace FlatBeats.ViewModels
             this.IsLoggedIn = true;
             this.CanLogin = false;
 
-            this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => {}, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => {}, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id, true).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
+            this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
             this.Mixes.LoadNextPage();
             this.FollowsUsers.LoadNextPage();
             this.FollowedByUsers.LoadNextPage();
+        }
+
+        private void UpdateIsInProgress()
+        {
+            if (this.Mixes.IsInProgress)
+            {
+                this.ShowProgress(this.Mixes.InProgressMessage);
+                return;
+            }
+
+            if (this.FollowsUsers.IsInProgress)
+            {
+                this.ShowProgress(this.FollowsUsers.InProgressMessage);
+                return;
+            }
+
+            if (this.FollowedByUsers.IsInProgress)
+            {
+                this.ShowProgress(this.FollowedByUsers.InProgressMessage);
+                return;
+            }
+
+            this.HideProgress();
         }
 
         ////private IObservable<Unit> LoadMixes(string userId)

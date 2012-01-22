@@ -69,10 +69,10 @@ namespace FlatBeats
         {
             base.OnNavigatedTo(e);
 
-            ////if (this.appBarBinder == null)
-            ////{
-            ////    this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
-            ////}
+            if (this.appBarBinder == null)
+            {
+                this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
+            }
 
             this.ViewModel.UserId = this.NavigationContext.QueryString["userid"];
             this.ViewModel.Load();

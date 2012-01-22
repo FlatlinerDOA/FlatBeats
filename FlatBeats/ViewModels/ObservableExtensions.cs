@@ -90,21 +90,12 @@ namespace FlatBeats.ViewModels
                 });
         }
 
-        public static IObservable<T> FlowIn<T>(this IObservable<T> source, int delay = 75)
+        public static IObservable<T> FlowIn<T>(this IObservable<T> source, int millisecondDelay = 85)
         {
-            bool hasBeenRun = false;
-            return source.Do(
-                _ =>
-                    {
-                        if (!hasBeenRun)
-                        {
-                            hasBeenRun = true;
-                        }
-                        else
-                        {
-                            Thread.Sleep(delay);
-                        }
-                    });
+            //bool hasBeenRun = false;
+            return from item in source
+                   from delayTimer in Observable.Timer(TimeSpan.FromMilliseconds(millisecondDelay))
+                   select item;
         }
 
         public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate)

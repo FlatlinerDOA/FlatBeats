@@ -540,5 +540,23 @@ namespace FlatBeats {
                 return ResourceManager.GetString("Title_Tags", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to followers.
+        /// </summary>
+        internal static string Title_YouAreFollowedBy {
+            get {
+                return ResourceManager.GetString("Title_YouAreFollowedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to following.
+        /// </summary>
+        internal static string Title_YouFollow {
+            get {
+                return ResourceManager.GetString("Title_YouFollow", resourceCulture);
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private readonly string userId;
+        private string userId;
 
         /// <summary>
         /// </summary>
@@ -46,10 +46,23 @@ namespace FlatBeats.ViewModels
         #region Constructors and Destructors
 
         /// <summary>
+        /// Initializes a new instance of the UserListItemViewModel class.
+        /// </summary>
+        public UserListItemViewModel()
+        {
+            
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="data">
         /// </param>
         public UserListItemViewModel(UserContract data)
+        {
+            this.Load(data);
+        }
+
+        private void Load(UserContract data)
         {
             this.userId = data.Id;
             this.Name = data.Name;

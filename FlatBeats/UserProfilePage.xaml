@@ -206,5 +206,12 @@
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
-    </Grid> 
+    </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True"
+                              IsMenuEnabled="True"
+                              BackgroundColor="{StaticResource PhoneBackgroundColor}"
+                              ForegroundColor="{StaticResource PhoneForegroundColor}"
+                              Opacity="0.8" />
+    </phone:PhoneApplicationPage.ApplicationBar>
 </Controls:AnimatedBasePage>

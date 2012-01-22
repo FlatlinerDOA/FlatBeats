@@ -283,4 +283,10 @@ Link:
   <data name="Title_FollowsUsers" xml:space="preserve">
     <value>follows</value>
   </data>
+  <data name="Title_YouAreFollowedBy" xml:space="preserve">
+    <value>followers</value>
+  </data>
+  <data name="Title_YouFollow" xml:space="preserve">
+    <value>following</value>
+  </data>
 </root>

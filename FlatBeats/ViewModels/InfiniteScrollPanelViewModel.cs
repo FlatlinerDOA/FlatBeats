@@ -47,18 +47,21 @@
                 case 1:
                     return StringResources.Progress_Loading;
                 case 2:
-                    return "Loading more...";
                 case 3:
-                    return "Loading even more...";
+                    return "Loading more...";
                 case 4:
-                    return "Loading even more still...";
+                    return "Loading even more...";
                 case 5:
-                    return "There's a lot isn't there?";
+                    return "Loading even more still...";
                 case 6:
-                    return "Have you found what you're looking for?";
+                    return "There's a lot isn't there?";
                 case 7:
-                    return "Any minute now...";
+                    return "Have you found what you're looking for?";
                 case 8:
+                    return "Any minute now...";
+                case 9:
+                    return "I'd hate to scroll to the top right now...";
+                case 10:
                     return "You just let me know when you're done...";
             }
 
@@ -81,7 +84,8 @@
         }
     }
 
-    public abstract class InfiniteScrollPanelViewModel<TViewModel, TData> : InfiniteScrollPanelViewModel
+    public abstract class InfiniteScrollPanelViewModel<TViewModel, TData> : InfiniteScrollPanelViewModel 
+        where TViewModel : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the InfiniteScrollPanelViewModel class.
@@ -105,7 +109,7 @@
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
                 select response;
-            return getItems.ObserveOnDispatcher().Do(
+            return getItems.Do(
                 this.AddToList,
                 this.HandleError,
                 this.LoadCompleted).FinallySelect(() => new Unit());
@@ -126,20 +130,17 @@
 
         protected abstract TViewModel CreateItem(TData data);
 
-        private readonly List<TViewModel> nextPage = new List<TViewModel>();
+        private readonly BlockingQueue<TViewModel> nextPage = new BlockingQueue<TViewModel>();
 
         protected abstract void LoadItemsCompleted();
 
         private void AddToList(IList<TData> pageOfItems)
         {
+            this.nextPage.EnqueueRange(pageOfItems.Select(this.CreateItem));
+            
             if (this.Items.Count == 0)
             {
-                this.Items.AddAll(pageOfItems.Select(this.CreateItem));
-                base.LoadNextPage();
-            }
-            else
-            {
-                this.nextPage.AddRange(pageOfItems.Select(this.CreateItem));
+                this.AddBufferedPageOfItems();
             }
         }
 
@@ -157,11 +158,61 @@
 
         private void AddBufferedPageOfItems()
         {
-            if (this.nextPage.Count != 0)
+            TViewModel item;
+            while (this.nextPage.TryDequeue(out item))
             {
-                this.Items.AddAll(this.nextPage);
-                this.nextPage.Clear();
+                this.Items.Add(item);
             }
         }
+    }
+
+    public sealed class BlockingQueue<T>
+    {
+        private readonly object syncRoot = new object();
+
+        private readonly Queue<T> queue = new Queue<T>();
+
+        public void Enqueue(T item)
+        {
+            lock (this.syncRoot)
+            {
+                this.queue.Enqueue(item);
+            }
+        }
+
+        public void EnqueueRange(IEnumerable<T> items)
+        {
+            lock (this.syncRoot)
+            {
+                foreach (var item in items)
+                {
+                    this.queue.Enqueue(item);
+                }
+            }
+        }
+
+        public bool TryDequeue(out T item)
+        {
+            lock (this.syncRoot)
+            {
+                if (this.queue.Count == 0)
+                {
+                    item = default(T);
+                    return false;
+                }
+
+                item = this.queue.Dequeue();
+                return true;
+            }
+        }
+
+        public void Clear()
+        {
+            lock (this.syncRoot)
+            {
+                this.queue.Clear();
+            }   
+        }
+         
     }
 }

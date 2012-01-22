@@ -15,15 +15,15 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// Initializes a new instance of the UserProfileMixesViewModel class.
         /// </summary>
-        public UserProfileMixesViewModel()
+        public UserProfileMixesViewModel(bool isCurrentUser)
         {
+            this.IsCurrentUser = isCurrentUser;
             this.Title = StringResources.Title_CreatedMixes;
         }
 
-        public IObservable<Unit> LoadAsync(string userId, bool isCurrentUser)
+        public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            this.IsCurrentUser = isCurrentUser;
             return this.LoadItemsAsync();
         }
 

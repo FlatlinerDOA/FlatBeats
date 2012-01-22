@@ -26,10 +26,10 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public UserProfilePageViewModel()
         {
-            this.Mixes = new UserProfileMixesViewModel();
+            this.Mixes = new UserProfileMixesViewModel(false);
             this.LikedMixes = new ObservableCollection<MixViewModel>();
-            this.FollowedByUsers = new FollowedByUsersViewModel();
-            this.FollowsUsers = new FollowsUsersViewModel();
+            this.FollowedByUsers = new FollowedByUsersViewModel(false);
+            this.FollowsUsers = new FollowsUsersViewModel(false);
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
         }
@@ -60,7 +60,6 @@ namespace FlatBeats.ViewModels
 
         private Uri avatarImageUrl;
 
-        private IDisposable subscription = Disposable.Empty;
 
         public Uri AvatarImageUrl
         {
@@ -122,33 +121,53 @@ namespace FlatBeats.ViewModels
 
         public override void Load()
         {
-            this.subscription.Dispose();
             if (this.IsDataLoaded)
             {
                 return;
             }
 
             this.ShowProgress(StringResources.Progress_Loading);
-            this.AddToLifetime(
-            this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
+            this.AddToLifetime(this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
         }
 
         private void LoadPanels()
         {
+            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             this.AddToLifetime(
-                this.Mixes.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
-                this.FollowsUsers.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
-                this.FollowedByUsers.LoadAsync(this.UserId, false).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.Mixes.LoadNextPage();
             this.FollowsUsers.LoadNextPage();
             this.FollowedByUsers.LoadNextPage();
         }
 
-        public override void Unload()
+        private void UpdateIsInProgress()
         {
-            this.subscription.Dispose();
+            if (this.Mixes.IsInProgress)
+            {
+                this.ShowProgress(this.Mixes.InProgressMessage);
+                return;
+            }
+
+            if (this.FollowsUsers.IsInProgress)
+            {
+                this.ShowProgress(this.FollowsUsers.InProgressMessage);
+                return;
+            }
+
+            if (this.FollowedByUsers.IsInProgress)
+            {
+                this.ShowProgress(this.FollowedByUsers.InProgressMessage);
+                return;
+            }
+
+            this.HideProgress();
         }
 
         private IObservable<Unit> LoadUserAsync()
