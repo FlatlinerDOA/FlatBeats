@@ -18,7 +18,7 @@
         /// </summary>
         public InfiniteScrollPanelViewModel()
         {
-            this.PageSize = 20;
+            this.PageSize = 5;
         }
 
         public IObservable<int> PageRequests 
@@ -158,61 +158,18 @@
 
         private void AddBufferedPageOfItems()
         {
+            ////Observable.Interval(TimeSpan.FromMilliseconds(85)).Select(
+            ////    _ =>
+            ////        {
+            ////            TViewModel item;
+            ////            this.nextPage.TryDequeue(out item);
+            ////            return item;
+            ////        }).ContinueWhile(t => t != null).ObserveOnDispatcher().Subscribe(this.Items.Add);
             TViewModel item;
             while (this.nextPage.TryDequeue(out item))
             {
                 this.Items.Add(item);
             }
         }
-    }
-
-    public sealed class BlockingQueue<T>
-    {
-        private readonly object syncRoot = new object();
-
-        private readonly Queue<T> queue = new Queue<T>();
-
-        public void Enqueue(T item)
-        {
-            lock (this.syncRoot)
-            {
-                this.queue.Enqueue(item);
-            }
-        }
-
-        public void EnqueueRange(IEnumerable<T> items)
-        {
-            lock (this.syncRoot)
-            {
-                foreach (var item in items)
-                {
-                    this.queue.Enqueue(item);
-                }
-            }
-        }
-
-        public bool TryDequeue(out T item)
-        {
-            lock (this.syncRoot)
-            {
-                if (this.queue.Count == 0)
-                {
-                    item = default(T);
-                    return false;
-                }
-
-                item = this.queue.Dequeue();
-                return true;
-            }
-        }
-
-        public void Clear()
-        {
-            lock (this.syncRoot)
-            {
-                this.queue.Clear();
-            }   
-        }
-         
     }
 }

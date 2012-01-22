@@ -135,6 +135,7 @@
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\BackgroundAudioPlayerExtensions.cs" />
+    <Compile Include="ViewModels\BlockingQueue.cs" />
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
     <Compile Include="ViewModels\FollowedByUsersViewModel.cs" />
     <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
