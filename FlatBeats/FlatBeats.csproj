@@ -257,8 +257,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="icons\appbar.favs.addto.rest.png" />
-    <Resource Include="icons\appbar.game.addfriend.rest.png" />
-    <Resource Include="icons\appbar.game.removefriend.rest.png" />
+    <Content Include="icons\appbar.game.addfriend.rest.png" />
+    <Content Include="icons\appbar.game.removefriend.rest.png" />
     <Content Include="icons\appbar.heart2.empty.rest.png" />
     <Content Include="icons\appbar.heart2.rest.png" />
     <Content Include="icons\appbar.favs.removefrom.rest.png" />

@@ -198,7 +198,6 @@ namespace FlatBeats.ViewModels
             return pages.Do(
                 page =>
                     {
-
                         var startIndex = (page.PageNumber - 1) * page.PageSize;
                         var endIndex = startIndex + page.Items.Count;
                         for (int i = 0; i < page.Items.Count; i++)

@@ -36,20 +36,9 @@ namespace FlatBeats.ViewModels
 
             var load = from userCredentials in ProfileService.LoadCredentials()
                        from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
+                       from items in this.LoadItemsAsync() 
                        select new Unit();
-            return from result in load 
-                   from items in this.LoadItemsAsync() 
-                   select new Unit();
-            ////this.Message = null;
-            ////var liked = 
-            ////            from response in 
-            ////            from mix in response.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadListItems(this.Mixes, (vm, d) => vm.Load(d))
-            ////            select mix;
-            ////return liked.FinallySelect(() =>
-            ////    {
-
-            ////        return (IList<MixViewModel>)this.Mixes;
-            ////    });
+            return load.Do(_ => { }, this.LoadItemsCompleted).FinallySelect(() => new Unit());
         }
 
         protected string UserId { get; set; }

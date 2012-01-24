@@ -21,6 +21,10 @@ namespace FlatBeats.ViewModels
 
     public class UserProfilePageViewModel : PageViewModel, IApplicationBarViewModel
     {
+        private static readonly Uri FollowUserIcon = new Uri("/icons/appbar.game.addfriend.rest.png", UriKind.Relative);
+
+        private static readonly Uri UnfollowUserIcon = new Uri("/icons/appbar.game.removefriend.rest.png", UriKind.Relative);
+
         /// <summary>
         /// Initializes a new instance of the UserProfilePageViewModel class.
         /// </summary>
@@ -32,7 +36,50 @@ namespace FlatBeats.ViewModels
             this.FollowsUsers = new FollowsUsersViewModel(false);
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
+            this.ToggleFollowUserCommandLink = new CommandLink()
+                {
+                    Command = new DelegateCommand(this.ToggleFollowUser, this.CanToggleFollowUser), 
+                    Text = StringResources.Command_FollowUser, 
+                    IconUrl = FollowUserIcon
+                };
+            this.ApplicationBarButtonCommands.Add(this.ToggleFollowUserCommandLink);
         }
+
+        private bool CanToggleFollowUser()
+        {
+            return Downloader.IsAuthenticated;
+        }
+
+        private void ToggleFollowUser()
+        {
+            this.ShowProgress(StringResources.Progress_Updating);
+            ProfileService.SetFollowUser(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
+                response =>
+                    {
+                        this.HideProgress();
+                        this.IsCurrentUserFollowing = response.User.IsFollowed;
+                    });
+        }
+
+        private bool isCurrentUserFollowing;
+
+        protected bool IsCurrentUserFollowing
+        {
+            get
+            {
+                return this.isCurrentUserFollowing;
+            }
+
+            set
+            {
+                this.isCurrentUserFollowing = value;
+                this.ToggleFollowUserCommandLink.IconUrl = this.IsCurrentUserFollowing ? UnfollowUserIcon : FollowUserIcon;
+                this.ToggleFollowUserCommandLink.Text = this.IsCurrentUserFollowing ? StringResources.Command_UnfollowUser : StringResources.Command_FollowUser;
+                this.ToggleFollowUserCommandLink.RaiseCanExecuteChanged();
+            }
+        }
+
+        public CommandLink ToggleFollowUserCommandLink { get; private set; }
 
         public UserProfileMixesViewModel Mixes { get; private set; }
 
@@ -187,6 +234,7 @@ namespace FlatBeats.ViewModels
             this.Location = userContract.Location;
             this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
             this.UserName = userContract.Name;
+            this.IsCurrentUserFollowing = userContract.IsFollowed;
         }
 
         public ObservableCollection<MixViewModel> LikedMixes { get; private set; }

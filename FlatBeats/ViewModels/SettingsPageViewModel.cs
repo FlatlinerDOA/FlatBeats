@@ -259,6 +259,12 @@ namespace FlatBeats.ViewModels
         public override void Load()
         {
             this.CanLogin = true;
+            if (this.IsDataLoaded)
+            {
+                this.LoadPanels(this.loginResponse);
+                return;
+            }
+
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
                 this.LoadCredentials, this.HandleError, this.LoadCompleted));
@@ -287,6 +293,8 @@ namespace FlatBeats.ViewModels
         }
 
         private bool canLogin;
+
+        private UserLoginResponseContract loginResponse;
 
         public bool CanLogin
         {
@@ -339,6 +347,7 @@ namespace FlatBeats.ViewModels
 
         private void LoadPanels(UserLoginResponseContract user)
         {
+            this.loginResponse = user;
             this.IsLoggedIn = true;
             this.CanLogin = false;
 
@@ -350,9 +359,9 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
-            this.Mixes.LoadNextPage();
-            this.FollowsUsers.LoadNextPage();
-            this.FollowedByUsers.LoadNextPage();
+            this.Mixes.LoadFirstPage();
+            this.FollowsUsers.LoadFirstPage();
+            this.FollowedByUsers.LoadFirstPage();
         }
 
         private void UpdateIsInProgress()
@@ -377,29 +386,6 @@ namespace FlatBeats.ViewModels
 
             this.HideProgress();
         }
-
-        ////private IObservable<Unit> LoadMixes(string userId)
-        ////{
-        ////    var q = from mixes in ProfileService.GetUserMixes(userId)
-        ////            from mix in mixes.Mixes.ToObservable(Scheduler.ThreadPool)
-        ////            select new MixViewModel(mix);
-                        
-        ////    return q.FlowIn().ObserveOnDispatcher().FirstDo(_ => this.Mixes.Clear()).Do(
-        ////        this.Mixes.Add, 
-        ////        this.HandleError, 
-        ////        () =>
-        ////        {
-        ////            if (this.Mixes.Count == 0)
-        ////            {
-        ////                this.Message = StringResources.Message_YouHaveNoMixes;
-        ////                this.ShowMessage = true;
-        ////            }
-        ////            else
-        ////            {
-        ////                this.ShowMessage = false;
-        ////            }
-        ////        }).FinallySelect(() => new Unit());
-        ////}
 
         /// <summary>
         /// </summary>

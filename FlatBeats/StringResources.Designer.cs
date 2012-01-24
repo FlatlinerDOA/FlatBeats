@@ -70,6 +70,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to follow.
+        /// </summary>
+        internal static string Command_FollowUser {
+            get {
+                return ResourceManager.GetString("Command_FollowUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to like.
         /// </summary>
         internal static string Command_LikeMix {
@@ -129,6 +138,15 @@ namespace FlatBeats {
         internal static string Command_ShareMix {
             get {
                 return ResourceManager.GetString("Command_ShareMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unfollow.
+        /// </summary>
+        internal static string Command_UnfollowUser {
+            get {
+                return ResourceManager.GetString("Command_UnfollowUser", resourceCulture);
             }
         }
         
@@ -367,6 +385,15 @@ namespace FlatBeats {
         internal static string Progress_SigningIn {
             get {
                 return ResourceManager.GetString("Progress_SigningIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating....
+        /// </summary>
+        internal static string Progress_Updating {
+            get {
+                return ResourceManager.GetString("Progress_Updating", resourceCulture);
             }
         }
         

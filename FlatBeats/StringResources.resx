@@ -289,4 +289,13 @@ Link:
   <data name="Title_YouFollow" xml:space="preserve">
     <value>following</value>
   </data>
+  <data name="Command_FollowUser" xml:space="preserve">
+    <value>follow</value>
+  </data>
+  <data name="Command_UnfollowUser" xml:space="preserve">
+    <value>unfollow</value>
+  </data>
+  <data name="Progress_Updating" xml:space="preserve">
+    <value>Updating...</value>
+  </data>
 </root>

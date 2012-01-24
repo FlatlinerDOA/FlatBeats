@@ -141,7 +141,9 @@
 
         public static IObservable<FollowUserResponseContract> SetFollowUser(string userId, bool isFollowed)
         {
-            var urlFormat = isFollowed ? string.Format("http://8tracks.com/users/{0}/follow.json", userId) : string.Format("http://8tracks.com/tracks/{0}/unfollow.json", userId);
+            var urlFormat = isFollowed ? 
+                string.Format("http://8tracks.com/users/{0}/follow.json", userId) : 
+                string.Format("http://8tracks.com/users/{0}/unfollow.json", userId);
             var url = new Uri(urlFormat, UriKind.Absolute);
             return Downloader.PostStringAndGetJson<FollowUserResponseContract>(url, string.Empty);
         }

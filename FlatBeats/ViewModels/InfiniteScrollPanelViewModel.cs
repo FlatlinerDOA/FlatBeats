@@ -18,7 +18,7 @@
         /// </summary>
         public InfiniteScrollPanelViewModel()
         {
-            this.PageSize = 5;
+            this.PageSize = 10;
         }
 
         public IObservable<int> PageRequests 
@@ -69,7 +69,7 @@
         }
 
 
-        public void LoadFirstPage()
+        public virtual void LoadFirstPage()
         {
             if (this.CurrentRequestedPage == 0)
             {
@@ -123,69 +123,25 @@
 
         private void LoadCompleted()
         {
-            this.AddBufferedPageOfItems();
             this.LoadItemsCompleted();
         }
 
         public void Reset()
         {
-            this.CurrentDisplayedPage = 0;
             this.CurrentRequestedPage = 0;
             this.Items.Clear();
-            this.nextPage.Clear();
         }
 
         protected abstract TViewModel CreateItem(TData data);
 
-        private readonly BlockingQueue<TViewModel> nextPage = new BlockingQueue<TViewModel>();
 
         protected abstract void LoadItemsCompleted();
 
-        private void AddToList(IList<TData> pageOfItems)
+        public override void LoadFirstPage()
         {
-            this.nextPage.EnqueueRange(pageOfItems.Select(this.CreateItem));
-            this.AddBufferedPageOfItems();
+            this.CurrentRequestedPage = 0;
+            base.LoadFirstPage();
         }
 
-        public override void StopLoadingPages()
-        {
-            this.DisplayAllItems();
-            base.StopLoadingPages();
-        }
-
-        public override void LoadNextPage()
-        {
-            this.AddBufferedPageOfItems();
-            base.LoadNextPage();
-        }
-
-        public int CurrentDisplayedPage { get; set; }
-
-        private void AddBufferedPageOfItems()
-        {
-            ////Observable.Interval(TimeSpan.FromMilliseconds(85)).Select(
-            ////    _ =>
-            ////        {
-            ////            TViewModel item;
-            ////            this.nextPage.TryDequeue(out item);
-            ////            return item;
-            ////        }).ContinueWhile(t => t != null).ObserveOnDispatcher().Subscribe(this.Items.Add);
-
-            if (this.CurrentDisplayedPage == 0 || this.CurrentDisplayedPage < this.CurrentRequestedPage - 1)
-            {
-                this.DisplayAllItems();
-            }
-        }
-
-        private void DisplayAllItems()
-        {
-            this.CurrentDisplayedPage = this.CurrentRequestedPage;
-
-            TViewModel item;
-            while (this.nextPage.TryDequeue(out item))
-            {
-                this.Items.Add(item);
-            }
-        }
     }
 }

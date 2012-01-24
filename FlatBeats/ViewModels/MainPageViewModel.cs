@@ -169,8 +169,11 @@ namespace FlatBeats.ViewModels
         private void LoadLikedPanel()
         {
             this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => this.LoadRecentAndLatestPanels(), this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.Liked.LoadFirstPage();
+            this.LoadRecentAndLatestPanels();
         }
 
         private void UpdateIsInProgress()
@@ -178,6 +181,19 @@ namespace FlatBeats.ViewModels
             if (this.Liked.IsInProgress)
             {
                 this.ShowProgress(StringResources.Progress_Loading);
+                return;
+            }
+
+            if (this.Recent.IsInProgress)
+            {
+                this.ShowProgress(StringResources.Progress_Loading);
+                return;
+            }
+
+            if (this.Latest.IsInProgress)
+            {
+                this.ShowProgress(StringResources.Progress_Loading);
+                return;
             }
 
             this.HideProgress();

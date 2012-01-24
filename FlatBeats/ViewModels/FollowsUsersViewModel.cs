@@ -37,12 +37,6 @@
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            if (this.IsDataLoaded)
-            {
-                return Observable.Return(new Unit());
-            }
-
-            this.IsDataLoaded = true;
             return this.LoadItemsAsync();
         }
 
