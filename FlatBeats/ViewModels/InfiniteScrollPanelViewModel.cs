@@ -104,16 +104,22 @@
             this.Items.Clear();
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
-                from response in
-                    this.GetPageOfItemsAsync(page, this.PageSize).Do(_ => this.HideProgress(), this.HideProgress)
+                from response in this.GetPageOfItemsAsync(page, this.PageSize)
+                    .Select(p => new Page<TData>(p, page, this.PageSize))
+                    .AddOrReloadPage(this.Items, this.LoadItem)
+                    .Do(_ => this.HideProgress(), this.HideProgress)
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
                 select response;
             return getItems.Do(
-                this.AddToList,
-                this.HandleError,
-                this.LoadCompleted).FinallySelect(() => new Unit());
+                    _ =>
+                    {
+                    },
+                    this.HandleError,
+                    this.LoadCompleted).FinallySelect(() => new Unit());
         }
+
+        protected abstract void LoadItem(TViewModel viewModel, TData data);
 
         private void LoadCompleted()
         {
@@ -138,7 +144,6 @@
         private void AddToList(IList<TData> pageOfItems)
         {
             this.nextPage.EnqueueRange(pageOfItems.Select(this.CreateItem));
-
             this.AddBufferedPageOfItems();
         }
 

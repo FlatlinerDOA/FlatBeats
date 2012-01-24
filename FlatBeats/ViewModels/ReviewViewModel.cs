@@ -84,19 +84,7 @@ namespace FlatBeats.ViewModels
 
         public ReviewViewModel(ReviewContract review)
         {
-            if (review.User != null)
-            {
-                this.UserName = review.User.Name;
-                this.AvatarUrl = Avatar.ParseUrl(review.User.Avatar.ImageUrl);
-                this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
-            }
-
-            this.Body = Html.ConvertToPlainText(review.Body).Trim();
-            this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
-            if (this.Created > DateTime.Now)
-            {
-                this.Created = DateTime.Now.AddSeconds(-1);
-            }
+            this.Load(review);
         }
 
         public DateTime Created
@@ -120,5 +108,22 @@ namespace FlatBeats.ViewModels
         public Uri NavigationUrl
         {
             get; private set; }
+
+        public void Load(ReviewContract review)
+        {
+            if (review.User != null)
+            {
+                this.UserName = review.User.Name;
+                this.AvatarUrl = Avatar.ParseUrl(review.User.Avatar.ImageUrl);
+                this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
+            }
+
+            this.Body = Html.ConvertToPlainText(review.Body).Trim();
+            this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
+            if (this.Created > DateTime.Now)
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
+        }
     }
 }

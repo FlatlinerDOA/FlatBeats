@@ -57,6 +57,11 @@
             return ProfileService.GetFollowsUsers(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
         }
 
+        protected override void LoadItem(UserListItemViewModel viewModel, UserContract data)
+        {
+            viewModel.Load(data);
+        }
+
         protected override UserListItemViewModel CreateItem(UserContract data)
         {
             return new UserListItemViewModel(data);

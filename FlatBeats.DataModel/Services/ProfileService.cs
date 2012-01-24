@@ -11,8 +11,9 @@
 
     public static class ProfileService
     {
-        private const string LikedMixesCacheFile = "{0}\\liked.json";
-        private const string MixFeedCacheFile = "{0}\\mixfeed.json";
+        private const string LikedMixesCacheFile = "{0}\\liked-{1}.json";
+
+        private const string MixFeedCacheFile = "{0}\\mixfeed-{1}.json";
 
         private const string CredentialsFilePath = "credentials.json";
 
@@ -85,14 +86,14 @@
         public static IObservable<MixesResponseContract> GetLikedMixes(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&page={1}&per_page={2}", userId, pageNumber, pageSize);
-            var cacheFile = string.Format(LikedMixesCacheFile, userId);
+            var cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
             return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
         }
 
         public static IObservable<MixesResponseContract> GetMixFeed(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=mix_feed&page={1}&per_page={2}", userId, pageNumber, pageSize);
-            var cacheFile = string.Format(MixFeedCacheFile, userId);
+            var cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
             return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
         }
 

@@ -76,6 +76,11 @@
                 .Select(r => (IList<ReviewContract>)r.Reviews);
         }
 
+        protected override void LoadItem(ReviewViewModel viewModel, ReviewContract data)
+        {
+            viewModel.Load(data);
+        }
+
         protected override ReviewViewModel CreateItem(ReviewContract data)
         {
             return new ReviewViewModel(data);

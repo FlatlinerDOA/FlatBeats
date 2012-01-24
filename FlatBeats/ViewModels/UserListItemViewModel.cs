@@ -62,7 +62,7 @@ namespace FlatBeats.ViewModels
             this.Load(data);
         }
 
-        private void Load(UserContract data)
+        public void Load(UserContract data)
         {
             this.userId = data.Id;
             this.Name = data.Name;

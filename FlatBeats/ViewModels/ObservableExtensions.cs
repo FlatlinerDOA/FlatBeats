@@ -193,6 +193,35 @@ namespace FlatBeats.ViewModels
                 }).Select(t => t.Item);
         }
 
+        public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : class, new()
+        {
+            return pages.Do(
+                page =>
+                    {
+
+                        var startIndex = (page.PageNumber - 1) * page.PageSize;
+                        var endIndex = startIndex + page.Items.Count;
+                        for (int i = 0; i < page.Items.Count; i++)
+                        {
+                            var targetIndex = startIndex + i;
+                            if (target.Count <= targetIndex)
+                            {
+                                target.Add(new TViewModel());
+                            }
+
+                            load(target[targetIndex], page.Items[i]);
+                        }
+
+                        if (page.Items.Count < page.PageSize)
+                        {
+                            while (target.Count > endIndex)
+                            {
+                                target.RemoveAt(target.Count - 1);
+                            }
+                        }
+                }).Select(t => t.Items);
+        }
+
         public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : class, new()
         {
             int removeAfter = 0;
@@ -257,6 +286,32 @@ namespace FlatBeats.ViewModels
         }
     }
 
+    public class Page<T>
+    {
+        /// <summary>
+        /// Initializes a new instance of the Page class.
+        /// </summary>
+        public Page()
+        {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the Page class.
+        /// </summary>
+        public Page(IList<T> items, int pageNumber, int pageSize)
+        {
+            this.Items = items;
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
+        }
+
+        public IList<T> Items { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public int PageSize { get; set; }
+    }
     public class Indexed<T>
     {
         /// <summary>

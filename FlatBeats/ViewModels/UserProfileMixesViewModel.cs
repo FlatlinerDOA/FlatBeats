@@ -36,6 +36,11 @@ namespace FlatBeats.ViewModels
             return ProfileService.GetUserMixes(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
         }
 
+        protected override void LoadItem(MixViewModel viewModel, MixContract data)
+        {
+            viewModel.Load(data);
+        }
+
         protected override MixViewModel CreateItem(MixContract data)
         {
             return new MixViewModel(data);
