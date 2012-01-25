@@ -25,9 +25,6 @@
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
 		<Controls:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
         <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
-        <Controls:BooleanToVisibilityConverter x:Key="HideConverter" WhenFalse="Visible" WhenTrue="Collapsed" />
-        <Controls:UrlToBitmapConverter x:Key="ImageConverter" />
-        <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
         <ControlTemplate x:Key="FavouriteCheckBoxControlTemplate" TargetType="CheckBox">
         	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource TransparentBrush}">
         		<VisualStateManager.VisualStateGroups>
@@ -126,47 +123,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <DataTemplate x:Key="ReviewItemTemplate">
-            <Controls:AnimatingContentControl d:DesignWidth="475" d:DesignHeight="128">
-                <Grid  d:DesignWidth="499"
-                        d:DesignHeight="127"
-                        Margin="0"
-                        toolkit:TiltEffect.IsTiltEnabled="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="12,8,8,8"
-                            Grid.RowSpan="3"
-                            VerticalAlignment="Top"
-                            Height="100"
-                            Width="100"
-                            Background="{StaticResource PhoneChromeBrush}">
-                        <Image Source="{Binding AvatarUrl, Converter={StaticResource ImageConverter}}" />
-                    </Border>
-                    <StackPanel Grid.Column="1"
-                                Margin="2,0,0,0">
-                        <TextBlock Margin="8,6,0,0"
-                                    TextWrapping="Wrap"
-                                    Text="{Binding UserName}"
-                                    d:LayoutOverrides="Width, Height"
-                                    Style="{StaticResource PhoneTextAccentStyle}"
-                                    FontSize="26.667" />
-                        <TextBlock Margin="8,0"
-                                    TextWrapping="Wrap"
-                                    Text="{Binding Body}"
-                                    Style="{StaticResource PhoneTextNormalStyle}"
-                                    Foreground="{StaticResource PhoneForegroundBrush}" />
-                        <TextBlock Margin="8,4,4,0"
-                                    TextWrapping="Wrap"
-                                    Text="{Binding Created, Converter={StaticResource RelativeDateConverter}}"
-                                    d:LayoutOverrides="Height"
-                                    Style="{StaticResource PhoneTextSmallStyle}"
-                                    FontSize="16" />
-                    </StackPanel>
-                </Grid>
-            </Controls:AnimatingContentControl>
-        </DataTemplate>
+       
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
@@ -335,7 +292,7 @@
                                VerticalAlignment="Top" />
                     <ListBox Margin="0,0,-12,0"
                                              ItemsSource="{Binding Items}"
-                                             ItemTemplate="{StaticResource ReviewItemTemplate}"
+                                             ItemTemplate="{StaticResource ReviewListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />

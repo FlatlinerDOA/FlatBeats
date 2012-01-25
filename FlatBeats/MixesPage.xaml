@@ -19,53 +19,9 @@
                             Controls:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:MixesPageViewModel x:Key="ViewModel" />
-        <local:BooleanToVisibilityConverter x:Key="ShowConverter" WhenTrue="Visible"
-                             WhenFalse="Collapsed" />
-        <local:BooleanToVisibilityConverter x:Key="HideConverter"
-                                            WhenTrue="Collapsed"
-                                            WhenFalse="Visible" />
-        <local:UrlToBitmapConverter x:Key="ImageConverter" />
-        <DataTemplate x:Key="MixTemplate">
-            <local:AnimatingContentControl>
-                <StackPanel>
-                    <Grid Height="149">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="149" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Border Margin="8"
-                                Grid.RowSpan="2"
-                                VerticalAlignment="Top"
-                                Height="133"
-                                Width="133"
-                                Background="{StaticResource PhoneChromeBrush}">
-                            <Image Width="133"
-                                   Stretch="Uniform"
-                                   Height="133"
-                                   Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
-                        </Border>
-                        <TextBlock Text="{Binding MixName}"
-                                   Style="{StaticResource PhoneTextTitle2Style}"
-                                   Grid.Column="1" />
-                        <TextBlock Text="{Binding Description}"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="WordEllipsis"
-                                   VerticalAlignment="Top"
-                                   Grid.Column="1"
-                                   Grid.Row="1" />
-                    </Grid>
-                    <Grid x:Name="lastItemSeparator"
-                          Height="64"
-                          Visibility="{Binding IsLastItem, Converter={StaticResource ShowConverter}}" />
-                </StackPanel>
-           
-            </local:AnimatingContentControl>
-        </DataTemplate>
+       
+        <!---->
+
         <Style x:Key="MessageTextStyle" TargetType="TextBlock"
                BasedOn="{StaticResource PhoneTextSubtleStyle}">
             <Setter Property="TextWrapping"
@@ -94,8 +50,8 @@
                     <ListBox x:Name="recentList"
                                 Margin="0,0,-12,0"
                                 Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                                ItemsSource="{Binding Mixes}"
-                               ItemTemplate="{StaticResource MixTemplate}"
+                                ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />
@@ -111,8 +67,8 @@
                     <ListBox x:Name="hotList"
                         Margin="0,0,-12,0"
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                                          ItemsSource="{Binding Mixes}"
-                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />
@@ -128,8 +84,8 @@
                     <ListBox x:Name="popularList"
                         Margin="0,0,-12,0"
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                                          ItemsSource="{Binding Mixes}"
-                                          ItemTemplate="{StaticResource MixTemplate}"
+                                          ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />

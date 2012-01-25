@@ -304,4 +304,7 @@ Link:
   <data name="Error_SignInFailed_Title" xml:space="preserve">
     <value>Oops! Try again</value>
   </data>
+  <data name="Message_NoMixesFound" xml:space="preserve">
+    <value>No mixes to be found here</value>
+  </data>
 </root>

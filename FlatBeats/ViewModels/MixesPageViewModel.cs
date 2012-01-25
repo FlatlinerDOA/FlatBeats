@@ -208,13 +208,15 @@ namespace FlatBeats.ViewModels
             this.ShowProgress(mixList.InProgressMessage);
             if (!string.IsNullOrWhiteSpace(this.SearchQuery))
             {
-                this.AddToLifetime(mixList.Search(this.SearchQuery).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-                mixList.LoadNextPage();
-                return;
+                mixList.SearchQuery = this.SearchQuery;
+            }
+            else
+            {
+                mixList.Tag = this.Tag;
             }
 
-            this.AddToLifetime(mixList.SearchByTag(this.Tag).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            mixList.LoadNextPage();
+            this.AddToLifetime(mixList.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            mixList.LoadFirstPage();
         }
         #endregion
 

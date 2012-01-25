@@ -17,14 +17,8 @@
                             shell:SystemTray.IsVisible="True">
     <Controls:AnimatedBasePage.Resources>
         <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
-        <local:BooleanToVisibilityConverter x:Key="ShowConverter"
-                                            WhenTrue="Visible"
-                                            WhenFalse="Collapsed" />
-        <local:BooleanToVisibilityConverter x:Key="HideConverter"
-                                            WhenTrue="Collapsed"
-                                            WhenFalse="Visible" />
-        <local:UrlToBitmapConverter x:Key="ImageConverter" />
-        <DataTemplate x:Key="UserItemTemplate">
+       
+        <!--<DataTemplate x:Key="UserItemTemplate">
             <local:AnimatingContentControl>
                 <Grid toolkit:TiltEffect.IsTiltEnabled="True">
                     <Grid.ColumnDefinitions>
@@ -53,38 +47,8 @@
                     </StackPanel>
                 </Grid>
             </local:AnimatingContentControl>
-        </DataTemplate>
-        <DataTemplate x:Key="MixTemplate">
-            <local:AnimatingContentControl>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="149" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Image Margin="8"
-                           Grid.RowSpan="2"
-                           Width="133"
-                           Stretch="Uniform"
-                           Height="133"
-                           VerticalAlignment="Top"
-                           Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
-                    <TextBlock Text="{Binding MixName}"
-                               Style="{StaticResource PhoneTextTitle2Style}"
-                               Grid.Column="1" />
-                    <TextBlock Text="{Binding Description}"
-                               Style="{StaticResource PhoneTextSmallStyle}"
-                               TextWrapping="Wrap"
-                               TextTrimming="WordEllipsis"
-                               VerticalAlignment="Top"
-                               Grid.Column="1"
-                               Grid.Row="1" />
-                </Grid>
-            </local:AnimatingContentControl>
-        </DataTemplate>
+        </DataTemplate>-->
+      
     </Controls:AnimatedBasePage.Resources>
         <Controls:AnimatedBasePage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
@@ -147,7 +111,7 @@
                     <ListBox Margin="0,0,-12,0"
                                           Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                           ItemsSource="{Binding Items}"
-                                          ItemTemplate="{StaticResource MixTemplate}"
+                             ItemTemplate="{StaticResource MixListItemTemplate}"
                                           Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />
@@ -167,7 +131,7 @@
                     <ListBox Margin="0,0,-12,0"
                              Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                              ItemsSource="{Binding Items}"
-                             ItemTemplate="{StaticResource UserItemTemplate}"
+                             ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />
@@ -188,7 +152,7 @@
                     <ListBox Margin="0,0,-12,0"
                              Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                              ItemsSource="{Binding Items}"
-                             ItemTemplate="{StaticResource UserItemTemplate}"
+                             ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />

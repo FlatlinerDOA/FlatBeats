@@ -290,6 +290,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No mixes to be found here.
+        /// </summary>
+        internal static string Message_NoMixesFound {
+            get {
+                return ResourceManager.GetString("Message_NoMixesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check back here after listening to some mixes..
         /// </summary>
         internal static string Message_NoRecentlyPlayedMixes {
