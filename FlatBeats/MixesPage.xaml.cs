@@ -10,8 +10,6 @@
 
     using FlatBeats.ViewModels;
 
-    using NavigationEventArgs = FlatBeats.Controls.NavigationEventArgs;
-
     public partial class MixesPage : AnimatedBasePage
     {
         public MixesPage()
@@ -30,18 +28,7 @@
             return base.GetAnimation(animationType, toOrFrom);
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            string query, tag;
-            this.NavigationContext.QueryString.TryGetValue("tag", out tag);
-            this.NavigationContext.QueryString.TryGetValue("q", out query);
-
-            this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load(tag, query)));
-        }
-
-        public MixesPageViewModel ViewModel 
+        public MixesPageViewModel MixesViewModel 
         { 
             get
             {
@@ -67,20 +54,10 @@
             }
         }
 
-        private void NavigationList_OnNavigation(object sender, NavigationEventArgs e)
-        {
-            this.NavigationService.NavigateTo(e.Item as INavigationItem);
-        }
 
-
-        private void PivotSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void PivotSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.ViewModel.CurrentPanelIndex = pivot.SelectedIndex;
-        }
-
-        private void ListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            this.MixesViewModel.CurrentPanelIndex = pivot.SelectedIndex;
         }
 
         private void ListBoxTapped(object sender, GestureEventArgs e)

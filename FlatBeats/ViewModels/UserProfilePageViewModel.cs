@@ -173,6 +173,8 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.UserId = this.NavigationParameters["userid"];
+
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
         }

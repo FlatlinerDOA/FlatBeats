@@ -1,13 +1,12 @@
-﻿<phone:PhoneApplicationPage x:Class="FlatBeats.SettingsPage"
+﻿<Controls:AnimatedBasePage x:Class="FlatBeats.SettingsPage"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels"
-                            xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" mc:Ignorable="d"
+                            xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:Controls="clr-namespace:Clarity.Phone.Controls" mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -16,7 +15,7 @@
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True">
-    <phone:PhoneApplicationPage.Resources>
+    <Controls:AnimatedBasePage.Resources>
         <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
         <local:BooleanToVisibilityConverter x:Key="ShowConverter"
                                             WhenTrue="Visible"
@@ -57,7 +56,7 @@
         </DataTemplate>
         <DataTemplate x:Key="MixTemplate">
             <local:AnimatingContentControl>
-                <Grid Height="149">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="149" />
                         <ColumnDefinition />
@@ -86,10 +85,10 @@
                 </Grid>
             </local:AnimatingContentControl>
         </DataTemplate>
-    </phone:PhoneApplicationPage.Resources>
-    <phone:PhoneApplicationPage.DataContext>
+    </Controls:AnimatedBasePage.Resources>
+        <Controls:AnimatedBasePage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
-    </phone:PhoneApplicationPage.DataContext>
+        </Controls:AnimatedBasePage.DataContext>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True"
@@ -200,4 +199,4 @@
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>
-</phone:PhoneApplicationPage>
+</Controls:AnimatedBasePage>

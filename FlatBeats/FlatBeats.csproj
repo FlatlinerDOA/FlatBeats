@@ -141,6 +141,7 @@
     <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
     <Compile Include="ViewModels\IInfiniteScroll.cs" />
+    <Compile Include="ViewModels\Indexed.cs" />
     <Compile Include="ViewModels\InfiniteScrollBehavior.cs" />
     <Compile Include="ViewModels\InfiniteScrollPanelViewModel.cs" />
     <Compile Include="ViewModels\ListItemViewModel.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\NavigationExtensions.cs" />
     <Compile Include="ViewModels\ObservableExtensions.cs" />
+    <Compile Include="ViewModels\Page.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />

@@ -192,12 +192,17 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.MixId = this.NavigationParameters["mix"];
+            this.PlayedPanel.PlayOnLoad = this.NavigationParameters.ContainsKey("play")
+                                        && this.NavigationParameters["play"] == "true";
+
             this.ShowProgress(StringResources.Progress_Loading);
-            var loadProcess = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
-                              from played in this.PlayedPanel.LoadAsync(mix)
-                              select mix;
+            var login = ProfileService.LoadUserToken().Select(_ => new Unit());
+            var loadMix = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
+                          from played in this.PlayedPanel.LoadAsync(mix)
+                          select new Unit();
             this.AddToLifetime(
-                loadProcess.ObserveOnDispatcher().Subscribe(
+                login.Concat(loadMix).ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
 
             this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));

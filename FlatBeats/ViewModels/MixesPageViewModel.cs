@@ -132,7 +132,11 @@ namespace FlatBeats.ViewModels
 
         public override void Load()
         {
-            this.Load(this.NavigationParameters["tag"], this.NavigationParameters["query"]);
+            string queryString, tagQueryString;
+            this.NavigationParameters.TryGetValue("tag", out tagQueryString);
+            this.NavigationParameters.TryGetValue("q", out queryString);
+
+            this.Load(tagQueryString, queryString);
         }
 
         private void UpdateIsInProgress()
@@ -164,7 +168,6 @@ namespace FlatBeats.ViewModels
 
             this.LoadCompleted();
 
-            
             this.Tag = loadTag;
             this.SearchQuery = loadQuery;
             this.Title = (this.Tag ?? this.SearchQuery ?? string.Empty).ToUpper();

@@ -4,6 +4,8 @@
     using System.Net;
     using System.Net.Sockets;
 
+    using FlatBeats.DataModel;
+
     public abstract class PageViewModel : Flatliner.Phone.ViewModels.PageViewModel
     {
         /// <summary>
@@ -12,6 +14,7 @@
         protected PageViewModel()
         {
             this.RegisterErrorHandler<SocketException>(PanelViewModel.GetSocketErrorMessage);
+            this.RegisterErrorHandler<ServiceException>(PanelViewModel.GetServiceErrorMessage);
             this.RegisterErrorHandler<WebException>(PanelViewModel.GetWebErrorMessage);
             this.RegisterErrorHandler<Exception>(PanelViewModel.GetUnknownErrorMessage);
         }

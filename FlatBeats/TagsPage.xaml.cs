@@ -25,22 +25,8 @@ namespace FlatBeats
 
         public TagsPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.AnimationContext = this.LayoutRoot;
-        }
-
-        public TagsPageViewModel ViewModel
-        {
-            get
-            {
-                return (TagsPageViewModel)this.DataContext;
-            }
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            this.Dispatcher.BeginInvoke(new Action(() => this.ViewModel.Load()));
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -54,21 +40,13 @@ namespace FlatBeats
             base.OnBackKeyPress(e);
         }
 
-        private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
-        {
-            var navItem = e.Item as INavigationItem;
-            if (navItem != null && navItem.NavigationUrl != null)
-            {
-                this.NavigationService.Navigate(navItem.NavigationUrl);
-            }
-        }
-
         private void LongListSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.NavigationService.NavigateTo(tagsList.SelectedItem as INavigationItem);
         }
 
-        private bool isGroupOpen = false;
+        private bool isGroupOpen;
+
         private void LongListSelector_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
         {
             isGroupOpen = true;

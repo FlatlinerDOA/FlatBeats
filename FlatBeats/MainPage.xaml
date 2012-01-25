@@ -20,6 +20,7 @@
                             shell:SystemTray.ForegroundColor="LightGray"
                             toolkit:TiltEffect.IsTiltEnabled="True">
     <Controls1:AnimatedBasePage.Resources>
+        <FlatBeats_ViewModels:MainPageViewModel x:Key="ViewModel" />
     	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
     	<local:UrlToBitmapConverter x:Key="ImageConverter" />
     	<SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
@@ -182,6 +183,9 @@
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
+    <Controls1:AnimatedBasePage.DataContext>
+        <Binding Source="{StaticResource ViewModel}" />
+    </Controls1:AnimatedBasePage.DataContext>
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
             <RadialGradientBrush RadiusX="1.152"

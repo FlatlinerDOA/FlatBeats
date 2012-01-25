@@ -4,6 +4,8 @@
     using System.Net;
     using System.Net.Sockets;
 
+    using FlatBeats.DataModel;
+
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
@@ -17,6 +19,7 @@
         protected PanelViewModel()
         {
             this.RegisterErrorHandler<SocketException>(GetSocketErrorMessage);
+            this.RegisterErrorHandler<ServiceException>(GetServiceErrorMessage);
             this.RegisterErrorHandler<WebException>(GetWebErrorMessage);
             this.RegisterErrorHandler<Exception>(GetUnknownErrorMessage);
         }
@@ -63,6 +66,11 @@
                 }
 
                 return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
+        }
+
+        public static ErrorMessage GetServiceErrorMessage(ServiceException ex)
+        {
+            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, ex.Message);
         }
     }
 }

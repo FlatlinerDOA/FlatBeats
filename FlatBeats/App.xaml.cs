@@ -12,25 +12,25 @@
 
     public partial class App : Application
     {
-        private static MainPageViewModel viewModel = null;
+        ////private static MainPageViewModel viewModel = null;
 
-        /// <summary>
-        /// A static ViewModel used by the views to bind against.
-        /// </summary>
-        /// <returns>The MainViewModel object.</returns>
-        public static MainPageViewModel ViewModel
-        {
-            get
-            {
-                // Delay creation of the view model until necessary
-                if (viewModel == null)
-                {
-                    viewModel = new MainPageViewModel();
-                }
+        /////// <summary>
+        /////// A static ViewModel used by the views to bind against.
+        /////// </summary>
+        /////// <returns>The MainViewModel object.</returns>
+        ////public static MainPageViewModel ViewModel
+        ////{
+        ////    get
+        ////    {
+        ////        // Delay creation of the view model until necessary
+        ////        if (viewModel == null)
+        ////        {
+        ////            viewModel = new MainPageViewModel();
+        ////        }
 
-                return viewModel;
-            }
-        }
+        ////        return viewModel;
+        ////    }
+        ////}
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
@@ -88,7 +88,7 @@
             if (!e.IsApplicationInstancePreserved) 
             { 
                 // Ensure that application state is restored appropriately
-                App.ViewModel.Load();
+                ////App.ViewModel.Load();
             }
         }
 

@@ -354,10 +354,7 @@ namespace FlatBeats.ViewModels
             var q = ProfileService.LoadUserToken();
 
             this.AddToLifetime(        
-            q.Subscribe(
-                this.LoadPanels, 
-                this.HandleError, 
-                this.HideProgress));
+            q.Subscribe(this.LoadPanels, this.HandleError, this.HideProgress));
         }
 
         private void LoadPanels(UserLoginResponseContract user)

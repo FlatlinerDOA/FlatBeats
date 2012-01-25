@@ -44,9 +44,7 @@
             this.AnimationContext = this.LayoutRoot;
 
             // Set the data context of the listbox control to the sample data
-            this.DataContext = App.ViewModel;
             this.Loaded += this.MainPage_Loaded;
-            this.Unloaded += this.MainPage_Unloaded;
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -64,7 +62,7 @@
             }
         }
 
-        public MainPageViewModel ViewModel
+        public MainPageViewModel MainPageViewModel
         {
             get
             {
@@ -81,13 +79,11 @@
         private void MainPage_Unloaded(object sender, RoutedEventArgs e)
         {
             this.Unloaded -= this.MainPage_Unloaded;
-            App.ViewModel.Unload();
         }
+
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-
             this.historyItemLaunch = false;
             this.playMixId = null;
             if (e.NavigationMode == NavigationMode.New && NavigationContext.QueryString.ContainsKey(PlayMixKey))
@@ -106,8 +102,7 @@
                 return;
             }
 
-
-            this.Dispatcher.BeginInvoke(new Action(App.ViewModel.Load));
+            base.OnNavigatedTo(e);
         }
 
         private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -121,7 +116,7 @@
                 HubTileService.UnfreezeGroup("Latest");
             }
 
-            App.ViewModel.CurrentSectionIndex = pano.SelectedIndex;
+            this.MainPageViewModel.CurrentSectionIndex = pano.SelectedIndex;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)

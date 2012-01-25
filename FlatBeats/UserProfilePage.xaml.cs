@@ -57,25 +57,14 @@ namespace FlatBeats
             return new SlideDownAnimator() { RootElement = LayoutRoot };
         }
 
-        public UserProfilePageViewModel ViewModel 
-        { 
-            get
-            {
-                return (UserProfilePageViewModel)this.DataContext;
-            } 
-        }
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-
             if (this.appBarBinder == null)
             {
-                this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
+                this.appBarBinder = new ApplicationBarBinder(this, (IApplicationBarViewModel)this.ViewModel);
             }
 
-            this.ViewModel.UserId = this.NavigationContext.QueryString["userid"];
-            this.ViewModel.Load();
+            base.OnNavigatedTo(e);
         }
 
 

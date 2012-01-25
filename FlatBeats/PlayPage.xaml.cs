@@ -74,31 +74,18 @@
         /// </param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
             if (this.appBarBinder == null)
             {
                 this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
             }
 
-            this.ViewModel.MixId = this.NavigationContext.QueryString["mix"];
-            this.ViewModel.PlayedPanel.PlayOnLoad = this.NavigationContext.QueryString.ContainsKey("play")
-                                        && this.NavigationContext.QueryString["play"] == "true";
-            this.ViewModel.Load();
+            base.OnNavigatedTo(e);
         }
 
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            this.ViewModel.Unload();
-            base.OnNavigatingFrom(e);
-        }
 
         #endregion
 
-        private void NavigationList_OnNavigation(object sender, Controls.NavigationEventArgs e)
-        {
-            var navItem = e.Item as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
-        }
+     
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {

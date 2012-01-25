@@ -11,6 +11,8 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Linq;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
 
     using Flatliner.Phone.ViewModels;
 
@@ -28,10 +30,6 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private Uri backgroundImage;
-
-        /// <summary>
-        /// </summary>
         private int currentSectionIndex;
 
         #endregion
@@ -41,41 +39,18 @@ namespace FlatBeats.ViewModels
         /// <summary>
         ///   Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainPageViewModel() 
+        public MainPageViewModel()
         {
             this.Liked = new MainPageLikedViewModel();
             this.Recent = new MainPageRecentViewModel();
             this.Latest = new MainPageLatestViewModel();
             this.TagsPanel = new MainPageTagsViewModel();
-            this.BackgroundImage = new Uri("PanoramaBackground.jpg", UriKind.Relative);
             this.Title = "flat beats";
         }
-
 
         #endregion
 
         #region Public Properties
-
-        /// <summary>
-        /// </summary>
-        public Uri BackgroundImage
-        {
-            get
-            {
-                return this.backgroundImage;
-            }
-
-            set
-            {
-                if (this.backgroundImage == value)
-                {
-                    return;
-                }
-
-                this.backgroundImage = value;
-                this.OnPropertyChanged("BackgroundImage");
-            }
-        }
 
         /// <summary>
         /// </summary>
@@ -134,6 +109,15 @@ namespace FlatBeats.ViewModels
             }
 
             this.LoadLikedPanel();
+        }
+
+        public override void Unload()
+        {
+            this.Liked.Unload();
+            this.Recent.Unload();
+            this.Latest.Unload();
+            this.TagsPanel.Unload();
+            base.Unload();
         }
 
         private void LoadRecentAndLatestPanels()

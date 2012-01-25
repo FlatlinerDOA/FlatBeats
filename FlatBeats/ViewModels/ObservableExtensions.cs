@@ -293,45 +293,4 @@ namespace FlatBeats.ViewModels
                     }));
         }
     }
-
-    public class Page<T>
-    {
-        /// <summary>
-        /// Initializes a new instance of the Page class.
-        /// </summary>
-        public Page()
-        {
-            
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the Page class.
-        /// </summary>
-        public Page(IList<T> items, int pageNumber, int pageSize)
-        {
-            this.Items = items;
-            this.PageNumber = pageNumber;
-            this.PageSize = pageSize;
-        }
-
-        public IList<T> Items { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public int PageSize { get; set; }
-    }
-    public class Indexed<T>
-    {
-        /// <summary>
-        /// Initializes a new instance of the Index class.
-        /// </summary>
-        public Indexed(T item, int index)
-        {
-            this.Item = item;
-            this.Index = index;
-        }
-
-        public T Item { get; private set; }
-        public int Index { get; private set; }
-    }
 }

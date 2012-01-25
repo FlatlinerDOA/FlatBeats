@@ -152,17 +152,18 @@
         {
             var url = new Uri("http://8tracks.com/reviews", UriKind.Absolute);
             string body = string.Format("review%5Bbody%5D={0}&review%5Bmix_id%5D={1}&format=json", HttpUtility.UrlEncode(review), mixId);
-            return Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body).Select(
-                response =>
-                {
-                    if (response.Review.User == null)
-                    {
-                        response.Review.User =
-                            ProfileService.GetUserProfile(response.Review.UserId).Select(up => up.User).FirstOrDefault();
-                    }
+            return from response in Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body)
+                   from responseWithUser in GetUserProfile(response.Review.UserId).Select(
+                       userResponse =>
+                           {
+                               if (response.Review.User == null)
+                               {
+                                   response.Review.User = userResponse.User;
+                               }
 
-                    return response;
-                });
+                               return response;
+                           })
+                   select responseWithUser;
         }
 
         public static IObservable<Unit> ResetAsync()

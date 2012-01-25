@@ -13,11 +13,14 @@ using System.Windows.Controls;
 
 namespace Clarity.Phone.Controls
 {
-    public class AnimatedBasePage : PhoneApplicationPage
+    using Flatliner.Phone.Controls;
+
+    public class AnimatedBasePage : ViewModelPage
     {
         private static readonly Uri ExternalUri = new Uri(@"app://external/");
 
         public static readonly DependencyProperty AnimationContextProperty = DependencyProperty.Register("AnimationContext", typeof(FrameworkElement), typeof(AnimatedBasePage), new PropertyMetadata(null));
+
         public FrameworkElement AnimationContext
         {
             get
@@ -160,16 +163,15 @@ namespace Clarity.Phone.Controls
 
             _currentNavigationMode = null;
 
-            //Debug.WriteLine("OnNavigatedTo: {0}", this);
-
             if (_nextUri != ExternalUri)
             {
-                //this.InvokeOnLayoutUpdated(() => OnLayoutUpdated(this, null));
                 _loadingAndAnimatingIn = true;
-                this.Loaded += new RoutedEventHandler(AnimatedBasePage_Loaded);
+                this.Loaded += this.AnimatedBasePage_Loaded;
 
                 if (AnimationContext != null)
+                {
                     AnimationContext.Opacity = 0;
+                }
             }
 
             _needsOutroAnimation = true;
@@ -177,7 +179,7 @@ namespace Clarity.Phone.Controls
 
         void AnimatedBasePage_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Loaded -= new RoutedEventHandler(AnimatedBasePage_Loaded);
+            this.Loaded -= this.AnimatedBasePage_Loaded;
             OnLayoutUpdated(this, null);
         }
 
