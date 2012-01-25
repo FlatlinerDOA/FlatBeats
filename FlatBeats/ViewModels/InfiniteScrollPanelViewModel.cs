@@ -104,11 +104,12 @@
             this.Items.Clear();
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
-                from response in this.GetPageOfItemsAsync(page, this.PageSize)
-                    .Select(p => new Page<TData>(p, page, this.PageSize))
+                let pageSize = this.PageSize
+                from response in this.GetPageOfItemsAsync(page, pageSize)
+                    .Select(p => new Page<TData>(p, page, pageSize))
                     .AddOrReloadPage(this.Items, this.LoadItem)
                     .Do(_ => this.HideProgress(), this.HideProgress)
-                    .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
+                    .ContinueWhile(r => r != null && r.Count == pageSize, this.StopLoadingPages)
                 where response != null
                 select response;
             return getItems.Do(

@@ -11,6 +11,9 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net;
     using System.Windows;
 
     using FlatBeats.Controls;
@@ -81,6 +84,18 @@ namespace FlatBeats.ViewModels
             this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);
             this.ResetCommand = new DelegateCommand(this.Reset);
+            this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
+        }
+
+        private ErrorMessage HandleSignInWebException(ServiceException ex)
+        {
+            switch (ex.StatusCode)
+            {
+                case 422:
+                    return new ErrorMessage(StringResources.Error_SignInFailed_Title, StringResources.Error_SignInFailed_Message);
+            }
+
+            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
         }
 
         #endregion

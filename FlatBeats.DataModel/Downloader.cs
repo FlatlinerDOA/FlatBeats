@@ -9,6 +9,7 @@ namespace FlatBeats.DataModel
     using System.Diagnostics;
     using System.IO;
     using System.Net;
+    using System.Runtime.Serialization;
 
     using Flatliner.Phone;
 
@@ -280,6 +281,15 @@ namespace FlatBeats.DataModel
                             {
                                 TResult result = selector(item);
                                 d.OnNext(result);
+                            }
+                            catch (WebException webException)
+                            {
+                                using (var sr = new StreamReader(webException.Response.GetResponseStream()))
+                                {
+                                    var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
+                                    var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                                    d.OnError(newError);
+                                }
                             }
                             catch (Exception ex)
                             {

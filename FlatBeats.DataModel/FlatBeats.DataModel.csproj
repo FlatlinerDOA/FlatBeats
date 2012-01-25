@@ -80,6 +80,7 @@
     <Compile Include="LikedMixContract.cs" />
     <Compile Include="LikedMixResponseContract.cs" />
     <Compile Include="FollowUserResponseContract.cs" />
+    <Compile Include="ServiceException.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="TagContract.cs" />

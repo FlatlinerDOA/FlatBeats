@@ -245,6 +245,24 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Either your UserName is wrong, or you miss-typed your password, feel free to try again..
+        /// </summary>
+        internal static string Error_SignInFailed_Message {
+            get {
+                return ResourceManager.GetString("Error_SignInFailed_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oops! Try again.
+        /// </summary>
+        internal static string Error_SignInFailed_Title {
+            get {
+                return ResourceManager.GetString("Error_SignInFailed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked, next time you run this app..
         /// </summary>
         internal static string Error_UnknownError_Message {

@@ -29,7 +29,6 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.Reset();
-                return this.LoadItemsAsync();
             }
 
             this.IsDataLoaded = true;
