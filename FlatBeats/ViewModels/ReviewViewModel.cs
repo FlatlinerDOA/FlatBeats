@@ -11,7 +11,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
 
-    public class ReviewViewModel : ViewModel, INavigationItem
+    public class ReviewViewModel : ListItemViewModel, INavigationItem
     {
         private Uri avatarUrl;
 

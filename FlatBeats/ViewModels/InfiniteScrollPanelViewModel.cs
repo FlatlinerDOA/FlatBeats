@@ -85,7 +85,7 @@
     }
 
     public abstract class InfiniteScrollPanelViewModel<TViewModel, TData> : InfiniteScrollPanelViewModel 
-        where TViewModel : class, new()
+        where TViewModel : ListItemViewModel, new()
     {
         /// <summary>
         /// Initializes a new instance of the InfiniteScrollPanelViewModel class.

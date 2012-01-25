@@ -193,7 +193,7 @@ namespace FlatBeats.ViewModels
                 }).Select(t => t.Item);
         }
 
-        public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : class, new()
+        public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new() 
         {
             return pages.Do(
                 page =>
@@ -208,7 +208,8 @@ namespace FlatBeats.ViewModels
                                 target.Add(new TViewModel());
                             }
 
-                            load(target[targetIndex], page.Items[i]);
+                            var vm = target[targetIndex];
+                            load(vm, page.Items[i]);
                         }
 
                         if (page.Items.Count < page.PageSize)
@@ -218,6 +219,14 @@ namespace FlatBeats.ViewModels
                                 target.RemoveAt(target.Count - 1);
                             }
                         }
+
+                        for (int i = 0; i < target.Count; i++)
+                        {
+                            var vm = target[i];
+                            vm.IsFirstItem = i == 0;
+                            vm.IsLastItem = i == target.Count - 1;
+                        }
+                        
                 }).Select(t => t.Items);
         }
 
