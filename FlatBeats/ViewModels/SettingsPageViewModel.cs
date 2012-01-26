@@ -80,7 +80,7 @@ namespace FlatBeats.ViewModels
             this.FollowsUsers = new FollowsUsersViewModel(true);
             this.SignupCommand = new DelegateCommand(this.Signup);
             this.LoginCommand = new DelegateCommand(this.SignIn);
-            this.ResetCommand = new DelegateCommand(this.Reset);
+            this.ResetCommand = new DelegateCommand(this.SignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
         }
 
@@ -377,6 +377,7 @@ namespace FlatBeats.ViewModels
             }
 
             this.LoadSettings();
+            this.ResetPanels();
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
                 this.LoadCredentials, this.HandleError, this.LoadCompleted));
@@ -518,7 +519,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private void Reset()
+        private void SignOut()
         {
             var response = MessageBox.Show(
                 StringResources.MessageBox_ResetSettings_Message, 
@@ -555,13 +556,19 @@ namespace FlatBeats.ViewModels
                     {
                         this.UserName = null;
                         this.Password = null;
-                        this.Mixes.Items.Clear();
-                        this.FollowedByUsers.Items.Clear();
-                        this.FollowedByUsers.Items.Clear();
+                        this.ResetPanels();
                         this.CanLogin = true;
                         this.IsLoggedIn = false;
                         this.HideProgress();
                     }));
+        }
+
+        private void ResetPanels()
+        {
+            this.Mixes.Reset();
+            this.MixFeed.Reset();
+            this.FollowedByUsers.Reset();
+            this.FollowsUsers.Reset();
         }
 
         /// <summary>

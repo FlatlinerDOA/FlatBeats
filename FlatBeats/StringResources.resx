@@ -314,7 +314,7 @@ Link:
     <value>No mixes found, make sure you're following someone to see what they're creating.</value>
   </data>
   <data name="Label_CensorshipEnabled" xml:space="preserve">
-    <value>Censor mixes reported by the community to have explicit artwork</value>
+    <value>Censor mixes with explicit artwork</value>
   </data>
   <data name="Label_PlayOverWifiOnly" xml:space="preserve">
     <value>Play only when connected to WIFI</value>

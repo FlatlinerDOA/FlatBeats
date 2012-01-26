@@ -72,7 +72,7 @@
             viewModel.Load(data);
         }
 
-        protected override void LoadItemsCompleted()
+        protected override void LoadPageCompleted()
         {
             if (this.Items.Count == 0)
             {

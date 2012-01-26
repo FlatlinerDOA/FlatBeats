@@ -42,7 +42,7 @@
 	</FlatBeats_ViewModels:PlayPageViewModel.Mix>
 	<FlatBeats_ViewModels:PlayPageViewModel.ReviewsPanel>
 		<FlatBeats_ViewModels:ReviewsPanelViewModel Title="design reviews">
-			<FlatBeats_ViewModels:ReviewsPanelViewModel.Reviews>
+			<FlatBeats_ViewModels:ReviewsPanelViewModel.Items>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Fusce nisi vestibulum lorem" Created="08/28/2011 15:30:30" UserName="Malesuada penatibus sem"/>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Sit vestibulum" Created="08/28/2011 15:30:30" UserName="Gravida vel porttitor morbi"/>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Pharetra iaculis placerat tincidunt adipiscing" Created="08/28/2011 15:30:30" UserName="Pulvinar nisl parturient lacinia mattis"/>
@@ -53,7 +53,7 @@
 				<FlatBeats_ViewModels:ReviewViewModel Body="Dis suscipit consequat nostra" Created="08/28/2011 15:30:30" UserName="Convallis dignissim"/>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Parturient potenti torquent elementum" Created="08/28/2011 15:30:30" UserName="Pretium est ornare"/>
 				<FlatBeats_ViewModels:ReviewViewModel Body="Facilisis orci" Created="08/28/2011 15:30:30" UserName="Vestibulum pede"/>
-			</FlatBeats_ViewModels:ReviewsPanelViewModel.Reviews>
+			</FlatBeats_ViewModels:ReviewsPanelViewModel.Items>
 		</FlatBeats_ViewModels:ReviewsPanelViewModel>
 	</FlatBeats_ViewModels:PlayPageViewModel.ReviewsPanel>
 </FlatBeats_ViewModels:PlayPageViewModel>

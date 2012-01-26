@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Windows.Controls;
+    using System.Windows.Media.Animation;
 
     using Clarity.Phone.Controls;
     using Clarity.Phone.Controls.Animations;
@@ -85,6 +86,17 @@
 
         #endregion
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.pivot.Opacity == 0)
+            {
+                e.Cancel = true;
+                ((Storyboard)this.Resources["ShowPivotStoryboard"]).Begin();
+                return;
+            }
+
+            base.OnBackKeyPress(e);
+        }
      
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)

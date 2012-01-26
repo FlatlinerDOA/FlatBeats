@@ -32,11 +32,11 @@ namespace FlatBeats.ViewModels
             ////}
 
             this.IsDataLoaded = true;
-
+            this.UserId = null;
             var load = from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
                        from items in this.LoadItemsAsync() 
                        select new Unit();
-            return load.Do(_ => { }, this.LoadItemsCompleted).FinallySelect(() => new Unit());
+            return load.Do(_ => { }, this.LoadPageCompleted).FinallySelect(() => new Unit());
         }
 
         protected string UserId { get; set; }
@@ -51,10 +51,11 @@ namespace FlatBeats.ViewModels
             viewModel.Load(data);
         }
 
-        protected override void LoadItemsCompleted()
+        protected override void LoadPageCompleted()
         {
-            if (this.Items.Count == 0)
+            if (this.UserId == null || this.Items.Count == 0)
             {
+                this.Items.Clear();
                 this.Message = StringResources.Message_NoLikedMixes;
                 this.ShowMessage = true;
             }

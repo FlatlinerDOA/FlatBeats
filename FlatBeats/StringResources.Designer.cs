@@ -308,7 +308,7 @@ namespace FlatBeats {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Censor mixes reported by the community to have explicit artwork.
+        ///   Looks up a localized string similar to Censor mixes with explicit artwork.
         /// </summary>
         internal static string Label_CensorshipEnabled {
             get {

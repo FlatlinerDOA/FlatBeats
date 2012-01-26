@@ -117,7 +117,7 @@
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
                     .AddOrReloadPage(this.Items, this.LoadItem)
-                    .Do(_ => this.HideProgress(), this.HideProgress)
+                    .Do(_ => this.LoadPageCompleted(), this.LoadPageCompleted)
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
                 select response;
@@ -133,13 +133,15 @@
 
         private void LoadCompleted()
         {
-            this.LoadItemsCompleted();
+            this.HideProgress();
+            this.LoadPageCompleted();
         }
 
         public void Reset()
         {
             this.CurrentRequestedPage = 0;
             this.Items.Clear();
+            this.LoadPageCompleted();
         }
 
         protected TViewModel CreateItem(TData data)
@@ -148,7 +150,7 @@
         }
 
 
-        protected abstract void LoadItemsCompleted();
+        protected abstract void LoadPageCompleted();
 
         public override void LoadFirstPage()
         {
