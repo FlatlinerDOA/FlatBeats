@@ -25,10 +25,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private string tag;
 
-        /// <summary>
-        /// </summary>
-        private string title;
-
         #endregion
 
         #region Constructors and Destructors
