@@ -369,6 +369,11 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
+            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.MixFeed.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             this.CanLogin = true;
             if (this.IsDataLoaded)
             {
@@ -471,11 +476,6 @@ namespace FlatBeats.ViewModels
             this.loginResponse = user;
             this.IsLoggedIn = true;
             this.CanLogin = false;
-
-            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.MixFeed.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
 
             this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));

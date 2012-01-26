@@ -21,7 +21,8 @@
                             shell:SystemTray.Opacity="0"
                             shell:SystemTray.BackgroundColor="Transparent"
                             d:DataContext="{d:DesignData /SampleData/PlayPageViewModelSampleData.xaml}"
-                            toolkit:TiltEffect.IsTiltEnabled="True">
+                            toolkit:TiltEffect.IsTiltEnabled="True"
+    x:Name="_this">
     <Clarity:AnimatedBasePage.Resources>
     	<ViewModels:PlayPageViewModel x:Key="ViewModel" />
     	<FlatBeats:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
@@ -205,10 +206,6 @@
                                  IsIndeterminate="True"
                                  Text="{Binding InProgressMessage}"/>
     </shell:SystemTray.ProgressIndicator>
-    <Clarity:AnimatedBasePage.ApplicationBar>
-        <shell:ApplicationBar x:Name="appBar" IsVisible="True"
-                              IsMenuEnabled="True" BackgroundColor="{StaticResource PhoneBackgroundColor}" ForegroundColor="{StaticResource PhoneForegroundColor}" Opacity="0.8" />
-    </Clarity:AnimatedBasePage.ApplicationBar>
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
             <ImageBrush Opacity="0.2"
@@ -225,6 +222,8 @@
     				</ec:ConditionBehavior>
     			</i:Interaction.Behaviors>
     			<eim:ControlStoryboardAction Storyboard="{StaticResource ShowPivotStoryboard}"/>
+                <ec:CallMethodAction MethodName="ShowAppBar"
+                                         TargetObject="{Binding ElementName=_this}" />
     		</i:EventTrigger>
     	</i:Interaction.Triggers>
         <controls:Pivot x:Name="pivot" Margin="0,-8,0,72" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
@@ -268,7 +267,8 @@
                         				</ec:ConditionBehavior>
                         			</i:Interaction.Behaviors>
                         			<eim:ControlStoryboardAction Storyboard="{StaticResource HidePivotStoryboard}"/>
-                        		</i:EventTrigger>
+                                    <ec:CallMethodAction MethodName="HideAppBar" TargetObject="{Binding ElementName=_this}"  />
+                                </i:EventTrigger>
                         	</i:Interaction.Triggers>
                             <Image Source="{Binding Mix.ThumbnailUrl, Converter={StaticResource CensorImageConverter}}" />
                         </Border>
@@ -532,4 +532,11 @@
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>
+    <Clarity:AnimatedBasePage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True"
+                              IsMenuEnabled="True"
+                              BackgroundColor="{StaticResource PhoneBackgroundColor}"
+                              ForegroundColor="{StaticResource PhoneForegroundColor}"
+                              Opacity="0.8" />
+    </Clarity:AnimatedBasePage.ApplicationBar>
 </Clarity:AnimatedBasePage>

@@ -8,6 +8,7 @@
     using FlatBeats.DataModel.Services;
 
     using Flatliner.Phone;
+    using Flatliner.Phone.Data;
 
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Shell;
@@ -15,26 +16,6 @@
 
     public partial class App : Application
     {
-        ////private static MainPageViewModel viewModel = null;
-
-        /////// <summary>
-        /////// A static ViewModel used by the views to bind against.
-        /////// </summary>
-        /////// <returns>The MainViewModel object.</returns>
-        ////public static MainPageViewModel ViewModel
-        ////{
-        ////    get
-        ////    {
-        ////        // Delay creation of the view model until necessary
-        ////        if (viewModel == null)
-        ////        {
-        ////            viewModel = new MainPageViewModel();
-        ////        }
-
-        ////        return viewModel;
-        ////    }
-        ////}
-
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -47,7 +28,7 @@
         public App()
         {
             // Global handler for uncaught exceptions. 
-            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 1);
+            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 5);
 
             // Standard Silverlight initialization
             InitializeComponent();

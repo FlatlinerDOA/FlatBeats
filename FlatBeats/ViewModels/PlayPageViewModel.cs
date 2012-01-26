@@ -11,6 +11,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Windows.Input;
 
     using Coding4Fun.Phone.Controls;
 
@@ -206,7 +207,7 @@ namespace FlatBeats.ViewModels
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
 
             this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
-            this.ReviewsPanel.LoadNextPage();
+            this.ReviewsPanel.LoadFirstPage();
         }
 
         private void UpdateIsInProgress()
@@ -249,7 +250,10 @@ namespace FlatBeats.ViewModels
 
         private void AddReview()
         {
-            var prompt = new InputPrompt();
+            var scope = new InputScope();
+            scope.Names.Add(new InputScopeName() { NameValue = InputScopeNameValue.Chat });
+
+            var prompt = new InputPrompt() { InputScope = scope };
             var completed =
                 Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(
                     handler => prompt.Completed += handler, handler => prompt.Completed -= handler);

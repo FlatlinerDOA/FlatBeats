@@ -112,12 +112,21 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
+            ////this.CurrentRequestedPage = 0;
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
                     .AddOrReloadPage(this.Items, this.LoadItem)
-                    .Do(_ => this.LoadPageCompleted(), this.LoadPageCompleted)
+                    .Do(_ =>
+                        {
+                            this.HideProgress();
+                            this.LoadPageCompleted();
+                        }, 
+                        () => {
+                            this.HideProgress();
+                            this.LoadPageCompleted();
+                        })
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
                 select response;
@@ -144,12 +153,6 @@
             this.LoadPageCompleted();
         }
 
-        protected TViewModel CreateItem(TData data)
-        {
-            return null;
-        }
-
-
         protected abstract void LoadPageCompleted();
 
         public override void LoadFirstPage()
@@ -157,6 +160,5 @@
             this.CurrentRequestedPage = 0;
             base.LoadFirstPage();
         }
-
     }
 }

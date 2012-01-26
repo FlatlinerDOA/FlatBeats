@@ -125,7 +125,7 @@
                                 <TextBlock Text="{Binding PlayOverWifiOnlyText}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Margin="0,-12,12,0" />
                             </toolkit:ToggleSwitch>
                         </StackPanel>
-                        <HyperlinkButton Margin="8,8,8,32"
+                        <HyperlinkButton Margin="12,24,12,12"
                                          VerticalAlignment="Bottom"
                                          Content="About this application"
                                          NavigateUri="/AboutPage.xaml" />

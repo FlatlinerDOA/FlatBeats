@@ -57,7 +57,7 @@
 
         /// <summary>
         /// </summary>
-        public PlayPageViewModel ViewModel
+        public PlayPageViewModel PageViewModel
         {
             get
             {
@@ -77,13 +77,21 @@
         {
             if (this.appBarBinder == null)
             {
-                this.appBarBinder = new ApplicationBarBinder(this, this.ViewModel);
+                this.appBarBinder = new ApplicationBarBinder(this, this.PageViewModel);
             }
 
             base.OnNavigatedTo(e);
         }
 
-
+        public void HideAppBar()
+        {
+            this.ApplicationBar.IsVisible = false;
+        }
+        
+        public void ShowAppBar()
+        {
+            this.ApplicationBar.IsVisible = true;
+        }
         #endregion
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -101,7 +109,7 @@
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/UserProfilePage.xaml?userid=" + this.ViewModel.CreatedByUserId, UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("/UserProfilePage.xaml?userid=" + this.PageViewModel.CreatedByUserId, UriKind.Relative));
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)

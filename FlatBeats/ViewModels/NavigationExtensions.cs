@@ -5,11 +5,33 @@ namespace FlatBeats.ViewModels
 {
     using System.Windows.Navigation;
 
+    using FlatBeats.DataModel;
+
     using Microsoft.Phone.Tasks;
 
     public static class Avatar
     {
-        public static Uri ParseUrl(string imageUrl)
+        public static Uri GetLargeImageUrl(AvatarContract avatar)
+        {
+            if (avatar == null)
+            {
+                return ParseUrl(null);
+            }
+
+            return ParseUrl(avatar.LargeImageUrl ?? avatar.ImageUrl);
+        }
+
+        public static Uri GetImageUrl(AvatarContract avatar)
+        {
+            if (avatar == null)
+            {
+                return ParseUrl(null);
+            }
+
+            return ParseUrl(avatar.ImageUrl);
+        }
+
+        private static Uri ParseUrl(string imageUrl)
         {
             Uri url;
             if (!Uri.TryCreate(imageUrl, UriKind.RelativeOrAbsolute, out url))

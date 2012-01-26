@@ -168,29 +168,29 @@ namespace FlatBeats.ViewModels
 
         public override void Load()
         {
+            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             if (this.IsDataLoaded)
             {
                 return;
             }
 
             this.UserId = this.NavigationParameters["userid"];
-
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
         }
 
         private void LoadPanels()
         {
-            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-
             this.AddToLifetime(
                 this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
                 this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
                 this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+
             this.Mixes.LoadNextPage();
             this.FollowsUsers.LoadNextPage();
             this.FollowedByUsers.LoadNextPage();
@@ -228,11 +228,7 @@ namespace FlatBeats.ViewModels
 
         private void LoadUserProfile(UserContract userContract)
         {
-            if (userContract.Avatar != null)
-            {
-                this.AvatarImageUrl = new Uri(userContract.Avatar.LargeImageUrl, UriKind.RelativeOrAbsolute);
-            }
-
+            this.AvatarImageUrl = Avatar.GetLargeImageUrl(userContract.Avatar);
             this.Location = userContract.Location;
             this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
             this.UserName = userContract.Name;

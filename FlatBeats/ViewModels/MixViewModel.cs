@@ -441,15 +441,16 @@ namespace FlatBeats.ViewModels
 
         public void Load(MixContract mix)
         {
-            this.IsExplicit = mix.IsExplicit && ((App)Application.Current).UserSettings.CensorshipEnabled;
-            this.MixName = this.IsExplicit ? Censorship.Censor(mix.Name) : mix.Name;
+            bool censor = ((App)Application.Current).UserSettings.CensorshipEnabled;
+            this.IsExplicit = mix.IsExplicit && censor;
+            this.MixName = censor ? Censorship.Censor(mix.Name) : mix.Name;
             var lines =
                 mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
                     .Where(t => !string.IsNullOrWhiteSpace(t));
-            this.Description = string.Join(Environment.NewLine, lines);
+            this.Description = censor ? Censorship.Censor(string.Join(Environment.NewLine, lines)) : string.Join(Environment.NewLine, lines);
             this.ThumbnailUrl = this.IsExplicit ? this.AddQuery(mix.Cover.ThumbnailUrl, "nsfw") : mix.Cover.ThumbnailUrl;
             this.ImageUrl = this.IsExplicit ? this.AddQuery(mix.Cover.OriginalUrl, "nsfw") : mix.Cover.OriginalUrl;
-            this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
+            this.TileTitle = this.MixName.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
             this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);

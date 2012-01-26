@@ -289,8 +289,15 @@ namespace FlatBeats.DataModel
                                 using (var sr = new StreamReader(webException.Response.GetResponseStream()))
                                 {
                                     var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
-                                    var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
-                                    d.OnError(newError);
+                                    if (response != null)
+                                    {
+                                        var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                                        d.OnError(newError);
+                                    }
+                                    else
+                                    {
+                                        d.OnError(webException);
+                                    }
                                 }
                             }
                             catch (Exception ex)

@@ -68,7 +68,7 @@ namespace FlatBeats.ViewModels
             this.Name = data.Name;
             this.Location = data.Location;
             this.Bio = Html.ConvertToPlainText(data.BioHtml);
-            this.AvatarUrl = Avatar.ParseUrl(data.Avatar.ImageUrl);
+            this.AvatarUrl = Avatar.GetImageUrl(data.Avatar);
             this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + this.userId, UriKind.Relative);
         }
 

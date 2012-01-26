@@ -114,7 +114,7 @@ namespace FlatBeats.ViewModels
             if (review.User != null)
             {
                 this.UserName = review.User.Name;
-                this.AvatarUrl = Avatar.ParseUrl(review.User.Avatar.ImageUrl);
+                this.AvatarUrl = Avatar.GetImageUrl(review.User.Avatar);
                 this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
             }
 
