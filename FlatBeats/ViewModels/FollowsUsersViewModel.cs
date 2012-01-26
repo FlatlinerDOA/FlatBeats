@@ -37,7 +37,7 @@
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            return this.LoadItemsAsync();
+            return this.LoadAsync();
         }
 
         protected bool IsCurrentUser { get; set; }
@@ -54,11 +54,6 @@
         protected override void LoadItem(UserListItemViewModel viewModel, UserContract data)
         {
             viewModel.Load(data);
-        }
-
-        protected override UserListItemViewModel CreateItem(UserContract data)
-        {
-            return new UserListItemViewModel(data);
         }
 
         protected override void LoadItemsCompleted()

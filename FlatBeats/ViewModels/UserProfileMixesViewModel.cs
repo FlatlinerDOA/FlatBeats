@@ -24,7 +24,7 @@ namespace FlatBeats.ViewModels
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            return this.LoadItemsAsync();
+            return this.LoadAsync();
         }
 
         protected bool IsCurrentUser { get; set; }
@@ -33,17 +33,17 @@ namespace FlatBeats.ViewModels
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
+            if (this.UserId == null)
+            {
+                return Observable.Empty<IList<MixContract>>();
+            }
+
             return ProfileService.GetUserMixes(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
             viewModel.Load(data);
-        }
-
-        protected override MixViewModel CreateItem(MixContract data)
-        {
-            return new MixViewModel(data);
         }
 
         protected override void LoadItemsCompleted()

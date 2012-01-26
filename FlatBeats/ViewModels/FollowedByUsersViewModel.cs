@@ -43,7 +43,7 @@
             }
 
             this.IsDataLoaded = true;
-            return this.LoadItemsAsync();
+            return this.LoadAsync();
         }
 
         protected bool IsCurrentUser { get; set; }
@@ -60,11 +60,6 @@
         protected override void LoadItem(UserListItemViewModel viewModel, UserContract data)
         {
             viewModel.Load(data);
-        }
-
-        protected override UserListItemViewModel CreateItem(UserContract data)
-        {
-            return new UserListItemViewModel(data);
         }
 
         protected override void LoadItemsCompleted()

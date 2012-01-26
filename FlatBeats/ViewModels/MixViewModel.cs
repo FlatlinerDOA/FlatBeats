@@ -417,6 +417,25 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        private bool isExplicit;
+
+        public bool IsExplicit
+        {
+            get
+            {
+                return this.isExplicit;
+            }
+            set
+            {
+                if (this.isExplicit == value)
+                {
+                    return;
+                }
+
+                this.isExplicit = value;
+                this.OnPropertyChanged("IsExplicit");
+            }
+        }
         #endregion
 
         public void Load(MixContract mix)
@@ -426,6 +445,7 @@ namespace FlatBeats.ViewModels
                 mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
                     .Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
+            this.IsExplicit = mix.IsExplicit;
             this.ThumbnailUrl = mix.Cover.ThumbnailUrl;
             this.ImageUrl = mix.Cover.OriginalUrl;
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);

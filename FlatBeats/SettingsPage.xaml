@@ -17,42 +17,50 @@
                             shell:SystemTray.IsVisible="True">
     <Controls:AnimatedBasePage.Resources>
         <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
-       
-        <!--<DataTemplate x:Key="UserItemTemplate">
+        <DataTemplate x:Key="MixFeedListItemTemplate">
             <local:AnimatingContentControl>
-                <Grid toolkit:TiltEffect.IsTiltEnabled="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="0.779*" />
-                    </Grid.ColumnDefinitions>
-                    <Border Height="100"
-                            Margin="4,0,8,5"
-                            VerticalAlignment="Top"
-                            Width="100"
-                            Background="{StaticResource PhoneChromeBrush}">
-                        <Image Source="{Binding AvatarUrl, Converter={StaticResource ImageConverter}}" />
-                    </Border>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding Name}"
-                                   TextWrapping="Wrap"
-                                   Margin="8,0,0,0"
-                                   Style="{StaticResource PhoneTextAccentStyle}"
-                                   FontSize="26.667"
-                                   VerticalAlignment="Top" />
-                        <TextBlock Margin="8,4,4,4"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Bio}"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   FontSize="16" />
-                    </StackPanel>
-                </Grid>
+                <StackPanel toolkit:TiltEffect.IsTiltEnabled="True">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Margin="12,0,12,12"
+                                VerticalAlignment="Top"
+                                Height="133"
+                                Width="133"
+                                Background="{StaticResource PhoneChromeBrush}">
+                            <Image Width="133"
+                                   Stretch="Uniform"
+                                   Height="133"
+                                   Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="0,0,0,12">
+                            <TextBlock Text="{Binding MixName}"
+                                       Style="{StaticResource PhoneTextTitle2Style}" />
+                            <TextBlock Text="{Binding Description}"
+                                       Style="{StaticResource PhoneTextSmallStyle}"
+                                       TextWrapping="Wrap"
+                                       TextTrimming="WordEllipsis"
+                                       VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding CreatedBy}"
+                                       Foreground="{StaticResource PhoneAccentBrush}"
+                                       Style="{StaticResource PhoneTextSmallStyle}"
+                                       TextWrapping="Wrap"
+                                       TextTrimming="WordEllipsis"
+                                       VerticalAlignment="Top" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="lastItemSeparator"
+                          Height="64"
+                          Visibility="{Binding IsLastItem, Converter={StaticResource ShowConverter}}" />
+                </StackPanel>
             </local:AnimatingContentControl>
-        </DataTemplate>-->
-      
+        </DataTemplate>
     </Controls:AnimatedBasePage.Resources>
-        <Controls:AnimatedBasePage.DataContext>
+    <Controls:AnimatedBasePage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
-        </Controls:AnimatedBasePage.DataContext>
+    </Controls:AnimatedBasePage.DataContext>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True"
@@ -99,6 +107,26 @@
                                          NavigateUri="/AboutPage.xaml" />
                     </Grid>
                 </ScrollViewer>
+            </controls:PivotItem>
+            <controls:PivotItem DataContext="{Binding MixFeed}"
+                                Header="{Binding Title}">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource PhoneTextSubtleStyle}"
+                               FontSize="32"
+                               FontFamily="Segoe WP Light"
+                               TextWrapping="Wrap" />
+                    <ListBox Margin="0,0,-12,0"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource MixFeedListItemTemplate}"
+                             Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
+                </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Mixes}" Header="{Binding Title}">
                 <Grid>

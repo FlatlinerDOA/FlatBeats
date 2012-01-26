@@ -10,16 +10,10 @@
 namespace FlatBeats.ViewModels
 {
     using System;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Net;
     using System.Windows;
 
-    using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
-
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
@@ -79,6 +73,7 @@ namespace FlatBeats.ViewModels
             this.CanLogin = false;
             this.IsLoggedIn = false;
             this.Mixes = new UserProfileMixesViewModel(true);
+            this.MixFeed = new MixFeedViewModel();
             this.FollowedByUsers = new FollowedByUsersViewModel(true);
             this.FollowsUsers = new FollowsUsersViewModel(true);
             this.SignupCommand = new DelegateCommand(this.Signup);
@@ -127,6 +122,7 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        public MixFeedViewModel MixFeed { get; private set; }
         /// <summary>
         /// </summary>
         public UserProfileMixesViewModel Mixes { get; private set; }
@@ -366,11 +362,14 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.MixFeed.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
 
             this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-
+            this.AddToLifetime(this.MixFeed.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            
+            this.MixFeed.LoadFirstPage();
             this.Mixes.LoadFirstPage();
             this.FollowsUsers.LoadFirstPage();
             this.FollowedByUsers.LoadFirstPage();
@@ -378,6 +377,12 @@ namespace FlatBeats.ViewModels
 
         private void UpdateIsInProgress()
         {
+            if (this.MixFeed.IsInProgress)
+            {
+                this.ShowProgress(this.MixFeed.InProgressMessage);
+                return;
+            }
+
             if (this.Mixes.IsInProgress)
             {
                 this.ShowProgress(this.Mixes.InProgressMessage);

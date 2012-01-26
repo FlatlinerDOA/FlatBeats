@@ -22,7 +22,6 @@
     <Controls1:AnimatedBasePage.Resources>
         <FlatBeats_ViewModels:MainPageViewModel x:Key="ViewModel" />
     	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
-    	<local:UrlToBitmapConverter x:Key="ImageConverter" />
     	<SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
     	<local:BooleanToVisibilityConverter x:Key="VisibilityConverter"
     		WhenFalse="Collapsed"

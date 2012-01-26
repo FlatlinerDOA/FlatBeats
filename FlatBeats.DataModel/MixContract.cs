@@ -1,5 +1,6 @@
 ﻿namespace FlatBeats.DataModel
 {
+    using System;
     using System.Runtime.Serialization;
 
     [DataContract]
@@ -38,5 +39,7 @@
         [DataMember(Name = "likes_count")]
         public int LikesCount { get; set; }
 
+        [DataMember(Name = "nsfw")]
+        public bool IsExplicit { get; set; }
     }
 }

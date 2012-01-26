@@ -24,17 +24,16 @@ namespace FlatBeats.ViewModels
 
         public bool IsDataLoaded { get; set; }
 
-        public IObservable<Unit> LoadAsync()
+        public override IObservable<Unit> LoadAsync()
         {
-            if (this.IsDataLoaded)
-            {
-                this.Reset();
-            }
+            ////if (this.IsDataLoaded)
+            ////{
+            ////    this.Reset();
+            ////}
 
             this.IsDataLoaded = true;
 
-            var load = from userCredentials in ProfileService.LoadCredentials()
-                       from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
+            var load = from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
                        from items in this.LoadItemsAsync() 
                        select new Unit();
             return load.Do(_ => { }, this.LoadItemsCompleted).FinallySelect(() => new Unit());
@@ -52,11 +51,6 @@ namespace FlatBeats.ViewModels
             viewModel.Load(data);
         }
 
-        protected override MixViewModel CreateItem(MixContract data)
-        {
-            return new MixViewModel(data);
-        }
-
         protected override void LoadItemsCompleted()
         {
             if (this.Items.Count == 0)
@@ -68,7 +62,6 @@ namespace FlatBeats.ViewModels
             {
                 this.Message = null;
             }
-
         }
     }
 }

@@ -299,6 +299,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No mixes found, make sure you&apos;re following someone to see what they&apos;re creating..
+        /// </summary>
+        internal static string Message_NoMixesInFeed {
+            get {
+                return ResourceManager.GetString("Message_NoMixesInFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check back here after listening to some mixes..
         /// </summary>
         internal static string Message_NoRecentlyPlayedMixes {
@@ -511,6 +520,15 @@ namespace FlatBeats {
         internal static string Title_Mix {
             get {
                 return ResourceManager.GetString("Title_Mix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to feed.
+        /// </summary>
+        internal static string Title_MixFeed {
+            get {
+                return ResourceManager.GetString("Title_MixFeed", resourceCulture);
             }
         }
         

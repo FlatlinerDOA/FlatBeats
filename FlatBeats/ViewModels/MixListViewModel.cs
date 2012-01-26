@@ -45,31 +45,31 @@
         ////    return mixes.FlowIn().ObserveOnDispatcher().AddOrReloadListItems(this.Mixes, (vm, mix) => vm.Load(mix)).Select(_ => new Unit());
         ////}
 
-        public IObservable<Unit> LoadAsync()
-        {
-            return this.LoadItemsAsync();
-        }
-
         public bool IsDataLoaded { get; private set; }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
+
             if (this.Tag != null)
             {
-                return MixesService.DownloadTagMixes(this.Tag, this.Sort, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
+                return
+                    MixesService.DownloadTagMixes(this.Tag, this.Sort, pageNumber, pageSize).Select(
+                        r => (IList<MixContract>)r.Mixes);
             }
 
-            return MixesService.DownloadSearchMixes(this.SearchQuery, this.Sort, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
+            if (this.SearchQuery != null)
+            {
+                return
+                    MixesService.DownloadSearchMixes(this.SearchQuery, this.Sort, pageNumber, pageSize).Select(
+                        r => (IList<MixContract>)r.Mixes);
+            }
+
+            return Observable.Empty<IList<MixContract>>();
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
             viewModel.Load(data);
-        }
-
-        protected override MixViewModel CreateItem(MixContract data)
-        {
-            return new MixViewModel(data);
         }
 
         protected override void LoadItemsCompleted()

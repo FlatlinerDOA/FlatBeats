@@ -307,4 +307,10 @@ Link:
   <data name="Message_NoMixesFound" xml:space="preserve">
     <value>No mixes to be found here</value>
   </data>
+  <data name="Title_MixFeed" xml:space="preserve">
+    <value>feed</value>
+  </data>
+  <data name="Message_NoMixesInFeed" xml:space="preserve">
+    <value>No mixes found, make sure you're following someone to see what they're creating.</value>
+  </data>
 </root>

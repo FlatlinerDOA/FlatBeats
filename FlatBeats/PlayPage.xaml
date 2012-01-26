@@ -1,4 +1,4 @@
-﻿<Controls1:AnimatedBasePage x:Class="FlatBeats.PlayPage"
+﻿<Clarity:AnimatedBasePage x:Class="FlatBeats.PlayPage"
                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -11,7 +11,10 @@
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:Controls="clr-namespace:FlatBeats.Controls" xmlns:Controls1="clr-namespace:Clarity.Phone.Controls" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            xmlns:Clarity="clr-namespace:Clarity.Phone.Controls" 
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+                            xmlns:FlatBeats="clr-namespace:FlatBeats.Controls" 
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
@@ -23,8 +26,8 @@
                             toolkit:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
-		<Controls:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
-        <Controls:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+		<FlatBeats:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
+        <FlatBeats:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
         <ControlTemplate x:Key="FavouriteCheckBoxControlTemplate" TargetType="CheckBox">
         	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource TransparentBrush}">
         		<VisualStateManager.VisualStateGroups>
@@ -123,7 +126,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-       
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
@@ -271,8 +273,6 @@
                                                    FontSize="16"
                                                    Grid.Column="3" />
                                     </Grid>
-                                    
-
                                 </StackPanel>								   
                             </Grid>
                         </Button>
@@ -443,4 +443,4 @@
         <shell:ApplicationBar IsVisible="True"
                               IsMenuEnabled="True" BackgroundColor="{StaticResource PhoneBackgroundColor}" ForegroundColor="{StaticResource PhoneForegroundColor}" Opacity="0.8" />
     </phone:PhoneApplicationPage.ApplicationBar>
-</Controls1:AnimatedBasePage>
+</Clarity:AnimatedBasePage>

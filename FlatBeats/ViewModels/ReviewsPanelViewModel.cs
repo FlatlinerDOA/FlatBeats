@@ -31,7 +31,7 @@
 
             this.IsDataLoaded = true;
 
-            return this.LoadItemsAsync();
+            return this.LoadAsync();
         }
 
         public string MixId { get; private set; }
@@ -79,11 +79,6 @@
         protected override void LoadItem(ReviewViewModel viewModel, ReviewContract data)
         {
             viewModel.Load(data);
-        }
-
-        protected override ReviewViewModel CreateItem(ReviewContract data)
-        {
-            return new ReviewViewModel(data);
         }
 
         protected override void LoadItemsCompleted()

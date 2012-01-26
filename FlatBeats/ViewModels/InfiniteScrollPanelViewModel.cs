@@ -105,9 +105,13 @@
 
         protected abstract IObservable<IList<TData>> GetPageOfItemsAsync(int pageNumber, int pageSize);
 
+        public virtual IObservable<Unit> LoadAsync()
+        {
+            return this.LoadItemsAsync();
+        }
+
         protected IObservable<Unit> LoadItemsAsync()
         {
-            this.Items.Clear();
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
@@ -138,7 +142,10 @@
             this.Items.Clear();
         }
 
-        protected abstract TViewModel CreateItem(TData data);
+        protected TViewModel CreateItem(TData data)
+        {
+            return null;
+        }
 
 
         protected abstract void LoadItemsCompleted();
