@@ -5,6 +5,7 @@ namespace FlatBeats.DataModel
     using System.Diagnostics;
     using System.IO;
     using System.IO.IsolatedStorage;
+    using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
 
@@ -50,6 +51,7 @@ namespace FlatBeats.DataModel
                     obj = (T)Serializer.ReadObject(ms);
                     ms.Close();
                 }
+                catch (SerializationException) { }
                 catch (ArgumentException) { }
             }
 
@@ -63,24 +65,25 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-////#if DEBUG
-////                    var data = new MemoryStream();
-////                    json.CopyTo(data);
-////                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-////                    foreach (
-////                        var line in
-////                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
-////                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-////                    {
-////                        Debug.WriteLine(line);
-////                    }
+                    ////#if DEBUG
+                    ////                    var data = new MemoryStream();
+                    ////                    json.CopyTo(data);
+                    ////                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+                    ////                    foreach (
+                    ////                        var line in
+                    ////                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
+                    ////                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    ////                    {
+                    ////                        Debug.WriteLine(line);
+                    ////                    }
 
-////                    json = data;
-////#endif
+                    ////                    json = data;
+                    ////#endif
 
                     obj = (T)Serializer.ReadObject(json);
                     json.Close();
                 }
+                catch (SerializationException) { }
                 catch (ArgumentException)
                 {
                 }

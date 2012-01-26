@@ -446,7 +446,7 @@ namespace FlatBeats.ViewModels
                     .Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
             this.IsExplicit = mix.IsExplicit;
-            this.ThumbnailUrl = mix.Cover.ThumbnailUrl;
+            this.ThumbnailUrl = mix.IsExplicit ? AddQuery(mix.Cover.ThumbnailUrl, "nsfw") : mix.Cover.ThumbnailUrl;
             this.ImageUrl = mix.Cover.OriginalUrl;
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
@@ -469,6 +469,21 @@ namespace FlatBeats.ViewModels
                 this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
                     t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
 
+        }
+
+        private Uri AddQuery(Uri uri, string value)
+        {
+            var newUrl = new UriBuilder(uri);
+            if (newUrl.Query.Length == 0)
+            {
+                newUrl.Query = value;
+            } 
+            else
+            {
+                newUrl.Query += "&" + value;
+            }
+
+            return newUrl.Uri;
         }
     }
 }
