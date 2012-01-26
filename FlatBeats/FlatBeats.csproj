@@ -95,6 +95,7 @@
     <Compile Include="Controls\IApplicationBarViewModel.cs" />
     <Compile Include="Controls\ICommandLink.cs" />
     <Compile Include="Controls\SearchPrompt.cs" />
+    <Compile Include="Controls\UniformGrid.cs" />
     <Compile Include="Controls\UrlToBitmapConverter.cs" />
     <Compile Include="Extensions\ApplicationExtensions.cs">
       <SubType>Code</SubType>
@@ -234,6 +235,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="FlatBeats_2012_01_27_01_03_15.sap" />
+    <None Include="FlatBeats_2012_01_27_01_08_51.sap" />
+    <None Include="FlatBeats_2012_01_27_01_18_03.sap" />
+    <None Include="FlatBeats_2012_01_27_01_19_09.sap" />
+    <None Include="FlatBeats_2012_01_27_01_27_50.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
@@ -254,36 +260,24 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="icons\appbar.check.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\appbar.feature.settings.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="icons\appbar.check.rest.png" />
+    <Content Include="icons\appbar.feature.settings.rest.png" />
     <Content Include="icons\appbar.favs.addto.rest.png" />
     <Content Include="icons\appbar.game.addfriend.rest.png" />
     <Content Include="icons\appbar.game.removefriend.rest.png" />
     <Content Include="icons\appbar.heart2.empty.rest.png" />
     <Content Include="icons\appbar.heart2.rest.png" />
     <Content Include="icons\appbar.favs.removefrom.rest.png" />
-    <Content Include="icons\appbar.favs.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="icons\appbar.favs.rest.png" />
     <Content Include="icons\appbar.feature.search.rest.png" />
-    <Content Include="icons\appbar.transport.ff.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\appbar.transport.pause.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="icons\appbar.transport.play.rest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="icons\appbar.transport.ff.rest.png" />
+    <Content Include="icons\appbar.transport.pause.rest.png" />
+    <Content Include="icons\appbar.transport.play.rest.png" />
     <Resource Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Resource Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Resource Include="Toolkit.Content\ApplicationBar.Delete.png" />
     <Resource Include="Toolkit.Content\ApplicationBar.Select.png" />
-    <Resource Include="PanoramaBackground.jpg" />
+    <Content Include="PanoramaBackground.jpg" />
     <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>

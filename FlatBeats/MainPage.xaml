@@ -46,8 +46,9 @@
     		<Setter Property="ItemsPanel">
     			<Setter.Value>
     				<ItemsPanelTemplate>
-    					<toolkit:WrapPanel
-    						Orientation="Vertical" />
+                        <local:UniformGrid Columns="6" Rows="2" />
+    					<!--<toolkit:WrapPanel
+    						Orientation="Vertical" />-->
     				</ItemsPanelTemplate>
     			</Setter.Value>
     		</Setter>
