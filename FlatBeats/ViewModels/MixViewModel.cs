@@ -12,8 +12,11 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows;
 
     using FlatBeats.DataModel;
+
+    using Flatliner.Phone.Data;
 
     /// <summary>
     /// </summary>
@@ -259,18 +262,13 @@ namespace FlatBeats.ViewModels
         {
             get
             {
-                return this.tagList;
-            }
-
-            set
-            {
-                if (this.tagList == value)
+                if (this.tagList == null && this.Tags != null)
                 {
-                    return;
+                    this.tagList = this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
+        t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
                 }
 
-                this.tagList = value;
-                this.OnPropertyChanged("TagList");
+                return this.tagList;
             }
         }
 
@@ -331,7 +329,9 @@ namespace FlatBeats.ViewModels
                 }
 
                 this.tags = value;
+                this.tagList = null;
                 this.OnPropertyChanged("Tags");
+                this.OnPropertyChanged("TagList");
             }
         }
 
@@ -436,18 +436,19 @@ namespace FlatBeats.ViewModels
                 this.OnPropertyChanged("IsExplicit");
             }
         }
+
         #endregion
 
         public void Load(MixContract mix)
         {
-            this.MixName = mix.Name;
+            this.IsExplicit = mix.IsExplicit && ((App)Application.Current).UserSettings.CensorshipEnabled;
+            this.MixName = this.IsExplicit ? Censorship.Censor(mix.Name) : mix.Name;
             var lines =
                 mix.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim())
                     .Where(t => !string.IsNullOrWhiteSpace(t));
             this.Description = string.Join(Environment.NewLine, lines);
-            this.IsExplicit = mix.IsExplicit;
-            this.ThumbnailUrl = mix.IsExplicit ? AddQuery(mix.Cover.ThumbnailUrl, "nsfw") : mix.Cover.ThumbnailUrl;
-            this.ImageUrl = mix.Cover.OriginalUrl;
+            this.ThumbnailUrl = this.IsExplicit ? this.AddQuery(mix.Cover.ThumbnailUrl, "nsfw") : mix.Cover.ThumbnailUrl;
+            this.ImageUrl = this.IsExplicit ? this.AddQuery(mix.Cover.OriginalUrl, "nsfw") : mix.Cover.OriginalUrl;
             this.TileTitle = mix.Name.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
             this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
@@ -465,9 +466,6 @@ namespace FlatBeats.ViewModels
             }
 
             this.Tags = mix.Tags;
-            this.TagList =
-                this.Tags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(
-                    t => !string.IsNullOrWhiteSpace(t)).Select(t => new TagViewModel(t.Trim())).ToList();
 
         }
 

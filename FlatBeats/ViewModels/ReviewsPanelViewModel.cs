@@ -16,7 +16,6 @@
         /// </summary>
         public ReviewsPanelViewModel()
         {
-            this.Reviews = new ObservableCollection<ReviewViewModel>();
             this.Title = StringResources.Title_Reviews;
         }
 
@@ -35,37 +34,6 @@
         }
 
         public string MixId { get; private set; }
-
-        public ObservableCollection<ReviewViewModel> Reviews { get; private set; }
-        
-        /////// <summary>
-        /////// </summary>
-        ////private IObservable<Unit> LoadCommentsAsync()
-        ////{
-        ////    this.Reviews.Clear();
-        ////    var downloadComments = from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
-        ////                           from response in MixesService.GetMixReviews(this.MixId, page, this.PageSize)
-        ////                               .Do(_ => this.HideProgress(), this.HideProgress)
-        ////                               .ContinueWhile(r => r.Reviews != null && r.Reviews.Count == this.PageSize, this.StopLoadingPages)
-        ////                           where response.Reviews != null
-        ////                           from review in response.Reviews.ToObservable()
-        ////                           select new ReviewViewModel(review);
-        ////    return downloadComments.ObserveOnDispatcher().Do(
-        ////        r => this.Reviews.Add(r),
-        ////        this.HandleError, 
-        ////        () =>
-        ////        {
-        ////            if (this.Reviews.Count == 0)
-        ////            {
-        ////                this.Message = StringResources.Message_NoReviews;
-        ////                this.ShowMessage = true;
-        ////            }
-        ////            else
-        ////            {
-        ////                this.Message = null;
-        ////            }
-        ////        }).FinallySelect(() => new Unit());
-        ////}
 
         protected bool IsDataLoaded { get; set; }
 

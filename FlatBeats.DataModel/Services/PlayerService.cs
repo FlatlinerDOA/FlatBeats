@@ -172,9 +172,13 @@
 
             var newAppTile = new StandardTileData()
             {
-                BackgroundImage = new Uri("Background.png", UriKind.Relative),
+                BackContent = string.Empty,
+                BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
+                BackTitle = string.Empty,
+                BackgroundImage = new Uri("appdata:Background.png"),
                 Title = "Flat Beats"
             };
+
             appTile.Update(newAppTile);
         }
 

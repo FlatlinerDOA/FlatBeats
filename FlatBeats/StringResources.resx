@@ -313,4 +313,25 @@ Link:
   <data name="Message_NoMixesInFeed" xml:space="preserve">
     <value>No mixes found, make sure you're following someone to see what they're creating.</value>
   </data>
+  <data name="Label_CensorshipEnabled" xml:space="preserve">
+    <value>Censor mixes reported by the community to have explicit artwork</value>
+  </data>
+  <data name="Label_PlayOverWifiOnly" xml:space="preserve">
+    <value>Play only when connected to WIFI</value>
+  </data>
+  <data name="Command_CreateAccount" xml:space="preserve">
+    <value>create account</value>
+  </data>
+  <data name="Command_Login" xml:space="preserve">
+    <value>sign in</value>
+  </data>
+  <data name="Command_Logout" xml:space="preserve">
+    <value>sign out</value>
+  </data>
+  <data name="Label_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Label_UserName" xml:space="preserve">
+    <value>Username</value>
+  </data>
 </root>

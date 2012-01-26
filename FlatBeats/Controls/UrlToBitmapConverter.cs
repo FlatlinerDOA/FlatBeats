@@ -98,7 +98,7 @@ namespace FlatBeats.Controls
                 return new BitmapImage(url) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
             }
 
-            var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4));
+            var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
             var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
             Downloader.GetStream(safeUrl, false).ObserveOnDispatcher().Subscribe(b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
             return pixelated;
@@ -109,8 +109,8 @@ namespace FlatBeats.Controls
             target.SetSource(source);
 
             // look at every pixel in the rectangle while making sure we're within the image bounds
-            var endY = Math.Min(startY + height, this.PixelHeight);
-            var endX = Math.Min(startX + width, this.PixelWidth);
+            var endY = Math.Min(startY + height, target.PixelHeight);
+            var endX = Math.Min(startX + width, target.PixelWidth);
             var halfStep = pixelateSize / 2;
 
             for (var sourceY = startY + halfStep; sourceY < endY; sourceY += pixelateSize)
@@ -118,7 +118,7 @@ namespace FlatBeats.Controls
                 for (var sourceX = startX + halfStep; sourceX < endX; sourceX += pixelateSize)
                 {
                     // get the pixel color in the center of the soon to be pixelated area
-                    var pixelIndex = ((sourceY - 1) * this.PixelWidth) + sourceX;
+                    var pixelIndex = ((sourceY - 1) * target.PixelWidth) + sourceX;
                     int pixel = target.Pixels[pixelIndex];
 
                     // for each pixel in the pixelate size, set it to the center color
@@ -126,7 +126,7 @@ namespace FlatBeats.Controls
                     {
                         for (int setX = sourceX - halfStep; setX < Math.Min(sourceX + halfStep, endX); setX++)
                         {
-                            var setPixelIndex = (setY * this.PixelWidth) + setX;
+                            var setPixelIndex = (setY * target.PixelWidth) + setX;
                             target.Pixels[setPixelIndex] = pixel;
                         }
                     }

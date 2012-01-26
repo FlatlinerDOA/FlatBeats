@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Threading;
 
     using FlatBeats.DataModel;
@@ -25,18 +26,16 @@
         public IObservable<Unit> LoadAsync()
         {
             this.Message = null;
-            var recentMixes = from response in PlayerService.RecentlyPlayedAsync()
-                              let playing = PlayerService.LoadNowPlaying()
-                              where response != null && response.Mixes != null
-                              from mix in response.Mixes.ToObservable(Scheduler.ThreadPool).FlowIn(200).ObserveOnDispatcher()
-                                  .AddOrReloadListItems(
-                                      this.Mixes, 
-                                      (vm, mix) =>
-                                      {
-                                          vm.Load(mix);
-                                          vm.IsNowPlaying = playing != null && playing.MixId == mix.Id;
-                                      })
-                              select mix;
+            var playing = PlayerService.LoadNowPlaying();
+            var recentMixes = PlayerService.RecentlyPlayedAsync()
+                .Select(p => new Page<MixContract>(p.Mixes, 1, p.Mixes.Count)).Do(_ => Debug.WriteLine("Load recent list"))
+                .AddOrReloadPage(
+                    this.Mixes,
+                    (vm, mix) =>
+                    {
+                        vm.Load(mix);
+                        vm.IsNowPlaying = playing != null && playing.MixId == mix.Id;
+                    });
             return recentMixes.FinallySelect(
                     () =>
                     {

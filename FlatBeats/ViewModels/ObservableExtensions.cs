@@ -152,46 +152,46 @@ namespace FlatBeats.ViewModels
                     observer.OnCompleted));
         }
 
-        public static IObservable<TData> AddOrReloadListItems<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
-        {
-            int removeAfter = 0;
-            TViewModel previous = null;
-            return dataItems.Indexed().Do(
-                dataItem =>
-                {
-                    var existing = dataItem.Index < viewModels.Count ? viewModels[dataItem.Index] : null;
-                    if (existing == null)
-                    {
-                        existing = new TViewModel();
-                        load(existing, dataItem.Item);
-                        viewModels.Add(existing);
-                    }
-                    else
-                    {
-                        load(existing, dataItem.Item);
-                    }
+        ////public static IObservable<TData> AddOrReloadListItems<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
+        ////{
+        ////    int removeAfter = 0;
+        ////    TViewModel previous = null;
+        ////    return dataItems.Indexed().Do(
+        ////        dataItem =>
+        ////        {
+        ////            var existing = dataItem.Index < viewModels.Count ? viewModels[dataItem.Index] : null;
+        ////            if (existing == null)
+        ////            {
+        ////                existing = new TViewModel();
+        ////                load(existing, dataItem.Item);
+        ////                viewModels.Add(existing);
+        ////            }
+        ////            else
+        ////            {
+        ////                load(existing, dataItem.Item);
+        ////            }
 
-                    existing.IsFirstItem = dataItem.Index == 0;
-                    if (previous != null)
-                    {
-                        previous.IsLastItem = false;
-                    }
+        ////            existing.IsFirstItem = dataItem.Index == 0;
+        ////            if (previous != null)
+        ////            {
+        ////                previous.IsLastItem = false;
+        ////            }
 
-                    previous = existing;
-                    removeAfter = Math.Max(removeAfter, dataItem.Index);
-                }).Finally(() =>
-                {
-                    while (viewModels.Count > removeAfter + 1)
-                    {
-                        viewModels.RemoveAt(removeAfter + 1);
-                    }
+        ////            previous = existing;
+        ////            removeAfter = Math.Max(removeAfter, dataItem.Index);
+        ////        }).Finally(() =>
+        ////        {
+        ////            while (viewModels.Count > removeAfter + 1)
+        ////            {
+        ////                viewModels.RemoveAt(removeAfter + 1);
+        ////            }
 
-                    if (viewModels.Count != 0)
-                    {
-                        viewModels.Last().IsLastItem = true;
-                    }
-                }).Select(t => t.Item);
-        }
+        ////            if (viewModels.Count != 0)
+        ////            {
+        ////                viewModels.Last().IsLastItem = true;
+        ////            }
+        ////        }).Select(t => t.Item);
+        ////}
 
         public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new() 
         {
@@ -220,19 +220,13 @@ namespace FlatBeats.ViewModels
                             }
                         }
 
-                        for (int i = 0; i < target.Count; i++)
-                        {
-                            var vm = target[i];
-                            vm.IsFirstItem = i == 0;
-                            vm.IsLastItem = i == target.Count - 1;
-                        }
-                        
+                        UpdateFirstAndLastItems(target);
                 }).Select(t => t.Items);
         }
 
-        public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : class, new()
+        public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
         {
-            int removeAfter = 0;
+            int removeAfter = -1;
             return dataItems.Indexed().Do(
                 dataItem =>
                 {
@@ -255,27 +249,19 @@ namespace FlatBeats.ViewModels
                         {
                             viewModels.RemoveAt(removeAfter + 1);
                         }
+
+                        UpdateFirstAndLastItems(viewModels);
                     }).Select(t => t.Item);
         }
 
-
-        public static IObservable<TData> AddOrReload<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Func<TViewModel, TData, bool> match, Action<TViewModel, TData> load) where TViewModel : class, new() 
+        private static void UpdateFirstAndLastItems<TViewModel>(IList<TViewModel> viewModels) where TViewModel : ListItemViewModel
         {
-            return dataItems.Do(
-                dataItem =>
-                    {
-                        var existing = viewModels.FirstOrDefault(vm => match(vm, dataItem));
-                        if (existing == null)
-                        {
-                            existing = new TViewModel();
-                            load(existing, dataItem);
-                            viewModels.Add(existing);
-                        }
-                        else
-                        {
-                            load(existing, dataItem);
-                        }
-                    });
+            for (int i = 0; i < viewModels.Count; i++)
+            {
+                var vm = viewModels[i];
+                vm.IsFirstItem = i == 0;
+                vm.IsLastItem = i == viewModels.Count - 1;
+            }
         }
 
         public static IObservable<TResult> FinallySelect<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)

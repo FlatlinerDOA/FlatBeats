@@ -61,6 +61,15 @@ namespace FlatBeats {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to create account.
+        /// </summary>
+        internal static string Command_CreateAccount {
+            get {
+                return ResourceManager.GetString("Command_CreateAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to email mix.
         /// </summary>
         internal static string Command_EmailMix {
@@ -84,6 +93,24 @@ namespace FlatBeats {
         internal static string Command_LikeMix {
             get {
                 return ResourceManager.GetString("Command_LikeMix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sign in.
+        /// </summary>
+        internal static string Command_Login {
+            get {
+                return ResourceManager.GetString("Command_Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sign out.
+        /// </summary>
+        internal static string Command_Logout {
+            get {
+                return ResourceManager.GetString("Command_Logout", resourceCulture);
             }
         }
         
@@ -277,6 +304,42 @@ namespace FlatBeats {
         internal static string Error_UnknownError_Title {
             get {
                 return ResourceManager.GetString("Error_UnknownError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Censor mixes reported by the community to have explicit artwork.
+        /// </summary>
+        internal static string Label_CensorshipEnabled {
+            get {
+                return ResourceManager.GetString("Label_CensorshipEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        internal static string Label_Password {
+            get {
+                return ResourceManager.GetString("Label_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play only when connected to WIFI.
+        /// </summary>
+        internal static string Label_PlayOverWifiOnly {
+            get {
+                return ResourceManager.GetString("Label_PlayOverWifiOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        internal static string Label_UserName {
+            get {
+                return ResourceManager.GetString("Label_UserName", resourceCulture);
             }
         }
         

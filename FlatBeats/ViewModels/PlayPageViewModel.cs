@@ -259,7 +259,7 @@ namespace FlatBeats.ViewModels
                     from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
             q.ObserveOnDispatcher().Subscribe(
-                review => this.ReviewsPanel.Reviews.Insert(0, new ReviewViewModel(review.Review)),
+                review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)),
                 this.HandleError,
                 this.HideProgress);
             prompt.Show();

@@ -33,7 +33,24 @@
                             <Image Width="133"
                                    Stretch="Uniform"
                                    Height="133"
-                                   Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+                                   Source="{Binding ThumbnailUrl, Converter={StaticResource CensorImageConverter}}" />
+                        </Border>
+                        <Border Margin="12,0,12,12"
+                                VerticalAlignment="Top"
+                                Height="133"
+                                Width="133"
+                                Visibility="{Binding IsExplicit, Converter={StaticResource ShowConverter}}"
+                                Background="{StaticResource PhoneSemitransparentBrush}">
+                            <Border BorderBrush="{StaticResource PhoneForegroundBrush}"
+                                    BorderThickness="0,1"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,12,12">
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="EXPLICIT"
+                                           Margin="0,2,0,0"
+                                           Foreground="{StaticResource PhoneForegroundBrush}" />
+                            </Border>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="0,0,0,12">
                             <TextBlock Text="{Binding MixName}"
@@ -70,7 +87,7 @@
           Background="Transparent">
         <!--Pivot Control-->
         <controls:Pivot Title="FLAT BEATS">
-            <controls:PivotItem Header="login">
+            <controls:PivotItem Header="settings">
                 <ScrollViewer>
                     <Grid>
                         <StackPanel Margin="0,0,0,24">
@@ -79,9 +96,10 @@
                             <TextBox Text="{Binding UserName, Mode=TwoWay}"
                                      IsReadOnly="{Binding IsLoggedIn}" InputScope="LogOnName" />
                             <TextBlock Text="{Binding PasswordLabelText}"
-                                       Margin="12,0" />
+                                       Margin="12,0"
+                                       Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}" />
                             <PasswordBox Password="{Binding Password, Mode=TwoWay}"
-                                         IsEnabled="{Binding CanLogin}" />
+                                         Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}" />
                             <Button Command="{Binding LoginCommand}"
                                     Content="{Binding LoginLabelText}"
                                     Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}"
@@ -100,6 +118,12 @@
                                     Margin="0,0,8,8"
                                     MinWidth="250"
                                     HorizontalAlignment="Left" />
+                            <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}" Margin="0,12,0,0">
+                                <TextBlock Text="{Binding CensorshipEnabledText}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Margin="0,-12,12,0" VerticalAlignment="Top" />
+                            </toolkit:ToggleSwitch>
+                            <toolkit:ToggleSwitch IsChecked="{Binding PlayOverWifiOnly, Mode=TwoWay}">
+                                <TextBlock Text="{Binding PlayOverWifiOnlyText}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Margin="0,-12,12,0" />
+                            </toolkit:ToggleSwitch>
                         </StackPanel>
                         <HyperlinkButton Margin="8,8,8,32"
                                          VerticalAlignment="Bottom"

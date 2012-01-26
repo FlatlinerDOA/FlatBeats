@@ -52,6 +52,7 @@ namespace FlatBeats.DataModel
                     return userCredentials;
                 }
             }
+
             set
             {
                 lock (SyncRoot)
@@ -70,6 +71,7 @@ namespace FlatBeats.DataModel
                     return userToken;
                 }
             }
+
             set
             {
                 lock (SyncRoot)

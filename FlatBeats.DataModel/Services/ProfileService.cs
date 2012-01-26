@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Runtime.Serialization;
+    using System.Windows.Interop;
+
+    using FlatBeats.DataModel.Profile;
 
     using Flatliner.Phone;
 
@@ -16,8 +19,19 @@
         private const string MixFeedCacheFile = "{0}\\mixfeed-{1}.json";
 
         private const string CredentialsFilePath = "credentials.json";
+        private const string SettingsFilePath = "settings.json";
 
         private const string UserLoginFilePath = "userlogin.json";
+        
+        public static SettingsContract GetSettings()
+        {
+            return Json<SettingsContract>.Deserialize(Storage.Load(SettingsFilePath)) ?? new SettingsContract() { CensorshipEnabled = true };
+        }
+
+        public static void SaveSettings(SettingsContract settings)
+        {
+            Storage.Save(SettingsFilePath, Json<SettingsContract>.Serialize(settings));
+        }
 
         public static IObservable<UserLoginResponseContract> Authenticate(UserCredentialsContract userCredentials)
         {

@@ -28,6 +28,11 @@
         <ViewModels:PlayPageViewModel x:Key="ViewModel" />
 		<FlatBeats:BooleanToBrushConverter x:Key="AccentWhenTrueConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneForegroundBrush}" />
         <FlatBeats:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+        <FlatBeats:CensorBitmapConverter x:Key="CensorBackgroundImageConverter" PixelWidth="480" PixelHeight="800" PixelSize="12" />
+        <FlatBeats:CensorBitmapConverter x:Key="CensorLargeImageConverter"
+                                         PixelWidth="173"
+                                         PixelHeight="173"
+                                         PixelSize="4" />
         <ControlTemplate x:Key="FavouriteCheckBoxControlTemplate" TargetType="CheckBox">
         	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource TransparentBrush}">
         		<VisualStateManager.VisualStateGroups>
@@ -139,7 +144,7 @@
         <Grid.Background>
             <ImageBrush Opacity="0.2"
                         Stretch="UniformToFill"
-                        ImageSource="{Binding Mix.ImageUrl, Converter={StaticResource ImageConverter}}" />
+                        ImageSource="{Binding Mix.ImageUrl, Converter={StaticResource CensorBackgroundImageConverter}}" />
         </Grid.Background>
         <controls:Pivot x:Name="pivot" Margin="0,-8,0,72" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
             <controls:PivotItem Header="{Binding Title}">
@@ -172,12 +177,7 @@
                     	        Width="173" 
                                 Background="{StaticResource PhoneChromeBrush}" 
                                 BorderThickness="2,3,0,0">
-                    	    <Image>
-                    		    <Image.Source>
-                    			    <BitmapImage UriSource="{Binding Mix.ThumbnailUrl}"
-                    				    CreateOptions="BackgroundCreation" />
-                    		    </Image.Source>
-                    	    </Image>
+                            <Image Source="{Binding Mix.ThumbnailUrl, Converter={StaticResource CensorImageConverter}}" />
                         </Border>
                         <TextBlock x:Name="mixNameTextBlock"
                             Text="{Binding Mix.MixName}"

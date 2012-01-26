@@ -14,6 +14,7 @@ namespace FlatBeats.ViewModels
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
+    using System.Windows;
 
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
@@ -22,6 +23,7 @@ namespace FlatBeats.ViewModels
     using Flatliner.Phone;
 
     using Microsoft.Phone.BackgroundAudio;
+    using Microsoft.Phone.Net.NetworkInformation;
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -224,6 +226,12 @@ namespace FlatBeats.ViewModels
 
         private bool CanPlay()
         {
+            if (((App)Application.Current).UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
+            {
+                this.PlayPauseCommand.Text = "no wifi";
+                return false;
+            }
+
             return this.currentMix != null;
         }
 
@@ -463,21 +471,26 @@ namespace FlatBeats.ViewModels
 
             if (this.ShowNowPlaying)
             {
-                if (this.Player.PlayerState == PlayState.Playing)
-                {
-                    this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
-                    this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
-                }
-                else
-                {
-                    this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
-                    this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
-                }
+                this.UpdatePlayPauseCommand();
             }
 
             this.PlayPauseCommand.RaiseCanExecuteChanged();
             this.NextTrackCommand.RaiseCanExecuteChanged();
             this.UpdateMessage();
+        }
+
+        private void UpdatePlayPauseCommand()
+        {
+            if (this.Player.PlayerState == PlayState.Playing)
+            {
+                this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.pause.rest.png", UriKind.Relative);
+                this.PlayPauseCommand.Text = StringResources.Command_PauseMix;
+            }
+            else
+            {
+                this.PlayPauseCommand.IconUrl = new Uri("/icons/appbar.transport.play.rest.png", UriKind.Relative);
+                this.PlayPauseCommand.Text = StringResources.Command_PlayMix;
+            }
         }
 
         /// <summary>

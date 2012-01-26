@@ -4,6 +4,9 @@
     using System.Windows;
     using System.Windows.Navigation;
 
+    using FlatBeats.DataModel.Profile;
+    using FlatBeats.DataModel.Services;
+
     using Flatliner.Phone;
 
     using Microsoft.Phone.Controls;
@@ -78,8 +81,10 @@
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-  
+            this.UserSettings = ProfileService.GetSettings();
         }
+
+        public SettingsContract UserSettings { get; set; }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched

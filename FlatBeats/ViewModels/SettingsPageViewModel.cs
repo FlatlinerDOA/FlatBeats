@@ -65,11 +65,13 @@ namespace FlatBeats.ViewModels
         public SettingsPageViewModel()
         {
             this.Title = "PROFILE";
-            this.LoginLabelText = "sign in";
-            this.ResetLabelText = "sign out";
-            this.SignupLabelText = "create account";
-            this.UserNameLabelText = "Username";
-            this.PasswordLabelText = "Password";
+            this.LoginLabelText = StringResources.Command_Login;
+            this.ResetLabelText = StringResources.Command_Logout;
+            this.SignupLabelText = StringResources.Command_CreateAccount;
+            this.UserNameLabelText = StringResources.Label_UserName;
+            this.PasswordLabelText = StringResources.Label_Password;
+            this.CensorshipEnabledText = StringResources.Label_CensorshipEnabled;
+            this.PlayOverWifiOnlyText = StringResources.Label_PlayOverWifiOnly;
             this.CanLogin = false;
             this.IsLoggedIn = false;
             this.Mixes = new UserProfileMixesViewModel(true);
@@ -123,6 +125,7 @@ namespace FlatBeats.ViewModels
         }
 
         public MixFeedViewModel MixFeed { get; private set; }
+
         /// <summary>
         /// </summary>
         public UserProfileMixesViewModel Mixes { get; private set; }
@@ -166,6 +169,103 @@ namespace FlatBeats.ViewModels
 
                 this.passwordLabelText = value;
                 this.OnPropertyChanged("PasswordLabelText");
+            }
+        }
+
+        private bool censorshipEnabled;
+
+        public bool CensorshipEnabled
+        {
+            get
+            {
+                return this.censorshipEnabled;
+            }
+            set
+            {
+                if (this.censorshipEnabled == value)
+                {
+                    return;
+                }
+
+                this.censorshipEnabled = value;
+                this.OnPropertyChanged("CensorshipEnabled");
+                this.SaveSettings();
+
+            }
+        }
+
+        private string censorshipEnabledText;
+
+        public string CensorshipEnabledText
+        {
+            get
+            {
+                return this.censorshipEnabledText;
+            }
+            set
+            {
+                if (this.censorshipEnabledText == value)
+                {
+                    return;
+                }
+
+                this.censorshipEnabledText = value;
+                this.OnPropertyChanged("CensorshipEnabledText");
+            }
+        }
+
+        private string playOverWifiOnlyText;
+
+        public string PlayOverWifiOnlyText
+        {
+            get
+            {
+                return this.playOverWifiOnlyText;
+            }
+            set
+            {
+                if (this.playOverWifiOnlyText == value)
+                {
+                    return;
+                }
+
+                this.playOverWifiOnlyText = value;
+                this.OnPropertyChanged("PlayOverWifiOnlyText");
+            }
+        }
+
+        private void SaveSettings()
+        {
+            if (!this.isSettingsLoaded)
+            {
+                return;
+            }
+
+            var userSettings = ((App)Application.Current).UserSettings;
+            userSettings.CensorshipEnabled = this.CensorshipEnabled;
+            userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
+            ProfileService.SaveSettings(userSettings);
+        }
+
+        private bool playOverWifiOnly;
+
+        public bool PlayOverWifiOnly
+        {
+            get
+            {
+                return this.playOverWifiOnly;
+            }
+            set
+            {
+                if (this.playOverWifiOnly == value)
+                {
+                    return;
+                }
+
+                this.playOverWifiOnly = value;
+                this.OnPropertyChanged("PlayOverWifiOnly");
+                this.SaveSettings();
+
             }
         }
 
@@ -276,9 +376,21 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
+            this.LoadSettings();
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
                 this.LoadCredentials, this.HandleError, this.LoadCompleted));
+        }
+
+        private bool isSettingsLoaded;
+
+        private void LoadSettings()
+        {
+            this.isSettingsLoaded = false;
+            var userSettings = ((App)Application.Current).UserSettings;
+            this.CensorshipEnabled = userSettings.CensorshipEnabled;
+            this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
+            this.isSettingsLoaded = true;
         }
 
         #endregion

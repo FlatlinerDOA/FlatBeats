@@ -29,9 +29,9 @@
 
         public IObservable<IList<MixViewModel>> LoadAsync()
         {
-            var pageData = from latest in MixesService.GetLatestMixes()
-                           from mix in latest.Mixes.ToObservable(Scheduler.Dispatcher).AddOrReloadByPosition(this.Mixes, (vm, d) => vm.Load(d))
-                           select mix;
+            var pageData = MixesService.GetLatestMixes()
+                .Select(p => new Page<MixContract>(p.Mixes, 1, p.Mixes.Count))
+                .AddOrReloadPage(this.Mixes, (vm, d) => vm.Load(d));
             return pageData.FinallySelect(() => (IList<MixViewModel>)this.Mixes);
         }
     }

@@ -4,11 +4,13 @@
     using System.Diagnostics;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Profile;
     using FlatBeats.DataModel.Services;
 
     using Flatliner.Phone;
 
     using Microsoft.Phone.BackgroundAudio;
+    using Microsoft.Phone.Net.NetworkInformation;
     using Microsoft.Phone.Reactive;
 
     /// <summary>
@@ -147,6 +149,8 @@
         /// </remarks>
         protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
+            // Ensure user settings are reloaded on each user action.
+            this.userSettings = null;
             switch (action)
             {
                 case UserAction.Stop:
@@ -191,6 +195,11 @@
                 return this.StopPlayingAsync(player);
             }
 
+            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
+            {
+                return this.StopPlayingAsync(player);
+            }
+
             var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player)
                    from d in ObservableEx.DeferredStart(
                                    () =>
@@ -216,7 +225,15 @@
                     });
         }
 
-        
+        private SettingsContract userSettings;
+
+        protected SettingsContract UserSettings
+        {
+            get
+            {
+                return this.userSettings ?? (this.userSettings = ProfileService.GetSettings());
+            }
+        }
 
         private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
         {
@@ -248,14 +265,17 @@
                 Debug.WriteLine("Player: PlayTrackAsync (Now Playing not set)");
 
                 // Reset as we don't know what we're playing anymore.
-                return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
+                return this.StopPlayingAsync(player);
             }
 
             if (this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
             {
-                this.PlayNextTrackAsync(player);
-                return this.NowPlaying.StopAsync(player.Position).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player));
+                return this.StopPlayingAsync(player);
+            }
 
+            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
+            {
+                return this.StopPlayingAsync(player);
             }
 
             Debug.WriteLine("Player: PlayTrackAsync (Playing)");
