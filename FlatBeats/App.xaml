@@ -154,6 +154,10 @@
                                             WhenTrue="Collapsed"
                                             WhenFalse="Visible" />
         <local:UrlToBitmapConverter x:Key="ImageConverter" />
+        <local:CensorBitmapConverter x:Key="CensorImageConverter"
+                                     PixelWidth="133"
+                                     PixelHeight="133"
+                                     PixelSize="8" />
         <toolkit:RelativeTimeConverter x:Key="RelativeDateConverter" />
         <DataTemplate x:Key="UserListItemTemplate">
             <local:AnimatingContentControl>
@@ -194,7 +198,6 @@
                 </Grid>
             </local:AnimatingContentControl>
         </DataTemplate>
-        <local:CensorBitmapConverter x:Key="CensorImageConverter" PixelWidth="133" PixelHeight="133" PixelSize="8" />
         <DataTemplate x:Key="MixListItemTemplate">
             <local:AnimatingContentControl>
                 <StackPanel toolkit:TiltEffect.IsTiltEnabled="True">
@@ -294,51 +297,6 @@
                 </StackPanel>
             </local:AnimatingContentControl>
         </DataTemplate>
-        <!--<DataTemplate x:Key="MixListItemTemplate">
-            <local:AnimatingContentControl>
-                <Grid toolkit:TiltEffect.IsTiltEnabled="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Border Margin="12,0,12,12"
-                            VerticalAlignment="Top"
-                            Height="133"
-                            Width="133"
-                            Background="{StaticResource PhoneChromeBrush}">
-                        <Image Width="133"
-                               Stretch="Uniform"
-                               Height="133"
-                               Source="{Binding ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
-                    </Border>
-                    <StackPanel Grid.Column="1"
-                                Margin="12,0,0,0"
-                                Orientation="Vertical"
-                                VerticalAlignment="Top">
-                        <TextBlock Text="{Binding Description}"
-                                   Style="{StaticResource PhoneTextSmallStyle}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="WordEllipsis"
-                                   Margin="0" />
-                        <TextBlock Text="{Binding MixName}"
-                                   Style="{StaticResource PhoneTextTitle2Style}"
-                                   Margin="0"
-                                   Height="0" />
-                    </StackPanel>
-                    <Grid Height="64"
-                          Margin="0"
-                          Grid.ColumnSpan="2"
-                          Grid.Row="1"
-                          Visibility="{Binding IsLastItem, Converter={StaticResource ShowConverter}}" />
-                </Grid>
-            </local:AnimatingContentControl>
-        </DataTemplate>-->
-
-
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

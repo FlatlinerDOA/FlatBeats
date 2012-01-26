@@ -161,6 +161,7 @@
     <Compile Include="ViewModels\Page.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\PanelViewModel.cs" />
+    <Compile Include="ViewModels\PinHelper.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\RecentMixViewModel.cs" />
     <Compile Include="ViewModels\ReviewsPanelViewModel.cs" />

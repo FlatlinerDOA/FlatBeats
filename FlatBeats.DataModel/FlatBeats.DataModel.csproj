@@ -107,9 +107,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone\Flatliner.Phone.csproj">
-      <Project>{90246C22-25B6-41A1-AE6F-6F1762DCB619}</Project>
-      <Name>Flatliner.Phone</Name>
+    <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
+      <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
+      <Name>Flatliner.Phone.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

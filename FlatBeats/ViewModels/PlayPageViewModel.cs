@@ -310,13 +310,13 @@ namespace FlatBeats.ViewModels
 
         private void PinToStart()
         {
-            if (MixesService.IsPinned(this.mixData))
+            if (PinHelper.IsPinned(this.mixData))
             {
-                MixesService.UnpinFromStart(this.mixData);
+                PinHelper.UnpinFromStart(this.mixData);
             }
             else
             {
-                MixesService.PinToStart(this.mixData);
+                PinHelper.PinToStart(this.mixData);
             }
 
             this.UpdatePinnedState();
@@ -342,7 +342,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void UpdatePinnedState()
         {
-            if (MixesService.IsPinned(this.mixData))
+            if (PinHelper.IsPinned(this.mixData))
             {
                 this.PinToStartCommand.Text = StringResources.Command_UnpinStart;
             }

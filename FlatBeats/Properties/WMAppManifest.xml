@@ -10,6 +10,7 @@
        Publisher="Andrew Chisholm">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
+      <Capability Name="ID_CAP_IDENTITY_DEVICE" />
       <Capability Name="ID_CAP_MEDIALIB" />
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />

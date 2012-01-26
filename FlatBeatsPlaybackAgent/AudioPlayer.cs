@@ -219,7 +219,7 @@
                             data += Json<PlayingMixContract>.Serialize(this.NowPlaying);
                         }
 
-                        LittleWatson.ReportException(ex, data);
+                        LittleWatsonLog.ReportException(ex, data);
                         Debug.WriteLine("Player: PlayNextTrackAsync (Playback Error, stopping!)");
                         return this.StopPlayingAsync(player);
                     });

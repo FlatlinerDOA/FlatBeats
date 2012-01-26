@@ -102,6 +102,10 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
+            this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             if (this.IsDataLoaded)
             {
                 this.Refresh();
@@ -152,9 +156,6 @@ namespace FlatBeats.ViewModels
 
         private void LoadLikedPanel()
         {
-            this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.Liked.LoadFirstPage();
             this.LoadRecentAndLatestPanels();
