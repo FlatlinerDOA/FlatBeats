@@ -11,6 +11,8 @@ namespace FlatBeats.ViewModels
 {
     using System;
 
+    using FlatBeats.Framework;
+
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
@@ -168,25 +170,42 @@ namespace FlatBeats.ViewModels
             this.SearchQuery = loadQuery;
             this.Title = (this.Tag ?? this.SearchQuery ?? string.Empty).ToUpper();
 
-            this.SearchPanel(this.Recent);
+            if (!string.IsNullOrWhiteSpace(this.SearchQuery))
+            {
+                this.Recent.SearchQuery = this.SearchQuery;
+                this.Hot.SearchQuery = this.SearchQuery;
+                this.Popular.SearchQuery = this.SearchQuery;
+            }
+            else
+            {
+                this.Recent.Tag = this.Tag;
+                this.Hot.Tag = this.Tag;
+                this.Popular.Tag = this.Tag;
+            }
+
+            this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+
+            this.CurrentPanel.LoadFirstPage();
         }
 
         public MixListViewModel CurrentPanel 
         {
             get
-        {
-            switch (this.currentPanelIndex)
             {
-                case 0:
-                    return this.Recent;
-                case 1:
-                    return this.Hot;
-                case 2:
-                    return this.Popular;
-            }
+                switch (this.currentPanelIndex)
+                {
+                    case 0:
+                        return this.Recent;
+                    case 1:
+                        return this.Hot;
+                    case 2:
+                        return this.Popular;
+                }
 
-            return null;
-        }
+                return null;
+            }
         }
 
         private void LoadCurrentPanelSearchResults()
@@ -196,22 +215,7 @@ namespace FlatBeats.ViewModels
 
         private void SearchPanel(MixListViewModel mixList)
         {
-            if (mixList.IsDataLoaded)
-            {
-                return;
-            }
-
-            this.ShowProgress(mixList.InProgressMessage);
-            if (!string.IsNullOrWhiteSpace(this.SearchQuery))
-            {
-                mixList.SearchQuery = this.SearchQuery;
-            }
-            else
-            {
-                mixList.Tag = this.Tag;
-            }
-
-            this.AddToLifetime(mixList.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            //this.ShowProgress(mixList.InProgressMessage);
             mixList.LoadFirstPage();
         }
         #endregion

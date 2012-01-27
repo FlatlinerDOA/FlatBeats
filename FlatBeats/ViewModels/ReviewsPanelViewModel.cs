@@ -6,6 +6,7 @@
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
 
@@ -16,7 +17,7 @@
         /// </summary>
         public ReviewsPanelViewModel()
         {
-            this.Title = StringResources.Title_Reviews;
+            this.Title = Framework.StringResources.Title_Reviews;
         }
 
         public IObservable<Unit> LoadAsync(string mixId)

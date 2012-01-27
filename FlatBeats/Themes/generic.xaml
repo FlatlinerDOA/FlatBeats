@@ -7,15 +7,14 @@
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/client/2007"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
-                    xmlns:local="clr-namespace:FlatBeats.Controls"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
-                    xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                    xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
+                    xmlns:Controls1="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
                     mc:Ignorable="d">
-    <Style TargetType="local:AnimatingContentControl">
+    <Style TargetType="Controls1:AnimatingContentControl">
         <Setter Property="Foreground"
                 Value="#FF000000" />
         <Setter Property="HorizontalContentAlignment"
@@ -24,7 +23,7 @@
                 Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:AnimatingContentControl">
+                <ControlTemplate TargetType="Controls1:AnimatingContentControl">
                     <Grid x:Name="root"
                           RenderTransformOrigin="0.5,0.5">
                         <Grid.RenderTransform>
@@ -149,16 +148,16 @@
                 Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:DynamicBackgroundPanorama">
+                <ControlTemplate TargetType="Controls1:DynamicBackgroundPanorama">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <local:UpdatingPanningLayer x:Name="BackgroundLayer"
+                        <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
                                                     HorizontalAlignment="Left"
                                                     Grid.RowSpan="2">
-                            <local:TransitioningBackgroundControl x:Name="background"
+                            <Controls1:TransitioningBackgroundControl x:Name="background"
                                                                   DynamicBackground="{TemplateBinding DynamicBackground}"
                                                                   Margin="-1,0">
                                 <!--<local:TransitioningBackgroundControl.OpacityMask>
@@ -174,8 +173,8 @@
                                                       Offset="1" />
                                     </LinearGradientBrush>
                                 </local:TransitioningBackgroundControl.OpacityMask>-->
-                            </local:TransitioningBackgroundControl>
-                        </local:UpdatingPanningLayer>
+                            </Controls1:TransitioningBackgroundControl>
+                        </Controls1:UpdatingPanningLayer>
                         <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
                                                               CacheMode="BitmapCache"
                                                               ContentTemplate="{TemplateBinding TitleTemplate}"
@@ -195,13 +194,13 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="local:NavigationList">
+    <Style TargetType="Controls1:NavigationList">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:AnimatingContentControl>
+                    <Controls1:AnimatingContentControl>
                         <TextBlock Text="{Binding}" />
-                    </local:AnimatingContentControl>
+                    </Controls1:AnimatingContentControl>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -209,28 +208,28 @@
             <Setter.Value>
                 <ControlTemplate>
 
-                    <local:ItemsControlEx x:Name="itemsControl"
+                    <Controls1:ItemsControlEx x:Name="itemsControl"
                                           ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
                                           ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
-                        <local:ItemsControlEx.ItemsPanel>
+                        <Controls1:ItemsControlEx.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Vertical" />
                             </ItemsPanelTemplate>
-                        </local:ItemsControlEx.ItemsPanel>
-                        <local:ItemsControlEx.Template>
+                        </Controls1:ItemsControlEx.ItemsPanel>
+                        <Controls1:ItemsControlEx.Template>
                             <ControlTemplate>
                                 <ScrollViewer>
                                     <ItemsPresenter />
                                 </ScrollViewer>
                             </ControlTemplate>
-                        </local:ItemsControlEx.Template>
-                    </local:ItemsControlEx>
+                        </Controls1:ItemsControlEx.Template>
+                    </Controls1:ItemsControlEx>
 
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="local:SearchPrompt">
+    <Style TargetType="Controls1:SearchPrompt">
         <Setter Property="FontFamily"
                 Value="{StaticResource PhoneFontFamilyNormal}" />
         <Setter Property="FontSize"
@@ -245,7 +244,7 @@
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:SearchPrompt">
+                <ControlTemplate TargetType="Controls1:SearchPrompt">
                     <Grid>
                         <Rectangle Fill="{StaticResource TransparentBrush}" />
 

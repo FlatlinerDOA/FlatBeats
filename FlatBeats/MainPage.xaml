@@ -1,13 +1,16 @@
-﻿<Controls1:AnimatedBasePage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ControlsF:ViewModelPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-                            xmlns:local="clr-namespace:FlatBeats.Controls"
-                            xmlns:Controls1="clr-namespace:Clarity.Phone.Controls"
-                            xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" x:Class="FlatBeats.MainPage"
+                            xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" 
+                           xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+                           xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+                         xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+                        xmlns:ControlsF="clr-namespace:Flatliner.Phone.Controls;assembly=Flatliner.Phone" 
+                        x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="800"
@@ -19,11 +22,11 @@
 							shell:SystemTray.BackgroundColor="Transparent"
                             shell:SystemTray.ForegroundColor="LightGray"
                             toolkit:TiltEffect.IsTiltEnabled="True">
-    <Controls1:AnimatedBasePage.Resources>
+    <ControlsF:ViewModelPage.Resources>
         <FlatBeats_ViewModels:MainPageViewModel x:Key="ViewModel" />
     	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
     	<SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
-    	<local:BooleanToVisibilityConverter x:Key="VisibilityConverter"
+    	<Controls2:BooleanToVisibilityConverter x:Key="VisibilityConverter"
     		WhenFalse="Collapsed"
     		WhenTrue="Visible" />
     	<Style x:Key="WrapNavigationList"
@@ -31,7 +34,7 @@
     		<Setter Property="ItemTemplate">
     			<Setter.Value>
     				<DataTemplate>
-    					<local:AnimatingContentControl>
+    					<Controls2:AnimatingContentControl>
     						<toolkit:HubTile x:Name="hubTile"
     							Message="{Binding Description}"
     							Title="{Binding TileTitle}"
@@ -39,14 +42,14 @@
     							GroupTag="Latest"
     							Source="{Binding ThumbnailUrl, Converter={StaticResource CensorImageConverter}}"
     							IsFrozen="True" />
-    					</local:AnimatingContentControl>
+    					</Controls2:AnimatingContentControl>
     				</DataTemplate>
     			</Setter.Value>
     		</Setter>
     		<Setter Property="ItemsPanel">
     			<Setter.Value>
     				<ItemsPanelTemplate>
-                        <local:UniformGrid Columns="6" Rows="2" />
+                        <Controls2:UniformGrid Columns="6" Rows="2" />
     					<!--<toolkit:WrapPanel
     						Orientation="Vertical" />-->
     				</ItemsPanelTemplate>
@@ -169,32 +172,32 @@
     	<Style x:Key="FirstItemSeparatorStyle" TargetType="Grid">
     		<Setter Property="Height" Value="30"/>
     	</Style>
-    </Controls1:AnimatedBasePage.Resources>
-    <Controls1:AnimatedBasePage.FontFamily>
+    </ControlsF:ViewModelPage.Resources>
+    <ControlsF:ViewModelPage.FontFamily>
         <StaticResource ResourceKey="PhoneFontFamilyNormal" />
-    </Controls1:AnimatedBasePage.FontFamily>
-    <Controls1:AnimatedBasePage.FontSize>
+    </ControlsF:ViewModelPage.FontFamily>
+    <ControlsF:ViewModelPage.FontSize>
         <StaticResource ResourceKey="PhoneFontSizeNormal" />
-    </Controls1:AnimatedBasePage.FontSize>
-    <Controls1:AnimatedBasePage.Foreground>
+    </ControlsF:ViewModelPage.FontSize>
+    <ControlsF:ViewModelPage.Foreground>
         <StaticResource ResourceKey="PhoneForegroundBrush" />
-    </Controls1:AnimatedBasePage.Foreground>
+    </ControlsF:ViewModelPage.Foreground>
+        <ControlsF:ViewModelPage.DataContext>
+        <Binding Source="{StaticResource ViewModel}" />
+    </ControlsF:ViewModelPage.DataContext>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
-    <Controls1:AnimatedBasePage.DataContext>
-        <Binding Source="{StaticResource ViewModel}" />
-    </Controls1:AnimatedBasePage.DataContext>
     <Grid x:Name="LayoutRoot">
-        <Grid.Background>
+        <!--<Grid.Background>
             <RadialGradientBrush RadiusX="1.152"
                                  RadiusY="0.59">
                 <GradientStop Color="#FF3B3F47"
                               Offset="1" />
                 <GradientStop Color="#FF5E5E62" />
             </RadialGradientBrush>
-        </Grid.Background>
+        </Grid.Background>-->
         <controls:Panorama Title="{Binding Title}"
                            x:Name="pano"
                            Foreground="White"
@@ -203,7 +206,12 @@
                            TitleTemplate="{StaticResource TitleTemplate}"
                            ItemContainerStyle="{StaticResource PanoramaItemStyle1}">
             <controls:Panorama.Background>
-                <ImageBrush ImageSource="PanoramaBackground.jpg" />
+                <ImageBrush>
+                    <ImageBrush.ImageSource>
+                        <BitmapImage CreateOptions="None"
+                                     UriSource="PanoramaBackground.jpg" />
+                    </ImageBrush.ImageSource>
+                </ImageBrush>
             </controls:Panorama.Background>
             <controls:PanoramaItem DataContext="{Binding Liked}"
                                    Header="{Binding Title}"
@@ -221,11 +229,11 @@
                              Style="{StaticResource TiltedNavigationListStyle}" 
                              Margin="24,0,-12,0">
                         <i:Interaction.Behaviors>
-                            <FlatBeats_ViewModels:InfiniteScrollBehavior />
+                            <ViewModels:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl>
+                                <Controls2:AnimatingContentControl>
                                     <StackPanel Margin="-2,0,0,0">
                                 		<Grid x:Name="firstItemSeparator"
                                 			Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" d:LayoutOverrides="VerticalAlignment" Style="{StaticResource FirstItemSeparatorStyle}" />
@@ -266,14 +274,12 @@
                                 					d:LayoutOverrides="Width"
                                 					VerticalAlignment="Top" FontSize="32" FontFamily="Segoe WP Black" TextWrapping="Wrap" />
                                 				<TextBlock TextWrapping="Wrap" d:LayoutOverrides="Width" Text="{Binding Tags}" Style="{StaticResource PhoneTextSmallStyle}" Margin="0,8,0,0" VerticalAlignment="Top" Foreground="#99FFFFFF"/>
-
                                 			</StackPanel>
-
                                 		</Grid>
                                 		<Grid x:Name="lastItemSeparator" Height="64"
                                 			Visibility="{Binding IsLastItem, Converter={StaticResource VisibilityConverter}}" d:LayoutOverrides="VerticalAlignment, Height, VerticalMargin" />
                                 	</StackPanel>
-                                </local:AnimatingContentControl>
+                                </Controls2:AnimatingContentControl>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -296,7 +302,7 @@
                              Style="{StaticResource TiltedNavigationListStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <local:AnimatingContentControl Margin="16,0">
+                                <Controls2:AnimatingContentControl Margin="16,0">
                                     <StackPanel Margin="-2,0,0,0">
                                 		<Grid x:Name="firstItemSeparator" d:LayoutOverrides="VerticalAlignment, GridBox" Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" Style="{StaticResource FirstItemSeparatorStyle}" />
                                 		<TextBlock x:Name="nowPlaying" Text="NOW PLAYING"
@@ -349,7 +355,7 @@
                                 		<Grid x:Name="lastItemSeparator" Height="64"
                                 			Visibility="{Binding IsLastItem, Converter={StaticResource VisibilityConverter}}" d:LayoutOverrides="Height, VerticalMargin" />
                                 	</StackPanel>
-                                </local:AnimatingContentControl>
+                                </Controls2:AnimatingContentControl>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -415,4 +421,4 @@
         </controls:Panorama>
     </Grid>
 
-</Controls1:AnimatedBasePage>
+</ControlsF:ViewModelPage>

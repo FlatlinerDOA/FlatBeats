@@ -64,27 +64,6 @@
         {
         }
 
-        private object syncRoot = new object();
-        private SettingsContract userSettings;
-
-        public SettingsContract UserSettings
-        {
-            get
-            {
-                if (this.userSettings == null)
-                {
-                    lock (this.syncRoot)
-                    {
-                        if (this.userSettings == null)
-                        {
-                            this.userSettings = ProfileService.GetSettings();
-                        }
-                    }
-                }
-
-                return this.userSettings;
-            }
-        }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched

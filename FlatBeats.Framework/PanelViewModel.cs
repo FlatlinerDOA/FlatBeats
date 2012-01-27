@@ -27,12 +27,12 @@
         internal static ErrorMessage GetUnknownErrorMessage(Exception error)
         {
             return new ErrorMessage(
-                StringResources.Error_UnknownError_Title, StringResources.Error_UnknownError_Message) { IsCritical = true };
+                Framework.StringResources.Error_UnknownError_Title, Framework.StringResources.Error_UnknownError_Message) { IsCritical = true };
         }
 
         internal static ErrorMessage GetSocketErrorMessage(SocketException ex)
         {
-            return new ErrorMessage(StringResources.Error_NoNetwork_Title, StringResources.Error_NoNetwork_Message);
+            return new ErrorMessage(Framework.StringResources.Error_NoNetwork_Title, Framework.StringResources.Error_NoNetwork_Message);
         }
 
         internal static ErrorMessage GetWebErrorMessage(WebException webException)
@@ -54,23 +54,23 @@
                         case HttpStatusCode.BadGateway:
                         case HttpStatusCode.ServiceUnavailable:
                         case HttpStatusCode.GatewayTimeout:
-                            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
+                            return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, Framework.StringResources.Error_ServerUnavailable_Message);
                         case HttpStatusCode.RequestEntityTooLarge:
                         case HttpStatusCode.BadRequest:
                         case HttpStatusCode.RequestUriTooLong:
                         case HttpStatusCode.InternalServerError:
                         case HttpStatusCode.NotImplemented:
                         case HttpStatusCode.HttpVersionNotSupported:
-                            return new ErrorMessage(StringResources.Error_BadRequest_Title, StringResources.Error_BadRequest_Message);
+                            return new ErrorMessage(Framework.StringResources.Error_BadRequest_Title, Framework.StringResources.Error_BadRequest_Message);
                     }
                 }
 
-                return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
+                return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, Framework.StringResources.Error_ServerUnavailable_Message);
         }
 
         public static ErrorMessage GetServiceErrorMessage(ServiceException ex)
         {
-            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, ex.Message);
+            return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, ex.Message);
         }
     }
 }

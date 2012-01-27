@@ -9,6 +9,7 @@ namespace FlatBeats.ViewModels
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
 
@@ -19,7 +20,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MainPageLikedViewModel()
         {
-            this.Title = StringResources.Title_LikedMixes;
+            this.Title = Framework.StringResources.Title_LikedMixes;
         }
 
         public bool IsDataLoaded { get; set; }

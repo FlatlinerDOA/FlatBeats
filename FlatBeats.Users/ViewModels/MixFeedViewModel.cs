@@ -6,6 +6,7 @@
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
 

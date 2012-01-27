@@ -19,6 +19,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Flatliner.Phone;
 
@@ -226,7 +227,7 @@ namespace FlatBeats.ViewModels
 
         private bool CanPlay()
         {
-            if (((App)Application.Current).UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
+            if (UserSettings.Current.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
             {
                 this.PlayPauseCommand.Text = "no wifi";
                 return false;

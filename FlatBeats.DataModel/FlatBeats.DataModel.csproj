@@ -43,6 +43,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="SharpGIS.GZipWebClient">
+      <HintPath>..\packages\SharpGIS.GZipWebClient.1.2\lib\sl40-wp71\SharpGIS.GZipWebClient.dll</HintPath>
+    </Reference>
     <Reference Include="System.Observable" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
@@ -86,10 +89,10 @@
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="TagContract.cs" />
     <Compile Include="UserProfileResponseContract.cs" />
-    <Compile Include="StringResources.Designer.cs">
+    <Compile Include="DataStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StringResources.resx</DependentUpon>
+      <DependentUpon>DataStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="UserLoginResponseContract.cs" />
     <Compile Include="Services\ProfileService.cs" />
@@ -101,9 +104,9 @@
     <Compile Include="UserCredentialsContract.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="StringResources.resx">
+    <EmbeddedResource Include="DataStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>DataStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +114,9 @@
       <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
       <Name>Flatliner.Phone.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using FlatBeats.DataModel;
+    using FlatBeats.Framework;
 
     using Flatliner.Phone.ViewModels;
 

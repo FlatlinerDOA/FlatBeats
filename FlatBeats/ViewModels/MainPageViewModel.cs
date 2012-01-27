@@ -14,6 +14,8 @@ namespace FlatBeats.ViewModels
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
+    using FlatBeats.Framework;
+
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
@@ -23,10 +25,6 @@ namespace FlatBeats.ViewModels
     public class MainPageViewModel : PageViewModel
     {
         #region Constants and Fields
-
-        /// <summary>
-        /// </summary>
-        private static readonly Random RandomNumber = new Random();
 
         /// <summary>
         /// </summary>
@@ -112,7 +110,12 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.LoadLikedPanel();
+            Observable.Timer(TimeSpan.FromSeconds(2), Scheduler.Dispatcher).Subscribe(
+            _ =>
+            { 
+                this.LoadLikedPanel(); 
+            });
+            
         }
 
         public override void Unload()
@@ -159,6 +162,8 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.Liked.LoadFirstPage();
             this.LoadRecentAndLatestPanels();
+
+        
         }
 
         private void UpdateIsInProgress()

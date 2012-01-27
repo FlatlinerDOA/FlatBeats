@@ -18,6 +18,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;

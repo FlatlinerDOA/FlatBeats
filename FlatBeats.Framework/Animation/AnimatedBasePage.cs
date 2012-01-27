@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Animation;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
-using Clarity.Phone.Extensions;
-using System.Diagnostics;
-using System.Windows.Controls;
-
+﻿
 namespace Clarity.Phone.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Media.Animation;
+    using System.Windows.Navigation;
+    using Microsoft.Phone.Controls;
+    using Clarity.Phone.Controls.Animations;
+    using Clarity.Phone.Extensions;
+    using System.Diagnostics;
+    using System.Windows.Controls;
     using Flatliner.Phone.Controls;
 
     public class AnimatedBasePage : ViewModelPage
@@ -302,9 +302,13 @@ namespace Clarity.Phone.Controls
             TextBlock nameText;
 
             if (element is TextBlock)
+            {
                 nameText = element as TextBlock;
+            }
             else
-                nameText = element.GetVisualDescendants().OfType<TextBlock>().FirstOrDefault();
+            {
+                nameText = Flatliner.Phone.Extensions.VisualTreeExtensions.GetVisualDescendants(element).OfType<TextBlock>().FirstOrDefault();
+            }
 
             if (nameText != null)
             {

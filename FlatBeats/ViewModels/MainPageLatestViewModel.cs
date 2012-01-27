@@ -22,7 +22,7 @@
                 this.Mixes.Add(new MixViewModel());
             }
 
-            this.Title = StringResources.Title_LatestMixes;
+            this.Title = Framework.StringResources.Title_LatestMixes;
         }
 
         public ObservableCollection<MixViewModel> Mixes { get; private set; }

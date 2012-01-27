@@ -7,6 +7,7 @@
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
 
@@ -18,7 +19,7 @@
         public MainPageRecentViewModel()
         {
             this.Mixes = new ObservableCollection<RecentMixViewModel>();
-            this.Title = StringResources.Title_RecentlyPlayedMixes;
+            this.Title = Framework.StringResources.Title_RecentlyPlayedMixes;
         }
 
         public ObservableCollection<RecentMixViewModel> Mixes { get; private set; }

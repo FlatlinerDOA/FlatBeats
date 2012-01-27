@@ -69,7 +69,7 @@ namespace FlatBeats.ViewModels
             this.Location = data.Location;
             this.Bio = Html.ConvertToPlainText(data.BioHtml);
             this.AvatarUrl = Avatar.GetImageUrl(data.Avatar);
-            this.NavigationUrl = new Uri("/UserProfilePage.xaml?userid=" + this.userId, UriKind.Relative);
+            this.NavigationUrl = new Uri("/FlatBeats.Users;component/UserProfilePage.xaml?userid=" + this.userId, UriKind.Relative);
         }
 
         #endregion

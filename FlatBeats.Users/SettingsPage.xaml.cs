@@ -1,24 +1,21 @@
-﻿namespace FlatBeats
+﻿namespace FlatBeats.Users
 {
     using System;
     using System.Windows.Controls;
 
     using Clarity.Phone.Controls;
 
-    using Microsoft.Phone.Controls;
     using FlatBeats.ViewModels;
-
-    using GestureEventArgs = System.Windows.Input.GestureEventArgs;
 
     public partial class SettingsPage : AnimatedBasePage
     {
         public SettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             this.AnimationContext = this.LayoutRoot;
         }
 
-        private void ListBoxTap(object sender, GestureEventArgs e)
+        private void ListBoxTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
         }

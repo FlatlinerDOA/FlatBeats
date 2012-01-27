@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FlatBeats {
+namespace FlatBeats.Framework {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace FlatBeats {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class StringResources {
+    public class StringResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace FlatBeats {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FlatBeats.StringResources", typeof(StringResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FlatBeats.Framework.StringResources", typeof(StringResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace FlatBeats {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to create account.
         /// </summary>
-        internal static string Command_CreateAccount {
+        public static string Command_CreateAccount {
             get {
                 return ResourceManager.GetString("Command_CreateAccount", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to email mix.
         /// </summary>
-        internal static string Command_EmailMix {
+        public static string Command_EmailMix {
             get {
                 return ResourceManager.GetString("Command_EmailMix", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to follow.
         /// </summary>
-        internal static string Command_FollowUser {
+        public static string Command_FollowUser {
             get {
                 return ResourceManager.GetString("Command_FollowUser", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to like.
         /// </summary>
-        internal static string Command_LikeMix {
+        public static string Command_LikeMix {
             get {
                 return ResourceManager.GetString("Command_LikeMix", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to sign in.
         /// </summary>
-        internal static string Command_Login {
+        public static string Command_Login {
             get {
                 return ResourceManager.GetString("Command_Login", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to sign out.
         /// </summary>
-        internal static string Command_Logout {
+        public static string Command_Logout {
             get {
                 return ResourceManager.GetString("Command_Logout", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to next.
         /// </summary>
-        internal static string Command_NextTrack {
+        public static string Command_NextTrack {
             get {
                 return ResourceManager.GetString("Command_NextTrack", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
-        internal static string Command_PauseMix {
+        public static string Command_PauseMix {
             get {
                 return ResourceManager.GetString("Command_PauseMix", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to pin to start.
         /// </summary>
-        internal static string Command_PinToStart {
+        public static string Command_PinToStart {
             get {
                 return ResourceManager.GetString("Command_PinToStart", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
-        internal static string Command_PlayMix {
+        public static string Command_PlayMix {
             get {
                 return ResourceManager.GetString("Command_PlayMix", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to review mix.
         /// </summary>
-        internal static string Command_ReviewMix {
+        public static string Command_ReviewMix {
             get {
                 return ResourceManager.GetString("Command_ReviewMix", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to share mix.
         /// </summary>
-        internal static string Command_ShareMix {
+        public static string Command_ShareMix {
             get {
                 return ResourceManager.GetString("Command_ShareMix", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to unfollow.
         /// </summary>
-        internal static string Command_UnfollowUser {
+        public static string Command_UnfollowUser {
             get {
                 return ResourceManager.GetString("Command_UnfollowUser", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to unlike.
         /// </summary>
-        internal static string Command_UnlikeMix {
+        public static string Command_UnlikeMix {
             get {
                 return ResourceManager.GetString("Command_UnlikeMix", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to unpin from start.
         /// </summary>
-        internal static string Command_UnpinStart {
+        public static string Command_UnpinStart {
             get {
                 return ResourceManager.GetString("Command_UnpinStart", resourceCulture);
             }
@@ -202,7 +202,7 @@ namespace FlatBeats {
         ///Link:
         ///{2}.
         /// </summary>
-        internal static string EmailBody_ShareMix {
+        public static string EmailBody_ShareMix {
             get {
                 return ResourceManager.GetString("EmailBody_ShareMix", resourceCulture);
             }
@@ -211,7 +211,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Check out this 8tracks.com mix!.
         /// </summary>
-        internal static string EmailSubject_ShareMix {
+        public static string EmailSubject_ShareMix {
             get {
                 return ResourceManager.GetString("EmailSubject_ShareMix", resourceCulture);
             }
@@ -220,7 +220,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to We are having a disagreement with the server by attempting this, please report this if it continues to happen..
         /// </summary>
-        internal static string Error_BadRequest_Message {
+        public static string Error_BadRequest_Message {
             get {
                 return ResourceManager.GetString("Error_BadRequest_Message", resourceCulture);
             }
@@ -229,7 +229,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to We made a bad request.
         /// </summary>
-        internal static string Error_BadRequest_Title {
+        public static string Error_BadRequest_Title {
             get {
                 return ResourceManager.GetString("Error_BadRequest_Title", resourceCulture);
             }
@@ -238,7 +238,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Sorry, we can&apos;t connect to the network, maybe check your internet connection or try again a bit later..
         /// </summary>
-        internal static string Error_NoNetwork_Message {
+        public static string Error_NoNetwork_Message {
             get {
                 return ResourceManager.GetString("Error_NoNetwork_Message", resourceCulture);
             }
@@ -247,7 +247,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Where did the internet go?.
         /// </summary>
-        internal static string Error_NoNetwork_Title {
+        public static string Error_NoNetwork_Title {
             get {
                 return ResourceManager.GetString("Error_NoNetwork_Title", resourceCulture);
             }
@@ -256,7 +256,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Sorry, we can&apos;t communicate with the server at the moment, please check your internet connection or try again later..
         /// </summary>
-        internal static string Error_ServerUnavailable_Message {
+        public static string Error_ServerUnavailable_Message {
             get {
                 return ResourceManager.GetString("Error_ServerUnavailable_Message", resourceCulture);
             }
@@ -265,7 +265,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Server unavailable.
         /// </summary>
-        internal static string Error_ServerUnavailable_Title {
+        public static string Error_ServerUnavailable_Title {
             get {
                 return ResourceManager.GetString("Error_ServerUnavailable_Title", resourceCulture);
             }
@@ -274,7 +274,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Either your UserName is wrong, or you miss-typed your password, feel free to try again..
         /// </summary>
-        internal static string Error_SignInFailed_Message {
+        public static string Error_SignInFailed_Message {
             get {
                 return ResourceManager.GetString("Error_SignInFailed_Message", resourceCulture);
             }
@@ -283,7 +283,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Oops! Try again.
         /// </summary>
-        internal static string Error_SignInFailed_Title {
+        public static string Error_SignInFailed_Title {
             get {
                 return ResourceManager.GetString("Error_SignInFailed_Title", resourceCulture);
             }
@@ -292,7 +292,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Something really unexpected happened! Please report this when you are asked, next time you run this app..
         /// </summary>
-        internal static string Error_UnknownError_Message {
+        public static string Error_UnknownError_Message {
             get {
                 return ResourceManager.GetString("Error_UnknownError_Message", resourceCulture);
             }
@@ -301,7 +301,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Something went wrong....
         /// </summary>
-        internal static string Error_UnknownError_Title {
+        public static string Error_UnknownError_Title {
             get {
                 return ResourceManager.GetString("Error_UnknownError_Title", resourceCulture);
             }
@@ -310,7 +310,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Censor mixes with explicit artwork.
         /// </summary>
-        internal static string Label_CensorshipEnabled {
+        public static string Label_CensorshipEnabled {
             get {
                 return ResourceManager.GetString("Label_CensorshipEnabled", resourceCulture);
             }
@@ -319,7 +319,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string Label_Password {
+        public static string Label_Password {
             get {
                 return ResourceManager.GetString("Label_Password", resourceCulture);
             }
@@ -328,7 +328,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Play only when connected to WIFI.
         /// </summary>
-        internal static string Label_PlayOverWifiOnly {
+        public static string Label_PlayOverWifiOnly {
             get {
                 return ResourceManager.GetString("Label_PlayOverWifiOnly", resourceCulture);
             }
@@ -337,7 +337,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
-        internal static string Label_UserName {
+        public static string Label_UserName {
             get {
                 return ResourceManager.GetString("Label_UserName", resourceCulture);
             }
@@ -346,7 +346,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Sign in or sign up to keep track of the mixes you like..
         /// </summary>
-        internal static string Message_NoLikedMixes {
+        public static string Message_NoLikedMixes {
             get {
                 return ResourceManager.GetString("Message_NoLikedMixes", resourceCulture);
             }
@@ -355,7 +355,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to No mixes to be found here.
         /// </summary>
-        internal static string Message_NoMixesFound {
+        public static string Message_NoMixesFound {
             get {
                 return ResourceManager.GetString("Message_NoMixesFound", resourceCulture);
             }
@@ -364,7 +364,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to No mixes found, make sure you&apos;re following someone to see what they&apos;re creating..
         /// </summary>
-        internal static string Message_NoMixesInFeed {
+        public static string Message_NoMixesInFeed {
             get {
                 return ResourceManager.GetString("Message_NoMixesInFeed", resourceCulture);
             }
@@ -373,7 +373,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Check back here after listening to some mixes..
         /// </summary>
-        internal static string Message_NoRecentlyPlayedMixes {
+        public static string Message_NoRecentlyPlayedMixes {
             get {
                 return ResourceManager.GetString("Message_NoRecentlyPlayedMixes", resourceCulture);
             }
@@ -382,7 +382,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to No tracks have been played recently for this mix..
         /// </summary>
-        internal static string Message_NoRecentlyPlayedTracks {
+        public static string Message_NoRecentlyPlayedTracks {
             get {
                 return ResourceManager.GetString("Message_NoRecentlyPlayedTracks", resourceCulture);
             }
@@ -391,7 +391,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to No one&apos;s said anything about this mix yet..
         /// </summary>
-        internal static string Message_NoReviews {
+        public static string Message_NoReviews {
             get {
                 return ResourceManager.GetString("Message_NoReviews", resourceCulture);
             }
@@ -400,7 +400,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to This person hasn&apos;t created any mixes..
         /// </summary>
-        internal static string Message_UserHasNoMixes {
+        public static string Message_UserHasNoMixes {
             get {
                 return ResourceManager.GetString("Message_UserHasNoMixes", resourceCulture);
             }
@@ -409,7 +409,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to This person doesn&apos;t have any followers.
         /// </summary>
-        internal static string Message_UserNotFollowedByAnyone {
+        public static string Message_UserNotFollowedByAnyone {
             get {
                 return ResourceManager.GetString("Message_UserNotFollowedByAnyone", resourceCulture);
             }
@@ -418,7 +418,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to This person isn&apos;t following anyone..
         /// </summary>
-        internal static string Message_UserNotFollowingAnyone {
+        public static string Message_UserNotFollowingAnyone {
             get {
                 return ResourceManager.GetString("Message_UserNotFollowingAnyone", resourceCulture);
             }
@@ -427,7 +427,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Sorry, there&apos;s no one following you..
         /// </summary>
-        internal static string Message_YouAreNotFollowedByAnyone {
+        public static string Message_YouAreNotFollowedByAnyone {
             get {
                 return ResourceManager.GetString("Message_YouAreNotFollowedByAnyone", resourceCulture);
             }
@@ -436,7 +436,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to You haven&apos;t found anyone to follow yet..
         /// </summary>
-        internal static string Message_YouAreNotFollowingAnyone {
+        public static string Message_YouAreNotFollowingAnyone {
             get {
                 return ResourceManager.GetString("Message_YouAreNotFollowingAnyone", resourceCulture);
             }
@@ -445,7 +445,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to You haven&apos;t created any mixes yet, visit 8tracks.com on your computer to get started!.
         /// </summary>
-        internal static string Message_YouHaveNoMixes {
+        public static string Message_YouHaveNoMixes {
             get {
                 return ResourceManager.GetString("Message_YouHaveNoMixes", resourceCulture);
             }
@@ -454,7 +454,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Wait! If you sign out we will forget which mixes you played recently!.
         /// </summary>
-        internal static string MessageBox_ResetSettings_Message {
+        public static string MessageBox_ResetSettings_Message {
             get {
                 return ResourceManager.GetString("MessageBox_ResetSettings_Message", resourceCulture);
             }
@@ -463,7 +463,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Sign out?.
         /// </summary>
-        internal static string MessageBox_ResetSettings_Title {
+        public static string MessageBox_ResetSettings_Title {
             get {
                 return ResourceManager.GetString("MessageBox_ResetSettings_Title", resourceCulture);
             }
@@ -472,7 +472,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
-        internal static string Progress_Loading {
+        public static string Progress_Loading {
             get {
                 return ResourceManager.GetString("Progress_Loading", resourceCulture);
             }
@@ -481,7 +481,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Signing in....
         /// </summary>
-        internal static string Progress_SigningIn {
+        public static string Progress_SigningIn {
             get {
                 return ResourceManager.GetString("Progress_SigningIn", resourceCulture);
             }
@@ -490,7 +490,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Updating....
         /// </summary>
-        internal static string Progress_Updating {
+        public static string Progress_Updating {
             get {
                 return ResourceManager.GetString("Progress_Updating", resourceCulture);
             }
@@ -499,7 +499,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Flat Beats.
         /// </summary>
-        internal static string Title_ApplicationName {
+        public static string Title_ApplicationName {
             get {
                 return ResourceManager.GetString("Title_ApplicationName", resourceCulture);
             }
@@ -508,7 +508,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to mixes.
         /// </summary>
-        internal static string Title_CreatedMixes {
+        public static string Title_CreatedMixes {
             get {
                 return ResourceManager.GetString("Title_CreatedMixes", resourceCulture);
             }
@@ -517,7 +517,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to followers.
         /// </summary>
-        internal static string Title_FollowedByUsers {
+        public static string Title_FollowedByUsers {
             get {
                 return ResourceManager.GetString("Title_FollowedByUsers", resourceCulture);
             }
@@ -526,7 +526,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to follows.
         /// </summary>
-        internal static string Title_FollowsUsers {
+        public static string Title_FollowsUsers {
             get {
                 return ResourceManager.GetString("Title_FollowsUsers", resourceCulture);
             }
@@ -535,7 +535,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to hot.
         /// </summary>
-        internal static string Title_HotMixes {
+        public static string Title_HotMixes {
             get {
                 return ResourceManager.GetString("Title_HotMixes", resourceCulture);
             }
@@ -544,7 +544,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to latest mixes.
         /// </summary>
-        internal static string Title_LatestMixes {
+        public static string Title_LatestMixes {
             get {
                 return ResourceManager.GetString("Title_LatestMixes", resourceCulture);
             }
@@ -553,7 +553,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to latest tags.
         /// </summary>
-        internal static string Title_LatestTags {
+        public static string Title_LatestTags {
             get {
                 return ResourceManager.GetString("Title_LatestTags", resourceCulture);
             }
@@ -562,7 +562,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to liked.
         /// </summary>
-        internal static string Title_LikedMixes {
+        public static string Title_LikedMixes {
             get {
                 return ResourceManager.GetString("Title_LikedMixes", resourceCulture);
             }
@@ -571,7 +571,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to liked tags.
         /// </summary>
-        internal static string Title_LikedTags {
+        public static string Title_LikedTags {
             get {
                 return ResourceManager.GetString("Title_LikedTags", resourceCulture);
             }
@@ -580,7 +580,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to mix.
         /// </summary>
-        internal static string Title_Mix {
+        public static string Title_Mix {
             get {
                 return ResourceManager.GetString("Title_Mix", resourceCulture);
             }
@@ -589,7 +589,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to feed.
         /// </summary>
-        internal static string Title_MixFeed {
+        public static string Title_MixFeed {
             get {
                 return ResourceManager.GetString("Title_MixFeed", resourceCulture);
             }
@@ -598,7 +598,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to Now Playing.
         /// </summary>
-        internal static string Title_NowPlaying {
+        public static string Title_NowPlaying {
             get {
                 return ResourceManager.GetString("Title_NowPlaying", resourceCulture);
             }
@@ -607,7 +607,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to played.
         /// </summary>
-        internal static string Title_PlayedTracks {
+        public static string Title_PlayedTracks {
             get {
                 return ResourceManager.GetString("Title_PlayedTracks", resourceCulture);
             }
@@ -616,7 +616,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to playing.
         /// </summary>
-        internal static string Title_Playing {
+        public static string Title_Playing {
             get {
                 return ResourceManager.GetString("Title_Playing", resourceCulture);
             }
@@ -625,7 +625,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to popular.
         /// </summary>
-        internal static string Title_PopularMixes {
+        public static string Title_PopularMixes {
             get {
                 return ResourceManager.GetString("Title_PopularMixes", resourceCulture);
             }
@@ -634,7 +634,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to recent.
         /// </summary>
-        internal static string Title_RecentlyPlayedMixes {
+        public static string Title_RecentlyPlayedMixes {
             get {
                 return ResourceManager.GetString("Title_RecentlyPlayedMixes", resourceCulture);
             }
@@ -643,7 +643,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to latest.
         /// </summary>
-        internal static string Title_RecentMixes {
+        public static string Title_RecentMixes {
             get {
                 return ResourceManager.GetString("Title_RecentMixes", resourceCulture);
             }
@@ -652,7 +652,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to reviews.
         /// </summary>
-        internal static string Title_Reviews {
+        public static string Title_Reviews {
             get {
                 return ResourceManager.GetString("Title_Reviews", resourceCulture);
             }
@@ -661,7 +661,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to SHARE MIX.
         /// </summary>
-        internal static string Title_ShareMix {
+        public static string Title_ShareMix {
             get {
                 return ResourceManager.GetString("Title_ShareMix", resourceCulture);
             }
@@ -670,7 +670,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to tags.
         /// </summary>
-        internal static string Title_Tags {
+        public static string Title_Tags {
             get {
                 return ResourceManager.GetString("Title_Tags", resourceCulture);
             }
@@ -679,7 +679,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to followers.
         /// </summary>
-        internal static string Title_YouAreFollowedBy {
+        public static string Title_YouAreFollowedBy {
             get {
                 return ResourceManager.GetString("Title_YouAreFollowedBy", resourceCulture);
             }
@@ -688,7 +688,7 @@ namespace FlatBeats {
         /// <summary>
         ///   Looks up a localized string similar to following.
         /// </summary>
-        internal static string Title_YouFollow {
+        public static string Title_YouFollow {
             get {
                 return ResourceManager.GetString("Title_YouFollow", resourceCulture);
             }

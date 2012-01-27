@@ -14,6 +14,8 @@ namespace FlatBeats.ViewModels
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
+
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
@@ -241,7 +243,7 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            var userSettings = ((App)Application.Current).UserSettings;
+            var userSettings = UserSettings.Current;
             userSettings.CensorshipEnabled = this.CensorshipEnabled;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
             ProfileService.SaveSettings(userSettings);
@@ -393,7 +395,7 @@ namespace FlatBeats.ViewModels
         private void LoadSettings()
         {
             this.isSettingsLoaded = false;
-            var userSettings = ((App)Application.Current).UserSettings;
+            var userSettings = UserSettings.Current;
             this.CensorshipEnabled = userSettings.CensorshipEnabled;
             this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
             this.isSettingsLoaded = true;

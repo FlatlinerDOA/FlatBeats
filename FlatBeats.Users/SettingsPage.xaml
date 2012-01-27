@@ -1,24 +1,23 @@
-﻿<Controls:AnimatedBasePage x:Class="FlatBeats.SettingsPage"
-                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
-                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels"
-                            xmlns:local="clr-namespace:FlatBeats.Controls" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:Controls="clr-namespace:Clarity.Phone.Controls" mc:Ignorable="d"
-                            d:DesignWidth="480"
-                            d:DesignHeight="768"
-                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
-                            FontSize="{StaticResource PhoneFontSizeNormal}"
-                            Foreground="{StaticResource PhoneForegroundBrush}"
-                            SupportedOrientations="Portrait"
-                            Orientation="Portrait"
-                            shell:SystemTray.IsVisible="True">
-    <Controls:AnimatedBasePage.Resources>
+﻿<ControlsX:AnimatedBasePage 
+    x:Class="FlatBeats.Users.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:ControlsX="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True">
+    <ControlsX:AnimatedBasePage.Resources>
         <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
         <DataTemplate x:Key="MixFeedListItemTemplate">
-            <local:AnimatingContentControl>
+            <Controls2:AnimatingContentControl>
                 <StackPanel toolkit:TiltEffect.IsTiltEnabled="True">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -52,7 +51,8 @@
                                            Foreground="{StaticResource PhoneForegroundBrush}" />
                             </Border>
                         </Border>
-                        <StackPanel Grid.Column="1" Margin="0,0,0,12">
+                        <StackPanel Grid.Column="1"
+                                    Margin="0,0,0,12">
                             <TextBlock Text="{Binding MixName}"
                                        Style="{StaticResource PhoneTextTitle2Style}" />
                             <TextBlock Text="{Binding Description}"
@@ -72,12 +72,12 @@
                           Height="64"
                           Visibility="{Binding IsLastItem, Converter={StaticResource ShowConverter}}" />
                 </StackPanel>
-            </local:AnimatingContentControl>
+            </Controls2:AnimatingContentControl>
         </DataTemplate>
-    </Controls:AnimatedBasePage.Resources>
-    <Controls:AnimatedBasePage.DataContext>
+    </ControlsX:AnimatedBasePage.Resources>
+    <ControlsX:AnimatedBasePage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
-    </Controls:AnimatedBasePage.DataContext>
+    </ControlsX:AnimatedBasePage.DataContext>
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True"
@@ -94,7 +94,8 @@
                             <TextBlock Text="{Binding UserNameLabelText}"
                                        Margin="12,0" />
                             <TextBox Text="{Binding UserName, Mode=TwoWay}"
-                                     IsReadOnly="{Binding IsLoggedIn}" InputScope="LogOnName" />
+                                     IsReadOnly="{Binding IsLoggedIn}"
+                                     InputScope="Text" />
                             <TextBlock Text="{Binding PasswordLabelText}"
                                        Margin="12,0"
                                        Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}" />
@@ -118,11 +119,19 @@
                                     Margin="0,0,8,8"
                                     MinWidth="250"
                                     HorizontalAlignment="Left" />
-                            <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}" Margin="0,12,0,0">
-                                <TextBlock Text="{Binding CensorshipEnabledText}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Margin="0,-12,12,0" VerticalAlignment="Top" />
+                            <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}"
+                                                   Margin="0,12,0,0">
+                                <TextBlock Text="{Binding CensorshipEnabledText}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                           Margin="0,-12,12,0"
+                                           VerticalAlignment="Top" />
                             </toolkit:ToggleSwitch>
                             <toolkit:ToggleSwitch IsChecked="{Binding PlayOverWifiOnly, Mode=TwoWay}">
-                                <TextBlock Text="{Binding PlayOverWifiOnlyText}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Margin="0,-12,12,0" />
+                                <TextBlock Text="{Binding PlayOverWifiOnlyText}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                           Margin="0,-12,12,0" />
                             </toolkit:ToggleSwitch>
                         </StackPanel>
                         <HyperlinkButton Margin="12,24,12,12"
@@ -147,12 +156,13 @@
                              ItemTemplate="{StaticResource MixFeedListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels:InfiniteScrollBehavior />
+                            <ViewModels1:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
-            <controls:PivotItem DataContext="{Binding Mixes}" Header="{Binding Title}">
+            <controls:PivotItem DataContext="{Binding Mixes}"
+                                Header="{Binding Title}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
@@ -161,12 +171,12 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap" />
                     <ListBox Margin="0,0,-12,0"
-                                          Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                                          ItemsSource="{Binding Items}"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                             ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource MixListItemTemplate}"
-                                          Tap="ListBoxTap">
+                             Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels:InfiniteScrollBehavior />
+                            <ViewModels1:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -186,7 +196,7 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels:InfiniteScrollBehavior />
+                            <ViewModels1:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
 
                     </ListBox>
@@ -207,12 +217,12 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels:InfiniteScrollBehavior />
+                            <ViewModels1:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
-
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
     </Grid>
-</Controls:AnimatedBasePage>
+
+</ControlsX:AnimatedBasePage>

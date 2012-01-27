@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Threading;
 
+    using FlatBeats.Framework;
+
     using Microsoft.Phone.Reactive;
 
     public class MainPageTagsViewModel : PanelViewModel

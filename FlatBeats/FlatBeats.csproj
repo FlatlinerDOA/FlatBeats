@@ -74,43 +74,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Animation\AnimatedBasePage.cs" />
-    <Compile Include="Animation\AnimatorHelperBase.cs" />
-    <Compile Include="Animation\ContinuumAnimator.cs" />
-    <Compile Include="Animation\SlideAnimator.cs" />
-    <Compile Include="Animation\Storyboards.cs" />
-    <Compile Include="Animation\SwivelAnimator.cs" />
-    <Compile Include="Animation\TurnstileAnimator.cs" />
-    <Compile Include="Animation\TurnstileFeatherAnimator.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AnimatingContentControl.cs" />
-    <Compile Include="Controls\ApplicationBarBinder.cs" />
-    <Compile Include="Controls\BooleanToBrushConverter.cs" />
-    <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Controls\IApplicationBarViewModel.cs" />
-    <Compile Include="Controls\ICommandLink.cs" />
-    <Compile Include="Controls\SearchPrompt.cs" />
-    <Compile Include="Controls\UniformGrid.cs" />
-    <Compile Include="Controls\UrlToBitmapConverter.cs" />
-    <Compile Include="Extensions\ApplicationExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Extensions\ItemsControlHelper.cs">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DynamicBackgroundPanorama.cs" />
-    <Compile Include="Controls\ItemsControlEx.cs" />
-    <Compile Include="Controls\NavigationList.cs" />
-    <Compile Include="Controls\TransitioningBackgroundControl.cs" />
-    <Compile Include="Controls\UpdatingPanningLayer.cs" />
     <Compile Include="MixesPage.xaml.cs">
       <DependentUpon>MixesPage.xaml</DependentUpon>
     </Compile>
@@ -121,63 +90,31 @@
     <Compile Include="SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="StringResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StringResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TagsPage.xaml.cs">
       <DependentUpon>TagsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserProfilePage.xaml.cs">
-      <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\BackgroundAudioPlayerExtensions.cs" />
     <Compile Include="ViewModels\BlockingQueue.cs" />
     <Compile Include="ViewModels\DualTileRowViewModel.cs" />
-    <Compile Include="ViewModels\FollowedByUsersViewModel.cs" />
-    <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
     <Compile Include="ViewModels\Grouping.cs" />
-    <Compile Include="ViewModels\IInfiniteScroll.cs" />
-    <Compile Include="ViewModels\Indexed.cs" />
-    <Compile Include="ViewModels\InfiniteScrollBehavior.cs" />
-    <Compile Include="ViewModels\InfiniteScrollPanelViewModel.cs" />
-    <Compile Include="ViewModels\ListItemViewModel.cs" />
     <Compile Include="ViewModels\MainPageLatestViewModel.cs" />
     <Compile Include="ViewModels\MainPageLikedViewModel.cs" />
     <Compile Include="ViewModels\MainPageRecentViewModel.cs" />
-    <Compile Include="ViewModels\INavigationItem.cs" />
     <Compile Include="ViewModels\MainPageTagsViewModel.cs" />
     <Compile Include="ViewModels\MixesPageViewModel.cs" />
-    <Compile Include="ViewModels\MixFeedViewModel.cs" />
     <Compile Include="ViewModels\MixListViewModel.cs" />
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
-    <Compile Include="ViewModels\MixViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
-    <Compile Include="ViewModels\NavigationExtensions.cs" />
-    <Compile Include="ViewModels\ObservableExtensions.cs" />
-    <Compile Include="ViewModels\Page.cs" />
-    <Compile Include="ViewModels\PageViewModel.cs" />
-    <Compile Include="ViewModels\PanelViewModel.cs" />
     <Compile Include="ViewModels\PinHelper.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\RecentMixViewModel.cs" />
     <Compile Include="ViewModels\ReviewsPanelViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
-    <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="ViewModels\TagsByFirstLetter.cs" />
     <Compile Include="ViewModels\TagsInGroup.cs" />
     <Compile Include="ViewModels\TagsPageViewModel.cs" />
-    <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\UpperCaseConverter.cs" />
-    <Compile Include="ViewModels\UserListItemViewModel.cs" />
-    <Compile Include="ViewModels\UserProfileMixesViewModel.cs" />
-    <Compile Include="ViewModels\UserProfilePageViewModel.cs" />
-    <Compile Include="ViewModels\ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -193,10 +130,6 @@
     <DesignData Include="SampleData\UserProfilePageViewModelSampleData.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </DesignData>
-    <Page Include="AboutPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -217,10 +150,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TagsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -228,10 +157,6 @@
     <Page Include="Themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserProfilePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -273,25 +198,21 @@
     <Content Include="icons\appbar.transport.ff.rest.png" />
     <Content Include="icons\appbar.transport.pause.rest.png" />
     <Content Include="icons\appbar.transport.play.rest.png" />
-    <Resource Include="Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Resource Include="Toolkit.Content\ApplicationBar.Check.png" />
-    <Resource Include="Toolkit.Content\ApplicationBar.Delete.png" />
-    <Resource Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="PanoramaBackground.jpg" />
-    <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="StringResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
+      <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
+      <Name>Flatliner.Phone.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone\Flatliner.Phone.csproj">
       <Project>{90246C22-25B6-41A1-AE6F-6F1762DCB619}</Project>
       <Name>Flatliner.Phone</Name>
@@ -299,6 +220,14 @@
     <ProjectReference Include="..\FlatBeats.DataModel\FlatBeats.DataModel.csproj">
       <Project>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</Project>
       <Name>FlatBeats.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlatBeats.Framework\FlatBeats.Framework.csproj">
+      <Project>{973F0060-AB8B-4212-A79A-2C7683511CF3}</Project>
+      <Name>FlatBeats.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlatBeats.Users\FlatBeats.Users.csproj">
+      <Project>{7F4967B9-F611-4596-BB8D-6B52E8B77621}</Project>
+      <Name>FlatBeats.Users</Name>
     </ProjectReference>
     <ProjectReference Include="..\FlatBeatsPlaybackAgent\FlatBeatsPlaybackAgent.csproj">
       <Project>{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}</Project>

@@ -109,7 +109,7 @@
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/UserProfilePage.xaml?userid=" + this.PageViewModel.CreatedByUserId, UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("/FlatBeats.Users;component/UserProfilePage.xaml?userid=" + this.PageViewModel.CreatedByUserId, UriKind.RelativeOrAbsolute));
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)

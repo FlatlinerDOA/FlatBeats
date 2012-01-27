@@ -157,8 +157,8 @@
             return from playing in playingMix
                    from tile in SetNowPlayingTileAsync(
                            playing, 
-                           StringResources.Title_ApplicationName, 
-                           StringResources.Title_NowPlaying)
+                           DataStrings.Title_ApplicationName, 
+                           DataStrings.Title_NowPlaying)
                    select playing;
         }
 

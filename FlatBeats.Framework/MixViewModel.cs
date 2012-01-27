@@ -15,6 +15,7 @@ namespace FlatBeats.ViewModels
     using System.Windows;
 
     using FlatBeats.DataModel;
+    using FlatBeats.Framework;
 
     using Flatliner.Phone.Data;
 
@@ -441,7 +442,7 @@ namespace FlatBeats.ViewModels
 
         public void Load(MixContract mix)
         {
-            bool censor = ((App)Application.Current).UserSettings.CensorshipEnabled;
+            bool censor = UserSettings.Current.CensorshipEnabled;
             this.IsExplicit = mix.IsExplicit && censor;
             this.MixName = censor ? Censorship.Censor(mix.Name) : mix.Name;
             var lines =
