@@ -14,6 +14,8 @@ namespace FlatBeats.ViewModels
     using System.Diagnostics;
     using System.Linq;
 
+    using FlatBeats.Framework;
+
     /// <summary>
     /// </summary>
     public class TagViewModel : ListItemViewModel, INavigationItem
@@ -49,11 +51,11 @@ namespace FlatBeats.ViewModels
             if (this.TagName == "more...")
             {
                 this.IsLastItem = true;
-                this.NavigationUrl = new Uri("/TagsPage.xaml", UriKind.Relative);
+                this.NavigationUrl = PageUrl.Tags(); 
             }
             else
             {
-                this.NavigationUrl = new Uri("/MixesPage.xaml?tag=" + this.TagName, UriKind.Relative);
+                this.NavigationUrl = PageUrl.SearchMixesByTag(this.TagName);
             }
         }
 

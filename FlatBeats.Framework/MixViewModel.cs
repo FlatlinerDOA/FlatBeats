@@ -453,7 +453,7 @@ namespace FlatBeats.ViewModels
             this.ImageUrl = this.IsExplicit ? this.AddQuery(mix.Cover.OriginalUrl, "nsfw") : mix.Cover.OriginalUrl;
             this.TileTitle = this.MixName.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
-            this.NavigationUrl = new Uri("/PlayPage.xaml?mix=" + this.MixId, UriKind.Relative);
+            this.NavigationUrl = PageUrl.Play(this.MixId, false);
             this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
             this.Liked = mix.Liked;
             this.CreatedBy = mix.User.Name;

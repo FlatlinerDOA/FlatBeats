@@ -9,6 +9,7 @@
     using Clarity.Phone.Controls.Animations;
 
     using FlatBeats.Controls;
+    using FlatBeats.Framework;
     using FlatBeats.ViewModels;
 
     using Flatliner.Phone.ViewModels;
@@ -109,7 +110,7 @@
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/FlatBeats.Users;component/UserProfilePage.xaml?userid=" + this.PageViewModel.CreatedByUserId, UriKind.RelativeOrAbsolute));
+            this.NavigationService.Navigate(PageUrl.UserProfile(this.PageViewModel.CreatedByUserId));
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)

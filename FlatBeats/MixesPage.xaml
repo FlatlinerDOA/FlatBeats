@@ -6,11 +6,13 @@
                             xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
                             xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
                             mc:Ignorable="d"
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-                            xmlns:Controls2="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" d:DesignWidth="480"
+                            xmlns:Controls2="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
+                            xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+                            d:DesignWidth="480"
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -18,7 +20,7 @@
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True"
-                            Controls:TiltEffect.IsTiltEnabled="True">
+                            toolkit:TiltEffect.IsTiltEnabled="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:MixesPageViewModel x:Key="ViewModel" />
         <Style x:Key="MessageTextStyle" TargetType="TextBlock"

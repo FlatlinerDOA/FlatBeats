@@ -5,6 +5,7 @@ namespace FlatBeats.ViewModels
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
+    using FlatBeats.Framework;
 
     using Flatliner.Phone.Data;
     using Flatliner.Phone.ViewModels;
@@ -115,7 +116,7 @@ namespace FlatBeats.ViewModels
             {
                 this.UserName = review.User.Name;
                 this.AvatarUrl = Avatar.GetImageUrl(review.User.Avatar);
-                this.NavigationUrl = new Uri("/FlatBeats.Users;component/UserProfilePage.xaml?userid=" + review.User.Id, UriKind.Relative);
+                this.NavigationUrl = PageUrl.UserProfile(review.User.Id);
             }
 
             this.Body = Html.ConvertToPlainText(review.Body).Trim();

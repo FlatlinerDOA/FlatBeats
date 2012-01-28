@@ -137,7 +137,7 @@
                         <HyperlinkButton Margin="12,24,12,12"
                                          VerticalAlignment="Bottom"
                                          Content="About this application"
-                                         NavigateUri="/AboutPage.xaml" />
+                                         NavigateUri="/FlatBeatsUsers;component/AboutPage.xaml" />
                     </Grid>
                 </ScrollViewer>
             </controls:PivotItem>

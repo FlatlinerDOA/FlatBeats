@@ -14,6 +14,8 @@ namespace FlatBeats
 {
     using System.Windows.Navigation;
 
+    using FlatBeats.Framework;
+
     using Microsoft.Phone.Reactive;
 
     public partial class SearchPanel : UserControl
@@ -104,7 +106,7 @@ namespace FlatBeats
             }
 
             this.searches.OnNext(this.searchText.Text);
-            this.Navigation.Navigate(new Uri("MixesPage.xaml?q=" + Uri.EscapeDataString(this.searchText.Text), UriKind.Relative));
+            this.Navigation.Navigate(PageUrl.SearchMixes(this.searchText.Text));
         }
     }
 }

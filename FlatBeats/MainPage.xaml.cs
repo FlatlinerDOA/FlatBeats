@@ -94,12 +94,11 @@
                 // Set a flag to indicate that we were started from a 
                 // history item and that we should immediately start 
                 // playing the song once the UI has finished loading.
-            
                 this.historyItemLaunch = true;
 
-                if (historyItemLaunch)
+                if (this.historyItemLaunch)
                 {
-                    this.NavigationService.Navigate(new Uri("/PlayPage.xaml?mix=" + this.playMixId + "&play=true", UriKind.Relative));
+                    this.NavigationService.Navigate(PageUrl.Play(this.playMixId, true));
                 }
 
                 return;
@@ -132,10 +131,7 @@
                         {
                             if (q.EventArgs.PopUpResult == PopUpResult.Ok && !string.IsNullOrWhiteSpace(q.EventArgs.Result))
                             {
-                                this.NavigationService.Navigate(
-                                    new Uri(
-                                        "/MixesPage.xaml?q=" + Uri.EscapeDataString(q.EventArgs.Result), 
-                                        UriKind.Relative));
+                                this.NavigationService.Navigate(PageUrl.SearchMixes(q.EventArgs.Result));
                             }
                         });
             
@@ -145,7 +141,7 @@
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(PageUrl.Settings);
+            this.NavigationService.Navigate(PageUrl.Settings());
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)
