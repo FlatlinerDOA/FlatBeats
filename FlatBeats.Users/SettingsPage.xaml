@@ -7,10 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:ControlsX="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+    xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
+    xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="Portrait" 
+    Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
     <ControlsX:AnimatedBasePage.Resources>
@@ -121,6 +127,14 @@
                             <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}"
                                                    Margin="0,12,0,0">
                                 <TextBlock Text="{Binding CensorshipEnabledText}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                           Margin="0,-12,12,0"
+                                           VerticalAlignment="Top" />
+                            </toolkit:ToggleSwitch>
+                            <toolkit:ToggleSwitch  IsChecked="{Binding PlayNextMix, Mode=TwoWay}"
+                                                   Margin="0,12,0,0">
+                                <TextBlock Text="{Binding PlayNextMixText}"
                                            TextWrapping="Wrap"
                                            Style="{StaticResource PhoneTextNormalStyle}"
                                            Margin="0,-12,12,0"

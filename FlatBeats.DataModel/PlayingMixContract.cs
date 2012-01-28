@@ -20,5 +20,8 @@
 
         [DataMember(Name = "cover_url")]
         public CoverUrlContract Cover { get; set; }
+
+        [DataMember(Name = "mix_set_id")]
+        public string MixSetId { get; set; }
     }
 }

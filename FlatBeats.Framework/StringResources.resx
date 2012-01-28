@@ -314,7 +314,7 @@ Link:
     <value>No mixes found, make sure you're following someone to see what they're creating.</value>
   </data>
   <data name="Label_CensorshipEnabled" xml:space="preserve">
-    <value>Censor mixes with explicit artwork</value>
+    <value>Censor mixes with explicit artwork + language</value>
   </data>
   <data name="Label_PlayOverWifiOnly" xml:space="preserve">
     <value>Play only when connected to WIFI</value>
@@ -333,5 +333,8 @@ Link:
   </data>
   <data name="Label_UserName" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="Label_PlayNextMix" xml:space="preserve">
+    <value>Continue to play similar mixes</value>
   </data>
 </root>

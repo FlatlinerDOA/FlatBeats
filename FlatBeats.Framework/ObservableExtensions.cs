@@ -198,6 +198,7 @@ namespace FlatBeats.ViewModels
             return pages.Do(
                 page =>
                     {
+                       
                         var startIndex = (page.PageNumber - 1) * page.PageSize;
                         var endIndex = startIndex + page.Items.Count;
                         for (int i = 0; i < page.Items.Count; i++)
@@ -221,7 +222,8 @@ namespace FlatBeats.ViewModels
                         }
 
                         UpdateFirstAndLastItems(target);
-                }).Select(t => t.Items);
+                        
+                    }).Select(t => t.Items);
         }
 
         public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()

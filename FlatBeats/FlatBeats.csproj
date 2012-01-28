@@ -181,6 +181,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Shim.png" />
     <Content Include="icons\appbar.check.rest.png" />
     <Content Include="icons\appbar.feature.settings.rest.png" />
     <Content Include="icons\appbar.favs.addto.rest.png" />

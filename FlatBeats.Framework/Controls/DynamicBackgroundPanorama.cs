@@ -9,6 +9,8 @@ namespace FlatBeats.Controls
     using System.Windows;
     using System.Windows.Media;
 
+    using Flatliner.Phone.Extensions;
+
     using Microsoft.Phone.Controls;
 
     /// <summary>
@@ -28,7 +30,16 @@ namespace FlatBeats.Controls
         ////public override void OnApplyTemplate()
         ////{
         ////    base.OnApplyTemplate();
-        ////    this.transition = this.FindName("background") as TransitioningBackgroundControl;
+        ////    this.transition = this.GetTemplateChild("PART_Transition") as TransitioningBackgroundControl;
+        ////    if (this.transition != null)
+        ////    {
+        ////        this.transition.TransitionCompleted += this.TransitionTransitionCompleted;
+        ////    }
+        ////}
+
+        ////private void TransitionTransitionCompleted(object sender, RoutedEventArgs e)
+        ////{
+        ////    this.Background = this.transition.DynamicBackground;
         ////}
 
 

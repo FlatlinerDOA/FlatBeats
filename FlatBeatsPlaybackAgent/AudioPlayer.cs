@@ -27,6 +27,7 @@
 
         #region Public Properties
 
+        private readonly object syncRoot = new object();
         /// <summary>
         /// </summary>
         public PlayingMixContract NowPlaying
@@ -35,13 +36,28 @@
             {
                 if (this.nowPlaying == null)
                 {
-                    this.nowPlaying = PlayerService.LoadNowPlaying();
+                    lock (this.syncRoot)
+                    {
+                        if (this.nowPlaying == null)
+                        {
+                            this.nowPlaying = PlayerService.LoadNowPlaying();
+                        }
+                    }
                 }
 
                 return this.nowPlaying;
             }
+
+            set
+            {
+                lock (this.syncRoot)
+                {
+                    this.nowPlaying = value;
+                }
+            }
         }
 
+      
         #endregion
 
         #region Methods
@@ -192,6 +208,21 @@
             if (this.NowPlaying == null || this.NowPlaying.Set == null)
             {
                 Debug.WriteLine("Player: PlayNextTrackAsync (Now Playing not set)");
+                return this.StopPlayingAsync(player);
+            }
+
+            if (true || this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
+            {
+                if (true || this.UserSettings.PlayNextMix)
+                {
+                    var currentMixId = this.NowPlaying.MixId;
+                    return from stop in this.StopPlayingAsync(player)
+                           from mix in PlayerService.GetNextMixAsync(currentMixId)
+                           from start in mix.StartPlayingAsync().Do(t => this.NowPlaying = t)
+                           from play in this.PlayNextTrackAsync(player)
+                           select new Unit();
+                }
+
                 return this.StopPlayingAsync(player);
             }
 

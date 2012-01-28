@@ -72,6 +72,7 @@ namespace FlatBeats.ViewModels
             this.SignupLabelText = StringResources.Command_CreateAccount;
             this.UserNameLabelText = StringResources.Label_UserName;
             this.PasswordLabelText = StringResources.Label_Password;
+            this.PlayNextMixText = StringResources.Label_PlayNextMix;
             this.CensorshipEnabledText = StringResources.Label_CensorshipEnabled;
             this.PlayOverWifiOnlyText = StringResources.Label_PlayOverWifiOnly;
             this.CanLogin = false;
@@ -246,7 +247,48 @@ namespace FlatBeats.ViewModels
             var userSettings = UserSettings.Current;
             userSettings.CensorshipEnabled = this.CensorshipEnabled;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
+            userSettings.PlayNextMix = this.PlayNextMix;
             ProfileService.SaveSettings(userSettings);
+        }
+
+        private string playNextMixText;
+
+        public string PlayNextMixText
+        {
+            get
+            {
+                return this.playNextMixText;
+            }
+            set
+            {
+                if (this.playNextMixText == value)
+                {
+                    return;
+                }
+
+                this.playNextMixText = value;
+                this.OnPropertyChanged("PlayNextMixText");
+            }
+        }
+
+        private bool playNextMix;
+
+        public bool PlayNextMix
+        {
+            get
+            {
+                return this.playNextMix;
+            }
+            set
+            {
+                if (this.playNextMix == value)
+                {
+                    return;
+                }
+
+                this.playNextMix = value;
+                this.OnPropertyChanged("PlayNextMix");
+            }
         }
 
         private bool playOverWifiOnly;
@@ -398,6 +440,7 @@ namespace FlatBeats.ViewModels
             var userSettings = UserSettings.Current;
             this.CensorshipEnabled = userSettings.CensorshipEnabled;
             this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
+            this.PlayNextMix = userSettings.PlayNextMix;
             this.isSettingsLoaded = true;
         }
 
@@ -577,7 +620,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void SignIn()
         {
-            var creds = new UserCredentialsContract { UserName = this.UserName, Password = this.Password };
+            var creds = new UserCredentialsContract { UserName = this.UserName.Trim(), Password = this.Password };
             this.ShowProgress(StringResources.Progress_SigningIn);
             var q = ProfileService.Authenticate(creds);
             q.ObserveOnDispatcher()

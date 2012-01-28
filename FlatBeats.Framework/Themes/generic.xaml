@@ -150,14 +150,12 @@
                         <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
                                                     HorizontalAlignment="Left"
                                                     Grid.RowSpan="2">
-                            <Border x:Name="background">
-                                <Grid Background="Transparent">
-                                    <Controls1:TransitioningBackgroundControl x:Name="transition"
+                            <Border Background="Transparent" x:Name="background">
+                                    <Controls1:TransitioningBackgroundControl x:Name="PART_Transition"
                                                                               HorizontalAlignment="Left"
                                                                               Width="800"
                                                                               DynamicBackground="{TemplateBinding DynamicBackground}"
                                                                               Margin="-1,0" />
-                                </Grid>
                             </Border>
                             <!--<Border x:Name="background"
                                     CacheMode="BitmapCache">

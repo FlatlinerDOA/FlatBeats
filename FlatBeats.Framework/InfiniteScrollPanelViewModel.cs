@@ -120,15 +120,17 @@
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
                     .AddOrReloadPage(this.Items, this.LoadItem)
-                    .Do(_ =>
-                        {
-                            this.HideProgress();
-                            this.LoadPageCompleted();
-                        }, 
-                        () => {
-                            this.HideProgress();
-                            this.LoadPageCompleted();
-                        })
+                    .Do(
+                    _ =>
+                    {
+                        this.HideProgress();
+                        this.LoadPageCompleted();
+                    }, 
+                    () => 
+                    {
+                        this.HideProgress();
+                        this.LoadPageCompleted();
+                    })
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
                 select response;

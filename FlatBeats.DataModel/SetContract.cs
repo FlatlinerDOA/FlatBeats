@@ -12,7 +12,7 @@
         public bool IsLastTrack { get; set; }
 
         [DataMember(Name = "at_end")]
-        public bool IsEndOfSet { get; set; }
+        public bool IsPastLastTrack { get; set; }
 
         [DataMember(Name = "skip_allowed")]
         public bool SkipAllowed { get; set; }

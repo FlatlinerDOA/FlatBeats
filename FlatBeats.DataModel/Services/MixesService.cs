@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Microsoft.Phone.Reactive;
@@ -43,5 +44,7 @@
             return from response in Downloader.GetJsonCachedAndRefreshed<MixResponseContract>(mixUrl, string.Format("/Mixes/{0}.json", mixId))
                    select response.Mix;
         }
+
+
     }
 }

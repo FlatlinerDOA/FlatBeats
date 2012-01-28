@@ -147,7 +147,7 @@ namespace FlatBeats.DataModel
 
         public static IObservable<Stream> GetStream(Uri url, bool disableCache)
         {
-            return from client in Observable.Return(CreateClient(disableCache))
+            return from client in Observable.Return(CreateGZipClient(disableCache))
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                        observer =>
                            {
@@ -163,6 +163,12 @@ namespace FlatBeats.DataModel
                        select completed;
         }
 
+        /// <summary>
+        /// Gets Json forcing no-cache
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public static IObservable<T> GetJson<T>(Uri url) where T : class
         {
             return GetStream(url, true).Select(Json<T>.DeserializeAndClose);
@@ -245,9 +251,32 @@ namespace FlatBeats.DataModel
         /// </summary>
         /// <returns>
         /// </returns>
+        private static GZipWebClient CreateGZipClient(bool noCache)
+        {
+            var client = new GZipWebClient();           
+            client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
+
+            if (IsAuthenticated)
+            {
+                client.Headers["X-User-Token"] = UserToken;
+            }
+
+            if (noCache)
+            {
+                client.Headers[HttpRequestHeader.Pragma] = "no-cache";
+            }
+
+            return client;
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
         private static WebClient CreateClient(bool noCache)
         {
-            var client = new GZipWebClient();
+            var client = new WebClient();
             client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
 
             if (IsAuthenticated)
@@ -288,19 +317,22 @@ namespace FlatBeats.DataModel
                             }
                             catch (WebException webException)
                             {
-                                using (var sr = new StreamReader(webException.Response.GetResponseStream()))
+                                if (webException.Response != null)
                                 {
-                                    var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
-                                    if (response != null)
+                                    using (var sr = new StreamReader(webException.Response.GetResponseStream()))
                                     {
-                                        var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
-                                        d.OnError(newError);
-                                    }
-                                    else
-                                    {
-                                        d.OnError(webException);
+                                        var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
+                                        if (response != null)
+                                        {
+                                            var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                                            d.OnError(newError);
+                                            return;
+                                        }
                                     }
                                 }
+
+                                d.OnError(webException);
+
                             }
                             catch (Exception ex)
                             {

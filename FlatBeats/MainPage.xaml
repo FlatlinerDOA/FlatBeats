@@ -10,7 +10,7 @@
                            xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
                          xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
                         xmlns:ControlsF="clr-namespace:Flatliner.Phone.Controls;assembly=Flatliner.Phone" 
-                        x:Class="FlatBeats.MainPage"
+                         x:Class="FlatBeats.MainPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="800"
@@ -194,14 +194,16 @@
                            x:Name="pano"
                            Foreground="White"
                            SelectionChanged="pano_SelectionChanged"
-                           RenderTransformOrigin="0.5,0.5"
                            TitleTemplate="{StaticResource TitleTemplate}"
                            ItemContainerStyle="{StaticResource PanoramaItemStyle1}"
-                           DynamicBackground="{Binding BackgroundImage}">
+                                             DynamicBackground="{Binding BackgroundImage}">
+            <controls:Panorama.Background>
+                <ImageBrush ImageSource="Shim.png" />
+            </controls:Panorama.Background>
             <controls:PanoramaItem DataContext="{Binding Liked}"
                                    Header="{Binding Title}"
                                    HeaderTemplate="{StaticResource LikedHeaderTemplate}"
-                                   RenderTransformOrigin="0.5,0.5" Margin="0">
+                                   Margin="0">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
                                Style="{StaticResource PhoneTextSubtleStyle}"

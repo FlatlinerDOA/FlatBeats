@@ -308,7 +308,7 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Censor mixes with explicit artwork.
+        ///   Looks up a localized string similar to Censor mixes with explicit artwork + language.
         /// </summary>
         public static string Label_CensorshipEnabled {
             get {
@@ -322,6 +322,15 @@ namespace FlatBeats.Framework {
         public static string Label_Password {
             get {
                 return ResourceManager.GetString("Label_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue to play similar mixes.
+        /// </summary>
+        public static string Label_PlayNextMix {
+            get {
+                return ResourceManager.GetString("Label_PlayNextMix", resourceCulture);
             }
         }
         

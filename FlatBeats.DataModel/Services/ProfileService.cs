@@ -25,7 +25,7 @@
         
         public static SettingsContract GetSettings()
         {
-            return Json<SettingsContract>.Deserialize(Storage.Load(SettingsFilePath)) ?? new SettingsContract() { CensorshipEnabled = true };
+            return Json<SettingsContract>.Deserialize(Storage.Load(SettingsFilePath)) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true };
         }
 
         public static void SaveSettings(SettingsContract settings)

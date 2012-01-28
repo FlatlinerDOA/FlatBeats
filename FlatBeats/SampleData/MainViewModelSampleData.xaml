@@ -59,7 +59,7 @@
     </ViewModels:MainPageViewModel.Latest>
         <ViewModels:MainPageViewModel.Liked >
         	<ViewModels:MainPageLikedViewModel Title="design liked">
-        		<ViewModels:MainPageLikedViewModel.Mixes>
+        		<ViewModels:MainPageLikedViewModel.Items>
 					<ViewModels:MixViewModel MixName="design one" Tags="rap, hip-hop, dubsex" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True" />
 			        <ViewModels:MixViewModel MixName="design two" Tags="rap, hip-hop, dubsex" TileTitle="design two" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
 			        <ViewModels:MixViewModel MixName="design three" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design three" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
@@ -70,7 +70,7 @@
 			        <ViewModels:MixViewModel MixName="design eight" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
 			        <ViewModels:MixViewModel MixName="design nine" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
 			        <ViewModels:MixViewModel MixName="design ten" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
-				</ViewModels:MainPageLikedViewModel.Mixes>
+				</ViewModels:MainPageLikedViewModel.Items>
 			</ViewModels:MainPageLikedViewModel>
     </ViewModels:MainPageViewModel.Liked>
 </ViewModels:MainPageViewModel>

@@ -303,7 +303,7 @@ namespace FlatBeats.Controls
             }
 
             base.OnApplyTemplate();
-
+            
             UIElement uie = this;
             while (uie != null)
             {
@@ -502,11 +502,6 @@ namespace FlatBeats.Controls
                 return;
             }
 
-            if (this.updatingPanningLayer != null)
-            {
-                this.updatingPanningLayer.RefreshEdges();
-            }
-
             this.AbortTransition();
 
             RoutedEventHandler handler = this.TransitionCompleted;
@@ -514,6 +509,12 @@ namespace FlatBeats.Controls
             {
                 handler(this, new RoutedEventArgs());
             }
+
+            if (this.updatingPanningLayer != null)
+            {
+                this.updatingPanningLayer.RefreshEdges();
+            }
+
         }
 
         /// <summary>

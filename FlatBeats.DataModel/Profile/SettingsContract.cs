@@ -11,5 +11,8 @@
 
         [DataMember(Name = "censorship_enabled")]
         public bool CensorshipEnabled { get; set; }
+
+        [DataMember(Name = "play_next_mix")]
+        public bool PlayNextMix { get; set; }
     }
 }

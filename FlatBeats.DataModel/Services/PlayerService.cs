@@ -162,6 +162,20 @@
                    select playing;
         }
 
+        /// <summary>
+        /// Gets the next similar mix, ensuring that nulls are never returned and that the same mix is never returned.
+        /// </summary>
+        /// <param name="mixId"></param>
+        /// <returns></returns>
+        public static IObservable<MixContract> GetNextMixAsync(string mixId)
+        {
+            return from playToken in GetOrCreatePlayTokenAsync()
+                   let nextMixUrl = string.Format("http://8tracks.com/sets/{0}/next_mix.json?mix_id={1}.json", playToken, mixId)
+                   from response in Downloader.GetJson<MixResponseContract>(new Uri(nextMixUrl, UriKind.RelativeOrAbsolute))
+                   where response != null && response.Mix != null && response.Mix.Id != mixId
+                   select response.Mix;
+        }
+
         public static void ResetNowPlayingTile()
         {
             var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
