@@ -46,10 +46,10 @@ namespace FlatBeats.ViewModels
             this.Latest = new MainPageLatestViewModel();
             this.TagsPanel = new MainPageTagsViewModel();
             this.Title = "flat beats";
-            this.BackgroundImage = new ImageBrush()
-                {
-                    ImageSource = new BitmapImage(DefaultBackground)
-                };
+            ////this.BackgroundImage = new ImageBrush()
+            ////    {
+            ////        ImageSource = new BitmapImage(DefaultBackground)
+            ////    };
         }
 
         #endregion
@@ -176,11 +176,12 @@ namespace FlatBeats.ViewModels
                       ?? DefaultBackground;
             this.BackgroundImage = new ImageBrush
                 {
-                    ImageSource = new BitmapImage(url),
-                        ////{
-                        ////    CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation
-                        ////},
-                    Opacity = 0.4
+                    ImageSource = new BitmapImage(url)
+                        {
+                            CreateOptions = BitmapCreateOptions.None
+                        },
+                    Opacity = 0.4,
+                    Stretch = Stretch.UniformToFill
                 };
         }
 
@@ -205,8 +206,6 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.Liked.LoadFirstPage();
             this.LoadRecentAndLatestPanels();
-
-        
         }
 
         private void UpdateIsInProgress()

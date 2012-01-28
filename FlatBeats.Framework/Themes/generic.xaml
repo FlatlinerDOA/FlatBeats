@@ -71,7 +71,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!--<Style TargetType="Controls1:TransitioningBackgroundControl">
+    <Style TargetType="Controls1:TransitioningBackgroundControl">
         <Setter Property="IsTabStop"
                 Value="False" />
         <Setter Property="HorizontalContentAlignment"
@@ -150,133 +150,62 @@
                         <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
                                                     HorizontalAlignment="Left"
                                                     Grid.RowSpan="2">
-                            <Border BorderBrush="Red"
-                                    BorderThickness="2"
-                                    Width="1024">
-                                <Controls1:TransitioningBackgroundControl x:Name="background"
-                                                                  DynamicBackground="{TemplateBinding DynamicBackground}"
-                                                                  Margin="-1,0" 
-                                                                      >
-                                </Controls1:TransitioningBackgroundControl>
+                            <Border x:Name="background">
+                                <Grid Background="Transparent">
+                                    <Controls1:TransitioningBackgroundControl x:Name="transition"
+                                                                              HorizontalAlignment="Left"
+                                                                              Width="800"
+                                                                              DynamicBackground="{TemplateBinding DynamicBackground}"
+                                                                              Margin="-1,0" />
+                                </Grid>
                             </Border>
-                        </Controls1:UpdatingPanningLayer>
-                        <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
-                                                              CacheMode="BitmapCache"
-                                                              ContentTemplate="{TemplateBinding TitleTemplate}"
-                                                              Content="{TemplateBinding Title}"
-                                                              FontSize="187"
-                                                              FontFamily="{StaticResource PhoneFontFamilyLight}"
-                                                              HorizontalAlignment="Left"
-                                                              Margin="10,-76,0,9"
-                                                              Grid.Row="0" />
-                        <controlsPrimitives:PanningLayer x:Name="ItemsLayer"
-                                                         HorizontalAlignment="Left"
-                                                         Grid.Row="1">
-                            <ItemsPresenter x:Name="items" />
-                        </controlsPrimitives:PanningLayer>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
--->
-
-
-    <Style TargetType="Controls1:TransitioningBackgroundControl">
-        <Setter Property="IsTabStop"
-                Value="False" />
-        <Setter Property="HorizontalContentAlignment"
-                Value="Stretch" />
-        <Setter Property="VerticalContentAlignment"
-                Value="Stretch" />
-        <Setter Property="Transition"
-                Value="DefaultTransition" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Controls1:TransitioningBackgroundControl">
-                    <Grid>
-                        <vsm:VisualStateManager.VisualStateGroups>
-                            <vsm:VisualStateGroup x:Name="PresentationStates">
-                                <vsm:VisualState x:Name="DefaultTransition">
-                                    <Storyboard>
-                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-                                                                       Storyboard.TargetName="CurrentContentPresentationSite"
-                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
-                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
-                                                                  Value="0" />
-                                            <SplineDoubleKeyFrame KeyTime="00:00:00.800"
-                                                                  Value="1" />
-                                        </DoubleAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </vsm:VisualState>
-                                <vsm:VisualState x:Name="LoadingState">
-                                    <Storyboard>
-                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-                                                                       Storyboard.TargetName="CurrentContentPresentationSite"
-                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
-                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
-                                                                  Value="0" />
-                                        </DoubleAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </vsm:VisualState>
-                                <vsm:VisualState x:Name="Normal">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00"
-                                                                       Storyboard.TargetName="PreviousContentPresentationSite"
-                                                                       Storyboard.TargetProperty="(UIElement.Visibility)">
-                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Collapsed</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </vsm:VisualState>
-
-                            </vsm:VisualStateGroup>
-                        </vsm:VisualStateManager.VisualStateGroups>
-
-                        <Grid x:Name="PreviousContentPresentationSite"
-                              CacheMode="BitmapCache"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-
-                        <Grid x:Name="CurrentContentPresentationSite"
-                              CacheMode="BitmapCache"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="Controls1:DynamicBackgroundPanorama">
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <controlsPrimitives:PanoramaPanel x:Name="panel" />
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Foreground"
-                Value="{StaticResource PhoneForegroundBrush}" />
-        <Setter Property="Background"
-                Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Controls1:DynamicBackgroundPanorama">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
-                                                              HorizontalAlignment="Left"
-                                                              Grid.RowSpan="2">
-                            <Controls1:TransitioningBackgroundControl x:Name="background"
-                                                                  DynamicBackground="{TemplateBinding Background}"
-                                                                  Margin="-1,0" />
+                            <!--<Border x:Name="background"
+                                    CacheMode="BitmapCache">
+                                <Grid Background="Transparent">
+                                    <Rectangle Width="400"
+                                               Height="200"
+                                               Fill="Blue"
+                                               Opacity=".5"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Margin="32" />
+                                    <Rectangle Width="300"
+                                               Height="600"
+                                               Fill="Green"
+                                               Opacity=".5"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Margin="300,128" />
+                                    <Rectangle Width="600"
+                                               Height="100"
+                                               Fill="Red"
+                                               Opacity=".5"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Margin="200,500,0,0" />
+                                    <Ellipse x:Name="indicator"
+                                             Width="50"
+                                             Height="50"
+                                             Fill="Orange"
+                                             Opacity=".5"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Bottom"
+                                             Margin="16">
+                                        <Ellipse.Triggers>
+                                            <EventTrigger RoutedEvent="Ellipse.Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard Storyboard.TargetName="indicator"
+                                                                Storyboard.TargetProperty="Opacity">
+                                                        <DoubleAnimation To="0"
+                                                                         AutoReverse="True"
+                                                                         RepeatBehavior="Forever" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Ellipse.Triggers>
+                                    </Ellipse>
+                                </Grid>
+                            </Border>-->
                         </Controls1:UpdatingPanningLayer>
                         <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
                                                               CacheMode="BitmapCache"

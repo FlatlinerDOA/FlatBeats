@@ -190,14 +190,6 @@
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
     <Grid x:Name="LayoutRoot">
-        <!--<Grid.Background>
-            <RadialGradientBrush RadiusX="1.152"
-                                 RadiusY="0.59">
-                <GradientStop Color="#FF3B3F47"
-                              Offset="1" />
-                <GradientStop Color="#FF5E5E62" />
-            </RadialGradientBrush>
-        </Grid.Background>-->
         <Controls2:DynamicBackgroundPanorama Title="{Binding Title}"
                            x:Name="pano"
                            Foreground="White"
@@ -205,15 +197,7 @@
                            RenderTransformOrigin="0.5,0.5"
                            TitleTemplate="{StaticResource TitleTemplate}"
                            ItemContainerStyle="{StaticResource PanoramaItemStyle1}"
-                           DynamicBackground="{Binding BackgroundImage}" >
-            <!--<Controls2:DynamicBackgroundPanorama.Background>
-                <ImageBrush ImageSource="" />
-                    <ImageBrush.ImageSource>
-                        <BitmapImage CreateOptions="None"
-                                     UriSource="PanoramaBackground.jpg" />
-                    </ImageBrush.ImageSource>
-                </ImageBrush>
-            </Controls2:DynamicBackgroundPanorama.Background>-->
+                           DynamicBackground="{Binding BackgroundImage}">
             <controls:PanoramaItem DataContext="{Binding Liked}"
                                    Header="{Binding Title}"
                                    HeaderTemplate="{StaticResource LikedHeaderTemplate}"

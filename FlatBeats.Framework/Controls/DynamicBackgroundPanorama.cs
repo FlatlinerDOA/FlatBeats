@@ -25,11 +25,11 @@ namespace FlatBeats.Controls
             this.DefaultStyleKey = typeof(DynamicBackgroundPanorama);
         }
 
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            this.transition = this.FindName("background") as TransitioningBackgroundControl;
-        }
+        ////public override void OnApplyTemplate()
+        ////{
+        ////    base.OnApplyTemplate();
+        ////    this.transition = this.FindName("background") as TransitioningBackgroundControl;
+        ////}
 
 
         public Brush DynamicBackground
@@ -46,16 +46,16 @@ namespace FlatBeats.Controls
 
         public static void OnDynamicBackgroundChanged(DependencyObject s, DependencyPropertyChangedEventArgs c)
         {
-            var dp = (DynamicBackgroundPanorama)s;
-            dp.SetNewBackground((Brush)c.NewValue);
+            ////var dp = (DynamicBackgroundPanorama)s;
+            ////dp.SetNewBackground((Brush)c.NewValue);
         }
 
-        public void SetNewBackground(Brush brush)
-        {
-            if (this.transition != null)
-            {
-                this.transition.DynamicBackground = brush;
-            }   
-        }
+        ////public void SetNewBackground(Brush brush)
+        ////{
+        ////    if (this.transition != null)
+        ////    {
+        ////        this.transition.DynamicBackground = brush;
+        ////    }   
+        ////}
     }
 }
