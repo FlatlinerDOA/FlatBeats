@@ -79,8 +79,9 @@ namespace FlatBeats.DataModel
 
                     ////                    json = data;
                     ////#endif
-
-                    obj = (T)Serializer.ReadObject(json);
+                    var data = new MemoryStream();
+                    json.CopyTo(data);
+                    obj = (T)Serializer.ReadObject(data);
                     json.Close();
                 }
                 catch (SerializationException) { }

@@ -46,6 +46,10 @@
     </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SilverlightToolkitWP.4.2011.12.13\lib\sl4-windowsphone71\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="System.Observable" />
     <Reference Include="System.Windows" />
@@ -73,8 +77,6 @@
     <Compile Include="Controls\DynamicBackgroundPanorama.cs" />
     <Compile Include="Controls\IApplicationBarViewModel.cs" />
     <Compile Include="Controls\ICommandLink.cs" />
-    <Compile Include="Controls\ItemsControlEx.cs" />
-    <Compile Include="Controls\NavigationList.cs" />
     <Compile Include="Controls\SearchPrompt.cs" />
     <Compile Include="Controls\TransitioningBackgroundControl.cs" />
     <Compile Include="Controls\UniformGrid.cs" />
@@ -127,6 +129,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

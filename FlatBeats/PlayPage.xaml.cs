@@ -101,6 +101,7 @@
             {
                 e.Cancel = true;
                 ((Storyboard)this.Resources["ShowPivotStoryboard"]).Begin();
+                this.ShowAppBar();
                 return;
             }
 

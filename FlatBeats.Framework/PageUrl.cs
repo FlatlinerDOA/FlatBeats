@@ -28,6 +28,11 @@ namespace FlatBeats.Framework
             return new Uri("/MixesPage.xaml?q=" + Uri.EscapeDataString(query), UriKind.Relative);
         }
 
+        public static Uri SearchMixesByTag(string tagName)
+        {
+            return new Uri("/MixesPage.xaml?tag=" + tagName, UriKind.Relative);
+        }
+
         public static Uri Play(string mixId, bool autoPlay)
         {
             return new Uri("/PlayPage.xaml?mix=" + mixId + "&play=" + autoPlay.ToString().ToLowerInvariant(), UriKind.Relative);
@@ -38,9 +43,5 @@ namespace FlatBeats.Framework
             return new Uri("/TagsPage.xaml", UriKind.Relative);
         }
 
-        public static Uri SearchMixesByTag(string tagName)
-        {
-            return new Uri("/MixesPage.xaml?tag=" + tagName, UriKind.Relative);
-        }
     }
 }

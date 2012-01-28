@@ -10,6 +10,7 @@
 namespace FlatBeats.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -30,6 +31,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private int currentSectionIndex;
 
+        private static readonly Uri DefaultBackground = new Uri("PanoramaBackground.jpg", UriKind.Relative);
         #endregion
 
         #region Constructors and Destructors
@@ -44,6 +46,10 @@ namespace FlatBeats.ViewModels
             this.Latest = new MainPageLatestViewModel();
             this.TagsPanel = new MainPageTagsViewModel();
             this.Title = "flat beats";
+            this.BackgroundImage = new ImageBrush()
+                {
+                    ImageSource = new BitmapImage(DefaultBackground)
+                };
         }
 
         #endregion
@@ -68,6 +74,28 @@ namespace FlatBeats.ViewModels
 
                 this.currentSectionIndex = value;
                 this.OnPropertyChanged("CurrentSectionIndex");
+            }
+        }
+
+        private Brush backgroundImage;
+
+        private readonly Random random = new Random();
+
+        public Brush BackgroundImage
+        {
+            get
+            {
+                return this.backgroundImage;
+            }
+            set
+            {
+                if (this.backgroundImage == value)
+                {
+                    return;
+                }
+
+                this.backgroundImage = value;
+                this.OnPropertyChanged("BackgroundImage");
             }
         }
 
@@ -135,10 +163,25 @@ namespace FlatBeats.ViewModels
                        select latest;
             
             this.AddToLifetime(
-                load.ObserveOnDispatcher().Subscribe(
-                    results => { }, 
+                load.Delay(TimeSpan.FromSeconds(1)).ObserveOnDispatcher().Subscribe(
+                    this.PickRandomBackground, 
                     this.HandleError,
                     this.LoadAllDataCompleted));
+            //// ?? 
+        }
+
+        private void PickRandomBackground(IList<MixViewModel> results)
+        {
+            var url = results.Select(r => r.ImageUrl).Skip(this.random.Next(results.Count - 2)).FirstOrDefault()
+                      ?? DefaultBackground;
+            this.BackgroundImage = new ImageBrush
+                {
+                    ImageSource = new BitmapImage(url),
+                        ////{
+                        ////    CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation
+                        ////},
+                    Opacity = 0.4
+                };
         }
 
         private void LoadAllDataCompleted()

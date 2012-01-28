@@ -15,6 +15,8 @@ namespace FlatBeats.DataModel
 
     using Microsoft.Phone.Reactive;
 
+    using SharpGIS;
+
     /// <summary>
     /// </summary>
     public static class Downloader
@@ -245,7 +247,7 @@ namespace FlatBeats.DataModel
         /// </returns>
         private static WebClient CreateClient(bool noCache)
         {
-            var client = new WebClient();
+            var client = new GZipWebClient();
             client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
 
             if (IsAuthenticated)

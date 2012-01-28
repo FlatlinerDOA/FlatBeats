@@ -28,7 +28,6 @@
     using Microsoft.Phone.Reactive;
 
     using GestureEventArgs = System.Windows.Input.GestureEventArgs;
-    using NavigationEventArgs = FlatBeats.Controls.NavigationEventArgs;
 
     public partial class MainPage : ViewModelPage
     {

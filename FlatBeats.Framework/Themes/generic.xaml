@@ -9,6 +9,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
                     xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
                     xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
@@ -29,34 +30,34 @@
                         <Grid.RenderTransform>
                             <CompositeTransform />
                         </Grid.RenderTransform>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="LayoutStates">
-                                <VisualStateGroup.Transitions>
-                                    <VisualTransition GeneratedDuration="0:0:0.5">
-                                        <VisualTransition.GeneratedEasingFunction>
+                        <vsm:VisualStateManager.VisualStateGroups>
+                            <vsm:VisualStateGroup x:Name="LayoutStates">
+                                <vsm:VisualStateGroup.Transitions>
+                                    <vsm:VisualTransition GeneratedDuration="0:0:0.5">
+                                        <vsm:VisualTransition.GeneratedEasingFunction>
                                             <CubicEase EasingMode="EaseInOut" />
-                                        </VisualTransition.GeneratedEasingFunction>
-                                    </VisualTransition>
-                                </VisualStateGroup.Transitions>
-                                <VisualState x:Name="AfterLoaded">
+                                        </vsm:VisualTransition.GeneratedEasingFunction>
+                                    </vsm:VisualTransition>
+                                </vsm:VisualStateGroup.Transitions>
+                                <vsm:VisualState x:Name="AfterLoaded">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="ContentContainer"
                                                          Storyboard.TargetProperty="Opacity"
                                                          To="1"
                                                          Duration="0" />
                                     </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="AfterUnLoaded">
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="AfterUnLoaded">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="ContentContainer"
                                                          Storyboard.TargetProperty="Opacity"
                                                          To="0" />
                                     </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="BeforeLoaded" />
-                                <VisualState x:Name="BeforeUnloaded" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="BeforeLoaded" />
+                                <vsm:VisualState x:Name="BeforeUnloaded" />
+                            </vsm:VisualStateGroup>
+                        </vsm:VisualStateManager.VisualStateGroups>
                         <ContentPresenter            x:Name="ContentContainer"
                                                      Opacity="0"
                                                      Cursor="{TemplateBinding Cursor}"
@@ -70,7 +71,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="local:TransitioningBackgroundControl">
+    <!--<Style TargetType="Controls1:TransitioningBackgroundControl">
         <Setter Property="IsTabStop"
                 Value="False" />
         <Setter Property="HorizontalContentAlignment"
@@ -81,7 +82,7 @@
                 Value="BackgroundContent" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:TransitioningBackgroundControl">
+                <ControlTemplate TargetType="Controls1:TransitioningBackgroundControl">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="PresentationStates">
@@ -109,32 +110,24 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <!---->
 						<Grid x:Name="PART_BackgroundContentPresentationSite"
 							CacheMode="BitmapCache"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-							<!--<Rectangle Fill="#FFFB2200"
-								Stroke="Black" Opacity="0.5"
-                                       />-->
                     </Grid>
 
-                    <!---->
 						<Grid x:Name="PART_ForegroundContentPresentationSite"
 							CacheMode="BitmapCache"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Opacity="0">
-							<!--<Rectangle Fill="Blue"
-								Stroke="Black" Opacity="0.5"
-                                       />-->
-                    </Grid>
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="local:DynamicBackgroundPanorama">
+    <Style TargetType="Controls1:DynamicBackgroundPanorama">
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -151,29 +144,21 @@
                 <ControlTemplate TargetType="Controls1:DynamicBackgroundPanorama">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
                                                     HorizontalAlignment="Left"
                                                     Grid.RowSpan="2">
-                            <Controls1:TransitioningBackgroundControl x:Name="background"
+                            <Border BorderBrush="Red"
+                                    BorderThickness="2"
+                                    Width="1024">
+                                <Controls1:TransitioningBackgroundControl x:Name="background"
                                                                   DynamicBackground="{TemplateBinding DynamicBackground}"
-                                                                  Margin="-1,0">
-                                <!--<local:TransitioningBackgroundControl.OpacityMask>
-                                    <LinearGradientBrush StartPoint="0,0.5"
-                                                         EndPoint="1,0.5">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0" />
-                                        <GradientStop Color="Black"
-                                                      Offset="0.01" />
-                                        <GradientStop Color="Black"
-                                                      Offset="0.99" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="1" />
-                                    </LinearGradientBrush>
-                                </local:TransitioningBackgroundControl.OpacityMask>-->
-                            </Controls1:TransitioningBackgroundControl>
+                                                                  Margin="-1,0" 
+                                                                      >
+                                </Controls1:TransitioningBackgroundControl>
+                            </Border>
                         </Controls1:UpdatingPanningLayer>
                         <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
                                                               CacheMode="BitmapCache"
@@ -194,37 +179,120 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="Controls1:NavigationList">
-        <Setter Property="ItemTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <Controls1:AnimatingContentControl>
-                        <TextBlock Text="{Binding}" />
-                    </Controls1:AnimatingContentControl>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
+-->
+
+
+    <Style TargetType="Controls1:TransitioningBackgroundControl">
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="Transition"
+                Value="DefaultTransition" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate TargetType="Controls1:TransitioningBackgroundControl">
+                    <Grid>
+                        <vsm:VisualStateManager.VisualStateGroups>
+                            <vsm:VisualStateGroup x:Name="PresentationStates">
+                                <vsm:VisualState x:Name="DefaultTransition">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                       Storyboard.TargetName="CurrentContentPresentationSite"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
+                                                                  Value="0" />
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00.800"
+                                                                  Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="LoadingState">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                       Storyboard.TargetName="CurrentContentPresentationSite"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
+                                                                  Value="0" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                       Storyboard.TargetName="PreviousContentPresentationSite"
+                                                                       Storyboard.TargetProperty="(UIElement.Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Collapsed</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </vsm:VisualState>
 
-                    <Controls1:ItemsControlEx x:Name="itemsControl"
-                                          ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
-                                          ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}">
-                        <Controls1:ItemsControlEx.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </Controls1:ItemsControlEx.ItemsPanel>
-                        <Controls1:ItemsControlEx.Template>
-                            <ControlTemplate>
-                                <ScrollViewer>
-                                    <ItemsPresenter />
-                                </ScrollViewer>
-                            </ControlTemplate>
-                        </Controls1:ItemsControlEx.Template>
-                    </Controls1:ItemsControlEx>
+                            </vsm:VisualStateGroup>
+                        </vsm:VisualStateManager.VisualStateGroups>
 
+                        <Grid x:Name="PreviousContentPresentationSite"
+                              CacheMode="BitmapCache"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                        <Grid x:Name="CurrentContentPresentationSite"
+                              CacheMode="BitmapCache"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Controls1:DynamicBackgroundPanorama">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <controlsPrimitives:PanoramaPanel x:Name="panel" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground"
+                Value="{StaticResource PhoneForegroundBrush}" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Controls1:DynamicBackgroundPanorama">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Controls1:UpdatingPanningLayer x:Name="BackgroundLayer"
+                                                              HorizontalAlignment="Left"
+                                                              Grid.RowSpan="2">
+                            <Controls1:TransitioningBackgroundControl x:Name="background"
+                                                                  DynamicBackground="{TemplateBinding Background}"
+                                                                  Margin="-1,0" />
+                        </Controls1:UpdatingPanningLayer>
+                        <controlsPrimitives:PanningTitleLayer x:Name="TitleLayer"
+                                                              CacheMode="BitmapCache"
+                                                              ContentTemplate="{TemplateBinding TitleTemplate}"
+                                                              Content="{TemplateBinding Title}"
+                                                              FontSize="187"
+                                                              FontFamily="{StaticResource PhoneFontFamilyLight}"
+                                                              HorizontalAlignment="Left"
+                                                              Margin="10,-76,0,9"
+                                                              Grid.Row="0" />
+                        <controlsPrimitives:PanningLayer x:Name="ItemsLayer"
+                                                         HorizontalAlignment="Left"
+                                                         Grid.Row="1">
+                            <ItemsPresenter x:Name="items" />
+                        </controlsPrimitives:PanningLayer>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -542,25 +542,28 @@ namespace FlatBeats.Controls
                 // and start a new transition
                 if (!this.IsTransitioning || this.RestartTransitionOnContentChange)
                 {
+                    BitmapImage bmp = null;
                     ImageBrush newImageBrush = newBrush as ImageBrush;
                     if (newImageBrush != null)
                     {
-                        BitmapImage bmp = newImageBrush.ImageSource as BitmapImage;
-                        if (bmp != null)
+                        bmp = newImageBrush.ImageSource as BitmapImage;
+                        if (bmp != null && bmp.PixelWidth == 0)
                         {
-                            Observable.FromEvent<RoutedEventArgs>(bmp, "ImageFailed").Take(1).Amb(Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1)).Take(1).Subscribe(_ => this.TransitionNow());
+                            //Observable.FromEvent<ExceptionRoutedEventArgs>(bmp, "ImageFailed").Select(t => new Unit()).Take(1).Amb(
+                            //    Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1)).Take(1).Subscribe(_ => this.TransitionNow());
+                            Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1).Subscribe(_ => this.TransitionNow(bmp));
                             return;
                         }
                     }
 
-                    this.TransitionNow();
+                    this.TransitionNow(bmp);
                 }
             }
         }
 
         /// <summary>
         /// </summary>
-        private void TransitionNow()
+        private void TransitionNow(BitmapImage bmp)
         {
             if (this.isCurrentForeground)
             {
