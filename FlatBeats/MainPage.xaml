@@ -30,12 +30,14 @@
     		WhenFalse="Collapsed"
     		WhenTrue="Visible" />
     	<Style x:Key="WrapNavigationList"
-    		TargetType="ListBox">
+               TargetType="ItemsControl">
     		<Setter Property="ItemTemplate">
     			<Setter.Value>
     				<DataTemplate>
     					<Controls2:AnimatingContentControl>
-    						<toolkit:HubTile x:Name="hubTile"
+    						<toolkit:HubTile x:Name="hubTile" 
+                                             Width="173"
+                                             Height="173"
     							Message="{Binding Description}"
     							Title="{Binding TileTitle}"
     							Margin="0,0,20,20"
@@ -50,8 +52,6 @@
     			<Setter.Value>
     				<ItemsPanelTemplate>
                         <Controls2:UniformGrid Columns="6" Rows="2" />
-    					<!--<toolkit:WrapPanel
-    						Orientation="Vertical" />-->
     				</ItemsPanelTemplate>
     			</Setter.Value>
     		</Setter>
@@ -71,11 +71,15 @@
                          Foreground="White"
     				VerticalAlignment="Center"
     				Click="SettingsButton_Click" Grid.Column="1" Margin="0,12,0,0" Width="48" Height="48">
-    				<Image Source="/icons/appbar.feature.settings.rest.png"
-    					HorizontalAlignment="Center"
-    					VerticalAlignment="Center"
-    					Stretch="None" />
-    			</Button>
+                    <Image HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Stretch="None">
+                        <Image.Source>
+                            <BitmapImage UriSource="/icons/appbar.feature.settings.rest.png"
+                                         CreateOptions="None" />
+                        </Image.Source>
+                    </Image>
+                </Button>
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="RecentHeaderTemplate">
@@ -102,11 +106,15 @@
     				Margin="4,12,4,0"
     				Click="SearchButton_Click"
     				Foreground="White" Grid.Column="1" Height="48" Width="48">
-    				<Image Source="icons/appbar.feature.search.rest.png"
-    					HorizontalAlignment="Center"
-    					VerticalAlignment="Center"
-    					Stretch="None" />
-    			</Button>
+                    <Image HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Stretch="None">
+                        <Image.Source>
+                            <BitmapImage UriSource="/icons/appbar.feature.search.rest.png"
+                                         CreateOptions="None" />
+                        </Image.Source>
+                    </Image>
+                </Button>
     		</Grid>
     	</DataTemplate>
     	<DataTemplate x:Key="TitleTemplate">
@@ -353,6 +361,7 @@
                                    Orientation="Horizontal"
                                    Width="1158"
                                    Margin="0"
+                                   Opacity="{Binding Opacity}"
                                    HeaderTemplate="{StaticResource LatestHeaderTemplate}">
                 <Grid>
                     <TextBlock Text="{Binding Message}"
@@ -362,7 +371,7 @@
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
                                Margin="24,20,0,0" />
-                    <ListBox Margin="24,32,0,0"
+                    <ItemsControl Margin="24,32,0,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"

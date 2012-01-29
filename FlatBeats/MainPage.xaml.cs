@@ -145,7 +145,8 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            var navItem  = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
     }
 }

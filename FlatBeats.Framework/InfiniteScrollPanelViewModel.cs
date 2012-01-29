@@ -20,7 +20,7 @@
         /// </summary>
         public InfiniteScrollPanelViewModel()
         {
-            this.PageSize = 10;
+            this.PageSize = 20;
         }
 
         public IObservable<int> PageRequests 
@@ -119,7 +119,7 @@
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
-                    .AddOrReloadPage(this.Items, this.LoadItem)
+                    .ObserveOnDispatcher().AddOrReloadPage(this.Items, this.LoadItem)
                     .Do(
                     _ =>
                     {

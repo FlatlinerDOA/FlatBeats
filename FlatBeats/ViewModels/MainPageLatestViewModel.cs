@@ -34,5 +34,31 @@
                 .AddOrReloadPage(this.Mixes, (vm, d) => vm.Load(d));
             return pageData.FinallySelect(() => (IList<MixViewModel>)this.Mixes);
         }
+
+        private double opacity;
+
+        public double Opacity
+        {
+            get
+            {
+                return this.opacity;
+            }
+
+            set
+            {
+                if (this.opacity == value)
+                {
+                    return;
+                }
+
+                this.opacity = value;
+                this.OnPropertyChanged(() => this.Opacity);
+            }
+        }
+
+        public void Display()
+        {
+            this.Opacity = 1;
+        }
     }
 }

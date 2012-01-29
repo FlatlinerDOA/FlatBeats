@@ -130,7 +130,7 @@ namespace FlatBeats.Controls
             double maxChildDesiredHeight = 0.0;
 
             //  Measure each child, keeping track of max desired width & height.
-            for (int i = 0, count = Children.Count; i < count; ++i)
+            for (int i = 0; i < Children.Count; ++i)
             {
                 UIElement child = Children[i];
                 child.Measure(childConstraint);
@@ -139,11 +139,13 @@ namespace FlatBeats.Controls
                 {
                     maxChildDesiredWidth = childDesiredSize.Width;
                 }
+
                 if (maxChildDesiredHeight < childDesiredSize.Height)
                 {
                     maxChildDesiredHeight = childDesiredSize.Height;
                 }
             }
+
             return new Size((maxChildDesiredWidth * ComputedColumns), (maxChildDesiredHeight * ComputedRows));
         }
 
@@ -209,10 +211,12 @@ namespace FlatBeats.Controls
                         nonCollapsedCount++;
                     }
                 }
+
                 if (nonCollapsedCount == 0)
                 {
                     nonCollapsedCount = 1;
                 }
+
                 if (ComputedRows == 0)
                 {
                     if (ComputedColumns > 0)

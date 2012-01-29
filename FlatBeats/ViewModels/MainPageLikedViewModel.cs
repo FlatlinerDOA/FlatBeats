@@ -44,7 +44,8 @@ namespace FlatBeats.ViewModels
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetLikedMixes(this.UserId, pageNumber, pageSize).Select(t => (IList<MixContract>)t.Mixes);
+            return (from page in ProfileService.GetLikedMixes(this.UserId, pageNumber, pageSize)
+                     select (IList<MixContract>)page.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

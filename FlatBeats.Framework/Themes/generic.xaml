@@ -111,13 +111,11 @@
                         </VisualStateManager.VisualStateGroups>
 
 						<Grid x:Name="PART_BackgroundContentPresentationSite"
-							CacheMode="BitmapCache"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     </Grid>
 
 						<Grid x:Name="PART_ForegroundContentPresentationSite"
-							CacheMode="BitmapCache"
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Opacity="0">
                         </Grid>
