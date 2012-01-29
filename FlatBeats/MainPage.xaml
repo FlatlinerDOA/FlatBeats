@@ -17,6 +17,7 @@
                             d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
+                         
                             shell:SystemTray.IsVisible="True"
                             shell:SystemTray.Opacity="0"
 							shell:SystemTray.BackgroundColor="Transparent"
@@ -197,7 +198,8 @@
         <shell:ProgressIndicator IsVisible="{Binding IsInProgress}"
                                  IsIndeterminate="True" />
     </shell:SystemTray.ProgressIndicator>
-    <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot"
+          Background="Black">
         <Controls2:DynamicBackgroundPanorama Title="{Binding Title}"
                            x:Name="pano"
                            Foreground="White"
