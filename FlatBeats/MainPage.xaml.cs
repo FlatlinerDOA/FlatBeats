@@ -7,6 +7,7 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Threading;
@@ -148,5 +149,6 @@
             var navItem  = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
             this.NavigationService.NavigateTo(navItem);
         }
+
     }
 }

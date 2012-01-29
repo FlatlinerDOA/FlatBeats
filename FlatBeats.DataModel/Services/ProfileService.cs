@@ -100,14 +100,14 @@
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&page={1}&per_page={2}", userId, pageNumber, pageSize);
             var cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile); //
         }
 
         public static IObservable<MixesResponseContract> GetMixFeed(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=mix_feed&page={1}&per_page={2}", userId, pageNumber, pageSize);
             var cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile);
+            return Downloader.GetJson<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute)); //, cacheFile);
         }
 
         public static IObservable<Unit> SetMixLiked(string mixId, bool isLiked)

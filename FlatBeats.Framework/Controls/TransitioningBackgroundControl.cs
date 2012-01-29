@@ -504,16 +504,23 @@ namespace FlatBeats.Controls
 
             this.AbortTransition();
 
+            ////var pano = Flatliner.Phone.Extensions.VisualTreeExtensions.FindAncestor<DynamicBackgroundPanorama>(this);
+            ////var img = this.isCurrentForeground
+            ////              ? ((ImageBrush)this.ForegroundContentPresentationSite.Background).ImageSource
+            ////              : ((ImageBrush)this.BackgroundContentPresentationSite.Background).ImageSource;
+            ////pano.Background = new ImageBrush() { ImageSource = img, Stretch = Stretch.UniformToFill, Opacity =0.4};
+
+            if (this.updatingPanningLayer != null)
+            {
+                this.updatingPanningLayer.RefreshEdges();
+            }
+            ////pano.Background = null;
             RoutedEventHandler handler = this.TransitionCompleted;
             if (handler != null)
             {
                 handler(this, new RoutedEventArgs());
             }
 
-            if (this.updatingPanningLayer != null)
-            {
-                this.updatingPanningLayer.RefreshEdges();
-            }
 
         }
 

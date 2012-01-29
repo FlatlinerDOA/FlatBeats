@@ -25,8 +25,8 @@
 
         public static IObservable<MixesResponseContract> GetLatestMixes()
         {
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(
-                    new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute), LatestMixesCacheFile);
+            return Downloader.GetJson<MixesResponseContract>(
+                    new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute)); //, LatestMixesCacheFile);
         }
 
         public static IObservable<MixesResponseContract> DownloadTagMixes(string tag, string sort, int pageNumber, int perPage)
