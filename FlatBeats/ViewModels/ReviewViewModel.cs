@@ -119,7 +119,8 @@ namespace FlatBeats.ViewModels
                 this.NavigationUrl = PageUrl.UserProfile(review.User.Id);
             }
 
-            this.Body = Html.ConvertToPlainText(review.Body).Trim();
+            var text = Html.ConvertToPlainText(review.Body).Trim();
+            this.Body = UserSettings.Current.CensorshipEnabled ? Censorship.Censor(text) : text;
             this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
             if (this.Created > DateTime.Now)
             {

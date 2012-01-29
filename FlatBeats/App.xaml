@@ -188,6 +188,8 @@
                                    TextWrapping="Wrap"
                                    Text="{Binding Bio}"
                                    Style="{StaticResource PhoneTextSmallStyle}"
+                                   Height="80"
+                                   TextTrimming="WordEllipsis"
                                    FontSize="16" />
                     </StackPanel>
                     <Grid Margin="0"

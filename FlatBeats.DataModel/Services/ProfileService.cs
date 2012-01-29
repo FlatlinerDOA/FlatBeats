@@ -1,9 +1,7 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
-    using System.Runtime.Serialization;
     using System.Windows.Interop;
 
     using FlatBeats.DataModel.Profile;
@@ -14,14 +12,15 @@
 
     public static class ProfileService
     {
-        private const string LikedMixesCacheFile = "{0}\\liked-{1}.json";
+        private const string LikedMixesCacheFile = "/cache/{0}/liked-{1}.json";
 
-        private const string MixFeedCacheFile = "{0}\\mixfeed-{1}.json";
+        private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}.json";
 
-        private const string CredentialsFilePath = "credentials.json";
-        private const string SettingsFilePath = "settings.json";
+        private const string CredentialsFilePath = "/cache/credentials.json";
 
-        private const string UserLoginFilePath = "userlogin.json";
+        private const string SettingsFilePath = "/cache/settings.json";
+
+        private const string UserLoginFilePath = "/cache/userlogin.json";
         
         public static SettingsContract GetSettings()
         {
@@ -184,12 +183,5 @@
         {
             return ObservableEx.DeferredStart(DeleteCredentials);
         }
-    }
-
-    [DataContract]
-    public class FollowingUserResponseContract : ResponseContract
-    {
-        [DataMember(Name = "users")]
-        public List<UserContract> Users { get; set; }
     }
 }

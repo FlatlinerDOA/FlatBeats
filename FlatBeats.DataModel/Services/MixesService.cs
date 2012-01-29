@@ -9,11 +9,18 @@
 
     public static class MixesService
     {
-        private const string LatestMixesCacheFile = "LatestMixes.json";
+        private const string LatestMixesCacheFile = "/cache/latestmixes.json";
+
+        private const string MixCacheFile = "/cache/mixes/{0}.json";
 
         public static IObservable<ReviewsResponseContract> GetMixReviews(string mixId, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<ReviewsResponseContract>(new Uri(string.Format("http://8tracks.com/mixes/{0}/reviews.json?&page={1}&per_page={2}", mixId, pageNumber, perPage), UriKind.RelativeOrAbsolute));
+            var urlFormat = string.Format(
+                "http://8tracks.com/mixes/{0}/reviews.json?&page={1}&per_page={2}", 
+                mixId, 
+                pageNumber, 
+                perPage);
+            return Downloader.GetJson<ReviewsResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<MixesResponseContract> GetLatestMixes()
@@ -41,7 +48,7 @@
         public static IObservable<MixContract> GetMixAsync(string mixId)
         {
             var mixUrl = new Uri(string.Format("http://8tracks.com/mixes/{0}.json", mixId), UriKind.RelativeOrAbsolute);
-            return from response in Downloader.GetJsonCachedAndRefreshed<MixResponseContract>(mixUrl, string.Format("/Mixes/{0}.json", mixId))
+            return from response in Downloader.GetJsonCachedAndRefreshed<MixResponseContract>(mixUrl, string.Format(MixCacheFile, mixId))
                    select response.Mix;
         }
 

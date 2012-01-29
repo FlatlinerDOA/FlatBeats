@@ -207,6 +207,7 @@ namespace FlatBeats.ViewModels
                             if (target.Count <= targetIndex)
                             {
                                 target.Add(new TViewModel());
+                                targetIndex = target.Count - 1;
                             }
 
                             var vm = target[targetIndex];

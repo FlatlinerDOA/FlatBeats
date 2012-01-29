@@ -309,7 +309,8 @@ namespace FlatBeats.ViewModels
         {
             this.AvatarImageUrl = Avatar.GetLargeImageUrl(userContract.Avatar);
             this.Location = userContract.Location;
-            this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
+            var text = Html.ConvertToPlainText(userContract.BioHtml).Trim();
+            this.BioHtml = UserSettings.Current.CensorshipEnabled ? Censorship.Censor(text) : text;
             this.UserName = userContract.Name;
             this.IsCurrentUserFollowing = userContract.IsFollowed;
         }

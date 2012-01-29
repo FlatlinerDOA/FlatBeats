@@ -161,20 +161,24 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
 
-
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.Liked.LoadFirstPage();
-
             if (this.IsDataLoaded)
             {
-                this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError));
+                this.Liked.LoadFirstPage();
+                this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
                 return;
             }
 
+            var pageLoad = from first in
+                    Observable.Timer(TimeSpan.FromMilliseconds(250)).ObserveOnDispatcher().Do(
+                        _ => this.Liked.LoadFirstPage())
+                from second in
+                    Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher().Do(
+                        _ => this.LoadRecentAndLatestPanels())
+                select new Unit();
 
-            this.AddToLifetime(
-                Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher().Subscribe(
-                    _ => this.LoadRecentAndLatestPanels()));
+            this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError));
+
 
         }
 
