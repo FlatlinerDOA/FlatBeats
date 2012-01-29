@@ -220,11 +220,13 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                Foreground="LightGray"
-                               TextWrapping="Wrap" Margin="24,8,12,0" />
+                               TextWrapping="Wrap" Margin="24,8,12,0" 
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}" />
                     <ListBox ItemsSource="{Binding Items}"
                              Tap="ListBoxTap"
                              Style="{StaticResource TiltedNavigationListStyle}" 
-                             Margin="24,0,-12,0">
+                             Margin="24,0,-12,0"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}">
                         <i:Interaction.Behaviors>
                             <ViewModels:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
@@ -292,11 +294,14 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
-                               Foreground="LightGray" Margin="24,20,0,0" />
+                               Foreground="LightGray"
+                               Margin="24,20,0,0"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}" />
                     <ListBox Margin="12,0,-12,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
-                             Style="{StaticResource TiltedNavigationListStyle}">
+                             Style="{StaticResource TiltedNavigationListStyle}"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Controls2:AnimatingContentControl Margin="16,0">
@@ -372,13 +377,15 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap"
-                               Margin="24,20,0,0" />
+                               Margin="24,20,0,0"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}" />
                     <ItemsControl Margin="24,32,0,0"
                              ItemsSource="{Binding Mixes}"
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"
-                             VerticalAlignment="Top" 
-                             ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+                             VerticalAlignment="Top"
+                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                  Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
                 </Grid>
             </controls:PanoramaItem>
             <controls:PanoramaItem DataContext="{Binding TagsPanel}"
