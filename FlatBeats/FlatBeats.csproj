@@ -155,15 +155,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FlatBeats_2012_01_27_01_03_15.sap" />
-    <None Include="FlatBeats_2012_01_27_01_08_51.sap" />
-    <None Include="FlatBeats_2012_01_27_01_18_03.sap" />
-    <None Include="FlatBeats_2012_01_27_01_19_09.sap" />
-    <None Include="FlatBeats_2012_01_27_01_27_50.sap" />
-    <None Include="FlatBeats_2012_01_29_21_26_08.sap" />
-    <None Include="FlatBeats_2012_01_29_22_17_06.sap" />
-    <None Include="FlatBeats_2012_01_29_23_19_54.sap" />
-    <None Include="FlatBeats_2012_01_29_23_51_16.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">

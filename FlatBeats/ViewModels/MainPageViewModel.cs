@@ -182,7 +182,7 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.Liked.LoadFirstPage();
-                this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
                 return;
             }
 
@@ -247,23 +247,23 @@ namespace FlatBeats.ViewModels
                        select latest;
 
             this.AddToLifetime(
-                load.ObserveOnDispatcher().Subscribe(
-                    this.PickRandomBackground, this.HandleError, this.LoadAllDataCompleted));
+                load.ObserveOnDispatcher().Subscribe(_ =>
+                    this.PickRandomBackground(), this.HandleError, this.LoadAllDataCompleted));
         }
 
         /// <summary>
         /// </summary>
         /// <param name="results">
         /// </param>
-        private void PickRandomBackground(IList<MixViewModel> results)
+        private void PickRandomBackground()
         {
             var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault();
             if (url != this.BackgroundImageUrl || this.BackgroundImageUrl == null)
             {
                 if (url == null)
                 {
-                    url = results.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(
-                          this.random.Next(results.Count - 2)).FirstOrDefault() ?? DefaultBackground;
+                    url = this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(
+                          this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? DefaultBackground;
                 }
 
                 this.BackgroundImageUrl = url;

@@ -16,11 +16,11 @@
 
         private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}.json";
 
-        private const string CredentialsFilePath = "/cache/credentials.json";
+        private const string CredentialsFilePath = "credentials.json";
 
-        private const string SettingsFilePath = "/cache/settings.json";
+        private const string SettingsFilePath = "settings.json";
 
-        private const string UserLoginFilePath = "/cache/userlogin.json";
+        private const string UserLoginFilePath = "userlogin.json";
         
         public static SettingsContract GetSettings()
         {

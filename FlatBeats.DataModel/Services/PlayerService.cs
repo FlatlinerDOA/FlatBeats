@@ -22,11 +22,11 @@
 
     public static class PlayerService
     {
-        private const string PlayTokenFilePath = "/cache/playtoken.json";
+        private const string PlayTokenFilePath = "playtoken.json";
 
-        private const string NowPlayingFilePath = "/cache/nowplaying.json";
+        private const string NowPlayingFilePath = "nowplaying.json";
 
-        private const string RecentlyPlayedFilePath = "/cache/recentmixes.json";
+        private const string RecentlyPlayedFilePath = "recentmixes.json";
 
         public static IObservable<string> GetOrCreatePlayTokenAsync()
         {
