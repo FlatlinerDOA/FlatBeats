@@ -41,8 +41,25 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        private Uri backgroundUrl;
+        private Uri backgroundImageUrl;
 
+        public Uri BackgroundImageUrl
+        {
+            get
+            {
+                return this.backgroundImageUrl;
+            }
+            set
+            {
+                if (this.backgroundImageUrl == value)
+                {
+                    return;
+                }
+
+                this.backgroundImageUrl = value;
+                this.OnPropertyChanged("BackgroundImageUrl");
+            }
+        }
         /// <summary>
         /// </summary>
         private int currentSectionIndex;
@@ -155,7 +172,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
-            this.backgroundUrl = this.State.GetValueOrDefault<Uri>("BackgroundUrl");
+            this.BackgroundImageUrl = this.State.GetValueOrDefault<Uri>("BackgroundUrl");
 
             this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
@@ -188,7 +205,7 @@ namespace FlatBeats.ViewModels
         {
             if (this.State != null)
             {
-                this.State["BackgroundUrl"] = this.backgroundUrl;
+                this.State["BackgroundUrl"] = this.BackgroundImageUrl;
             }
 
             this.Liked.Unload();
@@ -241,7 +258,7 @@ namespace FlatBeats.ViewModels
         private void PickRandomBackground(IList<MixViewModel> results)
         {
             var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault();
-            if (url != this.backgroundUrl || this.backgroundUrl == null)
+            if (url != this.BackgroundImageUrl || this.BackgroundImageUrl == null)
             {
                 if (url == null)
                 {
@@ -249,11 +266,11 @@ namespace FlatBeats.ViewModels
                           this.random.Next(results.Count - 2)).FirstOrDefault() ?? DefaultBackground;
                 }
 
-                this.backgroundUrl = url;
+                this.BackgroundImageUrl = url;
                 this.BackgroundImage = new ImageBrush
                     {
-                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation }, 
-                        Opacity = 0.4, 
+                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation },
+                        Opacity = 0.4,
                         Stretch = Stretch.UniformToFill
                     };
             }
