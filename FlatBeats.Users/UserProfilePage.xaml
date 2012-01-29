@@ -107,6 +107,26 @@
                     </ListBox>
                 </Grid>
             </controls:PivotItem>
+            <controls:PivotItem DataContext="{Binding LikedMixes}"
+                                Header="{Binding Title}"
+                                Margin="12,28,12,84">
+                <Grid>
+                    <TextBlock Text="{Binding Message}"
+                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
+                               Style="{StaticResource MessageTextStyle}"
+                               Margin="12,8,12,0" />
+                    <ListBox x:Name="likedMixesListBox"
+                             Margin="0,0,-12,0"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource MixListItemTemplate}"
+                             Tap="ListBoxTap">
+                        <i:Interaction.Behaviors>
+                            <ViewModels1:InfiniteScrollBehavior />
+                        </i:Interaction.Behaviors>
+                    </ListBox>
+                </Grid>
+            </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding FollowsUsers}"
                                 Header="{Binding Title}"
                                 Margin="12,28,12,84">

@@ -29,9 +29,24 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private static readonly Uri DefaultBackground = new Uri("PanoramaBackground.jpg", UriKind.Relative);
+
+        /// <summary>
+        /// </summary>
+        private readonly Random random = new Random();
+
+        /// <summary>
+        /// </summary>
+        private Brush backgroundImage;
+
+        /// <summary>
+        /// </summary>
+        private Uri backgroundUrl;
+
+        /// <summary>
+        /// </summary>
         private int currentSectionIndex;
 
-        private static readonly Uri DefaultBackground = new Uri("PanoramaBackground.jpg", UriKind.Relative);
         #endregion
 
         #region Constructors and Destructors
@@ -54,6 +69,27 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        public Brush BackgroundImage
+        {
+            get
+            {
+                return this.backgroundImage;
+            }
+
+            set
+            {
+                if (this.backgroundImage == value)
+                {
+                    return;
+                }
+
+                this.backgroundImage = value;
+                this.OnPropertyChanged("BackgroundImage");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         public int CurrentSectionIndex
         {
             get
@@ -70,30 +106,6 @@ namespace FlatBeats.ViewModels
 
                 this.currentSectionIndex = value;
                 this.OnPropertyChanged("CurrentSectionIndex");
-            }
-        }
-
-        private Brush backgroundImage;
-
-        private readonly Random random = new Random();
-
-        private Uri backgroundUrl;
-
-        public Brush BackgroundImage
-        {
-            get
-            {
-                return this.backgroundImage;
-            }
-            set
-            {
-                if (this.backgroundImage == value)
-                {
-                    return;
-                }
-
-                this.backgroundImage = value;
-                this.OnPropertyChanged("BackgroundImage");
             }
         }
 
@@ -138,9 +150,11 @@ namespace FlatBeats.ViewModels
                 return;
             }
 
-            this.LoadLikedPanel(); 
+            this.LoadLikedPanel();
         }
 
+        /// <summary>
+        /// </summary>
         public override void Unload()
         {
             if (this.State != null)
@@ -155,38 +169,12 @@ namespace FlatBeats.ViewModels
             base.Unload();
         }
 
-        private void LoadRecentAndLatestPanels()
-        {
-            this.ShowProgress(StringResources.Progress_Loading);
-            var load = from recent in this.Recent.LoadAsync()
-                       from latest in this.Latest.LoadAsync()
-                       select latest;
-            
-            this.AddToLifetime(
-                load.Delay(TimeSpan.FromSeconds(1)).ObserveOnDispatcher().Subscribe(
-                    this.PickRandomBackground, 
-                    this.HandleError,
-                    this.LoadAllDataCompleted));
-            //// ?? 
-        }
+        #endregion
 
-        private void PickRandomBackground(IList<MixViewModel> results)
-        {
-            var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault()
-               ?? results.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(this.random.Next(results.Count - 2)).FirstOrDefault()
-               ?? DefaultBackground;
-            if (url != this.backgroundUrl)
-            {
-                this.backgroundUrl = url;
-                this.BackgroundImage = new ImageBrush
-                    {
-                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation },
-                        Opacity = 0.4,
-                        Stretch = Stretch.UniformToFill
-                    };
-            }
-        }
+        #region Methods
 
+        /// <summary>
+        /// </summary>
         private void LoadAllDataCompleted()
         {
             if (this.Liked.Items.Any())
@@ -203,6 +191,8 @@ namespace FlatBeats.ViewModels
             this.LoadCompleted();
         }
 
+        /// <summary>
+        /// </summary>
         private void LoadLikedPanel()
         {
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
@@ -210,6 +200,49 @@ namespace FlatBeats.ViewModels
             this.LoadRecentAndLatestPanels();
         }
 
+        /// <summary>
+        /// </summary>
+        private void LoadRecentAndLatestPanels()
+        {
+            this.ShowProgress(StringResources.Progress_Loading);
+            var load = from recent in this.Recent.LoadAsync() from latest in this.Latest.LoadAsync() select latest;
+
+            this.AddToLifetime(
+                load.ObserveOnDispatcher().Subscribe(
+                    this.PickRandomBackground, this.HandleError, this.LoadAllDataCompleted));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="results">
+        /// </param>
+        private void PickRandomBackground(IList<MixViewModel> results)
+        {
+            var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault()
+                      ??
+                      results.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(
+                          this.random.Next(results.Count - 2)).FirstOrDefault() ?? DefaultBackground;
+            if (url != this.backgroundUrl)
+            {
+                this.backgroundUrl = url;
+                this.BackgroundImage = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation }, 
+                        Opacity = 0.4, 
+                        Stretch = Stretch.UniformToFill
+                    };
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        private void Refresh()
+        {
+            this.LoadLikedPanel();
+        }
+
+        /// <summary>
+        /// </summary>
         private void UpdateIsInProgress()
         {
             if (this.Liked.IsInProgress)
@@ -231,11 +264,6 @@ namespace FlatBeats.ViewModels
             }
 
             this.HideProgress();
-        }
-
-        private void Refresh()
-        {
-            this.LoadLikedPanel();
         }
 
         #endregion

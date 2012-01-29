@@ -479,6 +479,15 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This user hasn&apos;t found anything they like yet..
+        /// </summary>
+        public static string Message_UserHasNoLikedMixes {
+            get {
+                return ResourceManager.GetString("Message_UserHasNoLikedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This person hasn&apos;t created any mixes..
         /// </summary>
         public static string Message_UserHasNoMixes {
@@ -520,6 +529,15 @@ namespace FlatBeats.Framework {
         public static string Message_YouAreNotFollowingAnyone {
             get {
                 return ResourceManager.GetString("Message_YouAreNotFollowingAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t liked any mixes yet..
+        /// </summary>
+        public static string Message_YouHaveNoLikedMixes {
+            get {
+                return ResourceManager.GetString("Message_YouHaveNoLikedMixes", resourceCulture);
             }
         }
         

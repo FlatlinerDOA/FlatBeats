@@ -361,4 +361,10 @@ Link:
   <data name="Label_LoadingMore8" xml:space="preserve">
     <value>Just let me know when you're done...</value>
   </data>
+  <data name="Message_UserHasNoLikedMixes" xml:space="preserve">
+    <value>This user hasn't found anything they like yet.</value>
+  </data>
+  <data name="Message_YouHaveNoLikedMixes" xml:space="preserve">
+    <value>You haven't liked any mixes yet.</value>
+  </data>
 </root>

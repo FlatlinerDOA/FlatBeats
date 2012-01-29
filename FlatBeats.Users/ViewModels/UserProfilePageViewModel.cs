@@ -1,15 +1,17 @@
-﻿//--------------------------------------------------------------------------------------------------
-// <copyright file="UserProfilePageViewModel.cs" company="DNS Technology Pty Ltd.">
-//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UserProfilePageViewModel.cs" company="">
+//   
 // </copyright>
-//--------------------------------------------------------------------------------------------------
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.Text.RegularExpressions;
 
-    using FlatBeats.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
@@ -20,19 +22,52 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
 
+    /// <summary>
+    /// </summary>
     public class UserProfilePageViewModel : PageViewModel, IApplicationBarViewModel
     {
-        private static readonly Uri FollowUserIcon = new Uri("/icons/appbar.game.addfriend.rest.png", UriKind.Relative);
-
-        private static readonly Uri UnfollowUserIcon = new Uri("/icons/appbar.game.removefriend.rest.png", UriKind.Relative);
+        #region Constants and Fields
 
         /// <summary>
-        /// Initializes a new instance of the UserProfilePageViewModel class.
+        /// </summary>
+        private static readonly Uri FollowUserIcon = new Uri("/icons/appbar.game.addfriend.rest.png", UriKind.Relative);
+
+        /// <summary>
+        /// </summary>
+        private static readonly Uri UnfollowUserIcon = new Uri(
+            "/icons/appbar.game.removefriend.rest.png", UriKind.Relative);
+
+        /// <summary>
+        /// </summary>
+        private Uri avatarImageUrl;
+
+        /// <summary>
+        /// </summary>
+        private string bioHtml;
+
+        /// <summary>
+        /// </summary>
+        private bool isCurrentUserFollowing;
+
+        /// <summary>
+        /// </summary>
+        private string location;
+
+        /// <summary>
+        /// </summary>
+        private string userName;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///   Initializes a new instance of the UserProfilePageViewModel class.
         /// </summary>
         public UserProfilePageViewModel()
         {
             this.Mixes = new UserProfileMixesViewModel(false);
-            this.LikedMixes = new ObservableCollection<MixViewModel>();
+            this.LikedMixes = new UserProfileLikedMixesViewModel(false);
             this.FollowedByUsers = new FollowedByUsersViewModel(false);
             this.FollowsUsers = new FollowsUsersViewModel(false);
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
@@ -46,75 +81,27 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarButtonCommands.Add(this.ToggleFollowUserCommandLink);
         }
 
-        private bool CanToggleFollowUser()
-        {
-            return Downloader.IsAuthenticated;
-        }
+        #endregion
 
-        private void ToggleFollowUser()
-        {
-            this.ShowProgress(StringResources.Progress_Updating);
-            ProfileService.SetFollowUser(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
-                response =>
-                    {
-                        this.HideProgress();
-                        this.IsCurrentUserFollowing = response.User.IsFollowed;
-                    });
-        }
+        #region Public Properties
 
-        private bool isCurrentUserFollowing;
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
 
-        protected bool IsCurrentUserFollowing
-        {
-            get
-            {
-                return this.isCurrentUserFollowing;
-            }
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
 
-            set
-            {
-                this.isCurrentUserFollowing = value;
-                this.ToggleFollowUserCommandLink.IconUrl = this.IsCurrentUserFollowing ? UnfollowUserIcon : FollowUserIcon;
-                this.ToggleFollowUserCommandLink.Text = this.IsCurrentUserFollowing ? StringResources.Command_UnfollowUser : StringResources.Command_FollowUser;
-                this.ToggleFollowUserCommandLink.RaiseCanExecuteChanged();
-            }
-        }
-
-        public CommandLink ToggleFollowUserCommandLink { get; private set; }
-
-        public UserProfileMixesViewModel Mixes { get; private set; }
-
-        public string UserId { get; set; }
-
-        private string userName;
-
-        public string UserName
-        {
-            get
-            {
-                return this.userName;
-            }
-            set
-            {
-                if (this.userName == value)
-                {
-                    return;
-                }
-
-                this.userName = value;
-                this.OnPropertyChanged("UserName");
-            }
-        }
-
-        private Uri avatarImageUrl;
-
-
+        /// <summary>
+        /// </summary>
         public Uri AvatarImageUrl
         {
             get
             {
                 return this.avatarImageUrl;
             }
+
             set
             {
                 if (this.avatarImageUrl == value)
@@ -127,14 +114,15 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private string bioHtml;
-
+        /// <summary>
+        /// </summary>
         public string BioHtml
         {
             get
             {
                 return this.bioHtml;
             }
+
             set
             {
                 if (this.bioHtml == value)
@@ -147,14 +135,27 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        private string location;
+        /// <summary>
+        /// </summary>
+        public FollowedByUsersViewModel FollowedByUsers { get; private set; }
 
+        /// <summary>
+        /// </summary>
+        public FollowsUsersViewModel FollowsUsers { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public UserProfileLikedMixesViewModel LikedMixes { get; private set; }
+
+        /// <summary>
+        /// </summary>
         public string Location
         {
             get
             {
                 return this.location;
             }
+
             set
             {
                 if (this.location == value)
@@ -167,41 +168,178 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        /// <summary>
+        /// </summary>
+        public UserProfileMixesViewModel Mixes { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public CommandLink ToggleFollowUserCommandLink { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return this.userName;
+            }
+
+            set
+            {
+                if (this.userName == value)
+                {
+                    return;
+                }
+
+                this.userName = value;
+                this.OnPropertyChanged("UserName");
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// </summary>
+        protected bool IsCurrentUserFollowing
+        {
+            get
+            {
+                return this.isCurrentUserFollowing;
+            }
+
+            set
+            {
+                this.isCurrentUserFollowing = value;
+                this.ToggleFollowUserCommandLink.IconUrl = this.IsCurrentUserFollowing
+                                                               ? UnfollowUserIcon
+                                                               : FollowUserIcon;
+                this.ToggleFollowUserCommandLink.Text = this.IsCurrentUserFollowing
+                                                            ? StringResources.Command_UnfollowUser
+                                                            : StringResources.Command_FollowUser;
+                this.ToggleFollowUserCommandLink.RaiseCanExecuteChanged();
+            }
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// </summary>
         public override void Load()
         {
             this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.LikedMixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
 
             if (this.IsDataLoaded)
             {
+                if (this.UserId != null)
+                {
+                    this.LoadPanels(false);
+                }
                 return;
             }
 
             this.UserId = this.NavigationParameters["userid"];
             this.ShowProgress(StringResources.Progress_Loading);
-            this.AddToLifetime(this.LoadUserAsync().ObserveOnDispatcher().Subscribe(_ => this.LoadPanels(), this.HandleError, this.LoadCompleted));
+            this.AddToLifetime(
+                this.LoadUserAsync().ObserveOnDispatcher().Subscribe(
+                    _ => this.LoadPanels(true), this.HandleError, this.LoadCompleted));
         }
 
-        private void LoadPanels()
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        private bool CanToggleFollowUser()
+        {
+            return Downloader.IsAuthenticated;
+        }
+
+        /// <summary>
+        /// </summary>
+        private void LoadPanels(bool loadData)
         {
             this.AddToLifetime(
-                this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+    this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(
+                this.LikedMixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
                 this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
                 this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
-            this.Mixes.LoadNextPage();
-            this.FollowsUsers.LoadNextPage();
-            this.FollowedByUsers.LoadNextPage();
+            if (loadData)
+            {
+                this.Mixes.LoadFirstPage();
+                this.LikedMixes.LoadFirstPage();
+                this.FollowsUsers.LoadFirstPage();
+                this.FollowedByUsers.LoadFirstPage();
+            }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        private IObservable<Unit> LoadUserAsync()
+        {
+            var profile = from response in ProfileService.GetUserProfile(this.UserId) select response.User;
+            return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="userContract">
+        /// </param>
+        private void LoadUserProfile(UserContract userContract)
+        {
+            this.AvatarImageUrl = Avatar.GetLargeImageUrl(userContract.Avatar);
+            this.Location = userContract.Location;
+            this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
+            this.UserName = userContract.Name;
+            this.IsCurrentUserFollowing = userContract.IsFollowed;
+        }
+
+        /// <summary>
+        /// </summary>
+        private void ToggleFollowUser()
+        {
+            this.ShowProgress(StringResources.Progress_Updating);
+            ProfileService.SetFollowUser(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
+                response =>
+                    {
+                        this.HideProgress();
+                        this.IsCurrentUserFollowing = response.User.IsFollowed;
+                    });
+        }
+
+        /// <summary>
+        /// </summary>
         private void UpdateIsInProgress()
         {
             if (this.Mixes.IsInProgress)
             {
                 this.ShowProgress(this.Mixes.InProgressMessage);
+                return;
+            }
+
+            if (this.LikedMixes.IsInProgress)
+            {
+                this.ShowProgress(this.LikedMixes.InProgressMessage);
                 return;
             }
 
@@ -220,30 +358,6 @@ namespace FlatBeats.ViewModels
             this.HideProgress();
         }
 
-        private IObservable<Unit> LoadUserAsync()
-        {
-            var profile = from response in ProfileService.GetUserProfile(this.UserId)
-                          select response.User;
-            return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
-        }
-
-        private void LoadUserProfile(UserContract userContract)
-        {
-            this.AvatarImageUrl = Avatar.GetLargeImageUrl(userContract.Avatar);
-            this.Location = userContract.Location;
-            this.BioHtml = Html.ConvertToPlainText(userContract.BioHtml);
-            this.UserName = userContract.Name;
-            this.IsCurrentUserFollowing = userContract.IsFollowed;
-        }
-
-        public ObservableCollection<MixViewModel> LikedMixes { get; private set; }
-
-        public FollowsUsersViewModel FollowsUsers { get; private set; }
-
-        public FollowedByUsersViewModel FollowedByUsers { get; private set; }
-
-        public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
-
-        public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
+        #endregion
     }
 }

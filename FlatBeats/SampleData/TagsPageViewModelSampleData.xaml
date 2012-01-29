@@ -1,75 +1,81 @@
-﻿<FlatBeats_ViewModels:TagsPageViewModel xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" IsInProgress="True" Message="Duis himenaeos imperdiet vestibulum" ShowMessage="False" Title="Adipiscing interdum">
+﻿<FlatBeats_ViewModels:TagsPageViewModel 
+    xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" 
+    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+    IsInProgress="True" 
+    Message="Duis himenaeos imperdiet vestibulum" 
+    ShowMessage="False" 
+    Title="Adipiscing interdum">
 	<FlatBeats_ViewModels:TagsPageViewModel.Tags>
 		<FlatBeats_ViewModels:TagsByFirstLetter Capacity="81">
 			<FlatBeats_ViewModels:TagsInGroup Capacity="58" HasItems="True" Key="A">
-				<FlatBeats_ViewModels:TagViewModel Key="Aliquam integer quisque curabitur cras" TagName="Aenean maecenas mauris vivamus"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Nullam class phasellus consequat" TagName="Convallis praesent accumsan sed"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Bibendum dictumst curae donec adipiscing" TagName="Dis aliquam"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Parturient etiam aptent" TagName="Fusce lorem duis vestibulum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Morbi aliquet nulla" TagName="Eleifend vestibulum facilisi adipiscing"/>
+				<ViewModels:TagViewModel Key="Aliquam integer quisque curabitur cras" TagName="Aenean maecenas mauris vivamus"/>
+				<ViewModels:TagViewModel Key="Nullam class phasellus consequat" TagName="Convallis praesent accumsan sed"/>
+				<ViewModels:TagViewModel Key="Bibendum dictumst curae donec adipiscing" TagName="Dis aliquam"/>
+				<ViewModels:TagViewModel Key="Parturient etiam aptent" TagName="Fusce lorem duis vestibulum"/>
+				<ViewModels:TagViewModel Key="Morbi aliquet nulla" TagName="Eleifend vestibulum facilisi adipiscing"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="61" HasItems="False" Key="B">
-				<FlatBeats_ViewModels:TagViewModel Key="Dignissim augue est" TagName="Hac faucibus commodo leo mus"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Nec elementum dolor parturient facilisis" TagName="Conubia habitant auctor vestibulum fermentum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Fringilla non fames per" TagName="Congue cursus vestibulum amet"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Dictum ante" TagName="Habitasse adipiscing arcu lectus"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Sed diam cubilia inceptos" TagName="Parturient libero felis"/>
+				<ViewModels:TagViewModel Key="Dignissim augue est" TagName="Hac faucibus commodo leo mus"/>
+				<ViewModels:TagViewModel Key="Nec elementum dolor parturient facilisis" TagName="Conubia habitant auctor vestibulum fermentum"/>
+				<ViewModels:TagViewModel Key="Fringilla non fames per" TagName="Congue cursus vestibulum amet"/>
+				<ViewModels:TagViewModel Key="Dictum ante" TagName="Habitasse adipiscing arcu lectus"/>
+				<ViewModels:TagViewModel Key="Sed diam cubilia inceptos" TagName="Parturient libero felis"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="62" HasItems="True" Key="C">
-				<FlatBeats_ViewModels:TagViewModel Key="Lacus lorem dapibus magna himenaeos" TagName="Imperdiet vestibulum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Ligula interdum sem litora" TagName="Egestas malesuada penatibus porttitor lobortis"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Eget luctus sit" TagName="Vestibulum elit vel"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Nascetur tincidunt adipiscing" TagName="Euismod nam parturient"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Feugiat gravida" TagName="Iaculis vestibulum pharetra sed tristique"/>
+				<ViewModels:TagViewModel Key="Lacus lorem dapibus magna himenaeos" TagName="Imperdiet vestibulum"/>
+				<ViewModels:TagViewModel Key="Ligula interdum sem litora" TagName="Egestas malesuada penatibus porttitor lobortis"/>
+				<ViewModels:TagViewModel Key="Eget luctus sit" TagName="Vestibulum elit vel"/>
+				<ViewModels:TagViewModel Key="Nascetur tincidunt adipiscing" TagName="Euismod nam parturient"/>
+				<ViewModels:TagViewModel Key="Feugiat gravida" TagName="Iaculis vestibulum pharetra sed tristique"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="52" HasItems="False" Key="D">
-				<FlatBeats_ViewModels:TagViewModel Key="Magnis laoreet enim mattis" TagName="Erat est hac"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Natoque mauris placerat ultricies" TagName="Massa eros venenatis pulvinar mollis"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Leo nibh sagittis senectus" TagName="Montes nisi sociosqu mus adipiscing"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Nisl posuere nostra" TagName="Vulputate suscipit nec torquent"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Curabitur potenti" TagName="Non ornare phasellus consequat parturient"/>
+				<ViewModels:TagViewModel Key="Magnis laoreet enim mattis" TagName="Erat est hac"/>
+				<ViewModels:TagViewModel Key="Natoque mauris placerat ultricies" TagName="Massa eros venenatis pulvinar mollis"/>
+				<ViewModels:TagViewModel Key="Leo nibh sagittis senectus" TagName="Montes nisi sociosqu mus adipiscing"/>
+				<ViewModels:TagViewModel Key="Nisl posuere nostra" TagName="Vulputate suscipit nec torquent"/>
+				<ViewModels:TagViewModel Key="Curabitur potenti" TagName="Non ornare phasellus consequat parturient"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="52" HasItems="True" Key="E">
-				<FlatBeats_ViewModels:TagViewModel Key="Nunc metus" TagName="Odio orci"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Morbi ultrices pede neque" TagName="Vestibulum rhoncus primis quam"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Quis netus" TagName="Dignissim urna"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Rutrum per" TagName="Sodales viverra vehicula volutpat maecenas"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Sed aliquam praesent" TagName="Elementum nulla accumsan porta purus"/>
+				<ViewModels:TagViewModel Key="Nunc metus" TagName="Odio orci"/>
+				<ViewModels:TagViewModel Key="Morbi ultrices pede neque" TagName="Vestibulum rhoncus primis quam"/>
+				<ViewModels:TagViewModel Key="Quis netus" TagName="Dignissim urna"/>
+				<ViewModels:TagViewModel Key="Rutrum per" TagName="Sodales viverra vehicula volutpat maecenas"/>
+				<ViewModels:TagViewModel Key="Sed aliquam praesent" TagName="Elementum nulla accumsan porta purus"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="81" HasItems="False" Key="F">
-				<FlatBeats_ViewModels:TagViewModel Key="Facilisis bibendum fermentum fringilla" TagName="Cras integer habitasse quisque"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Risus vivamus semper" TagName="Dictumst aliquam eleifend sociis parturient"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Vel duis facilisi aliquet faucibus" TagName="Nam habitant inceptos hendrerit vestibulum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Interdum lobortis" TagName="Nunc velit amet"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Ante vitae" TagName="Taciti class himenaeos"/>
+				<ViewModels:TagViewModel Key="Facilisis bibendum fermentum fringilla" TagName="Cras integer habitasse quisque"/>
+				<ViewModels:TagViewModel Key="Risus vivamus semper" TagName="Dictumst aliquam eleifend sociis parturient"/>
+				<ViewModels:TagViewModel Key="Vel duis facilisi aliquet faucibus" TagName="Nam habitant inceptos hendrerit vestibulum"/>
+				<ViewModels:TagViewModel Key="Interdum lobortis" TagName="Nunc velit amet"/>
+				<ViewModels:TagViewModel Key="Ante vitae" TagName="Taciti class himenaeos"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="18" HasItems="True" Key="G">
-				<FlatBeats_ViewModels:TagViewModel Key="Sed imperdiet diam malesuada vestibulum" TagName="Eget dis"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Pharetra est adipiscing" TagName="Tellus hac"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Placerat donec etiam pulvinar sagittis" TagName="Parturient elit leo fusce vestibulum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Enim lorem" TagName="Vestibulum tempor morbi"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Tempus erat" TagName="Nulla blandit"/>
+				<ViewModels:TagViewModel Key="Sed imperdiet diam malesuada vestibulum" TagName="Eget dis"/>
+				<ViewModels:TagViewModel Key="Pharetra est adipiscing" TagName="Tellus hac"/>
+				<ViewModels:TagViewModel Key="Placerat donec etiam pulvinar sagittis" TagName="Parturient elit leo fusce vestibulum"/>
+				<ViewModels:TagViewModel Key="Enim lorem" TagName="Vestibulum tempor morbi"/>
+				<ViewModels:TagViewModel Key="Tempus erat" TagName="Nulla blandit"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="74" HasItems="False" Key="H">
-				<FlatBeats_ViewModels:TagViewModel Key="Penatibus turpis proin porttitor" TagName="Varius tincidunt augue sociosqu tristique"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Ultricies eros conubia" TagName="Parturient vestibulum suscipit"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Cubilia venenatis vestibulum torquent mus" TagName="Nibh ultrices adipiscing"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Vulputate dapibus parturient" TagName="Vehicula aenean volutpat"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Dolor maecenas praesent" TagName="Curabitur accumsan egestas fames"/>
+				<ViewModels:TagViewModel Key="Penatibus turpis proin porttitor" TagName="Varius tincidunt augue sociosqu tristique"/>
+				<ViewModels:TagViewModel Key="Ultricies eros conubia" TagName="Parturient vestibulum suscipit"/>
+				<ViewModels:TagViewModel Key="Cubilia venenatis vestibulum torquent mus" TagName="Nibh ultrices adipiscing"/>
+				<ViewModels:TagViewModel Key="Vulputate dapibus parturient" TagName="Vehicula aenean volutpat"/>
+				<ViewModels:TagViewModel Key="Dolor maecenas praesent" TagName="Curabitur accumsan egestas fames"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="21" HasItems="True" Key="I">
-				<FlatBeats_ViewModels:TagViewModel Key="Felis vestibulum ipsum nullam euismod" TagName="Phasellus consequat aptent auctor congue"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Dictumst convallis dignissim elementum facilisis" TagName="Cursus nec feugiat"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Dictum justo gravida non" TagName="Fermentum vestibulum"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Lectus per iaculis" TagName="Fringilla nisl libero ligula"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Sed lacinia lacus lorem nunc" TagName="Adipiscing odio magna sem eleifend"/>
+				<ViewModels:TagViewModel Key="Felis vestibulum ipsum nullam euismod" TagName="Phasellus consequat aptent auctor congue"/>
+				<ViewModels:TagViewModel Key="Dictumst convallis dignissim elementum facilisis" TagName="Cursus nec feugiat"/>
+				<ViewModels:TagViewModel Key="Dictum justo gravida non" TagName="Fermentum vestibulum"/>
+				<ViewModels:TagViewModel Key="Lectus per iaculis" TagName="Fringilla nisl libero ligula"/>
+				<ViewModels:TagViewModel Key="Sed lacinia lacus lorem nunc" TagName="Adipiscing odio magna sem eleifend"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 			<FlatBeats_ViewModels:TagsInGroup Capacity="31" HasItems="False" Key="J">
-				<FlatBeats_ViewModels:TagViewModel Key="Parturient habitasse vestibulum metus" TagName="Magnis facilisi"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Nam vestibulum orci" TagName="Pede sed"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Morbi adipiscing mattis quam dis" TagName="Quis est"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Parturient laoreet" TagName="Urna natoque mauris faucibus"/>
-				<FlatBeats_ViewModels:TagViewModel Key="Mollis hendrerit cras neque posuere" TagName="Hac habitant inceptos vestibulum leo"/>
+				<ViewModels:TagViewModel Key="Parturient habitasse vestibulum metus" TagName="Magnis facilisi"/>
+				<ViewModels:TagViewModel Key="Nam vestibulum orci" TagName="Pede sed"/>
+				<ViewModels:TagViewModel Key="Morbi adipiscing mattis quam dis" TagName="Quis est"/>
+				<ViewModels:TagViewModel Key="Parturient laoreet" TagName="Urna natoque mauris faucibus"/>
+				<ViewModels:TagViewModel Key="Mollis hendrerit cras neque posuere" TagName="Hac habitant inceptos vestibulum leo"/>
 			</FlatBeats_ViewModels:TagsInGroup>
 		</FlatBeats_ViewModels:TagsByFirstLetter>
 	</FlatBeats_ViewModels:TagsPageViewModel.Tags>

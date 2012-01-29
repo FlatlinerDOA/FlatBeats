@@ -1,75 +1,77 @@
 ﻿<ViewModels:MainPageViewModel 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:FlatBeats" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" Title="flat beats">
+    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
+    xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+    Title="flat beats">
 
     <ViewModels:MainPageViewModel.TagsPanel>
     	<ViewModels:MainPageTagsViewModel Title="design tags">
     		<ViewModels:MainPageTagsViewModel.Tags>
-			<ViewModels:TagViewModel TagName="design one" IsFirstItem="True" />
-        <ViewModels:TagViewModel TagName="design two" />
-        <ViewModels:TagViewModel TagName="design three" />
-        <ViewModels:TagViewModel TagName="design four" />
-        <ViewModels:TagViewModel TagName="design five" />
-        <ViewModels:TagViewModel TagName="design six" />
-        <ViewModels:TagViewModel TagName="design seven" />
-        <ViewModels:TagViewModel TagName="design eight" />
-        <ViewModels:TagViewModel TagName="design nine" />
-        <ViewModels:TagViewModel TagName="design ten" />
-        <ViewModels:TagViewModel TagName="design eleven" />
-        <ViewModels:TagViewModel TagName="design twelve" />
-        <ViewModels:TagViewModel TagName="design thirteen" />
-        <ViewModels:TagViewModel TagName="design fourteen" IsLastItem="True" />
+			<ViewModels1:TagViewModel TagName="design one" IsFirstItem="True" />
+            <ViewModels1:TagViewModel TagName="design two" />
+            <ViewModels1:TagViewModel TagName="design three" />
+            <ViewModels1:TagViewModel TagName="design four" />
+            <ViewModels1:TagViewModel TagName="design five" />
+            <ViewModels1:TagViewModel TagName="design six" />
+            <ViewModels1:TagViewModel TagName="design seven" />
+            <ViewModels1:TagViewModel TagName="design eight" />
+            <ViewModels1:TagViewModel TagName="design nine" />
+            <ViewModels1:TagViewModel TagName="design ten" />
+            <ViewModels1:TagViewModel TagName="design eleven" />
+            <ViewModels1:TagViewModel TagName="design twelve" />
+            <ViewModels1:TagViewModel TagName="design thirteen" />
+            <ViewModels1:TagViewModel TagName="design fourteen" IsLastItem="True" />
 			</ViewModels:MainPageTagsViewModel.Tags>  	
 		</ViewModels:MainPageTagsViewModel>
         
     </ViewModels:MainPageViewModel.TagsPanel>
-    <ViewModels:MainPageViewModel.Recent >
+    <ViewModels:MainPageViewModel.Recent>
     	<ViewModels:MainPageRecentViewModel Title="design recent">
     		<ViewModels:MainPageRecentViewModel.Mixes>
-    			 		 <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" IsFirstItem="True" />
-        <ViewModels:RecentMixViewModel MixName="design two"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"  />
-        <ViewModels:RecentMixViewModel MixName="design three"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-        <ViewModels:RecentMixViewModel MixName="design four"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-        <ViewModels:RecentMixViewModel MixName="design five"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-        <ViewModels:RecentMixViewModel MixName="design six"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-        <ViewModels:RecentMixViewModel MixName="design seven"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
+                <ViewModels:RecentMixViewModel MixName="design one" IsNowPlaying="True" IsFirstItem="True" />
+                <ViewModels:RecentMixViewModel MixName="design two"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"  />
+                <ViewModels:RecentMixViewModel MixName="design three"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+                <ViewModels:RecentMixViewModel MixName="design four"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+                <ViewModels:RecentMixViewModel MixName="design five"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+                <ViewModels:RecentMixViewModel MixName="design six"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+                <ViewModels:RecentMixViewModel MixName="design seven"  ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
 			</ViewModels:MainPageRecentViewModel.Mixes>  	
 		</ViewModels:MainPageRecentViewModel>
        
     </ViewModels:MainPageViewModel.Recent>
-        <ViewModels:MainPageViewModel.Latest >
+        <ViewModels:MainPageViewModel.Latest>
         	<ViewModels:MainPageLatestViewModel Title="design latest mixes">
         		<ViewModels:MainPageLatestViewModel.Mixes>
-        			    		 <ViewModels:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True"/>
-        <ViewModels:MixViewModel MixName="design two" TileTitle="design two" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/957/6476.sq133.jpg" />
-        <ViewModels:MixViewModel MixName="design three" TileTitle="design three" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/677/91967.sq133.jpg" />
-        <ViewModels:MixViewModel MixName="design four" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design five" TileTitle="design five" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design six" TileTitle="design six" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design seven" TileTitle="design seven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design eight" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design nine" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design ten" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design eleven" TileTitle="design eleven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-        <ViewModels:MixViewModel MixName="design twelve" TileTitle="design twelve" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True"/>
+        			<ViewModels1:MixViewModel MixName="design one" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True"/>
+                    <ViewModels1:MixViewModel MixName="design two" TileTitle="design two" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/957/6476.sq133.jpg" />
+                    <ViewModels1:MixViewModel MixName="design three" TileTitle="design three" ImageUrl="http://cf1.8tracks.us/mix_covers/000/504/677/91967.sq133.jpg" />
+                    <ViewModels1:MixViewModel MixName="design four" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design five" TileTitle="design five" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design six" TileTitle="design six" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design seven" TileTitle="design seven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design eight" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design nine" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design ten" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design eleven" TileTitle="design eleven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+                    <ViewModels1:MixViewModel MixName="design twelve" TileTitle="design twelve" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True"/>
 				</ViewModels:MainPageLatestViewModel.Mixes>
 			</ViewModels:MainPageLatestViewModel>
        
     </ViewModels:MainPageViewModel.Latest>
-        <ViewModels:MainPageViewModel.Liked >
+        <ViewModels:MainPageViewModel.Liked>
         	<ViewModels:MainPageLikedViewModel Title="design liked">
         		<ViewModels:MainPageLikedViewModel.Items>
-					<ViewModels:MixViewModel MixName="design one" Tags="rap, hip-hop, dubsex" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True" />
-			        <ViewModels:MixViewModel MixName="design two" Tags="rap, hip-hop, dubsex" TileTitle="design two" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-			        <ViewModels:MixViewModel MixName="design three" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design three" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
-			        <ViewModels:MixViewModel MixName="design four"  Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design five"  Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design five" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design six"   Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design six" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design seven" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design seven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design eight" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design nine" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
-			        <ViewModels:MixViewModel MixName="design ten" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
+					<ViewModels1:MixViewModel MixName="design one" Tags="rap, hip-hop, dubsex" TileTitle="design one" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsFirstItem="True" />
+			        <ViewModels1:MixViewModel MixName="design two" Tags="rap, hip-hop, dubsex" TileTitle="design two" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+			        <ViewModels1:MixViewModel MixName="design three" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design three" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg"/>
+			        <ViewModels1:MixViewModel MixName="design four"  Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design four" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design five"  Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design five" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design six"   Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design six" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design seven" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design seven" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design eight" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design eight" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design nine" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design nine" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" />
+			        <ViewModels1:MixViewModel MixName="design ten" Tags="rap, hip-hop, metal, workout, running, party" TileTitle="design ten" ImageUrl="http://cf0.8tracks.us/mix_covers/000/504/432/18174.sq133.jpg" IsLastItem="True" />
 				</ViewModels:MainPageLikedViewModel.Items>
 			</ViewModels:MainPageLikedViewModel>
     </ViewModels:MainPageViewModel.Liked>

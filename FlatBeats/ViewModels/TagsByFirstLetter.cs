@@ -2,11 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-
-    using FlatBeats.DataModel;
-
-    using Microsoft.Phone.Reactive;
 
     /// <summary>
     /// </summary>
@@ -21,6 +16,13 @@
         #endregion
 
         #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the TagsByFirstLetter class.
+        /// </summary>
+        public TagsByFirstLetter()
+        {
+        }
 
         /// <summary>
         /// </summary>

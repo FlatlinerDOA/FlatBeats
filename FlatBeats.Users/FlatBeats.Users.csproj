@@ -72,6 +72,7 @@
     <Compile Include="UserProfilePage.xaml.cs">
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\UserProfileLikedMixesViewModel.cs" />
     <Compile Include="ViewModels\FollowedByUsersViewModel.cs" />
     <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />

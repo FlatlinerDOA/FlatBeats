@@ -8,6 +8,10 @@
     {
         #region Constructors and Destructors
 
+        public TagsInGroup()
+        {
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="category">

@@ -11,15 +11,15 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
 
-    public class UserProfileLikedMixesViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
+    public class UserProfileMixesViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
         /// <summary>
         /// Initializes a new instance of the UserProfileMixesViewModel class.
         /// </summary>
-        public UserProfileLikedMixesViewModel(bool isCurrentUser)
+        public UserProfileMixesViewModel(bool isCurrentUser)
         {
             this.IsCurrentUser = isCurrentUser;
-            this.Title = StringResources.Title_LikedMixes;
+            this.Title = StringResources.Title_CreatedMixes;
         }
 
         public IObservable<Unit> LoadAsync(string userId)
@@ -39,7 +39,7 @@ namespace FlatBeats.ViewModels
                 return Observable.Empty<IList<MixContract>>();
             }
 
-            return ProfileService.GetLikedMixes(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
+            return ProfileService.GetUserMixes(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
@@ -53,11 +53,11 @@ namespace FlatBeats.ViewModels
             {
                 if (this.IsCurrentUser)
                 {
-                    this.Message = StringResources.Message_YouHaveNoLikedMixes;
+                    this.Message = StringResources.Message_YouHaveNoMixes;
                 }
                 else
                 {
-                    this.Message = StringResources.Message_UserHasNoLikedMixes;
+                    this.Message = StringResources.Message_UserHasNoMixes;
                 }
 
                 this.ShowMessage = true;
