@@ -337,4 +337,28 @@ Link:
   <data name="Label_PlayNextMix" xml:space="preserve">
     <value>Continue to play similar mixes</value>
   </data>
+  <data name="Label_LoadingMore1" xml:space="preserve">
+    <value>Loading more...</value>
+  </data>
+  <data name="Label_LoadingMore2" xml:space="preserve">
+    <value>Loading even more...</value>
+  </data>
+  <data name="Label_LoadingMore3" xml:space="preserve">
+    <value>Loading even more still...</value>
+  </data>
+  <data name="Label_LoadingMore4" xml:space="preserve">
+    <value>There's a lot isn't there?</value>
+  </data>
+  <data name="Label_LoadingMore5" xml:space="preserve">
+    <value>Found what you're looking for?</value>
+  </data>
+  <data name="Label_LoadingMore6" xml:space="preserve">
+    <value>Any minute now...</value>
+  </data>
+  <data name="Label_LoadingMore7" xml:space="preserve">
+    <value>I'd hate to scroll to the top right now...</value>
+  </data>
+  <data name="Label_LoadingMore8" xml:space="preserve">
+    <value>Just let me know when you're done...</value>
+  </data>
 </root>

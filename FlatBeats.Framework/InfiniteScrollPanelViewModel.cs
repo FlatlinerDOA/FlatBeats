@@ -56,24 +56,24 @@
                     return StringResources.Progress_Loading;
                 case 2:
                 case 3:
-                    return "Loading more...";
+                    return StringResources.Label_LoadingMore1;
                 case 4:
-                    return "Loading even more...";
+                    return StringResources.Label_LoadingMore2;
                 case 5:
-                    return "Loading even more still...";
+                    return StringResources.Label_LoadingMore3;
                 case 6:
-                    return "There's a lot isn't there?";
+                    return StringResources.Label_LoadingMore4;
                 case 7:
-                    return "Have you found what you're looking for?";
+                    return StringResources.Label_LoadingMore5;
                 case 8:
-                    return "Any minute now...";
+                    return StringResources.Label_LoadingMore6;
                 case 9:
-                    return "I'd hate to scroll to the top right now...";
+                    return StringResources.Label_LoadingMore7;
                 case 10:
-                    return "Just let me know when you're done...";
+                    return StringResources.Label_LoadingMore8;
             }
 
-            return "Loading more...";
+            return StringResources.Label_LoadingMore1;
         }
 
 

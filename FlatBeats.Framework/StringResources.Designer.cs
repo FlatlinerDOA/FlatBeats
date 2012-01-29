@@ -317,6 +317,78 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading more....
+        /// </summary>
+        public static string Label_LoadingMore1 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading even more....
+        /// </summary>
+        public static string Label_LoadingMore2 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading even more still....
+        /// </summary>
+        public static string Label_LoadingMore3 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There&apos;s a lot isn&apos;t there?.
+        /// </summary>
+        public static string Label_LoadingMore4 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found what you&apos;re looking for?.
+        /// </summary>
+        public static string Label_LoadingMore5 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Any minute now....
+        /// </summary>
+        public static string Label_LoadingMore6 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I&apos;d hate to scroll to the top right now....
+        /// </summary>
+        public static string Label_LoadingMore7 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just let me know when you&apos;re done....
+        /// </summary>
+        public static string Label_LoadingMore8 {
+            get {
+                return ResourceManager.GetString("Label_LoadingMore8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Label_Password {
