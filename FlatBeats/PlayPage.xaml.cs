@@ -104,6 +104,12 @@
                 this.ShowAppBar();
                 return;
             }
+            
+            if (((PlayPageViewModel)this.ViewModel).IsPromptOpen)
+            {
+                e.Cancel = true;
+                return;
+            }
 
             base.OnBackKeyPress(e);
         }

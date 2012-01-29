@@ -259,7 +259,11 @@ namespace FlatBeats.ViewModels
                 Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(
                     handler => prompt.Completed += handler, handler => prompt.Completed -= handler);
 
-            var q = from response in completed.Take(1)
+            var q = from response in completed.Take(1).Do(_ => 
+            { 
+                this.IsPromptOpen = false; 
+                this.ShowProgress(StringResources.Progress_Updating); 
+            })
                     where response.EventArgs.PopUpResult == PopUpResult.Ok
                     from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
@@ -267,8 +271,12 @@ namespace FlatBeats.ViewModels
                 review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)),
                 this.HandleError,
                 this.HideProgress);
+
+            this.IsPromptOpen = true;
             prompt.Show();
         }
+
+        public bool IsPromptOpen { get; set; }
 
         private bool CanAddReview()
         {

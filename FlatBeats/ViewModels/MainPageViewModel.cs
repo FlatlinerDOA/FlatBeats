@@ -257,15 +257,12 @@ namespace FlatBeats.ViewModels
         /// </param>
         private void PickRandomBackground()
         {
-            var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault();
-            if (url != this.BackgroundImageUrl || this.BackgroundImageUrl == null)
+            var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault() ?? 
+                this.BackgroundImageUrl ?? 
+                this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? 
+                DefaultBackground;
+            if (this.BackgroundImageUrl != url)
             {
-                if (url == null)
-                {
-                    url = this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(
-                          this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? DefaultBackground;
-                }
-
                 this.BackgroundImageUrl = url;
                 this.BackgroundImage = new ImageBrush
                     {
