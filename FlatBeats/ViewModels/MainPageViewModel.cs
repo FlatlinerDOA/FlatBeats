@@ -143,7 +143,11 @@ namespace FlatBeats.ViewModels
 
         public override void Unload()
         {
-            this.State["BackgroundUrl"] = this.backgroundUrl;
+            if (this.State != null)
+            {
+                this.State["BackgroundUrl"] = this.backgroundUrl;
+            }
+
             this.Liked.Unload();
             this.Recent.Unload();
             this.Latest.Unload();

@@ -70,7 +70,7 @@
                 case 9:
                     return "I'd hate to scroll to the top right now...";
                 case 10:
-                    return "You just let me know when you're done...";
+                    return "Just let me know when you're done...";
             }
 
             return "Loading more...";

@@ -211,9 +211,9 @@
                 return this.StopPlayingAsync(player);
             }
 
-            if (true || this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
+            if (this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
             {
-                if (true || this.UserSettings.PlayNextMix)
+                if (this.UserSettings.PlayNextMix)
                 {
                     var currentMixId = this.NowPlaying.MixId;
                     return from stop in this.StopPlayingAsync(player)
