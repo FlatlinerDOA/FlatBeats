@@ -140,7 +140,7 @@
             var playingMix = from playToken in GetOrCreatePlayTokenAsync()
                              let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}&skip_aac_v2=1", playToken, mix.Id)
                              from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
-                                 .Repeat(8)
+                                 .Repeat(2)
                                  .Log("StartPlayingAsync: Attempting")
                                  .TakeFirst(ValidResponse)
                                  .Log("StartPlayingAsync: Valid Response")
@@ -170,10 +170,10 @@
         public static IObservable<MixContract> GetNextMixAsync(string mixId)
         {
             return from playToken in GetOrCreatePlayTokenAsync()
-                   let nextMixUrl = string.Format("http://8tracks.com/sets/{0}/next_mix.json?mix_id={1}.json", playToken, mixId)
-                   from response in Downloader.GetJson<MixResponseContract>(new Uri(nextMixUrl, UriKind.RelativeOrAbsolute))
-                   where response != null && response.Mix != null && response.Mix.Id != mixId
-                   select response.Mix;
+                   let nextMixUrl = string.Format("http://8tracks.com/sets/{0}/next_mix.json?mix_id={1}", playToken, mixId)
+                   from response in Downloader.GetJson<NextMixResponseContract>(new Uri(nextMixUrl, UriKind.RelativeOrAbsolute))
+                   where response != null && response.NextMix != null && response.NextMix.Id != mixId
+                   select response.NextMix;
         }
 
         public static void ResetNowPlayingTile()
@@ -280,7 +280,7 @@
             var url = new Uri(nextFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
                    from response in Downloader.GetJson<PlayResponseContract>(url)
-                        .Repeat(8)
+                        .Repeat(2)
                        .Log("NextTrackAsync: Attempting")
                        .TakeFirst(ValidResponse)
                        .Log("NextTrackAsync: ValidResponse")
@@ -330,8 +330,7 @@
             var url = new Uri(skipFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
                    from response in Downloader.GetJson<PlayResponseContract>(url)
-                       .Repeat(2)
-                       .TakeFirst(ValidResponse)
+                   where ValidResponse(response)
                    select response;
         }
 

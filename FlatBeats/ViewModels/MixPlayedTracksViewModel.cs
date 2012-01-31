@@ -348,7 +348,7 @@ namespace FlatBeats.ViewModels
             if (this.PlayOnLoad)
             {
                 this.PlayOnLoad = false;
-                this.currentMix.StartPlayingAsync();
+                this.StartPlayingMixFromBeginning();
             }
 
             return this.RefreshPlayedTracksAsync(currentMix);

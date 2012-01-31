@@ -21,13 +21,24 @@
 
         /// <summary>
         /// </summary>
+        private readonly object syncRoot = new object();
+
+        /// <summary>
+        /// </summary>
+        private CompositeDisposable lifetime;
+
+        /// <summary>
+        /// </summary>
         private PlayingMixContract nowPlaying;
+
+        /// <summary>
+        /// </summary>
+        private SettingsContract userSettings;
 
         #endregion
 
         #region Public Properties
 
-        private readonly object syncRoot = new object();
         /// <summary>
         /// </summary>
         public PlayingMixContract NowPlaying
@@ -57,7 +68,33 @@
             }
         }
 
-      
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// </summary>
+        protected SettingsContract UserSettings
+        {
+            get
+            {
+                return this.userSettings ?? (this.userSettings = ProfileService.GetSettings());
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        private CompositeDisposable Lifetime
+        {
+            get
+            {
+                lock (this.syncRoot)
+                {
+                    return this.lifetime ?? (this.lifetime = new CompositeDisposable());
+                }
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -67,7 +104,7 @@
         /// </summary>
         protected override void OnCancel()
         {
-            this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+            this.Completed();
         }
 
         /// <summary>
@@ -91,18 +128,19 @@
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
-                () =>
-                {
-                    if (isFatal)
-                    {
-                        this.Abort();
-                    }
-                    else
-                    {
-                        this.NotifyComplete();
-                    }
-                }).Subscribe();
+            this.Lifetime.Add(
+                this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
+                    () =>
+                        {
+                            if (isFatal)
+                            {
+                                this.Abort();
+                            }
+                            else
+                            {
+                                this.Completed();
+                            }
+                        }).Subscribe());
         }
 
         /// <summary>
@@ -131,14 +169,18 @@
                 case PlayState.Stopped:
                     break;
                 case PlayState.TrackEnded:
-                    this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    this.Lifetime.Add(
+                        this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).
+                            Subscribe());
                     return;
                 case PlayState.Error:
-                    this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    this.Lifetime.Add(
+                        this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
+                            this.Completed).Subscribe());
                     return;
             }
 
-            this.NotifyComplete();
+            this.Completed();
         }
 
         /// <summary>
@@ -163,35 +205,51 @@
         /// User actions do not automatically make any changes in system state; the agent is responsible
         ///   for carrying out the user actions if they are supported
         /// </remarks>
-        protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
+        protected override void OnUserAction(
+            BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
             // Ensure user settings are reloaded on each user action.
             this.userSettings = null;
             switch (action)
             {
                 case UserAction.Stop:
-                    this.StopPlayingAsync(player).Finally(this.NotifyComplete).Subscribe();
+                    this.Lifetime.Add(this.StopPlayingAsync(player).Finally(this.Completed).Subscribe());
                     return;
                 case UserAction.Pause:
                     player.Pause();
                     break;
                 case UserAction.Play:
-                    this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    this.Lifetime.Add(this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
                 case UserAction.SkipNext:
-                    this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.NotifyComplete).Subscribe();
+                    this.Lifetime.Add(this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
             }
 
+            this.Completed();
+        }
+
+        /// <summary>
+        /// </summary>
+        private void Completed()
+        {
+            this.DisposeLifetime();
             this.NotifyComplete();
         }
 
-        private void StopPlayingMix(BackgroundAudioPlayer player)
+        /// <summary>
+        /// </summary>
+        private void DisposeLifetime()
         {
-            if (player.PlayerState != PlayState.Unknown)
+            lock (this.syncRoot)
             {
-                player.Stop();
-                player.Track = null;
+                if (this.lifetime == null)
+                {
+                    return;
+                }
+
+                this.lifetime.Dispose();
+                this.lifetime = null;
             }
         }
 
@@ -211,35 +269,40 @@
                 return this.StopPlayingAsync(player);
             }
 
+            if (NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211 && this.UserSettings.PlayOverWifiOnly)
+            {
+                return this.StopPlayingAsync(player);
+            }
+
             if (this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
             {
                 if (this.UserSettings.PlayNextMix)
                 {
                     var currentMixId = this.NowPlaying.MixId;
-                    return from stop in this.StopPlayingAsync(player)
+                    return from stop in this.NowPlaying.StopAsync(player)
                            from mix in PlayerService.GetNextMixAsync(currentMixId)
-                           from start in mix.StartPlayingAsync().Do(t => this.NowPlaying = t)
-                           from play in this.PlayNextTrackAsync(player)
-                           select new Unit();
+                           from start in mix.StartPlayingAsync().Do(
+                               t => 
+                               { 
+                                   this.NowPlaying = t; 
+                                   this.NowPlaying.SaveNowPlaying();
+                               })
+                           from play in this.PlayTrackAsync(player)
+                           select play;
                 }
 
                 return this.StopPlayingAsync(player);
             }
 
-            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
-            {
-                return this.StopPlayingAsync(player);
-            }
-
             var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player)
-                   from d in ObservableEx.DeferredStart(
-                                   () =>
-                                       {
-                                           this.NowPlaying.Set = nextResponse.Set;
-                                           this.NowPlaying.SaveNowPlaying();
-                                       })
-                               from play in this.PlayTrackAsync(player)
-                               select play;
+                                from d in ObservableEx.DeferredStart(
+                                    () =>
+                                        {
+                                            this.NowPlaying.Set = nextResponse.Set;
+                                            this.NowPlaying.SaveNowPlaying();
+                                        })
+                                from play in this.PlayTrackAsync(player)
+                                select play;
 
             return playNextTrack.Catch<Unit, Exception>(
                 ex =>
@@ -256,28 +319,17 @@
                     });
         }
 
-        private SettingsContract userSettings;
-
-        protected SettingsContract UserSettings
-        {
-            get
-            {
-                return this.userSettings ?? (this.userSettings = ProfileService.GetSettings());
-            }
-        }
-
-        private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
-        {
-            Debug.WriteLine("Player: StopPlayingAsync");
-            return this.NowPlaying.StopAsync(player).ObserveOn(Scheduler.CurrentThread).Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
-        }
-
         /// <summary>
         /// </summary>
         /// <param name="player">
         /// </param>
         private IObservable<Unit> PlayTrackAsync(BackgroundAudioPlayer player)
         {
+            if (NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211 && this.UserSettings.PlayOverWifiOnly)
+            {
+                return this.StopPlayingAsync(player);
+            }
+
             if (player.PlayerState == PlayState.Paused)
             {
                 Debug.WriteLine("Player: PlayTrackAsync (Resume from Paused)");
@@ -289,7 +341,6 @@
 
                 return Observable.Return(new Unit());
             }
-
 
             if (this.NowPlaying == null || this.NowPlaying.Set == null)
             {
@@ -304,33 +355,29 @@
                 return this.StopPlayingAsync(player);
             }
 
-            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
-            {
-                return this.StopPlayingAsync(player);
-            }
-
             Debug.WriteLine("Player: PlayTrackAsync (Playing)");
 
             // Set which track to play. When the TrackReady state is received 
             // in the OnPlayStateChanged handler, call player.Play().
             return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
-                    trackUrl =>
-                        {
-                            var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
-                            var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
-                                                    ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext | EnabledPlayerControls.FastForward
-                                                    : EnabledPlayerControls.Pause;
-                            var track = new AudioTrack(
-                                trackUrl,
-                                this.NowPlaying.Set.Track.Name,
-                                this.NowPlaying.Set.Track.Artist,
-                                this.NowPlaying.MixName,
-                                coverUrl,
-                                this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id,
-                                playControls);
-                            player.Track = track;
-                            player.Volume = 1;
-                        }).Select(_ => new Unit());
+                trackUrl =>
+                    {
+                        var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
+                        var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
+                                               ? EnabledPlayerControls.Pause | EnabledPlayerControls.SkipNext
+                                                 | EnabledPlayerControls.FastForward
+                                               : EnabledPlayerControls.Pause;
+                        var track = new AudioTrack(
+                            trackUrl, 
+                            this.NowPlaying.Set.Track.Name, 
+                            this.NowPlaying.Set.Track.Artist, 
+                            this.NowPlaying.MixName, 
+                            coverUrl, 
+                            this.NowPlaying.MixId + "|" + this.NowPlaying.Set.Track.Id, 
+                            playControls);
+                        player.Track = track;
+                        player.Volume = 1;
+                    }).Select(_ => new Unit());
         }
 
         /// <summary>
@@ -348,9 +395,7 @@
                 return Observable.Empty<Unit>();
             }
 
-            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player)
-                    where skipResponse.Status.StartsWith("200")
-                    select skipResponse;
+            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player) select skipResponse;
             return from y in x.OnErrorResumeNext(Observable.Empty<PlayResponseContract>()).Do(
                 response =>
                     {
@@ -359,6 +404,33 @@
                     }).ObserveOn(Scheduler.CurrentThread)
                    from play in this.PlayTrackAsync(player)
                    select play;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="player">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
+        {
+            Debug.WriteLine("Player: StopPlayingAsync");
+            return
+                this.NowPlaying.StopAsync(player).ObserveOn(Scheduler.CurrentThread).Do(
+                    _ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="player">
+        /// </param>
+        private void StopPlayingMix(BackgroundAudioPlayer player)
+        {
+            if (player.PlayerState != PlayState.Unknown)
+            {
+                player.Stop();
+                player.Track = null;
+            }
         }
 
         #endregion
