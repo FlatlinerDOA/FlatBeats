@@ -519,13 +519,19 @@ namespace FlatBeats.ViewModels
         private void LoadPanels(UserLoginResponseContract user)
         {
             this.loginResponse = user;
+            if (this.loginResponse == null || this.loginResponse.CurrentUser == null)
+            {
+                this.IsLoggedIn = false;
+                return;
+            }
+
             this.IsLoggedIn = true;
             this.CanLogin = false;
 
-            this.AddToLifetime(this.Mixes.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.FollowsUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.FollowedByUsers.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.MixFeed.LoadAsync(user.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Mixes.LoadAsync(this.loginResponse.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowsUsers.LoadAsync(this.loginResponse.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.FollowedByUsers.LoadAsync(this.loginResponse.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.MixFeed.LoadAsync(this.loginResponse.CurrentUser.Id).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             
             this.MixFeed.LoadFirstPage();
             this.Mixes.LoadFirstPage();

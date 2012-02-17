@@ -261,7 +261,7 @@ namespace FlatBeats.ViewModels
                 this.BackgroundImageUrl ?? 
                 this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? 
                 DefaultBackground;
-            if (this.BackgroundImageUrl != url)
+            if (this.BackgroundImageUrl != url || this.BackgroundImage == null)
             {
                 this.BackgroundImageUrl = url;
                 this.BackgroundImage = new ImageBrush

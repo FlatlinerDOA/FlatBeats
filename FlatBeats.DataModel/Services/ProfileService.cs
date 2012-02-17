@@ -78,7 +78,7 @@
 
         public static IObservable<UserLoginResponseContract> LoadUserToken()
         {
-            return ObservableEx.DeferredStart(() => Json<UserLoginResponseContract>.Deserialize(Storage.Load(UserLoginFilePath))).Where(c => c != null).Do(
+            return ObservableEx.DeferredStart(() => Json<UserLoginResponseContract>.Deserialize(Storage.Load(UserLoginFilePath))).Where(c => c != null && c.CurrentUser != null).Do(
                     user => Downloader.UserToken = user.UserToken);
         }
 
