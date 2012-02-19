@@ -396,8 +396,7 @@
                 return Observable.Empty<Unit>();
             }
 
-            var x = this.NowPlaying.SkipToNextTrackAsync(player);
-            var nextTrack = from y in x.OnErrorResumeNext(Observable.Empty<PlayResponseContract>()).Do(
+            var nextTrack = from nextResponse in this.NowPlaying.SkipToNextTrackAsync(player).Do(
                 response =>
                     {
                         this.NowPlaying.Set = response.Set;
@@ -406,7 +405,18 @@
                    from play in this.PlayTrackAsync(player)
                    select play;
 
-            return nextTrack.Catch<Unit, WebException>(ex => Observable.Empty<Unit>());
+            return nextTrack.Catch<Unit, WebException>(ex =>
+                {
+                    // TODO: Do more testing on this...
+                    ////if (player.Track != null)
+                    ////{
+                    ////    player.Track.BeginEdit();
+                    ////    player.Track.PlayerControls = EnabledPlayerControls.Pause;
+                    ////    player.Track.EndEdit();
+                    ////}
+
+                    return Observable.Empty<Unit>();
+                }).OnErrorResumeNext(Observable.Empty<Unit>());
         }
 
         /// <summary>
