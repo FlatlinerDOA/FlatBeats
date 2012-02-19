@@ -128,19 +128,15 @@
         /// </remarks>
         protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
         {
-            this.Lifetime.Add(
-                this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
-                    () =>
-                        {
-                            if (isFatal)
-                            {
-                                this.Abort();
-                            }
-                            else
-                            {
-                                this.Completed();
-                            }
-                        }).Subscribe());
+            if (isFatal)
+            {
+                this.Abort();
+            }
+            else
+            {
+                player.Track = null;
+                this.Lifetime.Add(this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+            }
         }
 
         /// <summary>
@@ -169,14 +165,11 @@
                 case PlayState.Stopped:
                     break;
                 case PlayState.TrackEnded:
-                    this.Lifetime.Add(
-                        this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).
-                            Subscribe());
+                    this.Lifetime.Add(this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
                 case PlayState.Error:
                     this.Lifetime.Add(
-                        this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(
-                            this.Completed).Subscribe());
+                        this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
             }
 
@@ -213,8 +206,13 @@
             switch (action)
             {
                 case UserAction.Stop:
-                    this.Lifetime.Add(this.StopPlayingAsync(player).Finally(this.Completed).Subscribe());
-                    return;
+                    if (player.PlayerState != PlayState.Paused)
+                    {
+                        this.Lifetime.Add(this.StopPlayingAsync(player).Finally(this.Completed).Subscribe());
+                        return;
+                    }
+
+                    break;
                 case UserAction.Pause:
                     player.Pause();
                     break;
