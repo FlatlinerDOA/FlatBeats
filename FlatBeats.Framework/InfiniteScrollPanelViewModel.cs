@@ -150,6 +150,15 @@
             this.LoadPageCompleted();
         }
 
+
+        protected override void ShowErrorMessageOverride(Flatliner.Phone.ViewModels.ErrorMessage result)
+        {
+            if (this.Items.Count == 0)
+            {
+                base.ShowErrorMessageOverride(result);
+            }
+        }
+
         public void Reset()
         {
             this.CurrentRequestedPage = 0;

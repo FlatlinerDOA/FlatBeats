@@ -617,7 +617,7 @@ namespace FlatBeats.ViewModels
         {
             get
             {
-                if (!this.Player.IsPlayingATrack())
+                if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
                 {
                     return false;
                 }

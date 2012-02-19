@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Net;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Profile;
@@ -277,7 +278,7 @@
                 if (this.UserSettings.PlayNextMix)
                 {
                     var currentMixId = this.NowPlaying.MixId;
-                    return from stop in this.NowPlaying.StopAsync(player)
+                    var nextMix = from stop in this.NowPlaying.StopAsync(player)
                            from mix in PlayerService.GetNextMixAsync(currentMixId)
                            from start in mix.StartPlayingAsync().Do(
                                t => 
@@ -287,6 +288,7 @@
                                })
                            from play in this.PlayTrackAsync(player)
                            select play;
+                    return nextMix.Catch<Unit, WebException>(ex => Observable.Empty<Unit>());
                 }
 
                 return this.StopPlayingAsync(player);
@@ -302,7 +304,8 @@
                                 from play in this.PlayTrackAsync(player)
                                 select play;
 
-            return playNextTrack.Catch<Unit, Exception>(
+            return playNextTrack.Catch<Unit, WebException>(ex => Observable.Empty<Unit>())
+                .Catch<Unit, Exception>(
                 ex =>
                     {
                         var data = "Error playing next track, we have to stop!\r\n";
@@ -393,8 +396,8 @@
                 return Observable.Empty<Unit>();
             }
 
-            var x = from skipResponse in this.NowPlaying.SkipToNextTrackAsync(player) select skipResponse;
-            return from y in x.OnErrorResumeNext(Observable.Empty<PlayResponseContract>()).Do(
+            var x = this.NowPlaying.SkipToNextTrackAsync(player);
+            var nextTrack = from y in x.OnErrorResumeNext(Observable.Empty<PlayResponseContract>()).Do(
                 response =>
                     {
                         this.NowPlaying.Set = response.Set;
@@ -402,6 +405,8 @@
                     }).ObserveOn(Scheduler.CurrentThread)
                    from play in this.PlayTrackAsync(player)
                    select play;
+
+            return nextTrack.Catch<Unit, WebException>(ex => Observable.Empty<Unit>());
         }
 
         /// <summary>
@@ -414,7 +419,7 @@
         {
             Debug.WriteLine("Player: StopPlayingAsync");
             return
-                this.NowPlaying.StopAsync(player).ObserveOn(Scheduler.CurrentThread).Do(
+                this.NowPlaying.StopAsync(player).Catch<Unit, WebException>(ex => Observable.Return(new Unit())).ObserveOn(Scheduler.CurrentThread).Do(
                     _ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }
 
@@ -424,11 +429,22 @@
         /// </param>
         private void StopPlayingMix(BackgroundAudioPlayer player)
         {
-            if (player.PlayerState != PlayState.Unknown)
-            {
-                player.Stop();
-                player.Track = null;
-            }
+                if (player.PlayerState != PlayState.Unknown && 
+                    player.PlayerState != PlayState.Stopped && 
+                    player.PlayerState != PlayState.Error)
+                {
+                    try
+                    {
+                        player.Stop();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                    finally
+                    {
+                        player.Track = null;
+                    }
+                }
         }
 
         #endregion
