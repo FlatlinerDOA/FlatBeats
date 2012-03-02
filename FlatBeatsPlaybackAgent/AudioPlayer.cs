@@ -1,4 +1,9 @@
-﻿namespace FlatBeatsPlaybackAgent
+﻿//--------------------------------------------------------------------------------------------------
+// <copyright file="AudioPlayer.cs" company="Andrew Chisholm">
+//   Copyright (c) 2012 Andrew Chisholm. All rights reserved.
+// </copyright>
+//--------------------------------------------------------------------------------------------------
+namespace FlatBeatsPlaybackAgent
 {
     using System;
     using System.Diagnostics;
@@ -268,7 +273,7 @@
                 return this.StopPlayingAsync(player);
             }
 
-            if (NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211 && this.UserSettings.PlayOverWifiOnly)
+            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
             {
                 return this.StopPlayingAsync(player);
             }
@@ -326,7 +331,7 @@
         /// </param>
         private IObservable<Unit> PlayTrackAsync(BackgroundAudioPlayer player)
         {
-            if (NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211 && this.UserSettings.PlayOverWifiOnly)
+            if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
             {
                 return this.StopPlayingAsync(player);
             }
