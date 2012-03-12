@@ -138,8 +138,7 @@
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
         {
             var playingMix = from playToken in GetOrCreatePlayTokenAsync()
-                             let playUrlFormat = string.Format("http://8tracks.com/sets/{0}/play.json?mix_id={1}&skip_aac_v2=1", playToken, mix.Id)
-                             from response in Downloader.GetJson<PlayResponseContract>(new Uri(playUrlFormat, UriKind.Absolute))
+                             from response in Downloader.GetJson<PlayResponseContract>(ApiUrl.Play(playToken, mix.Id))
                                  .Repeat(2)
                                  .Log("StartPlayingAsync: Attempting")
                                  .TakeFirst(ValidResponse)
@@ -170,8 +169,7 @@
         public static IObservable<MixContract> GetNextMixAsync(string mixId)
         {
             return from playToken in GetOrCreatePlayTokenAsync()
-                   let nextMixUrl = string.Format("http://8tracks.com/sets/{0}/next_mix.json?mix_id={1}", playToken, mixId)
-                   from response in Downloader.GetJson<NextMixResponseContract>(new Uri(nextMixUrl, UriKind.RelativeOrAbsolute))
+                   from response in Downloader.GetJson<NextMixResponseContract>(ApiUrl.NextMix(playToken, mixId))
                    where response != null && response.NextMix != null && response.NextMix.Id != mixId
                    select response.NextMix;
         }
@@ -273,13 +271,8 @@
 
         private static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
-            var nextFormat = string.Format(
-                "http://8tracks.com/sets/{0}/next.json?mix_id={1}&skip_aac_v2=1",
-                playing.PlayToken,
-                playing.MixId);
-            var url = new Uri(nextFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
-                   from response in Downloader.GetJson<PlayResponseContract>(url)
+                   from response in Downloader.GetJson<PlayResponseContract>(ApiUrl.NextTrack(playing.PlayToken, playing.MixId))
                         .Repeat(2)
                        .Log("NextTrackAsync: Attempting")
                        .TakeFirst(ValidResponse)
@@ -301,16 +294,8 @@
                 return Observable.Return(new Unit());
             }
 
-            var payment = from response in
-                       Downloader.GetJson<ResponseContract>(
-                           new Uri(
-                       string.Format(
-                           @"http://8tracks.com/sets/{0}/report.json?track_id={1}&mix_id={2}",
-                           playing.PlayToken,
-                           playing.Set.Track.Id,
-                           playing.MixId),
-                       UriKind.Absolute))
-                   select new Unit();
+            var payment = from response in Downloader.GetJson<ResponseContract>(ApiUrl.ReportTrack(playing.PlayToken, playing.MixId, playing.Set.Track.Id))
+                          select new Unit();
 
             return payment.Catch<Unit, Exception>(ex => Observable.Return(new Unit()));
         }
@@ -323,13 +308,8 @@
     
         private static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
-            var skipFormat = string.Format(
-                "http://8tracks.com/sets/{0}/skip.json?mix_id={1}&skip_aac_v2=1",
-                playing.PlayToken,
-                playing.MixId);
-            var url = new Uri(skipFormat, UriKind.Absolute);
             return from addToHistory in AddToMixTrackHistoryAsync(playing, timePlayed)
-                   from response in Downloader.GetJson<PlayResponseContract>(url)
+                   from response in Downloader.GetJson<PlayResponseContract>(ApiUrl.SkipTrack(playing.PlayToken, playing.MixId))
                    where ValidResponse(response)
                    select response;
         }
@@ -337,12 +317,7 @@
         public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
             var playedTracks = from playToken in GetOrCreatePlayTokenAsync()
-                               let urlFormat = string.Format(
-                                       "http://8tracks.com/sets/{0}/tracks_played.json?mix_id={1}",
-                                       playToken,
-                                       mix.Id)
-                               let url = new Uri(urlFormat, UriKind.Absolute)
-                               from response in Downloader.GetJson<PlayedTracksResponseContract>(url)
+                               from response in Downloader.GetJson<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id))
                                select response;
             return playedTracks;
         }

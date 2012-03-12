@@ -13,45 +13,32 @@
 
         private const string MixCacheFile = "/cache/mixes/{0}.json";
 
-        public static IObservable<ReviewsResponseContract> GetMixReviews(string mixId, int pageNumber, int perPage)
+        public static IObservable<ReviewsResponseContract> GetMixReviewsAsync(string mixId, int pageNumber, int perPage)
         {
-            var urlFormat = string.Format(
-                "http://8tracks.com/mixes/{0}/reviews.json?&page={1}&per_page={2}", 
-                mixId, 
-                pageNumber, 
-                perPage);
-            return Downloader.GetJson<ReviewsResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return Downloader.GetJson<ReviewsResponseContract>(ApiUrl.MixReviews(mixId, pageNumber, perPage));
         }
 
-        public static IObservable<MixesResponseContract> GetLatestMixes()
+        public static IObservable<MixesResponseContract> GetLatestMixesAsync()
         {
-            return Downloader.GetJson<MixesResponseContract>(
-                    new Uri("http://8tracks.com/mixes.json", UriKind.RelativeOrAbsolute)); //, LatestMixesCacheFile);
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.LatestMixes()); //, LatestMixesCacheFile);
         }
 
-        public static IObservable<MixesResponseContract> DownloadTagMixes(string tag, string sort, int pageNumber, int perPage)
+        public static IObservable<MixesResponseContract> GetTagMixesAsync(string tag, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<MixesResponseContract>(
-                new Uri(
-                    string.Format("http://8tracks.com/mixes.json?tag={0}&sort={1}&page={2}&per_page={3}", Uri.EscapeDataString(tag), sort, pageNumber, perPage),
-                    UriKind.RelativeOrAbsolute));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.TaggedMixes(tag, sort, pageNumber, perPage));
         }
 
-        public static IObservable<MixesResponseContract> DownloadSearchMixes(string query, string sort, int pageNumber, int perPage)
+        public static IObservable<MixesResponseContract> GetSearchMixesAsync(string query, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<MixesResponseContract>(
-                new Uri(
-                    string.Format("http://8tracks.com/mixes.json?q={0}&sort={1}&page={2}&per_page={3}", Uri.EscapeDataString(query), sort, pageNumber, perPage),
-                    UriKind.RelativeOrAbsolute));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.SearchMixes(query, sort, pageNumber, perPage));
         }
 
         public static IObservable<MixContract> GetMixAsync(string mixId)
         {
-            var mixUrl = new Uri(string.Format("http://8tracks.com/mixes/{0}.json", mixId), UriKind.RelativeOrAbsolute);
-            return from response in Downloader.GetJsonCachedAndRefreshed<MixResponseContract>(mixUrl, string.Format(MixCacheFile, mixId))
+            return from response in Downloader.GetJsonCachedAndRefreshed<MixResponseContract>(
+                       ApiUrl.Mix(mixId), 
+                       string.Format(MixCacheFile, mixId))
                    select response.Mix;
         }
-
-
     }
 }

@@ -40,7 +40,7 @@
 
         protected override IObservable<IList<ReviewContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return MixesService.GetMixReviews(this.MixId, pageNumber, pageSize)
+            return MixesService.GetMixReviewsAsync(this.MixId, pageNumber, pageSize)
                 .Where(r => r.Reviews != null)
                 .Select(r => (IList<ReviewContract>)r.Reviews);
         }

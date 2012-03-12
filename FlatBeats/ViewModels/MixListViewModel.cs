@@ -54,14 +54,14 @@
             if (this.Tag != null)
             {
                 return
-                    MixesService.DownloadTagMixes(this.Tag, this.Sort, pageNumber, pageSize).Select(
+                    MixesService.GetTagMixesAsync(this.Tag, this.Sort, pageNumber, pageSize).Select(
                         r => (IList<MixContract>)r.Mixes);
             }
 
             if (this.SearchQuery != null)
             {
                 return
-                    MixesService.DownloadSearchMixes(this.SearchQuery, this.Sort, pageNumber, pageSize).Select(
+                    MixesService.GetSearchMixesAsync(this.SearchQuery, this.Sort, pageNumber, pageSize).Select(
                         r => (IList<MixContract>)r.Mixes);
             }
 

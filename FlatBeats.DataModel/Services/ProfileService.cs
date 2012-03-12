@@ -73,15 +73,14 @@
             {
                 return Observable.Empty<UserLoginResponseContract>();
             }
-
+            
             Downloader.UserCredentials = null;
             Downloader.UserToken = null;
-            var url = new Uri("https://8tracks.com/sessions.json", UriKind.Absolute);
             var postData = string.Format(
-                "login={0}&password={1}", 
-                Uri.EscapeDataString(userCredentials.UserName), 
-                Uri.EscapeDataString(userCredentials.Password));
-            var userLogin = from response in Downloader.PostAndGetString(url, postData)
+                "login={0}&password={1}",
+                ApiUrl.Escape(userCredentials.UserName),
+                ApiUrl.Escape(userCredentials.Password));
+            var userLogin = from response in Downloader.PostAndGetString(ApiUrl.Authenticate(), postData)
                             let user = Json<UserLoginResponseContract>.Deserialize(response)
                             where !string.IsNullOrWhiteSpace(user.UserToken)
                             select user;
@@ -119,29 +118,24 @@
 
         public static IObservable<UserProfileResponseContract> GetUserProfileAsync(string userId)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}.json", userId);
-            return Downloader.GetJson<UserProfileResponseContract>(
-                    new Uri(urlFormat, UriKind.Absolute));
+            return Downloader.GetJson<UserProfileResponseContract>(ApiUrl.UserProfile(userId));
         }
 
         public static IObservable<MixesResponseContract> GetUserMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return Downloader.GetJson<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, pageNumber, pageSize));
         }
 
         public static IObservable<MixesResponseContract> GetLikedMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=liked&page={1}&per_page={2}", userId, pageNumber, pageSize);
             var cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute), cacheFile); //
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile); //
         }
 
         public static IObservable<MixesResponseContract> GetMixFeedAsync(string userId, int pageNumber, int pageSize)
         {
-            var urlFormat = string.Format("http://8tracks.com/users/{0}/mixes.json?view=mix_feed&page={1}&per_page={2}", userId, pageNumber, pageSize);
             var cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
-            return Downloader.GetJson<MixesResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute)); //, cacheFile);
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize)); //, cacheFile);
         }
 
         public static IObservable<Unit> SetMixLikedAsync(string mixId, bool isLiked)
@@ -197,7 +191,7 @@
         public static IObservable<ReviewResponseContract> AddMixReviewAsync(string mixId, string review)
         {
             var url = new Uri("http://8tracks.com/reviews", UriKind.Absolute);
-            string body = string.Format("review%5Bbody%5D={0}&review%5Bmix_id%5D={1}&format=json", HttpUtility.UrlEncode(review), mixId);
+            string body = string.Format("review%5Bbody%5D={0}&review%5Bmix_id%5D={1}&format=json", ApiUrl.Escape(review), mixId);
             return from response in Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body)
                    from responseWithUser in GetUserProfileAsync(response.Review.UserId).Select(
                        userResponse =>

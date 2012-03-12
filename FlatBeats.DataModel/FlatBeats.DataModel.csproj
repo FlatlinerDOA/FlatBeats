@@ -89,6 +89,7 @@
     <Compile Include="FollowUserResponseContract.cs" />
     <Compile Include="ServiceException.cs" />
     <Compile Include="FollowingUserResponseContract.cs" />
+    <Compile Include="Services\ApiUrl.cs" />
     <Compile Include="Services\IProfileService.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />

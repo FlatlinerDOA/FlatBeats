@@ -29,7 +29,7 @@
 
         public IObservable<IList<MixViewModel>> LoadAsync()
         {
-            var pageData = MixesService.GetLatestMixes()
+            var pageData = MixesService.GetLatestMixesAsync()
                 .Select(p => new Page<MixContract>(p.Mixes, 1, p.Mixes.Count)).ObserveOnDispatcher()
                 .AddOrReloadPage(this.Mixes, (vm, d) => vm.Load(d));
             return pageData.FinallySelect(() => (IList<MixViewModel>)this.Mixes);
