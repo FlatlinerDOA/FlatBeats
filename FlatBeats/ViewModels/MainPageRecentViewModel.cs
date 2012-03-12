@@ -43,6 +43,7 @@
                         if (this.Mixes.Count == 0)
                         {
                             this.Message = StringResources.Message_NoRecentlyPlayedMixes;
+                            this.ShowMessage = true;
                         }
 
                         return new Unit();
