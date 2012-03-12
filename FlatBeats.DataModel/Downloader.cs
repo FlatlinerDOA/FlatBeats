@@ -147,7 +147,7 @@ namespace FlatBeats.DataModel
 
         public static IObservable<Stream> GetStream(Uri url, bool disableCache)
         {
-            return from client in Observable.Return(CreateGZipClient(disableCache))
+            return from client in Observable.Return(CreateClient(disableCache)).SubscribeOn(Scheduler.ThreadPool)
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                        observer =>
                            {
@@ -247,28 +247,6 @@ namespace FlatBeats.DataModel
 
         #region Methods
 
-        /// <summary>
-        /// </summary>
-        /// <returns>
-        /// </returns>
-        private static GZipWebClient CreateGZipClient(bool noCache)
-        {
-            var client = new GZipWebClient();           
-            client.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
-
-            if (IsAuthenticated)
-            {
-                client.Headers["X-User-Token"] = UserToken;
-            }
-
-            if (noCache)
-            {
-                client.Headers[HttpRequestHeader.Pragma] = "no-cache";
-            }
-
-            return client;
-        }
-
 
         /// <summary>
         /// </summary>
@@ -344,5 +322,11 @@ namespace FlatBeats.DataModel
         }
 
         #endregion
+
+        public static void EnableGZip()
+        {
+            WebRequest.RegisterPrefix("http://", SharpGIS.WebRequestCreator.GZip);
+            WebRequest.RegisterPrefix("https://", SharpGIS.WebRequestCreator.GZip);
+        }
     }
 }

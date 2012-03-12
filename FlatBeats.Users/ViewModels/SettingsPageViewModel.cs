@@ -428,7 +428,7 @@ namespace FlatBeats.ViewModels
             this.LoadSettings();
             this.ResetPanels();
             this.ShowProgress(StringResources.Progress_Loading);
-            this.AddToLifetime(ProfileService.LoadCredentials().ObserveOnDispatcher().Subscribe(
+            this.AddToLifetime(ProfileService.LoadCredentialsAsync().ObserveOnDispatcher().Subscribe(
                 this.LoadCredentials, this.HandleError, this.LoadCompleted));
         }
 
@@ -510,7 +510,7 @@ namespace FlatBeats.ViewModels
             this.Password = creds.Password;
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var q = ProfileService.LoadUserToken();
+            var q = ProfileService.LoadUserTokenAsync();
 
             this.AddToLifetime(        
             q.Subscribe(this.LoadPanels, this.HandleError, this.HideProgress));
@@ -628,7 +628,7 @@ namespace FlatBeats.ViewModels
         {
             var creds = new UserCredentialsContract { UserName = this.UserName.Trim(), Password = this.Password };
             this.ShowProgress(StringResources.Progress_SigningIn);
-            var q = ProfileService.Authenticate(creds);
+            var q = ProfileService.AuthenticateAsync(creds);
             q.ObserveOnDispatcher()
                 .Subscribe(
                 this.LoadPanels, 

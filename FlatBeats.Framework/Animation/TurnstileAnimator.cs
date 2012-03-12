@@ -1,12 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Markup;
-using System.Windows.Media.Animation;
-using System.Windows.Media;
-
-namespace Clarity.Phone.Controls.Animations
+﻿namespace Clarity.Phone.Controls.Animations
 {
-    using Clarity.Phone.Extensions;
+    using System;
+    using System.Windows;
+    using System.Windows.Markup;
+    using System.Windows.Media.Animation;
+    using System.Windows.Media;
+    using Flatliner.Phone.Extensions;
+    using FlatBeats.Framework.Extensions;
 
     public class TurnstileAnimator : AnimatorHelperBase
     {

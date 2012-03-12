@@ -65,22 +65,19 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-                    ////#if DEBUG
-                    ////                    var data = new MemoryStream();
-                    ////                    json.CopyTo(data);
-                    ////                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-                    ////                    foreach (
-                    ////                        var line in
-                    ////                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
-                    ////                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-                    ////                    {
-                    ////                        Debug.WriteLine(line);
-                    ////                    }
-
-                    ////                    json = data;
-                    ////#endif
                     var data = new MemoryStream();
                     json.CopyTo(data);
+
+#if DEBUG
+                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+                    foreach (var line in
+                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
+                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        Debug.WriteLine(line);
+                    }
+
+#endif
                     obj = (T)Serializer.ReadObject(data);
                     json.Close();
                 }

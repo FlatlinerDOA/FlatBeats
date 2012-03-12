@@ -24,7 +24,7 @@
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetMixFeed(this.UserId, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
+            return ProfileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

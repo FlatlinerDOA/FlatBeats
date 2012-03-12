@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using Clarity.Phone.Extensions;
-using Microsoft.Phone.Controls;
-
-namespace Clarity.Phone.Controls.Animations
+﻿namespace Clarity.Phone.Controls.Animations
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Markup;
+    using System.Windows.Media;
+    using System.Windows.Media.Animation;
+    using System.Windows.Media.Imaging;
+    using Microsoft.Phone.Controls;
+    using Flatliner.Phone.Extensions;
+
     public class SlideAnimator : AnimatorHelperBase
     {
         public override void Begin(Action completionAction)
@@ -27,7 +27,7 @@ namespace Clarity.Phone.Controls.Animations
 
         private bool PrepareElement(UIElement element)
         {
-            element.GetTransform<CompositeTransform>(Extensions.TransformCreationMode.CreateOrAddAndIgnoreMatrix);
+            element.GetTransform<CompositeTransform>(TransformCreationMode.CreateOrAddAndIgnoreMatrix);
 
             return true;
         }

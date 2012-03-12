@@ -86,7 +86,7 @@ namespace FlatBeats.ViewModels
         private void ToggleFavourite()
         {
             this.IsFavourite = !this.IsFavourite;
-            ProfileService.SetTrackFavourite(this.Id, this.IsFavourite).ObserveOnDispatcher().Subscribe(
+            ProfileService.SetTrackFavouriteAsync(this.Id, this.IsFavourite).ObserveOnDispatcher().Subscribe(
                 _ => { },
                 ex => this.IsFavourite = !this.IsFavourite);
         }

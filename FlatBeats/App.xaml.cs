@@ -13,6 +13,8 @@
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Shell;
     using FlatBeats.ViewModels;
+    using System.Net;
+    using FlatBeats.DataModel;
 
     public partial class App : Application
     {
@@ -62,6 +64,7 @@
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            ////Downloader.EnableGZip();
         }
 
 

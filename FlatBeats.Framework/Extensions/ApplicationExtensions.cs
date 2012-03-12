@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System;
-using System.Windows;
-using Microsoft.Phone.Controls;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using System.Windows.Navigation;
-using System.Windows.Media;
-using System.Linq;
-
-namespace Clarity.Phone.Extensions
+﻿namespace FlatBeats.Framework.Extensions
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System;
+    using System.Windows;
+    using Microsoft.Phone.Controls;
+    using System.Linq.Expressions;
+    using System.ComponentModel;
+    using System.Windows.Navigation;
+    using System.Windows.Media;
+    using System.Linq;
+
     public enum Theme
     {
         Light,

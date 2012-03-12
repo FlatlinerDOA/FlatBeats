@@ -297,7 +297,7 @@ namespace FlatBeats.ViewModels
         /// </returns>
         private IObservable<Unit> LoadUserAsync()
         {
-            var profile = from response in ProfileService.GetUserProfile(this.UserId) select response.User;
+            var profile = from response in ProfileService.GetUserProfileAsync(this.UserId) select response.User;
             return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
         }
 
@@ -320,7 +320,7 @@ namespace FlatBeats.ViewModels
         private void ToggleFollowUser()
         {
             this.ShowProgress(StringResources.Progress_Updating);
-            ProfileService.SetFollowUser(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
+            ProfileService.SetFollowUserAsync(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
                 response =>
                     {
                         this.HideProgress();

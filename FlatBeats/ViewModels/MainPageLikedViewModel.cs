@@ -34,7 +34,7 @@ namespace FlatBeats.ViewModels
 
             this.IsDataLoaded = true;
             this.UserId = null;
-            var load = from userToken in ProfileService.LoadUserToken().Do(u => this.UserId = u.CurrentUser.Id)
+            var load = from userToken in ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id)
                        from items in this.LoadItemsAsync() 
                        select new Unit();
             return load.Do(_ => { }, this.LoadPageCompleted).FinallySelect(() => new Unit());
@@ -44,7 +44,7 @@ namespace FlatBeats.ViewModels
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return (from page in ProfileService.GetLikedMixes(this.UserId, pageNumber, pageSize)
+            return (from page in ProfileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
                      select (IList<MixContract>)page.Mixes);
         }
 

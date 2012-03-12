@@ -39,7 +39,7 @@ namespace FlatBeats.ViewModels
                 return Observable.Empty<IList<MixContract>>();
             }
 
-            return ProfileService.GetUserMixes(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
+            return ProfileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

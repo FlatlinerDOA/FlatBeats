@@ -1,18 +1,20 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Clarity.Phone.Extensions;
-using System.Linq;
-
-namespace Clarity.Phone.Controls.Animations
+﻿namespace Clarity.Phone.Controls.Animations
 {
+    using System;
+    using System.Net;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Documents;
+    using System.Windows.Ink;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Animation;
+    using System.Windows.Shapes;
+    using System.Linq;
+    using Flatliner.Phone.Extensions;
+
+    using FlatBeats.Framework.Extensions;
+
     public class TurnstileFeatherAnimator : AnimatorHelperBase
     {
         protected enum Directions

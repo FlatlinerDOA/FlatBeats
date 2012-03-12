@@ -49,7 +49,7 @@
 
         protected override IObservable<IList<UserContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetFollowsUsers(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
+            return ProfileService.GetFollowsUsersAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
         }
 
         protected override void LoadItem(UserListItemViewModel viewModel, UserContract data)

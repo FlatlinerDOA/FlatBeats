@@ -14,12 +14,12 @@
 
     using Clarity.Phone.Controls;
     using Clarity.Phone.Controls.Animations;
-    using Clarity.Phone.Extensions;
 
     using Coding4Fun.Phone.Controls;
 
     using FlatBeats.Controls;
     using FlatBeats.Framework;
+    using FlatBeats.Framework.Extensions;
     using FlatBeats.ViewModels;
 
     using Flatliner.Phone;

@@ -5,14 +5,18 @@ namespace Clarity.Phone.Controls
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Media.Animation;
     using System.Windows.Navigation;
+    
     using Microsoft.Phone.Controls;
+    
     using Clarity.Phone.Controls.Animations;
-    using Clarity.Phone.Extensions;
+    
     using System.Diagnostics;
-    using System.Windows.Controls;
+
+    using FlatBeats.Framework.Extensions;
     using Flatliner.Phone.Controls;
 
     public class AnimatedBasePage : ViewModelPage
@@ -268,7 +272,7 @@ namespace Clarity.Phone.Controls
 
             try
             {
-                Dispatcher.BeginInvoke(() =>
+                this.Dispatcher.BeginInvoke(() =>
                 {
                     //Debug.WriteLine("{0} - Animation complete: {1}", this, _currentAnimationType);
                     //Debug.WriteLine("nav mode : {0}", _currentNavigationMode);

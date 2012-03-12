@@ -199,7 +199,7 @@ namespace FlatBeats.ViewModels
                                         && this.NavigationParameters["play"] == "true";
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var login = ProfileService.LoadUserToken().Select(_ => new Unit());
+            var login = ProfileService.LoadUserTokenAsync().Select(_ => new Unit());
             var loadMix = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
                           from played in this.PlayedPanel.LoadAsync(mix)
                           select new Unit();
@@ -265,7 +265,7 @@ namespace FlatBeats.ViewModels
                 this.ShowProgress(StringResources.Progress_Updating); 
             })
                     where response.EventArgs.PopUpResult == PopUpResult.Ok
-                    from reviewAdded in ProfileService.AddMixReview(this.MixId, response.EventArgs.Result)
+                    from reviewAdded in ProfileService.AddMixReviewAsync(this.MixId, response.EventArgs.Result)
                     select reviewAdded;
             q.ObserveOnDispatcher().Subscribe(
                 review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)),
@@ -293,7 +293,7 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress(StringResources.Progress_Loading);
-            ProfileService.SetMixLiked(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+            ProfileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
                 _ => { }, this.HandleError, this.HideProgress);
         }
 
