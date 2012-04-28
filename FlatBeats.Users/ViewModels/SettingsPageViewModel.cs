@@ -11,6 +11,7 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Windows;
+    using System.Linq;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
@@ -248,7 +249,7 @@ namespace FlatBeats.ViewModels
             userSettings.CensorshipEnabled = this.CensorshipEnabled;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
             userSettings.PlayNextMix = this.PlayNextMix;
-            ProfileService.SaveSettings(userSettings);
+            this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { }, this.HandleError));
         }
 
         private string playNextMixText;
@@ -513,7 +514,7 @@ namespace FlatBeats.ViewModels
             var q = ProfileService.LoadUserTokenAsync();
 
             this.AddToLifetime(        
-            q.Subscribe(this.LoadPanels, this.HandleError, this.HideProgress));
+            q.ObserveOnDispatcher().Subscribe(this.LoadPanels, this.HandleError, this.HideProgress));
         }
 
         private void LoadPanels(UserLoginResponseContract user)

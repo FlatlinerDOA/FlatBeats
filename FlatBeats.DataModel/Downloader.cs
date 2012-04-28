@@ -128,10 +128,13 @@ namespace FlatBeats.DataModel
             IObservable<T> sequence = Observable.Empty<T>();
             if (Storage.Exists(cacheFile))
             {
-                sequence = Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
+                return Storage.LoadJsonAsync<T>(cacheFile);
             }
 
-            return sequence.Concat(GetStream(url, false).Select(Json<T>.DeserializeAndClose).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache))));
+            return sequence.Concat(
+                from cache in GetStream(url, false).Select(Json<T>.DeserializeAndClose)
+                from _ in Storage.SaveJsonAsync(cacheFile, cache)
+                select cache);
         }
 
 
@@ -139,10 +142,12 @@ namespace FlatBeats.DataModel
         {
             if (Storage.Exists(cacheFile))
             {
-                return Observable.Return(Json<T>.Deserialize(Storage.Load(cacheFile)));
+                return Storage.LoadJsonAsync<T>(cacheFile);
             }
 
-            return GetStream(url, false).Select(Json<T>.DeserializeAndClose).Do(cache => Storage.Save(cacheFile, Json<T>.Serialize(cache)));
+            return from cache in GetStream(url, false).Select(Json<T>.DeserializeAndClose)
+                   from _ in Storage.SaveJsonAsync<T>(cacheFile, cache)
+                   select cache;
         }
 
         public static IObservable<Stream> GetStream(Uri url, bool disableCache)

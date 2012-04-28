@@ -74,15 +74,15 @@
             Storage.Delete(RecentlyPlayedFilePath);
         }
 
-        public static void SaveNowPlaying(this PlayingMixContract playing)
+        public static IObservable<Unit> SaveNowPlayingAsync(this PlayingMixContract playing)
         {
-            Storage.Save(NowPlayingFilePath, Json<PlayingMixContract>.Serialize(playing));
+            return Storage.SaveJsonAsync(NowPlayingFilePath, playing);
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
-            return ObservableEx.DeferredStart(() => Json<MixesResponseContract>.Deserialize(Storage.Load(RecentlyPlayedFilePath))).
-                    Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
+            return Storage.LoadJsonAsync<MixesResponseContract>(RecentlyPlayedFilePath)
+                .Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
         public static IObservable<Unit> AddToRecentlyPlayedAsync(MixContract mix)
@@ -105,7 +105,7 @@
                                 m.Mixes.Remove(m.Mixes.Last());
                             }
                         })
-                   from mixes in ObservableEx.DeferredStart(() => Storage.Save(RecentlyPlayedFilePath, Json<MixesResponseContract>.Serialize(recentlyPlayed)), Scheduler.Immediate)
+                   from mixes in Storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
                            using (var stream = Storage.LoadStream(imageFilePath))
@@ -129,10 +129,9 @@
                    select new Unit();
         }
 
-        public static PlayingMixContract LoadNowPlaying()
+        public static IObservable<PlayingMixContract> LoadNowPlayingAsync()
         {
-            var data = Storage.Load(NowPlayingFilePath);
-            return Json<PlayingMixContract>.Deserialize(data);
+            return Storage.LoadJsonAsync<PlayingMixContract>(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
@@ -283,10 +282,10 @@
         private static bool ValidResponse(PlayResponseContract response)
         {
             return response != null && response.Status != null && response.Status.StartsWith("200")
-            && response.Set.Track != null && response.Set.Track.TrackUrl != null;
+            && ((response.Set.Track != null && response.Set.Track.TrackUrl != null) || response.Set.IsPastLastTrack);
         }
 
-        private static IObservable<Unit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<Unit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))

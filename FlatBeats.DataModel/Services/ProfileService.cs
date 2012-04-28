@@ -57,14 +57,15 @@
 
         private const string UserLoginFilePath = "userlogin.json";
         
-        public static SettingsContract GetSettings()
+        public static IObservable<SettingsContract> GetSettingsAsync()
         {
-            return Json<SettingsContract>.Deserialize(Storage.Load(SettingsFilePath)) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true };
+            return from json in Storage.LoadStringAsync(SettingsFilePath)
+                   select Json<SettingsContract>.Deserialize(json) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true };
         }
 
-        public static void SaveSettings(SettingsContract settings)
+        public static IObservable<Unit> SaveSettingsAsync(SettingsContract settings)
         {
-            Storage.Save(SettingsFilePath, Json<SettingsContract>.Serialize(settings));
+            return Storage.SaveStringAsync(SettingsFilePath, Json<SettingsContract>.Serialize(settings));
         }
 
         public static IObservable<UserLoginResponseContract> AuthenticateAsync(UserCredentialsContract userCredentials)
@@ -85,35 +86,38 @@
                             where !string.IsNullOrWhiteSpace(user.UserToken)
                             select user;
 
-            return userLogin.Do(response =>
-                {
-                    PlayerService.DeletePlayToken();
-                    SaveCredentials(userCredentials);
-                    SaveUserToken(response);
-                    Downloader.UserToken = response.UserToken;
-                    Downloader.UserCredentials = userCredentials;
-                });
+            return (from loginResponse in userLogin
+                   from _ in SaveCredentialsAsync(userCredentials)
+                   from __ in SaveUserTokenAsync(loginResponse)
+                   select loginResponse)
+                       .Do(response =>
+                        {
+                            PlayerService.DeletePlayToken();
+                            Downloader.UserToken = response.UserToken;
+                            Downloader.UserCredentials = userCredentials;
+                        });
         }
 
-        private static void SaveCredentials(UserCredentialsContract userCredentials)
+        private static IObservable<Unit> SaveCredentialsAsync(UserCredentialsContract userCredentials)
         {
-            Storage.Save(CredentialsFilePath, Json<UserCredentialsContract>.Serialize(userCredentials));
+            return Storage.SaveJsonAsync(CredentialsFilePath, userCredentials);
         }
 
         public static IObservable<UserCredentialsContract> LoadCredentialsAsync()
         {
-            return ObservableEx.DeferredStart(() => Json<UserCredentialsContract>.Deserialize(Storage.Load(CredentialsFilePath))).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
+            return Storage.LoadJsonAsync<UserCredentialsContract>(CredentialsFilePath).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
         }
 
-        private static void SaveUserToken(UserLoginResponseContract login)
+        private static IObservable<Unit> SaveUserTokenAsync(UserLoginResponseContract login)
         {
-            Storage.Save(UserLoginFilePath, Json<UserLoginResponseContract>.Serialize(login));
+            return Storage.SaveJsonAsync(UserLoginFilePath, login);
         }
 
         public static IObservable<UserLoginResponseContract> LoadUserTokenAsync()
         {
-            return ObservableEx.DeferredStart(() => Json<UserLoginResponseContract>.Deserialize(Storage.Load(UserLoginFilePath))).Where(c => c != null && c.CurrentUser != null).Do(
-                    user => Downloader.UserToken = user.UserToken);
+            return Storage.LoadJsonAsync<UserLoginResponseContract>(UserLoginFilePath)
+                .Where(c => c != null && c.CurrentUser != null)
+                .Do(user => Downloader.UserToken = user.UserToken);
         }
 
         public static IObservable<UserProfileResponseContract> GetUserProfileAsync(string userId)

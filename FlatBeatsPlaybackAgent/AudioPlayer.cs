@@ -57,7 +57,8 @@ namespace FlatBeatsPlaybackAgent
                     {
                         if (this.nowPlaying == null)
                         {
-                            this.nowPlaying = PlayerService.LoadNowPlaying();
+                            // HACK: Should load async
+                            this.nowPlaying = PlayerService.LoadNowPlayingAsync().FirstOrDefault();
                         }
                     }
                 }
@@ -84,7 +85,8 @@ namespace FlatBeatsPlaybackAgent
         {
             get
             {
-                return this.userSettings ?? (this.userSettings = ProfileService.GetSettings());
+                // TODO: HACK: Should load async 
+                return this.userSettings ?? (this.userSettings = ProfileService.GetSettingsAsync().FirstOrDefault());
             }
         }
 
@@ -278,7 +280,8 @@ namespace FlatBeatsPlaybackAgent
                 return this.StopPlayingAsync(player);
             }
 
-            if (this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
+            //// this.NowPlaying.Set.IsLastTrack || 
+            if (this.NowPlaying.Set.IsPastLastTrack)
             {
                 if (this.UserSettings.PlayNextMix)
                 {
@@ -289,27 +292,29 @@ namespace FlatBeatsPlaybackAgent
                                t => 
                                { 
                                    this.NowPlaying = t; 
-                                   this.NowPlaying.SaveNowPlaying();
                                })
+                           from _ in this.NowPlaying.SaveNowPlayingAsync()
                            from play in this.PlayTrackAsync(player)
                            select play;
-                    return nextMix.Catch<Unit, WebException>(ex => Observable.Empty<Unit>());
+                    return nextMix
+                        .Catch<Unit, ServiceException>(ex => this.StopPlayingAsync(player))
+                        .Catch<Unit, WebException>(ex => this.StopPlayingAsync(player));
                 }
 
                 return this.StopPlayingAsync(player);
             }
 
-            var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player)
-                                from d in ObservableEx.DeferredStart(
-                                    () =>
+            var playNextTrack = from nextResponse in this.NowPlaying.NextTrackAsync(player).Do(r => 
                                         {
-                                            this.NowPlaying.Set = nextResponse.Set;
-                                            this.NowPlaying.SaveNowPlaying();
+                                            this.NowPlaying.Set = r.Set;
                                         })
+                                from _ in this.NowPlaying.SaveNowPlayingAsync()
                                 from play in this.PlayTrackAsync(player)
                                 select play;
 
-            return playNextTrack.Catch<Unit, WebException>(ex => Observable.Empty<Unit>())
+            return playNextTrack
+                .Catch<Unit, ServiceException>(ex => this.StopPlayingAsync(player))
+                .Catch<Unit, WebException>(ex => this.StopPlayingAsync(player))
                 .Catch<Unit, Exception>(
                 ex =>
                     {
@@ -336,7 +341,15 @@ namespace FlatBeatsPlaybackAgent
                 return this.StopPlayingAsync(player);
             }
 
-            if (player.PlayerState == PlayState.Paused)
+            if (this.NowPlaying == null || this.NowPlaying.Set == null)
+            {
+                Debug.WriteLine("Player: PlayTrackAsync (Now Playing not set)");
+
+                // Reset as we don't know what we're playing anymore.
+                return this.StopPlayingAsync(player);
+            }
+
+            if (player.PlayerState == PlayState.Paused && player.Track.Tag.StartsWith(this.NowPlaying.MixId + "|"))
             {
                 Debug.WriteLine("Player: PlayTrackAsync (Resume from Paused)");
 
@@ -348,14 +361,6 @@ namespace FlatBeatsPlaybackAgent
                 return Observable.Return(new Unit());
             }
 
-            if (this.NowPlaying == null || this.NowPlaying.Set == null)
-            {
-                Debug.WriteLine("Player: PlayTrackAsync (Now Playing not set)");
-
-                // Reset as we don't know what we're playing anymore.
-                return this.StopPlayingAsync(player);
-            }
-
             if (this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
             {
                 return this.StopPlayingAsync(player);
@@ -365,8 +370,8 @@ namespace FlatBeatsPlaybackAgent
 
             // Set which track to play. When the TrackReady state is received 
             // in the OnPlayStateChanged handler, call player.Play().
-            return PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
-                trackUrl =>
+            return from trackAddress in PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
+                    trackUrl =>
                     {
                         var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;
                         var playControls = !this.NowPlaying.Set.IsLastTrack && this.NowPlaying.Set.SkipAllowed
@@ -383,7 +388,8 @@ namespace FlatBeatsPlaybackAgent
                             playControls);
                         player.Track = track;
                         player.Volume = 1;
-                    }).Select(_ => new Unit());
+                    })
+                   select new Unit();
         }
 
         /// <summary>
@@ -402,11 +408,11 @@ namespace FlatBeatsPlaybackAgent
             }
 
             var nextTrack = from nextResponse in this.NowPlaying.SkipToNextTrackAsync(player).Do(
-                response =>
+                    response =>
                     {
                         this.NowPlaying.Set = response.Set;
-                        this.NowPlaying.SaveNowPlaying();
-                    }).ObserveOn(Scheduler.CurrentThread)
+                    })
+                   from _ in this.NowPlaying.SaveNowPlayingAsync().ObserveOn(Scheduler.CurrentThread)
                    from play in this.PlayTrackAsync(player)
                    select play;
 
@@ -433,9 +439,11 @@ namespace FlatBeatsPlaybackAgent
         private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
         {
             Debug.WriteLine("Player: StopPlayingAsync");
-            return
-                this.NowPlaying.StopAsync(player).Catch<Unit, WebException>(ex => Observable.Return(new Unit())).ObserveOn(Scheduler.CurrentThread).Do(
-                    _ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
+            return this.NowPlaying.StopAsync(player)
+                .Catch<Unit, ServiceException>(ex => Observable.Return(new Unit()))
+                .Catch<Unit, WebException>(ex => Observable.Return(new Unit()))
+                .ObserveOn(Scheduler.CurrentThread)
+                .Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }
 
         /// <summary>
@@ -444,22 +452,28 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         private void StopPlayingMix(BackgroundAudioPlayer player)
         {
+            try
+            {
                 if (player.PlayerState != PlayState.Unknown && 
                     player.PlayerState != PlayState.Stopped && 
                     player.PlayerState != PlayState.Error)
                 {
-                    try
-                    {
                         player.Stop();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                    }
-                    finally
-                    {
-                        player.Track = null;
-                    }
                 }
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                try
+                {
+                    player.Track = null;
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
         }
 
         #endregion

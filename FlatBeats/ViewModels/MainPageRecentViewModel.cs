@@ -27,16 +27,17 @@
         public IObservable<Unit> LoadAsync()
         {
             this.Message = null;
-            var playing = PlayerService.LoadNowPlaying();
-            var recentMixes = PlayerService.RecentlyPlayedAsync()
-                .Select(p => new Page<MixContract>(p.Mixes, 1, p.Mixes.Count)).Do(_ => Debug.WriteLine("Load recent list"))
-                .AddOrReloadPage(
-                    this.Mixes,
-                    (vm, mix) =>
-                    {
-                        vm.Load(mix);
-                        vm.IsNowPlaying = playing != null && playing.MixId == mix.Id;
-                    });
+            var recentMixes = from playing in PlayerService.LoadNowPlayingAsync()
+                              from recentlyPlayed in PlayerService.RecentlyPlayedAsync()
+                                  .Select(p => new Page<MixContract>(p.Mixes, 1, p.Mixes.Count)).Do(_ => Debug.WriteLine("Load recent list"))
+                                  .ObserveOnDispatcher().AddOrReloadPage(
+                                      this.Mixes,
+                                      (vm, mix) =>
+                                      {
+                                          vm.Load(mix);
+                                          vm.IsNowPlaying = playing != null && playing.MixId == mix.Id;
+                                      }) 
+                              select recentlyPlayed;
             return recentMixes.FinallySelect(
                     () =>
                     {

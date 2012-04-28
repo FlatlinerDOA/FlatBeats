@@ -248,6 +248,7 @@ namespace FlatBeats.ViewModels
         }
 
         /// <summary>
+        /// If the current mix is not playing, stops whatever is playing starts this mix, otherwise toggles between play and pause.
         /// </summary>
         public void Play()
         {
@@ -270,14 +271,20 @@ namespace FlatBeats.ViewModels
             if (this.Player.IsPlayingATrack())
             {
                 this.ShowProgress("Stopping previous mix...");
-                this.AddToLifetime(this.Player.PlayStateChanges().Where(s => s == PlayState.Stopped).Take(1).Finally(this.StartPlayingMixFromBeginning).Subscribe());
-                this.Player.Stop();
+
+                // Get what is currently playing and report it
+                this.AddToLifetime((from playing in PlayerService.LoadNowPlayingAsync()
+                                   from _ in playing.AddToMixTrackHistoryAsync(this.Player.Track.Duration)
+                                   select _).Finally(this.StartPlayingMixFromBeginning).Subscribe());
                 return;
             }
 
             this.StartPlayingMixFromBeginning();
         }
 
+        /// <summary>
+        /// Starts playing this mix from the beginning.
+        /// </summary>
         private void StartPlayingMixFromBeginning()
         {
             this.ShowProgress("Playing...");
@@ -285,7 +292,10 @@ namespace FlatBeats.ViewModels
                 m =>
                     {
                         this.NowPlaying = m;
-                        this.NowPlaying.SaveNowPlaying();
+                    })
+                    from _ in this.NowPlaying.SaveNowPlayingAsync().ObserveOn(Scheduler.Dispatcher)
+                    .Do(_ =>
+                    {
                         this.Player.Play();
                         this.UpdateIsNowPlaying();
                     })
@@ -364,7 +374,8 @@ namespace FlatBeats.ViewModels
         {
             if (this.IsPlayingTrackForThisMix)
             {
-                this.NowPlaying = PlayerService.LoadNowPlaying();
+                // TODO: HACK: Make async
+                this.NowPlaying = PlayerService.LoadNowPlayingAsync().FirstOrDefault();
             }
             else
             {

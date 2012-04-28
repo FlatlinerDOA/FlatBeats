@@ -34,7 +34,7 @@
         /// </summary>
         /// <param name="file"></param>
         /// <param name="text"></param>
-        public static void Save(string file, string text)
+        private static void Save(string file, string text)
         {
             if (file == null)
             {
@@ -57,13 +57,33 @@
             }
         }
 
+        public static IObservable<Unit> SaveJsonAsync<T>(string file, T data) where T : class
+        {
+            return ObservableEx.DeferredStart(
+                () =>
+                {
+                    var json = Json<T>.Serialize(data);
+                    Save(file, json);
+                }, Scheduler.ThreadPool);
+        }
+
+        public static IObservable<Unit> SaveStringAsync(string file, string text)
+        {
+            return ObservableEx.DeferredStart(() => Save(file, text), Scheduler.ThreadPool);
+        }
+
+        public static IObservable<T> LoadJsonAsync<T>(string file) where T : class
+        {
+            return ObservableEx.DeferredStart(() =>
+            {
+                var json = Load(file);
+                return Json<T>.Deserialize(json);
+            }, Scheduler.ThreadPool);
+        }
+
         public static IObservable<string> LoadStringAsync(string file)
         {
-            // TODO: Figure out how to do this using asynchronous calls.
-            ////return from storage in Observable.Start(() => IsolatedStorageFile.GetUserStoreForApplication())
-            ////       from stream in Observable.Start(() => new IsolatedStorageFileStream(file, FileMode.Open, storage))
-            ////       from data in Observable.FromAsyncPattern(stream.BeginRead, stream.EndRead)
-            return ObservableEx.DeferredStart(() => Load(file));
+            return ObservableEx.DeferredStart(() => Load(file), Scheduler.ThreadPool);
         }
 
         /// <summary>
@@ -71,7 +91,7 @@
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static string Load(string file)
+        private static string Load(string file)
         {
             if (file == null)
             {
