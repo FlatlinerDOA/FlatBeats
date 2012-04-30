@@ -358,7 +358,7 @@ namespace FlatBeatsPlaybackAgent
                 player.Volume = 1;
                 player.Play();
 
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             if (this.NowPlaying.Set.Track == null || this.NowPlaying.Set.Track.TrackUrl == null)
@@ -389,7 +389,7 @@ namespace FlatBeatsPlaybackAgent
                         player.Track = track;
                         player.Volume = 1;
                     })
-                   select new Unit();
+                   select ObservableEx.Unit;
         }
 
         /// <summary>
@@ -440,8 +440,8 @@ namespace FlatBeatsPlaybackAgent
         {
             Debug.WriteLine("Player: StopPlayingAsync");
             return this.NowPlaying.StopAsync(player)
-                .Catch<Unit, ServiceException>(ex => Observable.Return(new Unit()))
-                .Catch<Unit, WebException>(ex => Observable.Return(new Unit()))
+                .Catch<Unit, ServiceException>(ex => ObservableEx.SingleUnit())
+                .Catch<Unit, WebException>(ex => ObservableEx.SingleUnit())
                 .ObserveOn(Scheduler.CurrentThread)
                 .Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }

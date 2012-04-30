@@ -9,6 +9,7 @@
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Phone;
 
     public class ReviewsPanelViewModel : InfiniteScrollPanelViewModel<ReviewViewModel, ReviewContract>
     {
@@ -26,7 +27,7 @@
 
             if (this.IsDataLoaded)
             {
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             this.IsDataLoaded = true;

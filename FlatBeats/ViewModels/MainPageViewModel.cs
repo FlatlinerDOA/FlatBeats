@@ -223,7 +223,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void LoadAllDataCompleted()
         {
-            if (this.Liked.Items.Count != 0)
+            if (this.Liked.Items.Count >= 5)
             {
                 this.TagsPanel.Title = StringResources.Title_LikedTags;
                 this.TagsPanel.Load(this.Liked.Items);
@@ -267,7 +267,7 @@ namespace FlatBeats.ViewModels
                 this.BackgroundImage = new ImageBrush
                     {
                         ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation },
-                        Opacity = 0.4,
+                        Opacity = 0.3,
                         Stretch = Stretch.UniformToFill
                     };
             }

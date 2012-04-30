@@ -68,7 +68,7 @@ namespace FlatBeats.DataModel.Data
         {
             if (item == null)
             {
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             return Observable.CreateWithDisposable<Unit>(
@@ -89,7 +89,7 @@ namespace FlatBeats.DataModel.Data
                             }
                         }
 
-                        observer.OnNext(new Unit());
+                        observer.OnNext(ObservableEx.Unit);
                         observer.OnCompleted();
                     }
                     catch (IOException error)
@@ -126,7 +126,7 @@ namespace FlatBeats.DataModel.Data
                     }
                 }
 
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }).Wait(this.syncLock, TimeSpan.FromSeconds(5));
         }
 

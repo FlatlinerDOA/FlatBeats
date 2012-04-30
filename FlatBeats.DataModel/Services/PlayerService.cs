@@ -63,7 +63,7 @@
 
             if (nowPlaying == null)
             {
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             return AddToMixTrackHistoryAsync(nowPlaying, timePlayed);
@@ -126,7 +126,7 @@
                                MediaHistory.Instance.WriteRecentPlay(item);
                            }
                        })
-                   select new Unit();
+                   select ObservableEx.Unit;
         }
 
         public static IObservable<PlayingMixContract> LoadNowPlayingAsync()
@@ -290,13 +290,13 @@
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))
             {
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             var payment = from response in Downloader.GetJson<ResponseContract>(ApiUrl.ReportTrack(playing.PlayToken, playing.MixId, playing.Set.Track.Id))
                           select new Unit();
 
-            return payment.Catch<Unit, Exception>(ex => Observable.Return(new Unit()));
+            return payment.Catch<Unit, Exception>(ex => ObservableEx.SingleUnit());
         }
 
         public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)

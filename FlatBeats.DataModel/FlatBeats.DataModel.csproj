@@ -65,6 +65,7 @@
     <Compile Include="Data\IPaginatedAsyncRepository.cs" />
     <Compile Include="Data\JsonFileRepository.cs" />
     <Compile Include="Data\RecentlyPlayedRepository.cs" />
+    <Compile Include="DisposableWebRequest.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="MixContract.cs" />

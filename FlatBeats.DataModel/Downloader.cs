@@ -16,6 +16,7 @@ namespace FlatBeats.DataModel
     using Microsoft.Phone.Reactive;
 
     using SharpGIS;
+    using System.Text;
 
     /// <summary>
     /// </summary>
@@ -97,6 +98,15 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<Unit> GetAndSaveFile(Uri url, string fileName)
         {
+            return GetStream(url, false).TrySelect(
+                        stream =>
+                        {
+                            Storage.Save(fileName, stream);
+                            return ObservableEx.Unit;
+                        });
+                                             
+
+            /*
             var webRequest = from client in Observable.Return(CreateClient(false))
                              from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                                  observer =>
@@ -116,11 +126,11 @@ namespace FlatBeats.DataModel
                                                  }
 
                                                  Storage.Save(fileName, evt.Result);
-                                                 return new Unit();
+                                                 return ObservableEx.Unit;
                                              })
                              select completed;
 
-            return webRequest;
+            return webRequest;*/
         }
 
         public static IObservable<T> GetJsonCachedAndRefreshed<T>(Uri url, string cacheFile) where T : class
@@ -152,6 +162,8 @@ namespace FlatBeats.DataModel
 
         public static IObservable<Stream> GetStream(Uri url, bool disableCache)
         {
+            return WebRequestAsync(url, disableCache).TrySelect(r => r.GetResponseStream());
+            /*
             return from client in Observable.Return(CreateClient(disableCache)).SubscribeOn(Scheduler.ThreadPool)
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
                        observer =>
@@ -166,6 +178,7 @@ namespace FlatBeats.DataModel
                                return subscription;
                            }).TrySelect(evt => evt.Result)
                        select completed;
+          */
         }
 
         /// <summary>
@@ -210,6 +223,37 @@ namespace FlatBeats.DataModel
         /// </returns>
         public static IObservable<string> PostAndGetString(Uri url, string postData)
         {
+            return Observable.Using(
+                () =>
+                {
+                    var r = CreateRequest(url, true);
+                    r.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    return r;
+                },
+                r =>
+                {
+                    Debug.WriteLine("GET " + url.OriginalString);
+
+                    return from requestStream in Observable.FromAsyncPattern<Stream>(r.BeginGetRequestStream, r.EndGetRequestStream)().Do(
+                               s =>
+                               {
+                                   var data = Encoding.UTF8.GetBytes(postData);
+                                   s.Write(data, 0, data.Length);
+                               })
+                           from response in Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)()
+                           select response;
+                }).TrySelect(t =>
+                {
+                    using (var responseStream = t.GetResponseStream())
+                    {
+                        using (var sr = new StreamReader(responseStream))
+                        {
+                            return sr.ReadToEnd();
+                        }
+                    }
+                });
+
+            /*
             var sequence = from client in Observable.Return(CreateClient(true))
                            from completed in Observable.CreateWithDisposable<UploadStringCompletedEventArgs>(
                                observer =>
@@ -227,7 +271,7 @@ namespace FlatBeats.DataModel
                                        return subscription;
                                    }).TrySelect(evt => evt.Result)
                            select completed;
-            return sequence;
+            return sequence;*/
         }
 
         /// <summary>
@@ -252,6 +296,38 @@ namespace FlatBeats.DataModel
 
         #region Methods
 
+        private static IObservable<WebResponse> WebRequestAsync(Uri address, bool noCache)
+        {
+            return Observable.Using(
+                () => CreateRequest(address, noCache),
+                r =>
+                {
+                    Debug.WriteLine("GET " + address.OriginalString);
+                    return Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)();
+                });
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        private static DisposableWebRequest CreateRequest(Uri address, bool noCache)
+        {
+            var request = new DisposableWebRequest(address);
+            request.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
+
+            if (IsAuthenticated)
+            {
+                request.Headers["X-User-Token"] = UserToken;
+            }
+
+            if (noCache)
+            {
+                request.Headers[HttpRequestHeader.Pragma] = "no-cache";
+            }
+
+            return request;
+        }
 
         /// <summary>
         /// </summary>

@@ -8,6 +8,7 @@
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Phone;
 
     /// <summary>
     /// Panel of list of users that a user is following
@@ -40,7 +41,7 @@
             this.UserId = userId;
             if (this.IsDataLoaded)
             {
-                return Observable.Return(new Unit());
+                return ObservableEx.SingleUnit();
             }
 
             this.IsDataLoaded = true;
