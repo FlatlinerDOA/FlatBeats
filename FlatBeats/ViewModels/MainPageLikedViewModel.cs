@@ -12,6 +12,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
+    using FlatBeats.DataModel.Profile;
 
     public class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
@@ -20,10 +21,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MainPageLikedViewModel()
         {
-            this.Title = StringResources.Title_LikedMixes;
         }
 
-        public bool IsDataLoaded { get; set; }
+        private string loadedList;
 
         public override IObservable<Unit> LoadAsync()
         {
@@ -32,20 +32,50 @@ namespace FlatBeats.ViewModels
             ////    this.Reset();
             ////}
 
-            this.IsDataLoaded = true;
-            this.UserId = null;
-            var load = from userToken in ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id)
-                       from items in this.LoadItemsAsync() 
-                       select new Unit();
-            return load.Do(_ => { }, this.LoadPageCompleted).FinallySelect(() => new Unit());
+            if (loadedList != UserSettings.Current.PreferredList)
+            {
+                loadedList = UserSettings.Current.PreferredList;
+
+                switch (loadedList)
+                {
+                    case PreferredLists.Created:
+                        this.Title = StringResources.Title_CreatedMixes;
+                        break;
+                    case PreferredLists.MixFeed:
+                        this.Title = StringResources.Title_MixFeed;
+                        break;
+                    default:
+                        this.Title = StringResources.Title_LikedMixes;
+                        break;
+                }
+
+                this.CurrentRequestedPage = 0;
+                this.Items.Clear();
+            }
+
+            return from userToken in ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id)
+                   from result in base.LoadAsync()
+                   select result;
         }
 
         protected string UserId { get; set; }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
+            if (loadedList == PreferredLists.Created)
+            {
+                return (from page in ProfileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)
+                        select (IList<MixContract>)page.Mixes);
+            }
+
+            if (loadedList == PreferredLists.MixFeed)
+            {
+                return (from page in ProfileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize)
+                        select (IList<MixContract>)page.Mixes);
+            }
+
             return (from page in ProfileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
-                     select (IList<MixContract>)page.Mixes);
+                    select (IList<MixContract>)page.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
@@ -55,7 +85,7 @@ namespace FlatBeats.ViewModels
 
         protected override void LoadPageCompleted()
         {
-            if (this.UserId == null || this.Items.Count == 0)
+            if (this.Items.Count == 0)
             {
                 this.Items.Clear();
                 this.Message = StringResources.Message_NoLikedMixes;

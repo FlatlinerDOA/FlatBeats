@@ -20,13 +20,13 @@ namespace FlatBeats
 
     public partial class SearchPanel : UserControl
     {
-        private readonly Subject<string> searches = new Subject<string>();
+        private Subject<string> searches;
 
-        public IObservable<string> Searches 
+        public Subject<string> Searches 
         { 
             get
             {
-                return this.searches;
+                return this.searches = (this.searches ?? new Subject<string>());
             } 
         }
 
@@ -94,7 +94,11 @@ namespace FlatBeats
                 this.navigation.Navigating -= this.Navigating;
             }
 
-            this.searches.OnCompleted();
+            if (this.searches != null)
+            {
+                this.searches.OnCompleted();
+                this.searches = null;
+            }
         }
 
         private void PerformSearch()
@@ -105,7 +109,7 @@ namespace FlatBeats
                 return;
             }
 
-            this.searches.OnNext(this.searchText.Text);
+            this.Searches.OnNext(this.searchText.Text);
             this.Navigation.Navigate(PageUrl.SearchMixes(this.searchText.Text));
         }
     }

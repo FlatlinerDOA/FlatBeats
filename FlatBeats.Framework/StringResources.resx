@@ -367,4 +367,16 @@ Link:
   <data name="Message_YouHaveNoLikedMixes" xml:space="preserve">
     <value>You haven't liked any mixes yet.</value>
   </data>
+  <data name="Label_PreferredList" xml:space="preserve">
+    <value>Show on home page:</value>
+  </data>
+  <data name="PreferredLists_Created" xml:space="preserve">
+    <value>My mixes</value>
+  </data>
+  <data name="PreferredLists_Liked" xml:space="preserve">
+    <value>My liked mixes</value>
+  </data>
+  <data name="PreferredLists_MixFeed" xml:space="preserve">
+    <value>Mix feed</value>
+  </data>
 </root>

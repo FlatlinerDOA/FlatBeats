@@ -301,7 +301,7 @@ namespace FlatBeats.ViewModels
                     })
                     select true;
 
-            playSequence.Subscribe(this.isPlayingChanges.OnNext, this.HandleError);
+            playSequence.Subscribe(this.IsPlayingChanges.OnNext, this.HandleError);
         }
 
         private void SkipNext()
@@ -310,15 +310,15 @@ namespace FlatBeats.ViewModels
             this.Player.SkipNext();
         }
 
-        private readonly Subject<bool> isPlayingChanges = new Subject<bool>();
+        private Subject<bool> isPlayingChanges;
 
         private bool isDataLoaded;
 
-        public IObservable<bool> IsPlayingChanges 
+        public Subject<bool> IsPlayingChanges 
         { 
             get
             {
-                return this.isPlayingChanges;
+                return this.isPlayingChanges = (this.isPlayingChanges ?? new Subject<bool>());
             } 
         }
 
@@ -383,6 +383,17 @@ namespace FlatBeats.ViewModels
             }
 
             this.UpdateIsNowPlaying();
+        }
+
+        public override void Unload()
+        {
+            if (this.isPlayingChanges != null)
+            {
+                this.isPlayingChanges.OnCompleted();
+                this.isPlayingChanges = null;
+            }
+
+            base.Unload();
         }
 
         private IObservable<Unit> RefreshPlayedTracksAsync(MixContract loadMix)

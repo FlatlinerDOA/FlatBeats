@@ -23,6 +23,9 @@ namespace FlatBeats.ViewModels
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
+    using System.Collections.ObjectModel;
+    using FlatBeats.DataModel.Profile;
+using System.Collections.Generic;
 
     /// <summary>
     /// </summary>
@@ -50,6 +53,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private string signupLabelText;
 
+        private string preferredListText;
+
         /// <summary>
         /// </summary>
         private string userName;
@@ -74,6 +79,7 @@ namespace FlatBeats.ViewModels
             this.UserNameLabelText = StringResources.Label_UserName;
             this.PasswordLabelText = StringResources.Label_Password;
             this.PlayNextMixText = StringResources.Label_PlayNextMix;
+            this.PreferredListText = StringResources.Label_PreferredList;
             this.CensorshipEnabledText = StringResources.Label_CensorshipEnabled;
             this.PlayOverWifiOnlyText = StringResources.Label_PlayOverWifiOnly;
             this.CanLogin = false;
@@ -86,6 +92,7 @@ namespace FlatBeats.ViewModels
             this.LoginCommand = new DelegateCommand(this.SignIn);
             this.ResetCommand = new DelegateCommand(this.SignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
+            this.PreferredListChoices = new ObservableCollection<string>();
         }
 
         private ErrorMessage HandleSignInWebException(ServiceException ex)
@@ -249,6 +256,7 @@ namespace FlatBeats.ViewModels
             userSettings.CensorshipEnabled = this.CensorshipEnabled;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
             userSettings.PlayNextMix = this.PlayNextMix;
+            userSettings.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
             this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { }, this.HandleError));
         }
 
@@ -364,6 +372,28 @@ namespace FlatBeats.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// </summary>
+        public string PreferredListText
+        {
+            get
+            {
+                return this.preferredListText;
+            }
+
+            set
+            {
+                if (this.preferredListText == value)
+                {
+                    return;
+                }
+
+                this.preferredListText = value;
+                this.OnPropertyChanged("PreferredListText");
+            }
+        }
+
         /// <summary>
         /// </summary>
         public string UserName
@@ -435,17 +465,56 @@ namespace FlatBeats.ViewModels
 
         private bool isSettingsLoaded;
 
+        private readonly Dictionary<string, string> preferredListMap = new Dictionary<string, string>()
+        {
+            { PreferredLists.Liked, StringResources.PreferredLists_Liked },
+            { PreferredLists.MixFeed, StringResources.PreferredLists_MixFeed },
+            { PreferredLists.Created, StringResources.PreferredLists_Created }
+        };
+
         private void LoadSettings()
         {
             this.isSettingsLoaded = false;
+
+            this.PreferredListChoices.Clear();
+            foreach (var item in preferredListMap)
+            {
+                this.PreferredListChoices.Add(item.Value);
+            }
+            
             var userSettings = UserSettings.Current;
             this.CensorshipEnabled = userSettings.CensorshipEnabled;
             this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
             this.PlayNextMix = userSettings.PlayNextMix;
+            this.PreferredList = this.preferredListMap[userSettings.PreferredList ?? PreferredLists.Created];
             this.isSettingsLoaded = true;
         }
 
         #endregion
+
+        private string preferredList;
+
+        public string PreferredList
+        {
+            get
+            {
+                return this.preferredList;
+            }
+
+            set
+            {
+                if (this.preferredList == value)
+                {
+                    return;
+                }
+
+                this.preferredList = value;
+                this.OnPropertyChanged("PreferredList");
+                this.SaveSettings();
+            }
+        }
+
+        public ObservableCollection<string> PreferredListChoices { get; private set; }
 
         private bool isLoggedIn;
 

@@ -20,6 +20,7 @@ namespace FlatBeats.ViewModels
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Phone;
 
     /// <summary>
     /// </summary>
@@ -177,12 +178,13 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
             if (this.IsDataLoaded)
             {
-                this.Liked.LoadFirstPage();
                 this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
+                this.Liked.LoadFirstPage();
                 return;
             }
 
@@ -190,13 +192,11 @@ namespace FlatBeats.ViewModels
                     Observable.Timer(TimeSpan.FromMilliseconds(250)).ObserveOnDispatcher().Do(
                         _ => this.Liked.LoadFirstPage())
                 from second in
-                    Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher().Do(
+                    Observable.Timer(TimeSpan.FromSeconds(1)).ObserveOnDispatcher().Do(
                         _ => this.LoadRecentAndLatestPanels())
-                select new Unit();
+                select ObservableEx.SingleUnit();
 
-            this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError));
-
-
+            this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
         }
 
         /// <summary>

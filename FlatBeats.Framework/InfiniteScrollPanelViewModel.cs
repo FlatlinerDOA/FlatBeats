@@ -13,7 +13,7 @@
 
     public class InfiniteScrollPanelViewModel : PanelViewModel, IInfiniteScroll
     {
-        private Subject<int> pageRequests = new Subject<int>();
+        private Subject<int> pageRequests;
 
         /// <summary>
         /// Initializes a new instance of the InfiniteScrollPanelViewModel class.
@@ -23,11 +23,11 @@
             this.PageSize = 20;
         }
 
-        public IObservable<int> PageRequests 
+        public Subject<int> PageRequests 
         {
             get
             {
-                return this.pageRequests; 
+                return this.pageRequests = (this.pageRequests ?? new Subject<int>()); 
             } 
         }
 
@@ -37,8 +37,11 @@
 
         public virtual void StopLoadingPages()
         {
-            this.pageRequests.OnCompleted();
-            this.pageRequests = new Subject<int>();
+            if (this.pageRequests != null)
+            {
+                this.pageRequests.OnCompleted();
+                this.pageRequests = null;
+            }
         }
 
         public override void Unload()
@@ -88,7 +91,7 @@
         public virtual void LoadNextPage()
         {
             this.CurrentRequestedPage++;
-            this.pageRequests.OnNext(this.CurrentRequestedPage);
+            this.PageRequests.OnNext(this.CurrentRequestedPage);
         }
     }
 
