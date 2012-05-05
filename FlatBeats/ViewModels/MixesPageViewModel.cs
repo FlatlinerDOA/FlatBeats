@@ -133,7 +133,6 @@ namespace FlatBeats.ViewModels
             string queryString, tagQueryString;
             this.NavigationParameters.TryGetValue("tag", out tagQueryString);
             this.NavigationParameters.TryGetValue("q", out queryString);
-
             this.Load(tagQueryString, queryString);
         }
 
@@ -158,9 +157,13 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(this.Hot.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
             this.AddToLifetime(this.Popular.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
             if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
             {
+
                 return;
             }
 
@@ -183,9 +186,9 @@ namespace FlatBeats.ViewModels
                 this.Popular.Tag = this.Tag;
             }
 
-            this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
             this.CurrentPanel.LoadFirstPage();
         }
