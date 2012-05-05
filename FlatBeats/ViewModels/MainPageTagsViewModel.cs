@@ -5,7 +5,9 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
+    using Flatliner.Phone.Extensions;
 
+    using Flatliner.Phone;
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
@@ -29,7 +31,7 @@
         /// </summary>
         public void Load(IEnumerable<MixViewModel> mixes)
         {
-            var tagList = TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags)).OrderBy(t => t.TagName).ToList();
+            var tagList = TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags).NotNullOrEmpty()).OrderBy(t => t.TagName).ToList();
             tagList.Add(new TagViewModel("more..."));
 
             this.Tags.Clear();

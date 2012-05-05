@@ -10,6 +10,7 @@
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
+    using System.Windows;
     
     public abstract class PanelViewModel : Flatliner.Phone.ViewModels.PanelViewModel
     {
@@ -67,6 +68,33 @@
 
                 return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, Framework.StringResources.Error_ServerUnavailable_Message);
         }
+
+        private double opacity;
+
+        public double Opacity
+        {
+            get
+            {
+                return this.opacity;
+            }
+
+            set
+            {
+                if (this.opacity == value)
+                {
+                    return;
+                }
+
+                this.opacity = value;
+                this.OnPropertyChanged(() => this.Opacity);
+            }
+        }
+
+        public void Display()
+        {
+            this.Opacity = 1;
+        }
+
 
         public static ErrorMessage GetServiceErrorMessage(ServiceException ex)
         {

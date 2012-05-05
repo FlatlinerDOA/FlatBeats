@@ -10,6 +10,7 @@
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
+    using System.Windows;
 
     public class MainPageRecentViewModel : PanelViewModel
     {

@@ -138,7 +138,7 @@ namespace FlatBeats.DataModel
             IObservable<T> sequence = Observable.Empty<T>();
             if (Storage.Exists(cacheFile))
             {
-                return Storage.LoadJsonAsync<T>(cacheFile);
+                sequence = Storage.LoadJsonAsync<T>(cacheFile);
             }
 
             return sequence.Concat(
@@ -162,7 +162,18 @@ namespace FlatBeats.DataModel
 
         public static IObservable<Stream> GetStream(Uri url, bool disableCache)
         {
-            return WebRequestAsync(url, disableCache).TrySelect(r => r.GetResponseStream());
+            return WebRequestAsync(url, disableCache).TrySelect(
+                r =>
+                {
+                    Stream c = new MemoryStream();
+                    using (var s = r.GetResponseStream())
+                    {
+                        s.CopyTo(c);
+                    }
+
+                    c.Position = 0;
+                    return c;
+                });
             /*
             return from client in Observable.Return(CreateClient(disableCache)).SubscribeOn(Scheduler.ThreadPool)
                    from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
@@ -227,7 +238,8 @@ namespace FlatBeats.DataModel
                 () =>
                 {
                     var r = CreateRequest(url, true);
-                    r.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    r.Method = "POST";
+                    r.ContentType = "application/x-www-form-urlencoded";
                     return r;
                 },
                 r =>
@@ -239,14 +251,19 @@ namespace FlatBeats.DataModel
                                {
                                    var data = Encoding.UTF8.GetBytes(postData);
                                    s.Write(data, 0, data.Length);
+                                   s.Flush();
+                                   s.Close();
                                })
-                           from response in Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)()
+                           from response in Observable.FromAsyncPattern<WebResponse>((c, st) => r.BeginGetResponse(c, st), (ar) => r.EndGetResponse(ar))()
                            select response;
                 }).TrySelect(t =>
                 {
                     using (var responseStream = t.GetResponseStream())
                     {
-                        using (var sr = new StreamReader(responseStream))
+                        var c = new MemoryStream();
+                        responseStream.CopyTo(c);
+                        c.Position = 0;
+                        using (var sr = new StreamReader(c))
                         {
                             return sr.ReadToEnd();
                         }
@@ -272,6 +289,10 @@ namespace FlatBeats.DataModel
                                    }).TrySelect(evt => evt.Result)
                            select completed;
             return sequence;*/
+        }
+
+        private static void HandleMethod(object state) 
+        {
         }
 
         /// <summary>

@@ -26,6 +26,11 @@ namespace FlatBeats.ViewModels
     /// </summary>
     public class InfiniteScrollBehavior : Behavior<ListBox>
     {
+        public InfiniteScrollBehavior()
+        {
+            this.LoadMoreAtScrollPercentage = 0.75;
+        }
+
         #region Constants and Fields
 
         /// <summary>
@@ -39,6 +44,8 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         private ScrollViewer sv;
+
+        public double LoadMoreAtScrollPercentage { get; set; }
 
         #endregion
 
@@ -80,9 +87,11 @@ namespace FlatBeats.ViewModels
                 true);
             this.sb = (ScrollBar)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollBar));
             this.sv = (ScrollViewer)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollViewer));
-
             if (this.sv != null)
             {
+
+                this.sb.ValueChanged += new RoutedPropertyChangedEventHandler<double>(sb_ValueChanged);
+                
                 // Visual States are always on the first child of the control template 
                 FrameworkElement element = VisualTreeHelper.GetChild(this.sv, 0) as FrameworkElement;
                 if (element != null)
@@ -99,12 +108,29 @@ namespace FlatBeats.ViewModels
                     {
                         vgroup.CurrentStateChanging += this.vgroup_CurrentStateChanging;
                     }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot find VerticalCompression VisualStateGroup, Infinite Scroll will not work!");
+                    }
 
                     if (hgroup != null)
                     {
                         hgroup.CurrentStateChanging += this.hgroup_CurrentStateChanging;
                     }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot find HorizontalCompression VisualStateGroup, Infinite Scroll will not work!");
+                    }
                 }
+            }
+        }
+
+        void sb_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if ((e.NewValue / sb.Maximum) > this.LoadMoreAtScrollPercentage)
+            {
+                Debug.WriteLine("Scrolled: " + (e.NewValue / sb.Maximum) + " past " + this.LoadMoreAtScrollPercentage);
+                this.LoadNext();
             }
         }
 
@@ -200,12 +226,17 @@ namespace FlatBeats.ViewModels
         {
             if (e.NewState.Name == "CompressionBottom")
             {
-                Debug.WriteLine("LOAD MORE!");
-                var i = this.AssociatedObject.DataContext as IInfiniteScroll;
-                if (i != null)
-                {
-                    i.LoadNextPage();
-                }
+                this.LoadNext();
+            }
+        }
+
+        private void LoadNext()
+        {
+            Debug.WriteLine("LOAD MORE!");
+            var i = this.AssociatedObject.DataContext as IInfiniteScroll;
+            if (i != null)
+            {
+                i.LoadNextPage();
             }
         }
 

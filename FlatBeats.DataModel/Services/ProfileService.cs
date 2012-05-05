@@ -115,31 +115,31 @@
 
         public static IObservable<UserLoginResponseContract> LoadUserTokenAsync()
         {
-            return Storage.LoadJsonAsync<UserLoginResponseContract>(UserLoginFilePath)
-                .Where(c => c != null && c.CurrentUser != null)
+            return Storage.LoadJsonAsync<UserLoginResponseContract>(UserLoginFilePath).NotNull()
+                .Where(c => c.CurrentUser != null)
                 .Do(user => Downloader.UserToken = user.UserToken);
         }
 
         public static IObservable<UserProfileResponseContract> GetUserProfileAsync(string userId)
         {
-            return Downloader.GetJson<UserProfileResponseContract>(ApiUrl.UserProfile(userId));
+            return Downloader.GetJson<UserProfileResponseContract>(ApiUrl.UserProfile(userId)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetUserMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, pageNumber, pageSize));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, pageNumber, pageSize)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetLikedMixesAsync(string userId, int pageNumber, int pageSize)
         {
             var cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile); //
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile).NotNull(); 
         }
 
         public static IObservable<MixesResponseContract> GetMixFeedAsync(string userId, int pageNumber, int pageSize)
         {
             var cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize)); //, cacheFile);
+            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize), cacheFile).NotNull();
         }
 
         public static IObservable<Unit> SetMixLikedAsync(string mixId, bool isLiked)

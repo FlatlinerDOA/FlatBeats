@@ -33,7 +33,15 @@
 
         public int PageSize { get; set; }
         
+        /// <summary>
+        /// Gets or sets the page number that was last requested.
+        /// </summary>
         public int CurrentRequestedPage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the page number that has been loaded.
+        /// </summary>
+        public int LoadedPage { get; set; }
 
         public virtual void StopLoadingPages()
         {
@@ -90,8 +98,11 @@
 
         public virtual void LoadNextPage()
         {
-            this.CurrentRequestedPage++;
-            this.PageRequests.OnNext(this.CurrentRequestedPage);
+            if (this.LoadedPage == this.CurrentRequestedPage)
+            {
+                this.CurrentRequestedPage++;
+                this.PageRequests.OnNext(this.CurrentRequestedPage);
+            }
         }
     }
 
@@ -117,15 +128,16 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
-            ////this.CurrentRequestedPage = 0;
             var getItems =
                 from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
-                    .ObserveOnDispatcher().AddOrReloadPage(this.Items, this.LoadItem)
+                    .ObserveOnDispatcher()
+                    .AddOrReloadPage(this.Items, this.LoadItem)
                     .Do(
                     _ =>
                     {
+                        this.LoadedPage = page;
                         this.HideProgress();
                         this.LoadPageCompleted();
                     }, 

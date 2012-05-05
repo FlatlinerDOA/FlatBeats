@@ -14,6 +14,81 @@
             this.request = HttpWebRequest.CreateHttp(url);
         }
 
+        public override IAsyncResult BeginGetRequestStream(AsyncCallback callback, object state)
+        {
+            return this.request.BeginGetRequestStream(callback, state);
+        }
+
+        public override System.IO.Stream EndGetRequestStream(IAsyncResult asyncResult)
+        {
+            return this.request.EndGetRequestStream(asyncResult);
+        }
+
+        public override string Method
+        {
+            get
+            {
+                return this.request.Method;
+            }
+            set
+            {
+                this.request.Method = value;
+            }
+        }
+
+        public override Uri RequestUri
+        {
+            get
+            {
+                return this.request.RequestUri;
+            }
+        }
+
+        public override bool UseDefaultCredentials
+        {
+            get
+            {
+                return this.request.UseDefaultCredentials;
+            }
+
+            set
+            {
+                this.request.UseDefaultCredentials = value;
+            }
+        }
+
+        public override ICredentials Credentials
+        {
+            get
+            {
+                return this.request.Credentials;
+            }
+            set
+            {
+                this.request.Credentials = value;
+            }
+        }
+
+        public override IWebRequestCreate CreatorInstance
+        {
+            get
+            {
+                return this.request.CreatorInstance;
+            }
+        }
+
+        public override string ContentType
+        {
+            get
+            {
+                return this.request.ContentType;
+            }
+            set
+            {
+                this.request.ContentType = value;
+            }
+        }
+
         public override WebHeaderCollection Headers
         {
             get

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProfilerSession Type="ExecutionPerformanceAnalysis" Name="FlatBeats634718516345386652">
+  <TargetApplication Name="FlatBeats" SourceProject="FlatBeats.csproj" Type="WindowsPhone71">
+    <ApplicationBinary Path="Bin\Debug\FlatBeats.xap" Timestamp="3/12/2012 4:03:59 PM" />
+    <ApplicationIconPath Path="" />
+    <SymbolPaths>
+      <Path Value="Bin\Debug\" />
+    </SymbolPaths>
+  </TargetApplication>
+  <Settings>
+    <Probe Name="Visual">
+      <CollectElementLevelCosting Enabled="True" />
+      <CollectSnapshots Enabled="False" Interval="" Resampling="" />
+      <CollectMediaEvents Enabled="True" />
+      <CollectCacheDetails Enabled="True" />
+    </Probe>
+    <Probe Name="Code">
+      <SampleCallStack Enabled="True" Depth="4294967295" Interval="10" />
+      <CollectPerformanceCounters Enabled="True" />
+    </Probe>
+    <Probe Name="Memory">
+      <MemoryCallStack Enabled="False" Depth="4294967295" />
+      <ObjectTree Enabled="False" Interval="10" />
+    </Probe>
+  </Settings>
+  <Data>
+    <Logs>
+      <File Type="NativeFormat" Path="PerformanceLogs\FlatBeats634718516345386652\tmp3B51.tmp" />
+    </Logs>
+  </Data>
+  <TargetDeviceSettings OSVersion="7.10.8107" AvailablePhysicalMemoryAtStartup="259604480" ProcessorArchitectureType="Arm" ProcessorInformation="Armv4ifp" IsEmulator="False" />
+</ProfilerSession>

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Flatliner.Phone;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
 
@@ -15,22 +16,22 @@
 
         public static IObservable<ReviewsResponseContract> GetMixReviewsAsync(string mixId, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<ReviewsResponseContract>(ApiUrl.MixReviews(mixId, pageNumber, perPage));
+            return Downloader.GetJson<ReviewsResponseContract>(ApiUrl.MixReviews(mixId, pageNumber, perPage)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetLatestMixesAsync()
         {
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.LatestMixes()); //, LatestMixesCacheFile);
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.LatestMixes()).Where(m => m != null); //, LatestMixesCacheFile);
         }
 
         public static IObservable<MixesResponseContract> GetTagMixesAsync(string tag, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.TaggedMixes(tag, sort, pageNumber, perPage));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.TaggedMixes(tag, sort, pageNumber, perPage)).Where(m => m != null);
         }
 
         public static IObservable<MixesResponseContract> GetSearchMixesAsync(string query, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.SearchMixes(query, sort, pageNumber, perPage));
+            return Downloader.GetJson<MixesResponseContract>(ApiUrl.SearchMixes(query, sort, pageNumber, perPage)).Where(m => m != null);
         }
 
         public static IObservable<MixContract> GetMixAsync(string mixId)

@@ -21,6 +21,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
     using Flatliner.Phone;
+    using System.Windows;
 
     /// <summary>
     /// </summary>
@@ -76,7 +77,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MainPageViewModel()
         {
-            this.Liked = new MainPageLikedViewModel();
+            this.Liked = new MainPageLikedViewModel() { Opacity = 1 };
             this.Recent = new MainPageRecentViewModel();
             this.Latest = new MainPageLatestViewModel();
             this.TagsPanel = new MainPageTagsViewModel();
@@ -126,13 +127,24 @@ namespace FlatBeats.ViewModels
 
                 this.currentSectionIndex = value;
                 this.OnPropertyChanged("CurrentSectionIndex");
-                if (this.CurrentSectionIndex == 1 || this.CurrentSectionIndex == 3)
-                {
-                    this.EnsureLatestDisplayed();
-                }
+
+                this.Liked.Opacity = this.InRangeOf(0);
+                this.Recent.Opacity = this.InRangeOf(1);
+                this.Latest.Opacity = this.InRangeOf(2);
+                this.TagsPanel.Opacity = this.InRangeOf(3);
+             
+                ////if (this.CurrentSectionIndex == 1 || this.CurrentSectionIndex == 3)
+                ////{
+                ////    this.EnsureLatestDisplayed();
+                ////}
             }
         }
 
+        private int InRangeOf(int section)
+        {
+            return ((Math.Abs(this.CurrentSectionIndex - section) + 3) % 3) > 1 ? 0 : 1;
+        }
+        /*
         private void EnsureLatestDisplayed()
         {
             if (this.latestDisplayed)
@@ -142,7 +154,7 @@ namespace FlatBeats.ViewModels
 
             this.latestDisplayed = true;
             this.Latest.Display();
-        }
+        }*/
 
         /// <summary>
         ///   Gets the latest mixes panel.
