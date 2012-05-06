@@ -17,7 +17,7 @@
 
     using Coding4Fun.Phone.Controls;
 
-    using FlatBeats.Controls;
+    using FlatBeats.Framework.Controls;
     using FlatBeats.Framework;
     using FlatBeats.Framework.Extensions;
     using FlatBeats.ViewModels;

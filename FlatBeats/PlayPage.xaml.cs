@@ -8,7 +8,7 @@
     using Clarity.Phone.Controls;
     using Clarity.Phone.Controls.Animations;
 
-    using FlatBeats.Controls;
+    using FlatBeats.Framework.Controls;
     using FlatBeats.Framework;
     using FlatBeats.ViewModels;
 

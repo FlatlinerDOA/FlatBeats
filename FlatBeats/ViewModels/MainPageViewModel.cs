@@ -22,6 +22,7 @@ namespace FlatBeats.ViewModels
     using Microsoft.Phone.Reactive;
     using Flatliner.Phone;
     using System.Windows;
+    using FlatBeats.DataModel;
 
     /// <summary>
     /// </summary>
@@ -65,8 +66,6 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// </summary>
         private int currentSectionIndex;
-
-        private bool latestDisplayed;
 
         #endregion
 
@@ -132,29 +131,8 @@ namespace FlatBeats.ViewModels
                 this.Recent.Opacity = this.InRangeOf(1);
                 this.Latest.Opacity = this.InRangeOf(2);
                 this.TagsPanel.Opacity = this.InRangeOf(3);
-             
-                ////if (this.CurrentSectionIndex == 1 || this.CurrentSectionIndex == 3)
-                ////{
-                ////    this.EnsureLatestDisplayed();
-                ////}
-            }
+             }
         }
-
-        private int InRangeOf(int section)
-        {
-            return ((Math.Abs(this.CurrentSectionIndex - section) + 3) % 3) > 1 ? 0 : 1;
-        }
-        /*
-        private void EnsureLatestDisplayed()
-        {
-            if (this.latestDisplayed)
-            {
-                return;
-            }
-
-            this.latestDisplayed = true;
-            this.Latest.Display();
-        }*/
 
         /// <summary>
         ///   Gets the latest mixes panel.
@@ -187,26 +165,32 @@ namespace FlatBeats.ViewModels
         {
             this.BackgroundImageUrl = this.State.GetValueOrDefault<Uri>("BackgroundUrl");
 
-            this.AddToLifetime(this.Liked.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Latest.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            var progressSources = new[] 
+            {   
+                this.Liked.IsInProgressChanges,
+                this.Recent.IsInProgressChanges,
+                this.Latest.IsInProgressChanges
+            };
+
+            this.AddToLifetime(progressSources.Merge().Subscribe(_ => this.UpdateIsInProgress()));
 
             this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
 
             if (this.IsDataLoaded)
             {
                 this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
+                this.Liked.Reset();
                 this.Liked.LoadFirstPage();
                 return;
             }
 
-            var pageLoad = from first in
-                    Observable.Timer(TimeSpan.FromMilliseconds(250)).ObserveOnDispatcher().Do(
-                        _ => this.Liked.LoadFirstPage())
-                from second in
-                    Observable.Timer(TimeSpan.FromSeconds(1)).ObserveOnDispatcher().Do(
-                        _ => this.LoadRecentAndLatestPanels())
-                select ObservableEx.SingleUnit();
+            var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500))
+                               .ObserveOnDispatcher()
+                               .Do(_ => this.Liked.LoadFirstPage())
+                           from second in Observable.Timer(TimeSpan.FromSeconds(2))
+                               .ObserveOnDispatcher()
+                               .Do(_ => this.LoadRecentAndLatestPanels())
+                           select ObservableEx.SingleUnit();
 
             this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
         }
@@ -230,6 +214,11 @@ namespace FlatBeats.ViewModels
         #endregion
 
         #region Methods
+
+        private int InRangeOf(int section)
+        {
+            return ((Math.Abs(this.CurrentSectionIndex - section) + 3) % 3) > 1 ? 0 : 1;
+        }
 
         /// <summary>
         /// </summary>

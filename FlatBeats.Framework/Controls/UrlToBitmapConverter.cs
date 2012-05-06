@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace FlatBeats.Controls
+namespace FlatBeats.Framework.Controls
 {
     using System.Globalization;
     using System.Windows.Data;

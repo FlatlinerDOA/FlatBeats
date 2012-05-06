@@ -1,34 +1,40 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InfiniteScrollBehavior.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-using System;
-
-namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.Framework.Controls
 {
-    using System.Collections;
-    using System.Diagnostics;
+    using System;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Diagnostics;
+    using FlatBeats.ViewModels;
+    using System.Collections;
+    using System.Windows.Media;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
-    using System.Windows.Interactivity;
-    using System.Windows.Media;
 
-    /// <summary>
-    /// </summary>
-    public class InfiniteScrollBehavior : Behavior<ListBox>
+    public sealed class InfiniteListBox : ListBox
     {
-        public InfiniteScrollBehavior()
+        public InfiniteListBox()
         {
             this.LoadMoreAtScrollPercentage = 0.75;
+            this.Loaded += new RoutedEventHandler(InfiniteListBox_Loaded);
+            this.LayoutUpdated += new EventHandler(InfiniteListBox_LayoutUpdated);
+            this.Unloaded += new RoutedEventHandler(InfiniteListBox_Unloaded);
+        }
+
+        void InfiniteListBox_LayoutUpdated(object sender, EventArgs e)
+        {
+            this.HookScrollEvents();
+        }
+
+        void InfiniteListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.HookScrollEvents();
+        }
+
+        void InfiniteListBox_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Unloaded -= this.InfiniteListBox_Unloaded;
+            this.Loaded -= this.InfiniteListBox_Loaded;
         }
 
         #region Constants and Fields
@@ -50,48 +56,39 @@ namespace FlatBeats.ViewModels
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// </summary>
-        protected override void OnAttached()
+   
+        public override void OnApplyTemplate()
         {
-            base.OnAttached();
-            this.AssociatedObject.Loaded += this.AssociatedObjectLoaded;
+            base.OnApplyTemplate();
+            this.HookScrollEvents();
         }
-
-        /// <summary>
-        /// </summary>
-        protected override void OnDetaching()
-        {
-            this.AssociatedObject.Loaded -= this.AssociatedObjectLoaded;
-            base.OnDetaching();
-        }
-
         /// <summary>
         /// </summary>
         /// <param name="sender">
         /// </param>
         /// <param name="e">
         /// </param>
-        private void AssociatedObjectLoaded(object sender, RoutedEventArgs e)
+        private void HookScrollEvents()
         {
             if (this.alreadyHookedScrollEvents)
             {
                 return;
             }
 
-            this.alreadyHookedScrollEvents = true;
-            this.AssociatedObject.AddHandler(
-                UIElement.ManipulationCompletedEvent, 
-                (EventHandler<ManipulationCompletedEventArgs>)this.LB_ManipulationCompleted, 
-                true);
-            this.sb = (ScrollBar)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollBar));
-            this.sv = (ScrollViewer)this.FindElementRecursive(this.AssociatedObject, typeof(ScrollViewer));
-            if (this.sv != null)
+            this.sv = (ScrollViewer)this.FindElementRecursive(this, typeof(ScrollViewer));
+            this.sb = (ScrollBar)this.FindElementRecursive(this, typeof(ScrollBar));
+            if (this.sv != null && this.sb != null)
             {
+                Debug.WriteLine("Hooked scroll events to " + this.DataContext.ToString());
+                this.alreadyHookedScrollEvents = true;
+
+                this.AddHandler(
+                    UIElement.ManipulationCompletedEvent,
+                    (EventHandler<ManipulationCompletedEventArgs>)this.LB_ManipulationCompleted,
+                    true);
 
                 this.sb.ValueChanged += new RoutedPropertyChangedEventHandler<double>(sb_ValueChanged);
-                
+
                 // Visual States are always on the first child of the control template 
                 FrameworkElement element = VisualTreeHelper.GetChild(this.sv, 0) as FrameworkElement;
                 if (element != null)
@@ -232,10 +229,10 @@ namespace FlatBeats.ViewModels
 
         private void LoadNext()
         {
-            Debug.WriteLine("LOAD MORE!");
-            var i = this.AssociatedObject.DataContext as IInfiniteScroll;
+            var i = this.DataContext as IInfiniteScroll;
             if (i != null)
             {
+                Debug.WriteLine("IInfiniteScroll.LoadNextPage()");
                 i.LoadNextPage();
             }
         }

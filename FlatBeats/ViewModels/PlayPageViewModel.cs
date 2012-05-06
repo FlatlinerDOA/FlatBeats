@@ -15,7 +15,7 @@ namespace FlatBeats.ViewModels
 
     using Coding4Fun.Phone.Controls;
 
-    using FlatBeats.Controls;
+    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;

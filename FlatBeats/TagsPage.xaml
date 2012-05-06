@@ -8,7 +8,7 @@
     xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
     xmlns:Controls1="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
-    xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+    xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
     x:Class="FlatBeats.TagsPage"
     SupportedOrientations="Portrait" 
     Orientation="Portrait"

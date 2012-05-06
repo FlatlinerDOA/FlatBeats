@@ -19,6 +19,7 @@
         /// </summary>
         protected PanelViewModel()
         {
+            this.Opacity = 1;
             this.RegisterErrorHandler<SocketException>(GetSocketErrorMessage);
             this.RegisterErrorHandler<ServiceException>(GetServiceErrorMessage);
             this.RegisterErrorHandler<WebException>(GetWebErrorMessage);

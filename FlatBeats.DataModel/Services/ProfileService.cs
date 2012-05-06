@@ -60,7 +60,7 @@
         public static IObservable<SettingsContract> GetSettingsAsync()
         {
             return from json in Storage.LoadStringAsync(SettingsFilePath)
-                   select Json<SettingsContract>.Deserialize(json) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true };
+                   select Json<SettingsContract>.Deserialize(json) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true, PreferredList = PreferredLists.Liked };
         }
 
         public static IObservable<Unit> SaveSettingsAsync(SettingsContract settings)

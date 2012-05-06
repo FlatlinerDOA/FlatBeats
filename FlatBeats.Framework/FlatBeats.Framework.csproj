@@ -71,13 +71,11 @@
     <Compile Include="Animation\TurnstileAnimator.cs" />
     <Compile Include="Animation\TurnstileFeatherAnimator.cs" />
     <Compile Include="Controls\AnimatingContentControl.cs" />
-    <Compile Include="Controls\ApplicationBarBinder.cs" />
     <Compile Include="Controls\BooleanToBrushConverter.cs" />
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="Controls\CensorBitmapConverter.cs" />
     <Compile Include="Controls\DynamicBackgroundPanorama.cs" />
-    <Compile Include="Controls\IApplicationBarViewModel.cs" />
-    <Compile Include="Controls\ICommandLink.cs" />
+    <Compile Include="Controls\InfiniteListBox.cs" />
     <Compile Include="Controls\SearchPrompt.cs" />
     <Compile Include="Controls\TransitioningBackgroundControl.cs" />
     <Compile Include="Controls\UniformGrid.cs" />
@@ -88,7 +86,7 @@
     <Compile Include="IInfiniteScroll.cs" />
     <Compile Include="INavigationItem.cs" />
     <Compile Include="Indexed.cs" />
-    <Compile Include="InfiniteScrollBehavior.cs" />
+    <Compile Include="Controls\InfiniteScrollBehavior.cs" />
     <Compile Include="InfiniteScrollPanelViewModel.cs" />
     <Compile Include="ListItemViewModel.cs" />
     <Compile Include="MixViewModel.cs" />

@@ -13,7 +13,7 @@
                     xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
                     xmlns:Binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
                     xmlns:Controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
-                    xmlns:Controls1="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+                    xmlns:Controls1="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
                     mc:Ignorable="d">
     <Style TargetType="Controls1:AnimatingContentControl">
         <Setter Property="Foreground"

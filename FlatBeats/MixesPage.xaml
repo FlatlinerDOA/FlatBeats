@@ -11,7 +11,7 @@
                             mc:Ignorable="d"
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
                             xmlns:Controls2="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
-                            xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+                            xmlns:fbcontrols="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
                             d:DesignWidth="480"
                             d:DesignHeight="768"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -55,7 +55,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <fbcontrols:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -72,7 +72,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <fbcontrols:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -89,7 +89,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTapped">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <fbcontrols:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>

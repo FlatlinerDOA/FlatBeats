@@ -14,8 +14,10 @@ namespace FlatBeats.ViewModels
     using Microsoft.Phone.Reactive;
     using FlatBeats.DataModel.Profile;
 
-    public class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
+    public sealed class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
+        private string loadedList;
+
         /// <summary>
         /// Initializes a new instance of the MainPageLikedViewModel class.
         /// </summary>
@@ -23,7 +25,7 @@ namespace FlatBeats.ViewModels
         {
         }
 
-        private string loadedList;
+        private string UserId { get; set; }
 
         public override IObservable<Unit> LoadAsync()
         {
@@ -49,16 +51,13 @@ namespace FlatBeats.ViewModels
                         break;
                 }
 
-                this.CurrentRequestedPage = 0;
-                this.Items.Clear();
+                this.Reset();
             }
 
             return from userToken in ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id)
                    from result in base.LoadAsync()
                    select result;
         }
-
-        protected string UserId { get; set; }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
@@ -87,7 +86,6 @@ namespace FlatBeats.ViewModels
         {
             if (this.Items.Count == 0)
             {
-                this.Items.Clear();
                 this.Message = StringResources.Message_NoLikedMixes;
                 this.ShowMessage = true;
             }

@@ -13,7 +13,7 @@ namespace FlatBeats.ViewModels
     using System.Text.RegularExpressions;
     using System.Windows.Input;
 
-    using FlatBeats.Controls;
+    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 

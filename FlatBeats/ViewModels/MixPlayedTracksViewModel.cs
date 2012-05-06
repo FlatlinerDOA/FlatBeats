@@ -16,7 +16,7 @@ namespace FlatBeats.ViewModels
     using System.Text;
     using System.Windows;
 
-    using FlatBeats.Controls;
+    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;

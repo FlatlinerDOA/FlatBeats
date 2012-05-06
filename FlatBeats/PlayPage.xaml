@@ -10,7 +10,7 @@
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions" 
                            xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions" 
-    xmlns:Controls1="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+    xmlns:Controls1="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
     xmlns:ControlsX="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" x:Class="FlatBeats.PlayPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
@@ -388,7 +388,7 @@
                                              ItemTemplate="{StaticResource ReviewListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                        	<ViewModels1:InfiniteScrollBehavior />
+                            <Controls1:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>

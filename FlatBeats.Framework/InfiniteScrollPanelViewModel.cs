@@ -129,7 +129,14 @@
         protected IObservable<Unit> LoadItemsAsync()
         {
             var getItems =
-                from page in this.PageRequests.Do(_ => this.ShowProgress(this.GetLoadingPageMessage()))
+                from page in this.PageRequests.Do(_ => 
+                {
+                    this.ShowProgress(this.GetLoadingPageMessage());
+                    if (this.CurrentRequestedPage == 1)
+                    {
+                        this.Message = StringResources.Progress_Loading;
+                    }
+                })
                 from response in this.GetPageOfItemsAsync(page, this.PageSize)
                     .Select(p => new Page<TData>(p, page, this.PageSize))
                     .ObserveOnDispatcher()
@@ -137,14 +144,11 @@
                     .Do(
                     _ =>
                     {
-                        this.LoadedPage = page;
-                        this.HideProgress();
-                        this.LoadPageCompleted();
+                        this.LoadCompleted();
                     }, 
                     () => 
                     {
-                        this.HideProgress();
-                        this.LoadPageCompleted();
+                        this.LoadCompleted();
                     })
                     .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                 where response != null
@@ -161,6 +165,7 @@
 
         private void LoadCompleted()
         {
+            this.LoadedPage = this.CurrentRequestedPage;
             this.HideProgress();
             this.LoadPageCompleted();
         }
@@ -177,6 +182,7 @@
         public void Reset()
         {
             this.CurrentRequestedPage = 0;
+            this.LoadedPage = 0;
             this.Items.Clear();
             this.LoadPageCompleted();
         }

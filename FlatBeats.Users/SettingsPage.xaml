@@ -10,7 +10,7 @@
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
     xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
-    xmlns:Controls2="clr-namespace:FlatBeats.Controls;assembly=FlatBeats.Framework" 
+    xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
     xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -174,7 +174,7 @@
                              ItemTemplate="{StaticResource MixFeedListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -194,7 +194,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -214,7 +214,7 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
 
                     </ListBox>
@@ -235,7 +235,7 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>

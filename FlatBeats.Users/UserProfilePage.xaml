@@ -5,7 +5,12 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:clarity="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
+    xmlns:clarity="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+    xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
@@ -102,7 +107,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -122,7 +127,7 @@
                              ItemTemplate="{StaticResource MixListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -143,7 +148,7 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>
@@ -164,7 +169,7 @@
                              ItemTemplate="{StaticResource UserListItemTemplate}"
                              Tap="ListBoxTap">
                         <i:Interaction.Behaviors>
-                            <ViewModels1:InfiniteScrollBehavior />
+                            <Controls2:InfiniteScrollBehavior />
                         </i:Interaction.Behaviors>
                     </ListBox>
                 </Grid>

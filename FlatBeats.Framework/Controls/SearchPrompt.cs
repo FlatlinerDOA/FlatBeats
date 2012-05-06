@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace FlatBeats.Controls
+namespace FlatBeats.Framework.Controls
 {
     using System;
     using System.Threading;
