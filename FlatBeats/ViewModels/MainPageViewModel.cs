@@ -179,14 +179,13 @@ namespace FlatBeats.ViewModels
             if (this.IsDataLoaded)
             {
                 this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
-                this.Liked.Reset();
                 this.Liked.LoadFirstPage();
                 return;
             }
 
             var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500))
-                               .ObserveOnDispatcher()
-                               .Do(_ => this.Liked.LoadFirstPage())
+                            .ObserveOnDispatcher()
+                            .Do(_ => this.Liked.LoadFirstPage()) 
                            from second in Observable.Timer(TimeSpan.FromSeconds(2))
                                .ObserveOnDispatcher()
                                .Do(_ => this.LoadRecentAndLatestPanels())

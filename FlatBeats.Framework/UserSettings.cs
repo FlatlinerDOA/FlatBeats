@@ -34,6 +34,14 @@ namespace FlatBeats.Framework
 
                 return userSettings;
             }
+
+            set
+            {
+                lock (syncRoot)
+                {
+                    userSettings = value;
+                }
+            }
         }
     }
 }

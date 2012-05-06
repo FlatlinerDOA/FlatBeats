@@ -257,7 +257,7 @@ using System.Collections.Generic;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
             userSettings.PlayNextMix = this.PlayNextMix;
             userSettings.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
-            this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { }, this.HandleError));
+            this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { UserSettings.Current = userSettings; }, this.HandleError));
         }
 
         private string playNextMixText;

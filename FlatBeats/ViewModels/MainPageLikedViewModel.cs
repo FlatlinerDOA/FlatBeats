@@ -13,6 +13,7 @@ namespace FlatBeats.ViewModels
 
     using Microsoft.Phone.Reactive;
     using FlatBeats.DataModel.Profile;
+    using Flatliner.Phone;
 
     public sealed class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
@@ -27,36 +28,35 @@ namespace FlatBeats.ViewModels
 
         private string UserId { get; set; }
 
+        public IObservable<Unit> LoadAsync(string userId) 
+        {
+            this.UserId = userId;
+            return this.LoadAsync();
+        }
+
         public override IObservable<Unit> LoadAsync()
         {
-            ////if (this.IsDataLoaded)
-            ////{
-            ////    this.Reset();
-            ////}
-
             if (loadedList != UserSettings.Current.PreferredList)
             {
-                loadedList = UserSettings.Current.PreferredList;
-
-                switch (loadedList)
-                {
-                    case PreferredLists.Created:
-                        this.Title = StringResources.Title_CreatedMixes;
-                        break;
-                    case PreferredLists.MixFeed:
-                        this.Title = StringResources.Title_MixFeed;
-                        break;
-                    default:
-                        this.Title = StringResources.Title_LikedMixes;
-                        break;
-                }
-
                 this.Reset();
             }
 
-            return from userToken in ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id)
-                   from result in base.LoadAsync()
-                   select result;
+            loadedList = UserSettings.Current.PreferredList;
+
+            switch (loadedList)
+            {
+                case PreferredLists.Created:
+                    this.Title = StringResources.Title_CreatedMixes;
+                    break;
+                case PreferredLists.MixFeed:
+                    this.Title = StringResources.Title_MixFeed;
+                    break;
+                default:
+                    this.Title = StringResources.Title_LikedMixes;
+                    break;
+            }
+
+            return ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id).Select(_ => ObservableEx.Unit).Concat(base.LoadAsync()).FirstDo( _ => LoadFirstPage());
         }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)

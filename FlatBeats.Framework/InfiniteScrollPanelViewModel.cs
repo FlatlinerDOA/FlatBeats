@@ -10,6 +10,7 @@
     using Flatliner.Phone.Data;
 
     using Microsoft.Phone.Reactive;
+    using System.Diagnostics;
 
     public class InfiniteScrollPanelViewModel : PanelViewModel, IInfiniteScroll
     {
@@ -45,6 +46,7 @@
 
         public virtual void StopLoadingPages()
         {
+            Debug.WriteLine("Stopping Loading Pages for " + this.ToString());
             if (this.pageRequests != null)
             {
                 this.pageRequests.OnCompleted();
@@ -128,31 +130,30 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
-            var getItems =
-                from page in this.PageRequests.Do(_ => 
-                {
-                    this.ShowProgress(this.GetLoadingPageMessage());
-                    if (this.CurrentRequestedPage == 1)
-                    {
-                        this.Message = StringResources.Progress_Loading;
-                    }
-                })
-                from response in this.GetPageOfItemsAsync(page, this.PageSize)
-                    .Select(p => new Page<TData>(p, page, this.PageSize))
-                    .ObserveOnDispatcher()
-                    .AddOrReloadPage(this.Items, this.LoadItem)
-                    .Do(
-                    _ =>
-                    {
-                        this.LoadCompleted();
-                    }, 
-                    () => 
-                    {
-                        this.LoadCompleted();
-                    })
-                    .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
-                where response != null
-                select response;
+            var getItems = from page in this.PageRequests.Do(_ => 
+                            {
+                                this.ShowProgress(this.GetLoadingPageMessage());
+                                if (this.CurrentRequestedPage == 1)
+                                {
+                                    this.Message = StringResources.Progress_Loading;
+                                }
+                            })
+                            from response in this.GetPageOfItemsAsync(page, this.PageSize)
+                                .Select(p => new Page<TData>(p, page, this.PageSize))
+                                .ObserveOnDispatcher()
+                                .AddOrReloadPage(this.Items, this.LoadItem)
+                                .Do(
+                                _ =>
+                                {
+                                    this.LoadCompleted();
+                                }, 
+                                () => 
+                                {
+                                    this.LoadCompleted();
+                                })
+                                .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
+                            where response != null
+                            select response;
             return getItems.Do(
                     _ =>
                     {
@@ -188,11 +189,5 @@
         }
 
         protected abstract void LoadPageCompleted();
-
-        public override void LoadFirstPage()
-        {
-            this.CurrentRequestedPage = 0;
-            base.LoadFirstPage();
-        }
     }
 }
