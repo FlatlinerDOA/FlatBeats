@@ -104,33 +104,6 @@ namespace FlatBeats.DataModel
                             Storage.Save(fileName, stream);
                             return ObservableEx.Unit;
                         });
-                                             
-
-            /*
-            var webRequest = from client in Observable.Return(CreateClient(false))
-                             from completed in Observable.CreateWithDisposable<OpenReadCompletedEventArgs>(
-                                 observer =>
-                                     {
-                                         var subscription = Observable.FromEvent<OpenReadCompletedEventArgs>(client, "OpenReadCompleted").Take(1).Select(e => e.EventArgs).Subscribe(observer);
-#if DEBUG
-                                         Debug.WriteLine("GET " + url.AbsoluteUri);
-#endif
-                                         client.OpenReadAsync(url);
-                                         return subscription;
-                                     }).TrySelect(
-                                         evt =>
-                                             {
-                                                 if (evt.Error != null)
-                                                 {
-                                                     Debug.WriteLine("DOWNLOAD: " + evt.Error.ToString());
-                                                 }
-
-                                                 Storage.Save(fileName, evt.Result);
-                                                 return ObservableEx.Unit;
-                                             })
-                             select completed;
-
-            return webRequest;*/
         }
 
         public static IObservable<T> GetJsonCachedAndRefreshed<T>(Uri url, string cacheFile) where T : class

@@ -134,8 +134,6 @@
                     fileStream.Flush();
                     fileStream.Close();
                 }
-
-                ////data.CopyTo(stream);
             }
         }
 
@@ -158,15 +156,24 @@
             storage.CreateDirectory(folder);
         }
 
-        public static Stream LoadStream(string filePath)
+        public static Stream ReadStream(string filePath)
         {
-            var storage = IsolatedStorageFile.GetUserStoreForApplication();
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
                 if (!storage.FileExists(filePath))
                 {
                     return null;
                 }
 
-            return new IsolatedStorageFileStream(filePath, FileMode.Open, storage);                
+                using (var input = new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
+                {
+                    var output = new MemoryStream();
+                    input.CopyTo(output);
+                    input.Close();
+                    output.Position = 0;
+                    return output;
+                }
+            }
         }
     }
 }

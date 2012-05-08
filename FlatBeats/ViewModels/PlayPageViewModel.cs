@@ -188,6 +188,7 @@ namespace FlatBeats.ViewModels
             {
                 this.UpdatePinnedState();
                 this.ShowProgress(StringResources.Progress_Loading);
+                this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
                 this.AddToLifetime(
                     this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(
                     _ => { }, this.HandleError, this.HideProgress));
@@ -208,7 +209,6 @@ namespace FlatBeats.ViewModels
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
 
             this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
-            this.ReviewsPanel.LoadFirstPage();
         }
 
         private void UpdateIsInProgress()

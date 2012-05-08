@@ -108,22 +108,20 @@
                    from mixes in Storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
-                           using (var stream = Storage.LoadStream(imageFilePath))
+                           using (var stream = Storage.ReadStream(imageFilePath))
                            {
-                               MediaHistoryItem mediaHistoryItem = new MediaHistoryItem();
-                               mediaHistoryItem.ImageStream = stream;
-                               mediaHistoryItem.Title = mix.Name;
+                               var mediaHistoryItem = new MediaHistoryItem { Title = mix.Name, ImageStream = stream };
                                mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
                                MediaHistory.Instance.NowPlaying = mediaHistoryItem;
+                               stream.Close();
                            }
 
-                           using (var secondStream = Storage.LoadStream(imageFilePath))
+                           using (var secondStream = Storage.ReadStream(imageFilePath))
                            {
-                               MediaHistoryItem item = new MediaHistoryItem();
-                               item.Title = mix.Name;
-                               item.ImageStream = secondStream;
+                               var item = new MediaHistoryItem { Title = mix.Name, ImageStream = secondStream };
                                item.PlayerContext.Add("MixId", mix.Id);
                                MediaHistory.Instance.WriteRecentPlay(item);
+                               secondStream.Close();
                            }
                        })
                    select ObservableEx.Unit;
