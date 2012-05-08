@@ -180,24 +180,27 @@ namespace FlatBeats.ViewModels
 
             this.AddToLifetime(progressSources.Merge().Subscribe(_ => this.UpdateIsInProgress()));
 
-
             if (this.IsDataLoaded)
             {
-                this.AddToLifetime(this.Liked.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                var likedLoad = from userToken in ProfileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
+                                from liked in this.Liked.LoadAsync(this.UserId)
+                                select ObservableEx.SingleUnit();
+                this.AddToLifetime(likedLoad.Subscribe(_ => { }, this.HandleError, this.HideProgress));
                 this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
-                this.Liked.LoadFirstPage();
                 return;
             }
 
             var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
                            from userToken in ProfileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
                            from liked in this.Liked.LoadAsync(this.UserId)
-                           from second in Observable.Timer(TimeSpan.FromSeconds(2))
-                               .ObserveOnDispatcher()
-                               .Do(_ => this.LoadRecentAndLatestPanels())
                            select ObservableEx.SingleUnit();
 
             this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
+            var delayedLoad = from second in Observable.Timer(TimeSpan.FromSeconds(3))
+                               .ObserveOnDispatcher()
+                               .Do(_ => this.LoadRecentAndLatestPanels())
+                              select ObservableEx.SingleUnit();
+            this.AddToLifetime(delayedLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
         }
 
         /// <summary>

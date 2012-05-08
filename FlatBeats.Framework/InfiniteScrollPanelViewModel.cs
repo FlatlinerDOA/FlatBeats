@@ -44,8 +44,12 @@
         /// </summary>
         public int LoadedPage { get; set; }
 
+        public bool IsPageSubscriptionActive { get; set; }
+
         public virtual void StopLoadingPages()
         {
+            this.IsPageSubscriptionActive = false;
+
             Debug.WriteLine("Stopping Loading Pages for " + this.ToString());
             if (this.pageRequests != null)
             {
@@ -122,6 +126,7 @@
             this.Items = new ObservableCollection<TViewModel>();
         }
 
+
         public ObservableCollection<TViewModel> Items { get; private set; }
 
         protected abstract IObservable<IList<TData>> GetPageOfItemsAsync(int pageNumber, int pageSize);
@@ -139,12 +144,15 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
+            this.IsPageSubscriptionActive = true;
+
             var getItems = from page in this.StartPageRequests().Do(_ => 
                             {
                                 this.ShowProgress(this.GetLoadingPageMessage());
                                 if (this.CurrentRequestedPage == 1)
                                 {
                                     this.Message = StringResources.Progress_Loading;
+                                    this.ShowMessage = true;
                                 }
                             })
                             from response in this.GetPageOfItemsAsync(page, this.PageSize)
@@ -154,11 +162,11 @@
                                 .Do(
                                 _ =>
                                 {
-                                    this.LoadCompleted();
+                                    this.OnLoadPageCompleted();
                                 }, 
                                 () => 
                                 {
-                                    this.LoadCompleted();
+                                    this.OnLoadPageCompleted();
                                 })
                                 .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                             where response != null
@@ -167,13 +175,17 @@
                     _ =>
                     {
                     },
-                    this.HandleError,
-                    this.LoadCompleted).FinallySelect(() => new Unit());
+                    ex =>
+                    {
+                        this.StopLoadingPages();
+                        this.HandleError(ex);
+                    },
+                    this.OnLoadPageCompleted).FinallySelect(() => new Unit());
         }
 
         protected abstract void LoadItem(TViewModel viewModel, TData data);
 
-        private void LoadCompleted()
+        private void OnLoadPageCompleted()
         {
             this.LoadedPage = this.CurrentRequestedPage;
             this.HideProgress();

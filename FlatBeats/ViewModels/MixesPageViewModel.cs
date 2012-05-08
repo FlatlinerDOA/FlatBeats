@@ -154,20 +154,18 @@ namespace FlatBeats.ViewModels
         /// </param>
         public void Load(string loadTag, string loadQuery)
         {
-            this.AddToLifetime(this.Hot.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Recent.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Popular.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            var progress = new[] 
+            { 
+                this.Hot.IsInProgressChanges,
+                this.Recent.IsInProgressChanges,
+                this.Popular.IsInProgressChanges
+            };
 
-            if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
-            {
-
-                return;
-            }
-
-            this.LoadCompleted();
+            this.AddToLifetime(progress.Merge().Subscribe(_ => this.UpdateIsInProgress()));
+            ////if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
+            ////{
+            ////    return;
+            ////}
 
             this.Tag = loadTag;
             this.SearchQuery = loadQuery;
@@ -186,11 +184,7 @@ namespace FlatBeats.ViewModels
                 this.Popular.Tag = this.Tag;
             }
 
-            ////this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            ////this.AddToLifetime(this.Hot.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            ////this.AddToLifetime(this.Popular.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
-
-            this.CurrentPanel.LoadFirstPage();
+            this.AddToLifetime(this.CurrentPanel.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
         }
 
         public MixListViewModel CurrentPanel 
@@ -218,8 +212,10 @@ namespace FlatBeats.ViewModels
 
         private void SearchPanel(MixListViewModel mixList)
         {
-            //this.ShowProgress(mixList.InProgressMessage);
-            mixList.LoadFirstPage();
+            if (!mixList.IsPageSubscriptionActive)
+            {
+                this.AddToLifetime(mixList.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            }
         }
         #endregion
 
