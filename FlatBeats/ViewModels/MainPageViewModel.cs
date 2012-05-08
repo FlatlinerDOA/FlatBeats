@@ -191,7 +191,7 @@ namespace FlatBeats.ViewModels
             }
 
             var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
-                           from userToken in ProfileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
+                           from userToken in ProfileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
                            from liked in this.Liked.LoadAsync(this.UserId)
                            select ObservableEx.SingleUnit();
 

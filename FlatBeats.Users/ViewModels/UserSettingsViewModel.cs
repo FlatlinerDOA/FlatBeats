@@ -51,6 +51,7 @@ namespace FlatBeats.Users.ViewModels
         /// <summary>
         /// </summary>
         private string userNameLabelText;
+
         public UserSettingsViewModel()
         {
             this.Title = "settings";
@@ -70,7 +71,6 @@ namespace FlatBeats.Users.ViewModels
             this.ResetCommand = new DelegateCommand(this.SignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
             this.PreferredListChoices = new ObservableCollection<string>();
-
         }
 
 
@@ -378,6 +378,7 @@ namespace FlatBeats.Users.ViewModels
                 this.OnPropertyChanged("UserNameLabelText");
             }
         }
+
         private void SaveSettings()
         {
             if (!this.isSettingsLoaded)
@@ -392,6 +393,17 @@ namespace FlatBeats.Users.ViewModels
             userSettings.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
             this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { UserSettings.Current = userSettings; }, this.HandleError));
         }
+
+        protected override void ShowErrorMessageOverride(ErrorMessage result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            MessageBox.Show(result.Message, result.Title, MessageBoxButton.OK);
+        }
+
         private ErrorMessage HandleSignInWebException(ServiceException ex)
         {
             switch (ex.StatusCode)
@@ -418,7 +430,7 @@ namespace FlatBeats.Users.ViewModels
             this.isSettingsLoaded = false;
 
             this.PreferredListChoices.Clear();
-            foreach (var item in preferredListMap)
+            foreach (var item in this.preferredListMap)
             {
                 this.PreferredListChoices.Add(item.Value);
             }
@@ -555,12 +567,18 @@ namespace FlatBeats.Users.ViewModels
         private void SignIn()
         {
             var creds = new UserCredentialsContract { UserName = this.UserName.Trim(), Password = this.Password };
+            this.CanLogin = false;
             this.ShowProgress(StringResources.Progress_SigningIn);
-            var q = ProfileService.AuthenticateAsync(creds);
-            q.ObserveOnDispatcher()
-                .Subscribe(this.LoadLoginResponse,
-                this.HandleError,
-                this.HideProgress);
+            this.AddToLifetime(
+                ProfileService.AuthenticateAsync(creds).ObserveOnDispatcher()
+                    .Subscribe(
+                        this.LoadLoginResponse,
+                        ex =>
+                        {
+                            this.CanLogin = true;
+                            this.HandleError(ex);
+                        },
+                        this.HideProgress));
         }
 
         /// <summary>
@@ -609,8 +627,8 @@ namespace FlatBeats.Users.ViewModels
         {
             this.ShowProgress(StringResources.Progress_Loading);
             this.LoadSettings();
-            return from creds in ProfileService.LoadCredentialsAsync().ObserveOnDispatcher().Do(this.LoadCredentials)
-                   from token in ProfileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(this.LoadLoginResponse)
+            return from creds in ProfileService.LoadCredentialsAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadCredentials)
+                   from token in ProfileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadLoginResponse)
                    select new Unit();
         }
 
@@ -620,6 +638,7 @@ namespace FlatBeats.Users.ViewModels
             if (this.loginResponse == null || this.loginResponse.CurrentUser == null)
             {
                 this.IsLoggedIn = false;
+                this.CanLogin = true;
                 return;
             }
 

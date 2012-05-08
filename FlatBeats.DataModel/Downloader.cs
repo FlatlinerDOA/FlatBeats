@@ -228,6 +228,7 @@ namespace FlatBeats.DataModel
                                    s.Close();
                                })
                            from response in Observable.FromAsyncPattern<WebResponse>((c, st) => r.BeginGetResponse(c, st), (ar) => r.EndGetResponse(ar))()
+                           .Catch<WebResponse, WebException>(HandleWebException<WebResponse>)
                            select response;
                 }).TrySelect(t =>
                 {
@@ -264,8 +265,9 @@ namespace FlatBeats.DataModel
             return sequence;*/
         }
 
-        private static void HandleMethod(object state) 
+        private static IObservable<T> HandleWebException<T>(WebException ex)
         {
+            return Observable.Throw<T>(ConvertWebException(ex));
         }
 
         /// <summary>
@@ -370,21 +372,8 @@ namespace FlatBeats.DataModel
                             }
                             catch (WebException webException)
                             {
-                                if (webException.Response != null)
-                                {
-                                    using (var sr = new StreamReader(webException.Response.GetResponseStream()))
-                                    {
-                                        var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
-                                        if (response != null)
-                                        {
-                                            var newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
-                                            d.OnError(newError);
-                                            return;
-                                        }
-                                    }
-                                }
-
-                                d.OnError(webException);
+                                Exception newError = ConvertWebException(webException);
+                                d.OnError(newError);
 
                             }
                             catch (Exception ex)
@@ -394,6 +383,30 @@ namespace FlatBeats.DataModel
                         },
                     d.OnError,
                     d.OnCompleted));
+        }
+
+        private static Exception ConvertWebException(WebException webException)
+        {
+            Exception newError = webException;
+            if (webException.Response != null)
+            {
+                using (var s = webException.Response.GetResponseStream())
+                {
+                    var b = new MemoryStream();
+                    s.CopyTo(b);
+                    b.Position = 0;
+                    using (var sr = new StreamReader(b))
+                    {
+                        var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
+                        if (response != null)
+                        {
+                            newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                        }
+                    }
+                }
+            }
+
+            return newError;
         }
 
         #endregion

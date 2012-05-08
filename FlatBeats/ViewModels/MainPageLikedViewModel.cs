@@ -71,11 +71,16 @@ namespace FlatBeats.ViewModels
                     break;
             }
 
-            return base.LoadAsync().FirstDo( _ => LoadFirstPage());
+            return base.LoadAsync();
         }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
+            if (this.UserId == null)
+            {
+                return Observable.Empty<IList<MixContract>>();
+            }
+
             if (loadedList == PreferredLists.Created)
             {
                 return (from page in ProfileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)

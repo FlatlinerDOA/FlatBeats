@@ -96,6 +96,12 @@ namespace FlatBeats.Users.ViewModels
         /// </param>
         private void LoadPanels(string userId)
         {
+            if (userId == null)
+            {
+                this.ResetPanels();
+                return;
+            }
+
             this.AddToLifetime(this.Mixes.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
             this.AddToLifetime(
                 this.FollowsUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
