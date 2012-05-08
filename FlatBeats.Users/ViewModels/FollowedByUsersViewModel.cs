@@ -1,4 +1,4 @@
-﻿namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.Users.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,10 @@
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
+    using FlatBeats.ViewModels;
 
     using Microsoft.Phone.Reactive;
+
     using Flatliner.Phone;
 
     /// <summary>

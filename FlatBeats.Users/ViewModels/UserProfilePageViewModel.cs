@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace FlatBeats.ViewModels
+namespace FlatBeats.Users.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -15,12 +15,15 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
+    using FlatBeats.ViewModels;
 
     using Flatliner.Phone;
     using Flatliner.Phone.Data;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
+
+    using PageViewModel = FlatBeats.ViewModels.PageViewModel;
 
     /// <summary>
     /// </summary>

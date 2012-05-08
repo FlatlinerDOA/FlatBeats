@@ -10,14 +10,15 @@
     xmlns:clarity="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-    xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework"
+    xmlns:ViewModels1="clr-namespace:FlatBeats.Users.ViewModels" FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
-        <ViewModels:UserProfilePageViewModel x:Key="ViewModel" />
+        <ViewModels1:UserProfilePageViewModel x:Key="ViewModel" />
 
         <Style x:Key="MessageTextStyle"
                TargetType="TextBlock"

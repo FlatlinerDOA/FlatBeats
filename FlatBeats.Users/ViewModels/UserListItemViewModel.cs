@@ -7,12 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace FlatBeats.ViewModels
+namespace FlatBeats.Users.ViewModels
 {
     using System;
 
     using FlatBeats.DataModel;
     using FlatBeats.Framework;
+    using FlatBeats.ViewModels;
 
     using Flatliner.Phone.Data;
 

@@ -11,7 +11,7 @@
     xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" 
     xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
-    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" 
+    xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels" xmlns:ViewModels2="clr-namespace:FlatBeats.Users.ViewModels"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -20,7 +20,7 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
     <ControlsX:AnimatedBasePage.Resources>
-        <ViewModels:SettingsPageViewModel x:Key="ViewModel" />
+        <ViewModels2:SettingsPageViewModel x:Key="ViewModel" />
         <DataTemplate x:Key="MixFeedListItemTemplate">
             <Controls2:AnimatingContentControl>
                 <StackPanel toolkit:TiltEffect.IsTiltEnabled="True">
@@ -91,8 +91,8 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <!--Pivot Control-->
-        <controls:Pivot Title="FLAT BEATS">
-            <controls:PivotItem Header="settings">
+        <controls:Pivot Title="{Binding Title}">
+            <controls:PivotItem DataContext="{Binding Settings}" Header="{Binding Title}">
                 <ScrollViewer>
                     <Grid>
                         <StackPanel Margin="0,0,0,24">
@@ -127,7 +127,7 @@
                             <TextBlock Text="{Binding PreferredListText}"
                                            TextWrapping="Wrap"
                                            Style="{StaticResource PhoneTextNormalStyle}"
-                                           Margin="12,-12,12,0" />
+                                           Margin="12,12,12,0" />
                             <toolkit:ListPicker ItemsSource="{Binding PreferredListChoices}" SelectedItem="{Binding PreferredList, Mode=TwoWay}" />
                             <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}"
                                                    Margin="0,12,0,0">
