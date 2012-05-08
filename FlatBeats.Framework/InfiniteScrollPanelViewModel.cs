@@ -92,10 +92,10 @@
 
         public virtual void LoadFirstPage()
         {
-            if (this.CurrentRequestedPage == 0)
-            {
-                this.LoadNextPage();
-            }
+            ////if (this.CurrentRequestedPage == 0)
+            ////{
+            ////    this.LoadNextPage();
+            ////}
         }
 
         public virtual void LoadNextPage()
@@ -111,11 +111,14 @@
     public abstract class InfiniteScrollPanelViewModel<TViewModel, TData> : InfiniteScrollPanelViewModel 
         where TViewModel : ListItemViewModel, new()
     {
+        protected IScheduler ObserveOn { get; set; }
+        
         /// <summary>
         /// Initializes a new instance of the InfiniteScrollPanelViewModel class.
         /// </summary>
         public InfiniteScrollPanelViewModel()
         {
+            this.ObserveOn = Scheduler.Dispatcher;
             this.Items = new ObservableCollection<TViewModel>();
         }
 
@@ -128,9 +131,15 @@
             return this.LoadItemsAsync();
         }
 
+        private IObservable<int> StartPageRequests()
+        {
+            this.CurrentRequestedPage = 1;
+            return Observable.Return(1).Concat(this.PageRequests);
+        }
+
         protected IObservable<Unit> LoadItemsAsync()
         {
-            var getItems = from page in this.PageRequests.Do(_ => 
+            var getItems = from page in this.StartPageRequests().Do(_ => 
                             {
                                 this.ShowProgress(this.GetLoadingPageMessage());
                                 if (this.CurrentRequestedPage == 1)
@@ -182,10 +191,13 @@
 
         public void Reset()
         {
-            this.CurrentRequestedPage = 0;
-            this.LoadedPage = 0;
-            this.Items.Clear();
-            this.LoadPageCompleted();
+            this.ObserveOn.Schedule(() =>
+            {
+                this.CurrentRequestedPage = 0;
+                this.LoadedPage = 0;
+                this.Items.Clear();
+                this.LoadPageCompleted();
+            });
         }
 
         protected abstract void LoadPageCompleted();

@@ -24,26 +24,9 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public MainPageLikedViewModel()
         {
-        }
+            this.loadedList = UserSettings.Current.PreferredList;
 
-        private string UserId { get; set; }
-
-        public IObservable<Unit> LoadAsync(string userId) 
-        {
-            this.UserId = userId;
-            return this.LoadAsync();
-        }
-
-        public override IObservable<Unit> LoadAsync()
-        {
-            if (loadedList != UserSettings.Current.PreferredList)
-            {
-                this.Reset();
-            }
-
-            loadedList = UserSettings.Current.PreferredList;
-
-            switch (loadedList)
+            switch (this.loadedList)
             {
                 case PreferredLists.Created:
                     this.Title = StringResources.Title_CreatedMixes;
@@ -56,7 +39,39 @@ namespace FlatBeats.ViewModels
                     break;
             }
 
-            return ProfileService.LoadUserTokenAsync().Do(u => this.UserId = u.CurrentUser.Id).Select(_ => ObservableEx.Unit).Concat(base.LoadAsync()).FirstDo( _ => LoadFirstPage());
+        }
+
+        private string UserId { get; set; }
+
+        public IObservable<Unit> LoadAsync(string userId) 
+        {
+            this.UserId = userId;
+            return this.LoadAsync();
+        }
+
+        public override IObservable<Unit> LoadAsync()
+        {
+            if (this.loadedList != UserSettings.Current.PreferredList)
+            {
+                this.Reset();
+            }
+
+            this.loadedList = UserSettings.Current.PreferredList;
+
+            switch (this.loadedList)
+            {
+                case PreferredLists.Created:
+                    this.Title = StringResources.Title_CreatedMixes;
+                    break;
+                case PreferredLists.MixFeed:
+                    this.Title = StringResources.Title_MixFeed;
+                    break;
+                default:
+                    this.Title = StringResources.Title_LikedMixes;
+                    break;
+            }
+
+            return base.LoadAsync().FirstDo( _ => LoadFirstPage());
         }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
