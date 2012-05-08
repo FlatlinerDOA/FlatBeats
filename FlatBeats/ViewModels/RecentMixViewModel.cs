@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.ViewModels
 {
     using FlatBeats.DataModel;
+    using FlatBeats.Framework;
 
     public class RecentMixViewModel : MixViewModel
     {

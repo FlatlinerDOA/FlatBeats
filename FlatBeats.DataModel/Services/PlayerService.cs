@@ -60,7 +60,7 @@
         {
             ResetNowPlayingTile();
             Storage.Delete(NowPlayingFilePath);
-
+            
             if (nowPlaying == null)
             {
                 return ObservableEx.SingleUnit();
@@ -127,6 +127,11 @@
                            }
                        })
                    select ObservableEx.Unit;
+        }
+
+        public static bool NowPlayingExists()
+        {
+            return Storage.Exists(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> LoadNowPlayingAsync()

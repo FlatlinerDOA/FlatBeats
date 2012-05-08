@@ -35,7 +35,7 @@ namespace FlatBeatsPlaybackAgent
 
         /// <summary>
         /// </summary>
-        private PlayingMixContract nowPlaying;
+        private volatile PlayingMixContract nowPlaying;
 
         /// <summary>
         /// </summary>
@@ -214,7 +214,7 @@ namespace FlatBeatsPlaybackAgent
             switch (action)
             {
                 case UserAction.Stop:
-                    if (player.PlayerState != PlayState.Paused)
+                    if (player.PlayerState != PlayState.Paused || !PlayerService.NowPlayingExists())
                     {
                         this.Lifetime.Add(this.StopPlayingAsync(player).Finally(this.Completed).Subscribe());
                         return;
@@ -280,22 +280,23 @@ namespace FlatBeatsPlaybackAgent
                 return this.StopPlayingAsync(player);
             }
 
-            //// this.NowPlaying.Set.IsLastTrack || 
-            if (this.NowPlaying.Set.IsPastLastTrack)
+            ////  
+            if (this.NowPlaying.Set.IsLastTrack || this.NowPlaying.Set.IsPastLastTrack)
             {
                 if (this.UserSettings.PlayNextMix)
                 {
                     var currentMixId = this.NowPlaying.MixId;
-                    var nextMix = from stop in this.NowPlaying.StopAsync(player)
-                           from mix in PlayerService.GetNextMixAsync(currentMixId)
-                           from start in mix.StartPlayingAsync().Do(
-                               t => 
-                               { 
-                                   this.NowPlaying = t; 
-                               })
-                           from _ in this.NowPlaying.SaveNowPlayingAsync()
-                           from play in this.PlayTrackAsync(player)
-                           select play;
+                    var nextMix = from ignoreLastTrack in this.NowPlaying.NextTrackAsync(player).DefaultIfEmpty()
+                                  from stop in this.NowPlaying.StopAsync(player)
+                                  from mix in PlayerService.GetNextMixAsync(currentMixId)
+                                  from start in mix.StartPlayingAsync().Do(
+                                       t => 
+                                       { 
+                                           this.NowPlaying = t; 
+                                       })
+                                   from _ in this.NowPlaying.SaveNowPlayingAsync()
+                                   from play in this.PlayTrackAsync(player)
+                                   select play;
                     return nextMix
                         .Catch<Unit, ServiceException>(ex => this.StopPlayingAsync(player))
                         .Catch<Unit, WebException>(ex => this.StopPlayingAsync(player));

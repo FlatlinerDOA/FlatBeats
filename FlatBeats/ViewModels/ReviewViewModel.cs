@@ -121,7 +121,16 @@ namespace FlatBeats.ViewModels
 
             var text = Html.ConvertToPlainText(review.Body).Trim();
             this.Body = UserSettings.Current.CensorshipEnabled ? Censorship.Censor(text) : text;
-            this.Created = DateTimeOffset.Parse(review.Created).ToLocalTime().DateTime;
+            DateTimeOffset createdDate;
+            if (DateTimeOffset.TryParse(review.Created, out createdDate))
+            {
+                this.Created = createdDate.ToLocalTime().DateTime;
+            } 
+            else
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
+
             if (this.Created > DateTime.Now)
             {
                 this.Created = DateTime.Now.AddSeconds(-1);

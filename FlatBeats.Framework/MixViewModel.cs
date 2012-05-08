@@ -7,15 +7,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace FlatBeats.ViewModels
+namespace FlatBeats.Framework
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Windows;
 
     using FlatBeats.DataModel;
-    using FlatBeats.Framework;
+    using FlatBeats.ViewModels;
 
     using Flatliner.Phone.Data;
 
@@ -458,7 +457,17 @@ namespace FlatBeats.ViewModels
             this.Liked = mix.Liked;
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-            this.Created = DateTimeOffset.Parse(mix.Created).ToLocalTime().DateTime;
+
+            DateTimeOffset createdDate;
+            if (DateTimeOffset.TryParse(mix.Created, out createdDate))
+            {
+                this.Created = createdDate.ToLocalTime().DateTime;
+            } 
+            else
+            {
+                this.Created = DateTime.Now.AddSeconds(-1);
+            }
+
             this.PlaysCount = mix.PlaysCount;
             this.LikesCount = mix.LikesCount;
 

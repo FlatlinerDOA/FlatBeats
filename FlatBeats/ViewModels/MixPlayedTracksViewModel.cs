@@ -575,9 +575,23 @@ namespace FlatBeats.ViewModels
         /// </exception>
         private void UpdatePlayerState()
         {
-            Debug.WriteLine("UpdatePlayerState to " + Enum.GetName(typeof(PlayState), this.Player.PlayerState));
             this.HideProgress();
-            switch (this.Player.PlayerState)
+
+            PlayState playState = PlayState.Unknown;            
+            try
+            {
+                if (this.Player != null)
+                {
+                    playState = this.Player.PlayerState;
+                }
+            } 
+            catch (InvalidOperationException)
+            {
+                // Background audio resources no longer allocated
+            }
+
+            Debug.WriteLine("UpdatePlayerState to " + Enum.GetName(typeof(PlayState), playState));
+            switch (playState)
             {
                 case PlayState.Unknown:
                     break;
@@ -629,7 +643,6 @@ namespace FlatBeats.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         /// <summary>
@@ -639,6 +652,11 @@ namespace FlatBeats.ViewModels
         {
             get
             {
+                if (this.Player == null)
+                {
+                    return false;
+                }
+
                 if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
                 {
                     return false;
@@ -657,6 +675,10 @@ namespace FlatBeats.ViewModels
                     return false;
                 }
 
+                if (this.Player == null)
+                {
+                    return false;
+                }
                 if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
                 {
                     return false;
