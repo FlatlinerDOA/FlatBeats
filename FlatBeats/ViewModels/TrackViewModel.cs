@@ -48,7 +48,7 @@ namespace FlatBeats.ViewModels
 
         #endregion
 
-        public TrackViewModel() : this(Downloader.Instance, ProfileService.Instance)
+        public TrackViewModel() : this(AsyncDownloader.Instance, ProfileService.Instance)
         {
         }
 

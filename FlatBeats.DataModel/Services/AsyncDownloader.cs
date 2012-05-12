@@ -3,40 +3,45 @@
 //   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
 // </copyright>
 //--------------------------------------------------------------------------------------------------
-namespace FlatBeats.DataModel
+namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Net;
-
-    using FlatBeats.DataModel.Services;
+    using System.Text;
 
     using Flatliner.Phone;
 
     using Microsoft.Phone.Reactive;
 
-    using System.Text;
 
     /// <summary>
     /// </summary>
-    public class Downloader : IAsyncDownloader
+    public class AsyncDownloader : IAsyncDownloader
     {
-        public static readonly Downloader Instance = new Downloader();
+        public static readonly AsyncDownloader Instance = new AsyncDownloader();
 
         #region Constants and Fields
 
-        private readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
+        private readonly IAsyncStorage storage;
 
         private readonly object SyncRoot = new object();
-
-        private UserCredentialsContract userCredentials;
 
         /// <summary>
         /// </summary>
         private string userToken;
 
         #endregion
+
+        public AsyncDownloader() : this(AsyncIsolatedStorage.Instance)
+        {
+        }
+
+        public AsyncDownloader(IAsyncStorage storage)
+        {
+            this.storage = storage;
+        }
 
         #region Public Properties
 
@@ -46,44 +51,25 @@ namespace FlatBeats.DataModel
         {
             get
             {
-                return UserToken != null;
+                return this.UserToken != null;
             }
         }
-
-        ////public UserCredentialsContract UserCredentials
-        ////{
-        ////    get
-        ////    {
-        ////        lock (SyncRoot)
-        ////        {
-        ////            return userCredentials;
-        ////        }
-        ////    }
-
-        ////    set
-        ////    {
-        ////        lock (SyncRoot)
-        ////        {
-        ////            userCredentials = value;
-        ////        }
-        ////    }
-        ////}
 
         public string UserToken
         {
             get
             {
-                lock (SyncRoot)
+                lock (this.SyncRoot)
                 {
-                    return userToken;
+                    return this.userToken;
                 }
             }
 
             set
             {
-                lock (SyncRoot)
+                lock (this.SyncRoot)
                 {
-                    userToken = value;
+                    this.userToken = value;
                 }
             }
         }
@@ -103,15 +89,15 @@ namespace FlatBeats.DataModel
         /// </returns>
         public IObservable<Unit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite)
         {
-            if (!overwrite && storage.Exists(fileName))
+            if (!overwrite && this.storage.Exists(fileName))
             {
                 return ObservableEx.SingleUnit();
             }
 
-            return GetStreamAsync(url, false).TrySelect(
+            return this.GetStreamAsync(url, false).TrySelect(
                         stream =>
                         {
-                            storage.Save(fileName, stream);
+                            this.storage.Save(fileName, stream);
                             return ObservableEx.Unit;
                         });
         }
@@ -119,33 +105,33 @@ namespace FlatBeats.DataModel
         public IObservable<T> GetDeserializedCachedAndRefreshedAsync<T>(Uri url, string cacheFile) where T : class
         {
             IObservable<T> sequence = Observable.Empty<T>();
-            if (storage.Exists(cacheFile))
+            if (this.storage.Exists(cacheFile))
             {
-                sequence = storage.LoadJsonAsync<T>(cacheFile);
+                sequence = this.storage.LoadJsonAsync<T>(cacheFile);
             }
 
             return sequence.Concat(
-                from cache in GetStreamAsync(url, false).Select(Json<T>.Instance.DeserializeFromStream)
-                from _ in storage.SaveJsonAsync(cacheFile, cache)
+                from cache in this.GetStreamAsync(url, false).Select(Json<T>.Instance.DeserializeFromStream)
+                from _ in this.storage.SaveJsonAsync(cacheFile, cache)
                 select cache);
         }
 
 
         public IObservable<T> GetDeserializedCachedAsync<T>(Uri url, string cacheFile) where T : class
         {
-            if (storage.Exists(cacheFile))
+            if (this.storage.Exists(cacheFile))
             {
-                return storage.LoadJsonAsync<T>(cacheFile);
+                return this.storage.LoadJsonAsync<T>(cacheFile);
             }
 
-            return from cache in GetStreamAsync(url, false).Select(Json<T>.Instance.DeserializeFromStream)
-                   from _ in storage.SaveJsonAsync<T>(cacheFile, cache)
+            return from cache in this.GetStreamAsync(url, false).Select(Json<T>.Instance.DeserializeFromStream)
+                   from _ in this.storage.SaveJsonAsync<T>(cacheFile, cache)
                    select cache;
         }
 
         public IObservable<Stream> GetStreamAsync(Uri url, bool disableCache)
         {
-            return WebRequestAsync(url, disableCache).TrySelect(
+            return this.WebRequestAsync(url, disableCache).TrySelect(
                 r =>
                 {
                     Stream c = new MemoryStream();
@@ -167,7 +153,7 @@ namespace FlatBeats.DataModel
         /// <returns></returns>
         public IObservable<T> GetDeserializedAsync<T>(Uri url) where T : class
         {
-            return GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream);
+            return this.GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream);
         }
 
         /// <summary>
@@ -186,7 +172,7 @@ namespace FlatBeats.DataModel
             where TRequest : class where TResponse : class
         {
             var sequence = from postString in ObservableEx.DeferredStart(() => Json<TRequest>.Instance.SerializeToString(postData))
-                           from completed in PostAndGetStringAsync(url, postString)
+                           from completed in this.PostAndGetStringAsync(url, postString)
                            select Json<TResponse>.Instance.DeserializeFromString(completed);
             return sequence;
         }
@@ -204,7 +190,7 @@ namespace FlatBeats.DataModel
             return Observable.Using(
                 () =>
                 {
-                    var r = CreateRequest(url, true);
+                    var r = this.CreateRequest(url, true);
                     r.Method = "POST";
                     r.ContentType = "application/x-www-form-urlencoded";
                     return r;
@@ -253,7 +239,7 @@ namespace FlatBeats.DataModel
         public IObservable<TResponse> PostStringAndGetDeserializedAsync<TResponse>(Uri url, string postData)
             where TResponse : class
         {
-            var sequence = from completed in PostAndGetStringAsync(url, postData)
+            var sequence = from completed in this.PostAndGetStringAsync(url, postData)
                            select Json<TResponse>.Instance.DeserializeFromString(completed);
             return sequence;
         }
@@ -265,7 +251,7 @@ namespace FlatBeats.DataModel
         private IObservable<WebResponse> WebRequestAsync(Uri address, bool noCache)
         {
             return Observable.Using(
-                () => CreateRequest(address, noCache),
+                () => this.CreateRequest(address, noCache),
                 r =>
                 {
                     Debug.WriteLine("GET " + address.OriginalString);
@@ -282,9 +268,9 @@ namespace FlatBeats.DataModel
             var request = new DisposableWebRequest(address);
             request.Headers["X-Api-Key"] = "9abd1c4181d59dbece062455b941e64da474e5c7";
 
-            if (IsAuthenticated)
+            if (this.IsAuthenticated)
             {
-                request.Headers["X-User-Token"] = UserToken;
+                request.Headers["X-User-Token"] = this.UserToken;
             }
 
             if (noCache)
@@ -296,75 +282,5 @@ namespace FlatBeats.DataModel
         }
 
         #endregion
-    }
-
-    internal static class DownloadExtensions
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name = "items">
-        /// </param>
-        /// <param name = "selector">
-        /// </param>
-        /// <typeparam name = "T">
-        /// </typeparam>
-        /// <typeparam name = "TResult">
-        /// </typeparam>
-        /// <returns>
-        /// </returns>
-        public static IObservable<TResult> TrySelect<T, TResult>(this IObservable<T> items, Func<T, TResult> selector)
-        {
-            return Observable.CreateWithDisposable<TResult>(
-                d => items.Subscribe(
-                    item =>
-                    {
-                        try
-                        {
-                            TResult result = selector(item);
-                            d.OnNext(result);
-                        }
-                        catch (WebException webException)
-                        {
-                            Exception newError = ConvertWebException(webException);
-                            d.OnError(newError);
-
-                        }
-                        catch (Exception ex)
-                        {
-                            d.OnError(ex);
-                        }
-                    },
-                    d.OnError,
-                    d.OnCompleted));
-        }
-
-        public static IObservable<T> HandleWebException<T>(WebException ex)
-        {
-            return Observable.Throw<T>(ConvertWebException(ex));
-        }
-
-        private static Exception ConvertWebException(WebException webException)
-        {
-            Exception newError = webException;
-            if (webException.Response != null)
-            {
-                using (var s = webException.Response.GetResponseStream())
-                {
-                    var b = new MemoryStream();
-                    s.CopyTo(b);
-                    b.Position = 0;
-                    using (var sr = new StreamReader(b))
-                    {
-                        var response = Json<ResponseContract>.Instance.DeserializeFromString(sr.ReadToEnd());
-                        if (response != null)
-                        {
-                            newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
-                        }
-                    }
-                }
-            }
-
-            return newError;
-        }   
     }
 }

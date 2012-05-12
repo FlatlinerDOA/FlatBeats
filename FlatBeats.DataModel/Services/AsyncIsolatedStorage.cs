@@ -1,11 +1,9 @@
-﻿namespace FlatBeats.DataModel
+﻿namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.IO;
     using System.IO.IsolatedStorage;
     using System.Text;
-
-    using FlatBeats.DataModel.Services;
 
     using Flatliner.Phone;
 
@@ -47,7 +45,7 @@
 
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                CreateFolderForFile(storage, file);
+                this.CreateFolderForFile(storage, file);
 
                 using (var stream = new IsolatedStorageFileStream(file, FileMode.Create, storage))
                 {
@@ -67,27 +65,27 @@
                 () =>
                 {
                     var json = Json<T>.Instance.SerializeToString(data);
-                    Save(file, json);
+                    this.Save(file, json);
                 }, Scheduler.ThreadPool);
         }
 
         public IObservable<Unit> SaveStringAsync(string file, string text)
         {
-            return ObservableEx.DeferredStart(() => Save(file, text), Scheduler.ThreadPool);
+            return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool);
         }
 
         public IObservable<T> LoadJsonAsync<T>(string file) where T : class
         {
             return ObservableEx.DeferredStart(() =>
             {
-                var json = Load(file);
+                var json = this.Load(file);
                 return Json<T>.Instance.DeserializeFromString(json);
             }, Scheduler.ThreadPool);
         }
 
         public IObservable<string> LoadStringAsync(string file)
         {
-            return ObservableEx.DeferredStart(() => Load(file), Scheduler.ThreadPool);
+            return ObservableEx.DeferredStart(() => this.Load(file), Scheduler.ThreadPool);
         }
 
         /// <summary>
@@ -125,7 +123,7 @@
         {
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                CreateFolderForFile(storage, file);
+                this.CreateFolderForFile(storage, file);
                 using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
                 {
                     byte[] bytes = new byte[ChunkSize];

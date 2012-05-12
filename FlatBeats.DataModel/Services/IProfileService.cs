@@ -9,14 +9,5 @@
 
     public interface IProfileService
     {
-        string UserId { get; }
-
-        bool IsLoggedIn { get; }
-
-        IObservable<Unit> InitializeAsync();
-
-        IObservable<Unit> AuthenticateAsync(UserCredentialsContract userCredentials);
-
-        IObservable<IList<MixContract>> GetLikedMixesAsync(int pageNumber, int pageSize);
     }
 }

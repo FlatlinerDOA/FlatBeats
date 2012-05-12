@@ -1,4 +1,4 @@
-﻿namespace FlatBeats.DataModel
+﻿namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.Net;

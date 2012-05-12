@@ -7,6 +7,7 @@
     using System.Windows.Media.Imaging;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
 
     using Microsoft.Phone.Reactive;
 
@@ -47,7 +48,7 @@
 
             var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
             var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
-            Downloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
+            AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
             return pixelated;
         }
 

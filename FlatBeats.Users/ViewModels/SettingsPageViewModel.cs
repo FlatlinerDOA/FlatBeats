@@ -20,31 +20,62 @@ namespace FlatBeats.Users.ViewModels
     /// </summary>
     public sealed class SettingsPageViewModel : PageViewModel
     {
+        #region Constants and Fields
+
+        /// <summary>
+        /// </summary>
         private readonly ProfileService profileService;
+
+        /// <summary>
+        /// </summary>
+        private int currentPanelIndex;
+
+        #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// </summary>
         public SettingsPageViewModel()
+            : this(ProfileService.Instance)
         {
-
         }
+
         /// <summary>
         /// Initializes a new instance of the SettingsPageViewModel class.
         /// </summary>
+        /// <param name="profileService">
+        /// </param>
         public SettingsPageViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
             this.Title = "FLAT BEATS";
-            this.Settings = new UserSettingsViewModel();
-            this.Mixes = new UserProfileMixesViewModel(true, profileService);
-            this.MixFeed = new MixFeedViewModel();
-            this.FollowedByUsers = new FollowedByUsersViewModel(true, profileService);
-            this.FollowsUsers = new FollowsUsersViewModel(true, profileService);
+            this.Settings = new UserSettingsViewModel(this.profileService);
+            this.Mixes = new UserProfileMixesViewModel(true, this.profileService);
+            this.MixFeed = new MixFeedViewModel(this.profileService);
+            this.FollowedByUsers = new FollowedByUsersViewModel(true, this.profileService);
+            this.FollowsUsers = new FollowsUsersViewModel(true, this.profileService);
         }
 
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// </summary>
+        public int CurrentPanelIndex
+        {
+            get
+            {
+                return this.currentPanelIndex;
+            }
+
+            set
+            {
+                this.currentPanelIndex = value;
+                this.LoadCurrentDataPanel(this.Settings.CurrentUserId);
+            }
+        }
 
         /// <summary>
         /// Gets FollowedByUsers.
@@ -71,22 +102,12 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         public UserSettingsViewModel Settings { get; private set; }
 
-        private int currentPanelIndex;
+        #endregion
 
-        public int CurrentPanelIndex
-        {
-            get
-            {
-                return this.currentPanelIndex;
-            }
+        #region Properties
 
-            set
-            {
-                this.currentPanelIndex = value;
-                this.LoadCurrentDataPanel(this.Settings.CurrentUserId);
-            }
-        }
-
+        /// <summary>
+        /// </summary>
         private ILifetime<string> CurrentDataPanel
         {
             get
@@ -120,16 +141,17 @@ namespace FlatBeats.Users.ViewModels
         {
             var progress = new[]
                 {
-                    this.Settings.IsInProgressChanges, 
-                    this.Mixes.IsInProgressChanges, 
-                    this.FollowsUsers.IsInProgressChanges, 
-                    this.FollowedByUsers.IsInProgressChanges, 
+                    this.Settings.IsInProgressChanges, this.Mixes.IsInProgressChanges, 
+                    this.FollowsUsers.IsInProgressChanges, this.FollowedByUsers.IsInProgressChanges, 
                     this.MixFeed.IsInProgressChanges
                 };
 
             this.AddToLifetime(progress.Merge().Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Settings.CurrentUserIdChanges.ObserveOnDispatcher().Subscribe(this.LoadCurrentDataPanel));
-            this.AddToLifetime(this.Settings.LoadAsync().ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
+            this.AddToLifetime(
+                this.Settings.CurrentUserIdChanges.ObserveOnDispatcher().Subscribe(this.LoadCurrentDataPanel));
+            this.AddToLifetime(
+                this.Settings.LoadAsync().ObserveOnDispatcher().Subscribe(
+                    _ => { }, this.HandleError, this.LoadCompleted));
         }
 
         #endregion
@@ -154,21 +176,9 @@ namespace FlatBeats.Users.ViewModels
             {
                 if (!this.CurrentDataPanel.IsLoaded)
                 {
-                    this.AddToLifetime(
-                        this.CurrentDataPanel.LoadAsync(userId).Subscribe(
-                            _ =>
-                            {
-                            },
-                            this.HandleError));
+                    this.AddToLifetime(this.CurrentDataPanel.LoadAsync(userId).Subscribe(_ => { }, this.HandleError));
                 }
             }
-
-            ////this.AddToLifetime(this.Mixes.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            ////this.AddToLifetime(
-            ////    this.FollowsUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            ////this.AddToLifetime(
-            ////    this.FollowedByUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            ////this.AddToLifetime(this.MixFeed.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
         }
 
         /// <summary>

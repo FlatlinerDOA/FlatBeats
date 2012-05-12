@@ -58,7 +58,7 @@ namespace FlatBeats.ViewModels
         /// Initializes a new instance of the PlayPageViewModel class.
         /// </summary>
         public PlayPageViewModel()
-            : this(Downloader.Instance, ProfileService.Instance)
+            : this(AsyncDownloader.Instance, ProfileService.Instance)
         {
         }
 

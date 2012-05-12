@@ -393,12 +393,17 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
-            var userSettings = this.profileService.UserSettings;
-            userSettings.CensorshipEnabled = this.CensorshipEnabled;
-            userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
-            userSettings.PlayNextMix = this.PlayNextMix;
-            userSettings.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
-            this.AddToLifetime(this.profileService.SaveSettingsAsync(userSettings).Subscribe(_ => { }, this.HandleError));
+            var saveProcess = from userSettings in this.profileService.GetSettingsAsync().Do(
+                                s =>
+                                    {
+                                        s.CensorshipEnabled = this.CensorshipEnabled;
+                                        s.PlayOverWifiOnly = this.PlayOverWifiOnly;
+                                        s.PlayNextMix = this.PlayNextMix;
+                                        s.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
+                                    })
+                              from save in this.profileService.SaveSettingsAsync(userSettings)
+                    select ObservableEx.Unit;
+            this.AddToLifetime(saveProcess.Subscribe(_ => { }, this.HandleError));
         }
 
         protected override void ShowErrorMessageOverride(ErrorMessage result)

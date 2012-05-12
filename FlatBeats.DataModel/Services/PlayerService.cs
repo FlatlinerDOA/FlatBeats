@@ -22,7 +22,7 @@
 
     public static class PlayerService
     {
-        private static readonly Downloader Downloader = Downloader.Instance;
+        private static readonly AsyncDownloader Downloader = AsyncDownloader.Instance;
 
         private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
         private const string PlayTokenFilePath = "playtoken.json";

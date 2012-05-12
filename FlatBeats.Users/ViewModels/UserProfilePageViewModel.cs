@@ -68,7 +68,7 @@ namespace FlatBeats.Users.ViewModels
 
         #region Constructors and Destructors
 
-        public UserProfilePageViewModel() : this(Downloader.Instance, ProfileService.Instance)
+        public UserProfilePageViewModel() : this(AsyncDownloader.Instance, ProfileService.Instance)
         {
             
         }
