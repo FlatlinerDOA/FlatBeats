@@ -3,7 +3,7 @@
     using FlatBeats.DataModel;
     using FlatBeats.Framework;
 
-    public class RecentMixViewModel : MixViewModel
+    public sealed class RecentMixViewModel : MixViewModel
     {
         /// <summary>
         /// Initializes a new instance of the RecentMixViewModel class.

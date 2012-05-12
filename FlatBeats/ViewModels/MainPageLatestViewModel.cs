@@ -10,7 +10,7 @@
 
     using Microsoft.Phone.Reactive;
 
-    public class MainPageLatestViewModel : PanelViewModel
+    public sealed class MainPageLatestViewModel : PanelViewModel
     {
         /// <summary>
         /// Initializes a new instance of the MainPageLatestViewModel class.

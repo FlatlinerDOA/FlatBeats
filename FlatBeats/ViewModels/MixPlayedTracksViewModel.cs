@@ -14,9 +14,7 @@ namespace FlatBeats.ViewModels
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
-    using System.Windows;
 
-    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
@@ -29,7 +27,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class MixPlayedTracksViewModel : PanelViewModel
+    public sealed class MixPlayedTracksViewModel : PanelViewModel
     {
         #region Constants and Fields
 
@@ -328,7 +326,7 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
-        protected BackgroundAudioPlayer Player { get; set; }
+        private BackgroundAudioPlayer Player { get; set; }
 
         #endregion
 
@@ -348,7 +346,7 @@ namespace FlatBeats.ViewModels
             if (this.isDataLoaded)
             {
                 this.UpdatePlayerState();
-                return this.RefreshPlayedTracksAsync(currentMix);
+                return this.RefreshPlayedTracksAsync(this.currentMix);
             }
 
             this.isDataLoaded = true;
@@ -361,7 +359,7 @@ namespace FlatBeats.ViewModels
                 this.StartPlayingMixFromBeginning();
             }
 
-            return this.RefreshPlayedTracksAsync(currentMix);
+            return this.RefreshPlayedTracksAsync(this.currentMix);
         }
 
         private void InitializeBackgroundAudioPlayer()

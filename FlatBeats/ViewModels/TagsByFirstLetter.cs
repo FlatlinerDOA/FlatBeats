@@ -5,7 +5,7 @@
 
     /// <summary>
     /// </summary>
-    public class TagsByFirstLetter : List<TagsInGroup>
+    public sealed class TagsByFirstLetter : List<TagsInGroup>
     {
         #region Constants and Fields
 

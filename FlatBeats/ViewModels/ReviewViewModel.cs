@@ -4,15 +4,11 @@ namespace FlatBeats.ViewModels
     using System;
 
     using FlatBeats.DataModel;
-    using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
     using Flatliner.Phone.Data;
-    using Flatliner.Phone.ViewModels;
 
-    using Microsoft.Phone.Reactive;
-
-    public class ReviewViewModel : ListItemViewModel, INavigationItem
+    public sealed class ReviewViewModel : ListItemViewModel, INavigationItem
     {
         private Uri avatarUrl;
 

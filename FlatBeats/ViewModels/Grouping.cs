@@ -12,7 +12,7 @@ namespace FlatBeats.ViewModels
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TElement">The type of the items.</typeparam>
-    public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+    public sealed class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
         private readonly IGrouping<TKey, TElement> internalGrouping;
 

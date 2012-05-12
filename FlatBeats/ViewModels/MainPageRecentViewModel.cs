@@ -3,16 +3,14 @@
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
-    using System.Threading;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
     using Microsoft.Phone.Reactive;
-    using System.Windows;
 
-    public class MainPageRecentViewModel : PanelViewModel
+    public sealed class MainPageRecentViewModel : PanelViewModel
     {
         /// <summary>
         /// Initializes a new instance of the MainPageRecentViewModel class.

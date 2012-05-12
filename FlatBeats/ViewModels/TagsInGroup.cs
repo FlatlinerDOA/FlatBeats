@@ -4,7 +4,7 @@
 
     /// <summary>
     /// </summary>
-    public class TagsInGroup : List<TagViewModel>
+    public sealed class TagsInGroup : List<TagViewModel>
     {
         #region Constructors and Destructors
 

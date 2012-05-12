@@ -11,7 +11,7 @@
 
     using Microsoft.Phone.Reactive;
 
-    public class MixListViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
+    public sealed class MixListViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
         public string Sort { get; set; }
 

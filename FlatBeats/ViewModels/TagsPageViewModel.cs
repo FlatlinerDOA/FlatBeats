@@ -12,7 +12,7 @@
 
     /// <summary>
     /// </summary>
-    public class TagsPageViewModel : PageViewModel
+    public sealed class TagsPageViewModel : PageViewModel
     {
         #region Constants and Fields
 

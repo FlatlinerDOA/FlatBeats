@@ -11,7 +11,7 @@
     using Microsoft.Phone.Reactive;
     using Flatliner.Phone;
 
-    public class ReviewsPanelViewModel : InfiniteScrollPanelViewModel<ReviewViewModel, ReviewContract>
+    public sealed class ReviewsPanelViewModel : InfiniteScrollPanelViewModel<ReviewViewModel, ReviewContract>
     {
         /// <summary>
         /// Initializes a new instance of the ReviewsPanelViewModel class.

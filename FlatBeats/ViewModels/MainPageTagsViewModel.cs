@@ -4,15 +4,12 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Threading;
-    using Flatliner.Phone.Extensions;
 
-    using Flatliner.Phone;
     using FlatBeats.Framework;
 
-    using Microsoft.Phone.Reactive;
+    using Flatliner.Phone;
 
-    public class MainPageTagsViewModel : PanelViewModel
+    public sealed class MainPageTagsViewModel : PanelViewModel
     {
         /// <summary>
         /// Initializes a new instance of the MainPageTagsViewModel class.

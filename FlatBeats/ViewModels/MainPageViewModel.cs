@@ -27,7 +27,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class MainPageViewModel : PageViewModel
+    public sealed class MainPageViewModel : PageViewModel
     {
         #region Constants and Fields
 

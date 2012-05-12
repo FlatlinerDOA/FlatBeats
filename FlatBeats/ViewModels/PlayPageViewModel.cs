@@ -15,7 +15,6 @@ namespace FlatBeats.ViewModels
 
     using Coding4Fun.Phone.Controls;
 
-    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
@@ -23,23 +22,28 @@ namespace FlatBeats.ViewModels
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
-    using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
 
     /// <summary>
+    /// The play page view model.
     /// </summary>
-    public class PlayPageViewModel : PageViewModel, IApplicationBarViewModel
+    public sealed class PlayPageViewModel : PageViewModel, IApplicationBarViewModel
     {
         #region Constants and Fields
 
+        /// <summary>
+        /// The current panel index.
+        /// </summary>
         private int currentPanelIndex;
 
         /// <summary>
+        /// The mix.
         /// </summary>
         private MixViewModel mix;
 
         /// <summary>
+        /// The mix data.
         /// </summary>
         private MixContract mixData;
 
@@ -48,7 +52,7 @@ namespace FlatBeats.ViewModels
         #region Constructors and Destructors
 
         /// <summary>
-        ///   Initializes a new instance of the PlayPageViewModel class.
+        /// Initializes a new instance of the PlayPageViewModel class.
         /// </summary>
         public PlayPageViewModel()
         {
@@ -56,21 +60,20 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.PlayedPanel = new MixPlayedTracksViewModel();
             this.ReviewsPanel = new ReviewsPanelViewModel();
-            this.ReviewMixCommand = new CommandLink()
+            this.ReviewMixCommand = new CommandLink
                 {
-                    Command = new DelegateCommand(this.AddReview, this.CanAddReview),
+                    Command = new DelegateCommand(this.AddReview, this.CanAddReview), 
                     Text = StringResources.Command_ReviewMix
                 };
-            this.LikeUnlikeCommand = new CommandLink()
+            this.LikeUnlikeCommand = new CommandLink
                 {
-                    Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike),
-                    IconUrl = new Uri("/icons/appbar.heart2.empty.rest.png", UriKind.Relative),
+                    Command = new DelegateCommand(this.LikeUnlike, this.CanLikeUnlike), 
+                    IconUrl = new Uri("/icons/appbar.heart2.empty.rest.png", UriKind.Relative), 
                     Text = StringResources.Command_LikeMix
                 };
-            this.PinToStartCommand = new CommandLink()
+            this.PinToStartCommand = new CommandLink
                 {
-                    Command = new DelegateCommand(this.PinToStart), 
-                    Text = StringResources.Command_PinToStart
+                   Command = new DelegateCommand(this.PinToStart), Text = StringResources.Command_PinToStart 
                 };
             this.ApplicationBarButtonCommands.Add(this.PlayedPanel.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.PlayedPanel.NextTrackCommand);
@@ -78,10 +81,10 @@ namespace FlatBeats.ViewModels
             this.ApplicationBarMenuCommands.Add(this.ReviewMixCommand);
             this.ApplicationBarMenuCommands.Add(this.PinToStartCommand);
             this.ApplicationBarMenuCommands.Add(
-                new CommandLink() { Text = StringResources.Command_ShareMix, Command = new DelegateCommand(this.Share) });
+                new CommandLink { Text = StringResources.Command_ShareMix, Command = new DelegateCommand(this.Share) });
 
             this.ApplicationBarMenuCommands.Add(
-                new CommandLink() { Text = StringResources.Command_EmailMix, Command = new DelegateCommand(this.Email) });
+                new CommandLink { Text = StringResources.Command_EmailMix, Command = new DelegateCommand(this.Email) });
             this.Title = StringResources.Title_Mix;
         }
 
@@ -89,18 +92,31 @@ namespace FlatBeats.ViewModels
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets ApplicationBarButtonCommands.
+        /// </summary>
         public ObservableCollection<ICommandLink> ApplicationBarButtonCommands { get; private set; }
 
+        /// <summary>
+        /// Gets ApplicationBarMenuCommands.
+        /// </summary>
         public ObservableCollection<ICommandLink> ApplicationBarMenuCommands { get; private set; }
 
+        /// <summary>
+        /// Gets or sets CreatedByUserId.
+        /// </summary>
         public string CreatedByUserId { get; set; }
 
+        /// <summary>
+        /// Gets or sets CurrentPanelIndex.
+        /// </summary>
         public int CurrentPanelIndex
         {
             get
             {
                 return this.currentPanelIndex;
             }
+
             set
             {
                 if (this.currentPanelIndex == value)
@@ -110,12 +126,23 @@ namespace FlatBeats.ViewModels
 
                 this.currentPanelIndex = value;
                 this.OnPropertyChanged("CurrentPanelIndex");
+
+                this.LoadCurrentPanel();
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether IsPromptOpen.
+        /// </summary>
+        public bool IsPromptOpen { get; set; }
+
+        /// <summary>
+        /// Gets LikeUnlikeCommand.
+        /// </summary>
         public CommandLink LikeUnlikeCommand { get; private set; }
 
         /// <summary>
+        /// Gets or sets Mix.
         /// </summary>
         public MixViewModel Mix
         {
@@ -137,49 +164,60 @@ namespace FlatBeats.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets MixId.
         /// </summary>
         public string MixId { get; set; }
 
+        /// <summary>
+        /// Gets PinToStartCommand.
+        /// </summary>
         public CommandLink PinToStartCommand { get; private set; }
 
+        /// <summary>
+        /// Gets PlayedPanel.
+        /// </summary>
         public MixPlayedTracksViewModel PlayedPanel { get; private set; }
 
+        /// <summary>
+        /// Gets or sets ReviewMixCommand.
+        /// </summary>
         public CommandLink ReviewMixCommand { get; set; }
 
+        /// <summary>
+        /// Gets ReviewsPanel.
+        /// </summary>
         public ReviewsPanelViewModel ReviewsPanel { get; private set; }
 
         #endregion
 
-
-        #region Public Methods
+        #region Public Methods and Operators
 
         /// <summary>
+        /// The email.
         /// </summary>
         public void Email()
         {
             var task = new EmailComposeTask
                 {
-                    Subject = StringResources.EmailSubject_ShareMix,
+                    Subject = StringResources.EmailSubject_ShareMix, 
                     Body =
                         string.Format(
-                            StringResources.EmailBody_ShareMix,
-                            this.Mix.MixName,
-                            this.Mix.Description,
+                            StringResources.EmailBody_ShareMix, 
+                            this.Mix.MixName, 
+                            this.Mix.Description, 
                             this.Mix.LinkUrl.AbsoluteUri)
                 };
             task.Show();
         }
 
         /// <summary>
+        /// The load.
         /// </summary>
         public override void Load()
         {
             this.AddToLifetime(
                 this.PlayedPanel.IsPlayingChanges.Where(playing => playing).Subscribe(
-                    _ => 
-                    { 
-                        this.CurrentPanelIndex = 2; 
-                    }));
+                    _ => { this.CurrentPanelIndex = 2; }));
 
             this.AddToLifetime(this.PlayedPanel.IsInProgressChanges.Subscribe(t => this.UpdateIsInProgress()));
             this.AddToLifetime(this.ReviewsPanel.IsInProgressChanges.Subscribe(t => this.UpdateIsInProgress()));
@@ -188,29 +226,177 @@ namespace FlatBeats.ViewModels
             {
                 this.UpdatePinnedState();
                 this.ShowProgress(StringResources.Progress_Loading);
-                this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
+                this.LoadCurrentPanel();
                 this.AddToLifetime(
                     this.PlayedPanel.LoadAsync(this.mixData).ObserveOnDispatcher().Subscribe(
-                    _ => { }, this.HandleError, this.HideProgress));
+                        _ => { }, this.HandleError, this.HideProgress));
                 return;
             }
 
             this.MixId = this.NavigationParameters["mix"];
             this.PlayedPanel.PlayOnLoad = this.NavigationParameters.ContainsKey("play")
-                                        && this.NavigationParameters["play"] == "true";
+                                          && this.NavigationParameters["play"] == "true";
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var login = ProfileService.LoadUserTokenAsync().Select(_ => new Unit());
-            var loadMix = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
-                          from played in this.PlayedPanel.LoadAsync(mix)
-                          select new Unit();
+            IObservable<Unit> login = ProfileService.LoadUserTokenAsync().Select(_ => new Unit());
+            IObservable<Unit> loadMix = this.LoadMixAsync(this.MixId).TakeLast(1).Select(_ => new Unit());
             this.AddToLifetime(
                 login.Concat(loadMix).ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
-
-            this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
         }
 
+        /// <summary>
+        /// The share.
+        /// </summary>
+        public void Share()
+        {
+            var task = new ShareLinkTask
+                {
+                   Title = StringResources.Title_ShareMix, Message = this.Mix.MixName, LinkUri = this.Mix.LinkUrl 
+                };
+            task.Show();
+        }
+
+        /// <summary>
+        /// The unload.
+        /// </summary>
+        public override void Unload()
+        {
+            this.PlayedPanel.Unload();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The add review.
+        /// </summary>
+        private void AddReview()
+        {
+            var scope = new InputScope();
+            scope.Names.Add(new InputScopeName { NameValue = InputScopeNameValue.Chat });
+
+            var prompt = new InputPrompt { InputScope = scope };
+            IObservable<IEvent<PopUpEventArgs<string, PopUpResult>>> completed =
+                Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(
+                    handler => prompt.Completed += handler, handler => prompt.Completed -= handler);
+
+            IObservable<ReviewResponseContract> q = from response in completed.Take(1).Do(
+                _ =>
+                    {
+                        this.IsPromptOpen = false;
+                        this.ShowProgress(StringResources.Progress_Updating);
+                    })
+                                                    where response.EventArgs.PopUpResult == PopUpResult.Ok
+                                                    from reviewAdded in
+                                                        ProfileService.AddMixReviewAsync(
+                                                            this.MixId, response.EventArgs.Result)
+                                                    select reviewAdded;
+            q.ObserveOnDispatcher().Subscribe(
+                review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)), 
+                this.HandleError, 
+                this.HideProgress);
+
+            this.IsPromptOpen = true;
+            prompt.Show();
+        }
+
+        /// <summary>
+        /// The can add review.
+        /// </summary>
+        /// <returns>
+        /// The can add review.
+        /// </returns>
+        private bool CanAddReview()
+        {
+            return Downloader.IsAuthenticated && this.mixData != null;
+        }
+
+        /// <summary>
+        /// The can like unlike.
+        /// </summary>
+        /// <returns>
+        /// The can like unlike.
+        /// </returns>
+        private bool CanLikeUnlike()
+        {
+            return Downloader.IsAuthenticated && this.mixData != null;
+        }
+
+        /// <summary>
+        /// The like unlike.
+        /// </summary>
+        private void LikeUnlike()
+        {
+            this.Mix.Liked = !this.Mix.Liked;
+            this.UpdateLikedState();
+            this.ShowProgress(StringResources.Progress_Loading);
+            ProfileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+                _ => { }, this.HandleError, this.HideProgress);
+        }
+
+        /// <summary>
+        /// Loads the current panel if it's not loaded (currently only the reviews panel is deferred)
+        /// </summary>
+        private void LoadCurrentPanel()
+        {
+            if (this.currentPanelIndex == 1 && !this.ReviewsPanel.IsLoaded)
+            {
+                this.AddToLifetime(this.ReviewsPanel.LoadAsync(this.MixId).Subscribe(_ => { }, this.HandleError));
+            }
+        }
+
+        /// <summary>
+        /// The load mix.
+        /// </summary>
+        /// <param name="loadMix">
+        /// The load mix.
+        /// </param>
+        private void LoadMix(MixContract loadMix)
+        {
+            this.mixData = loadMix;
+            this.CreatedByUserId = loadMix.User.Id;
+            this.Mix = new MixViewModel(loadMix);
+            this.UpdateLikedState();
+
+            this.UpdatePinnedState();
+            this.ReviewMixCommand.RaiseCanExecuteChanged();
+        }
+
+        /// <summary>
+        /// The load mix async.
+        /// </summary>
+        /// <param name="id">
+        /// The id.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private IObservable<MixContract> LoadMixAsync(string id)
+        {
+            return MixesService.GetMixAsync(id).ObserveOnDispatcher().Do(this.LoadMix);
+        }
+
+        /// <summary>
+        /// The pin to start.
+        /// </summary>
+        private void PinToStart()
+        {
+            if (PinHelper.IsPinned(this.mixData))
+            {
+                PinHelper.UnpinFromStart(this.mixData);
+            }
+            else
+            {
+                PinHelper.PinToStart(this.mixData);
+            }
+
+            this.UpdatePinnedState();
+        }
+
+        /// <summary>
+        /// The update is in progress.
+        /// </summary>
         private void UpdateIsInProgress()
         {
             if (this.PlayedPanel.IsInProgress)
@@ -228,109 +414,8 @@ namespace FlatBeats.ViewModels
         }
 
         /// <summary>
+        /// The update liked state.
         /// </summary>
-        public void Share()
-        {
-            var task = new ShareLinkTask
-                {
-                    Title = StringResources.Title_ShareMix, 
-                    Message = this.Mix.MixName, 
-                    LinkUri = this.Mix.LinkUrl
-                };
-            task.Show();
-        }
-
-        public override void Unload()
-        {
-            this.PlayedPanel.Unload();
-        }
-
-        #endregion
-
-        #region Methods
-
-        private void AddReview()
-        {
-            var scope = new InputScope();
-            scope.Names.Add(new InputScopeName() { NameValue = InputScopeNameValue.Chat });
-
-            var prompt = new InputPrompt() { InputScope = scope };
-            var completed =
-                Observable.FromEvent<PopUpEventArgs<string, PopUpResult>>(
-                    handler => prompt.Completed += handler, handler => prompt.Completed -= handler);
-
-            var q = from response in completed.Take(1).Do(_ => 
-            { 
-                this.IsPromptOpen = false; 
-                this.ShowProgress(StringResources.Progress_Updating); 
-            })
-                    where response.EventArgs.PopUpResult == PopUpResult.Ok
-                    from reviewAdded in ProfileService.AddMixReviewAsync(this.MixId, response.EventArgs.Result)
-                    select reviewAdded;
-            q.ObserveOnDispatcher().Subscribe(
-                review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)),
-                this.HandleError,
-                this.HideProgress);
-
-            this.IsPromptOpen = true;
-            prompt.Show();
-        }
-
-        public bool IsPromptOpen { get; set; }
-
-        private bool CanAddReview()
-        {
-            return Downloader.IsAuthenticated && this.mixData != null;
-        }
-
-        private bool CanLikeUnlike()
-        {
-            return Downloader.IsAuthenticated && this.mixData != null;
-        }
-
-        private void LikeUnlike()
-        {
-            this.Mix.Liked = !this.Mix.Liked;
-            this.UpdateLikedState();
-            this.ShowProgress(StringResources.Progress_Loading);
-            ProfileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
-                _ => { }, this.HandleError, this.HideProgress);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name = "loadMix">
-        /// </param>
-        private void LoadMix(MixContract loadMix)
-        {
-            this.mixData = loadMix;
-            this.CreatedByUserId = loadMix.User.Id;
-            this.Mix = new MixViewModel(loadMix);
-            this.UpdateLikedState();
-
-            this.UpdatePinnedState();
-            this.ReviewMixCommand.RaiseCanExecuteChanged();
-        }
-
-        private IObservable<MixContract> LoadMixAsync(string id)
-        {
-            return MixesService.GetMixAsync(id).ObserveOnDispatcher().Do(this.LoadMix);
-        }
-
-        private void PinToStart()
-        {
-            if (PinHelper.IsPinned(this.mixData))
-            {
-                PinHelper.UnpinFromStart(this.mixData);
-            }
-            else
-            {
-                PinHelper.PinToStart(this.mixData);
-            }
-
-            this.UpdatePinnedState();
-        }
-
         private void UpdateLikedState()
         {
             if (this.Mix.Liked)
@@ -348,6 +433,7 @@ namespace FlatBeats.ViewModels
         }
 
         /// <summary>
+        /// The update pinned state.
         /// </summary>
         private void UpdatePinnedState()
         {
