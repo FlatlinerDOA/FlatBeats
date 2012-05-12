@@ -145,6 +145,11 @@
 
         private IObservable<int> StartPageRequests()
         {
+            if (this.CurrentRequestedPage != 0)
+            {
+                return this.PageRequests;
+            }
+
             this.CurrentRequestedPage = 1;
             return Observable.Return(1).Concat(this.PageRequests);
         }

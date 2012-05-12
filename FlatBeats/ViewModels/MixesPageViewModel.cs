@@ -184,7 +184,7 @@ namespace FlatBeats.ViewModels
                 this.Popular.Tag = this.Tag;
             }
 
-            this.AddToLifetime(this.CurrentPanel.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            this.LoadCurrentPanelSearchResults();
         }
 
         public MixListViewModel CurrentPanel 
@@ -217,7 +217,15 @@ namespace FlatBeats.ViewModels
                 this.AddToLifetime(mixList.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             }
         }
+
         #endregion
 
+        public override void Unload()
+        {
+            this.Popular.Unload();
+            this.Hot.Unload();
+            this.Recent.Unload();
+            base.Unload();
+        }
     }
 }
