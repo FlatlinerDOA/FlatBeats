@@ -22,6 +22,8 @@ namespace FlatBeats.Users.ViewModels
 
     public sealed class UserSettingsViewModel : PanelViewModel
     {
+        private readonly ProfileService profileService;
+
         /// <summary>
         /// </summary>
         private string loginLabelText;
@@ -52,8 +54,13 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private string userNameLabelText;
 
-        public UserSettingsViewModel()
+        public UserSettingsViewModel() : this(ProfileService.Instance)
         {
+        }
+
+        public UserSettingsViewModel(ProfileService profileService)
+        {
+            this.profileService = profileService;
             this.Title = "settings";
             this.LoginLabelText = StringResources.Command_Login;
             this.ResetLabelText = StringResources.Command_Logout;
@@ -386,12 +393,12 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
-            var userSettings = UserSettings.Current;
+            var userSettings = this.profileService.UserSettings;
             userSettings.CensorshipEnabled = this.CensorshipEnabled;
             userSettings.PlayOverWifiOnly = this.PlayOverWifiOnly;
             userSettings.PlayNextMix = this.PlayNextMix;
             userSettings.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
-            this.AddToLifetime(ProfileService.SaveSettingsAsync(userSettings).Subscribe(_ => { UserSettings.Current = userSettings; }, this.HandleError));
+            this.AddToLifetime(this.profileService.SaveSettingsAsync(userSettings).Subscribe(_ => { }, this.HandleError));
         }
 
         protected override void ShowErrorMessageOverride(ErrorMessage result)
@@ -539,7 +546,7 @@ namespace FlatBeats.Users.ViewModels
 
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(
-                ProfileService.ResetAsync().ObserveOnDispatcher().Subscribe(
+                this.profileService.ResetAsync().ObserveOnDispatcher().Subscribe(
                     _ => { },
                     () =>
                     {
@@ -570,7 +577,7 @@ namespace FlatBeats.Users.ViewModels
             this.CanLogin = false;
             this.ShowProgress(StringResources.Progress_SigningIn);
             this.AddToLifetime(
-                ProfileService.AuthenticateAsync(creds).ObserveOnDispatcher()
+                profileService.AuthenticateAsync(creds).ObserveOnDispatcher()
                     .Subscribe(
                         this.LoadLoginResponse,
                         ex =>
@@ -627,8 +634,8 @@ namespace FlatBeats.Users.ViewModels
         {
             this.ShowProgress(StringResources.Progress_Loading);
             this.LoadSettings();
-            return from creds in ProfileService.LoadCredentialsAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadCredentials)
-                   from token in ProfileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadLoginResponse)
+            return from creds in this.profileService.LoadCredentialsAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadCredentials)
+                   from token in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadLoginResponse)
                    select new Unit();
         }
 

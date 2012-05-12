@@ -31,6 +31,8 @@ namespace FlatBeats.Users.ViewModels
     {
         private readonly IAsyncDownloader downloader;
 
+        private readonly ProfileService profileService;
+
         #region Constants and Fields
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace FlatBeats.Users.ViewModels
 
         #region Constructors and Destructors
 
-        public UserProfilePageViewModel() : this(Downloader.Instance)
+        public UserProfilePageViewModel() : this(Downloader.Instance, ProfileService.Instance)
         {
             
         }
@@ -74,13 +76,14 @@ namespace FlatBeats.Users.ViewModels
         /// <summary>
         ///   Initializes a new instance of the UserProfilePageViewModel class.
         /// </summary>
-        public UserProfilePageViewModel(IAsyncDownloader downloader)
+        public UserProfilePageViewModel(IAsyncDownloader downloader, ProfileService profileService)
         {
             this.downloader = downloader;
-            this.Mixes = new UserProfileMixesViewModel(false);
-            this.LikedMixes = new UserProfileLikedMixesViewModel(false);
-            this.FollowedByUsers = new FollowedByUsersViewModel(false);
-            this.FollowsUsers = new FollowsUsersViewModel(false);
+            this.profileService = profileService;
+            this.Mixes = new UserProfileMixesViewModel(false, this.profileService);
+            this.LikedMixes = new UserProfileLikedMixesViewModel(false, this.profileService);
+            this.FollowedByUsers = new FollowedByUsersViewModel(false, this.profileService);
+            this.FollowsUsers = new FollowsUsersViewModel(false, this.profileService);
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.ToggleFollowUserCommandLink = new CommandLink()
@@ -308,7 +311,8 @@ namespace FlatBeats.Users.ViewModels
         /// </returns>
         private IObservable<Unit> LoadUserAsync()
         {
-            var profile = from response in ProfileService.GetUserProfileAsync(this.UserId) select response.User;
+            var profile = from response in this.profileService.GetUserProfileAsync(this.UserId) 
+                          select response.User;
             return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
         }
 
@@ -331,7 +335,7 @@ namespace FlatBeats.Users.ViewModels
         private void ToggleFollowUser()
         {
             this.ShowProgress(StringResources.Progress_Updating);
-            ProfileService.SetFollowUserAsync(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
+            this.profileService.SetFollowUserAsync(this.UserId, !this.IsCurrentUserFollowing).ObserveOnDispatcher().Subscribe(
                 response =>
                     {
                         this.HideProgress();

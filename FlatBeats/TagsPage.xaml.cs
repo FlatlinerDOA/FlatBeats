@@ -41,7 +41,6 @@
 
         private void LongListSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.NavigationService.NavigateTo(tagsList.SelectedItem as INavigationItem);
         }
 
         private bool isGroupOpen;
@@ -155,6 +154,12 @@
             }
 
             isGroupOpen = false;
+        }
+
+        private void ListSelectorTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
     }
 }

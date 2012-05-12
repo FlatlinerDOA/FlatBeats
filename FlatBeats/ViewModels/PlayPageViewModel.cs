@@ -32,6 +32,8 @@ namespace FlatBeats.ViewModels
     {
         private readonly IAsyncDownloader downloader;
 
+        private readonly ProfileService profileService;
+
         #region Constants and Fields
 
         /// <summary>
@@ -55,16 +57,18 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// Initializes a new instance of the PlayPageViewModel class.
         /// </summary>
-        public PlayPageViewModel() : this(Downloader.Instance)
+        public PlayPageViewModel()
+            : this(Downloader.Instance, ProfileService.Instance)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the PlayPageViewModel class.
         /// </summary>
-        public PlayPageViewModel(IAsyncDownloader downloader)
+        public PlayPageViewModel(IAsyncDownloader downloader, ProfileService profileService)
         {
             this.downloader = downloader;
+            this.profileService = profileService;
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.PlayedPanel = new MixPlayedTracksViewModel();
@@ -247,7 +251,7 @@ namespace FlatBeats.ViewModels
                                           && this.NavigationParameters["play"] == "true";
 
             this.ShowProgress(StringResources.Progress_Loading);
-            IObservable<Unit> login = ProfileService.LoadUserTokenAsync().Select(_ => new Unit());
+            IObservable<Unit> login = this.profileService.LoadUserTokenAsync().Select(_ => new Unit());
             IObservable<Unit> loadMix = this.LoadMixAsync(this.MixId).TakeLast(1).Select(_ => new Unit());
             this.AddToLifetime(
                 login.Concat(loadMix).ObserveOnDispatcher().Subscribe(
@@ -299,7 +303,7 @@ namespace FlatBeats.ViewModels
                     })
                                                     where response.EventArgs.PopUpResult == PopUpResult.Ok
                                                     from reviewAdded in
-                                                        ProfileService.AddMixReviewAsync(
+                                                        this.profileService.AddMixReviewAsync(
                                                             this.MixId, response.EventArgs.Result)
                                                     select reviewAdded;
             q.ObserveOnDispatcher().Subscribe(
@@ -341,7 +345,7 @@ namespace FlatBeats.ViewModels
             this.Mix.Liked = !this.Mix.Liked;
             this.UpdateLikedState();
             this.ShowProgress(StringResources.Progress_Loading);
-            ProfileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
+            this.profileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
                 _ => { }, this.HandleError, this.HideProgress);
         }
 

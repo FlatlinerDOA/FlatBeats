@@ -9,6 +9,7 @@
 
 namespace FlatBeats.Users.ViewModels
 {
+    using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
     using FlatBeats.ViewModels;
 
@@ -19,19 +20,26 @@ namespace FlatBeats.Users.ViewModels
     /// </summary>
     public sealed class SettingsPageViewModel : PageViewModel
     {
+        private readonly ProfileService profileService;
+
         #region Constructors and Destructors
 
+        public SettingsPageViewModel()
+        {
+
+        }
         /// <summary>
         /// Initializes a new instance of the SettingsPageViewModel class.
         /// </summary>
-        public SettingsPageViewModel()
+        public SettingsPageViewModel(ProfileService profileService)
         {
+            this.profileService = profileService;
             this.Title = "FLAT BEATS";
             this.Settings = new UserSettingsViewModel();
-            this.Mixes = new UserProfileMixesViewModel(true);
+            this.Mixes = new UserProfileMixesViewModel(true, profileService);
             this.MixFeed = new MixFeedViewModel();
-            this.FollowedByUsers = new FollowedByUsersViewModel(true);
-            this.FollowsUsers = new FollowsUsersViewModel(true);
+            this.FollowedByUsers = new FollowedByUsersViewModel(true, profileService);
+            this.FollowsUsers = new FollowsUsersViewModel(true, profileService);
         }
 
         #endregion

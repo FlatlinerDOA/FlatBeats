@@ -26,6 +26,8 @@ namespace FlatBeats.ViewModels
     {
         private readonly IAsyncDownloader downloader;
 
+        private readonly ProfileService profileService;
+
         #region Constants and Fields
 
         private static readonly Uri AddToFavouritesIcon = new Uri("/icons/appbar.favs.addto.rest.png", UriKind.Relative);
@@ -46,9 +48,8 @@ namespace FlatBeats.ViewModels
 
         #endregion
 
-        public TrackViewModel() : this(Downloader.Instance)
+        public TrackViewModel() : this(Downloader.Instance, ProfileService.Instance)
         {
-            
         }
 
         #region Constructors and Destructors
@@ -56,9 +57,10 @@ namespace FlatBeats.ViewModels
         /// <summary>
         /// Initializes a new instance of the TrackViewModel class.
         /// </summary>
-        public TrackViewModel(IAsyncDownloader downloader)
+        public TrackViewModel(IAsyncDownloader downloader, ProfileService profileService)
         {
             this.downloader = downloader;
+            this.profileService = profileService;
             this.ToggleFavouriteCommand = new CommandLink()
                 {
                     Command = new DelegateCommand(
@@ -90,7 +92,7 @@ namespace FlatBeats.ViewModels
         private void ToggleFavourite()
         {
             this.IsFavourite = !this.IsFavourite;
-            ProfileService.SetTrackFavouriteAsync(this.Id, this.IsFavourite).ObserveOnDispatcher().Subscribe(
+            this.profileService.SetTrackFavouriteAsync(this.Id, this.IsFavourite).ObserveOnDispatcher().Subscribe(
                 _ => { },
                 ex => this.IsFavourite = !this.IsFavourite);
         }

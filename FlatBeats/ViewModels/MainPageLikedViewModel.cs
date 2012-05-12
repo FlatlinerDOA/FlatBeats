@@ -17,13 +17,20 @@ namespace FlatBeats.ViewModels
 
     public sealed class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
+        private readonly ProfileService profileService;
+
         private string loadedList;
+
+        public MainPageLikedViewModel() : this(ProfileService.Instance)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the MainPageLikedViewModel class.
         /// </summary>
-        public MainPageLikedViewModel()
+        public MainPageLikedViewModel(ProfileService profileService)
         {
+            this.profileService = profileService;
             this.loadedList = UserSettings.Current.PreferredList;
 
             switch (this.loadedList)
@@ -83,17 +90,17 @@ namespace FlatBeats.ViewModels
 
             if (loadedList == PreferredLists.Created)
             {
-                return (from page in ProfileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)
+                return (from page in this.profileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)
                         select (IList<MixContract>)page.Mixes);
             }
 
             if (loadedList == PreferredLists.MixFeed)
             {
-                return (from page in ProfileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize)
+                return (from page in this.profileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize)
                         select (IList<MixContract>)page.Mixes);
             }
 
-            return (from page in ProfileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
+            return (from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
                     select (IList<MixContract>)page.Mixes);
         }
 

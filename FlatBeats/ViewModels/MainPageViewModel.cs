@@ -29,6 +29,8 @@ namespace FlatBeats.ViewModels
     /// </summary>
     public sealed class MainPageViewModel : PageViewModel
     {
+        private readonly ProfileService profileService;
+
         #region Constants and Fields
 
         /// <summary>
@@ -72,11 +74,16 @@ namespace FlatBeats.ViewModels
 
         #region Constructors and Destructors
 
+        public MainPageViewModel() : this(ProfileService.Instance)
+        {
+        }
+
         /// <summary>
         ///   Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainPageViewModel()
+        public MainPageViewModel(ProfileService profileService)
         {
+            this.profileService = profileService;
             this.Liked = new MainPageLikedViewModel() { Opacity = 1 };
             this.Recent = new MainPageRecentViewModel();
             this.Latest = new MainPageLatestViewModel();
@@ -182,7 +189,7 @@ namespace FlatBeats.ViewModels
 
             if (this.IsDataLoaded)
             {
-                var likedLoad = from userToken in ProfileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
+                var likedLoad = from userToken in this.profileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
                                 from liked in this.Liked.LoadAsync(this.UserId)
                                 select ObservableEx.SingleUnit();
                 this.AddToLifetime(likedLoad.Subscribe(_ => { }, this.HandleError, this.HideProgress));
@@ -191,7 +198,7 @@ namespace FlatBeats.ViewModels
             }
 
             var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
-                           from userToken in ProfileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
+                           from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
                            from liked in this.Liked.LoadAsync(this.UserId)
                            select ObservableEx.SingleUnit();
 

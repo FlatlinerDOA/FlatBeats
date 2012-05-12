@@ -13,11 +13,14 @@ namespace FlatBeats.Users.ViewModels
 
     public class UserProfileLikedMixesViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>, ILifetime<string>
     {
+        private readonly ProfileService profileService;
+
         /// <summary>
         /// Initializes a new instance of the UserProfileMixesViewModel class.
         /// </summary>
-        public UserProfileLikedMixesViewModel(bool isCurrentUser)
+        public UserProfileLikedMixesViewModel(bool isCurrentUser, ProfileService profileService)
         {
+            this.profileService = profileService;
             this.IsCurrentUser = isCurrentUser;
             this.Title = StringResources.Title_LikedMixes;
         }
@@ -39,7 +42,7 @@ namespace FlatBeats.Users.ViewModels
                 return Observable.Empty<IList<MixContract>>();
             }
 
-            return ProfileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
+            return this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

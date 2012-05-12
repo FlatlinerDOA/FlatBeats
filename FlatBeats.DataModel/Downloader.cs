@@ -46,28 +46,28 @@ namespace FlatBeats.DataModel
         {
             get
             {
-                return UserToken != null || UserCredentials != null;
+                return UserToken != null;
             }
         }
 
-        public UserCredentialsContract UserCredentials
-        {
-            get
-            {
-                lock (SyncRoot)
-                {
-                    return userCredentials;
-                }
-            }
+        ////public UserCredentialsContract UserCredentials
+        ////{
+        ////    get
+        ////    {
+        ////        lock (SyncRoot)
+        ////        {
+        ////            return userCredentials;
+        ////        }
+        ////    }
 
-            set
-            {
-                lock (SyncRoot)
-                {
-                    userCredentials = value;
-                }
-            }
-        }
+        ////    set
+        ////    {
+        ////        lock (SyncRoot)
+        ////        {
+        ////            userCredentials = value;
+        ////        }
+        ////    }
+        ////}
 
         public string UserToken
         {

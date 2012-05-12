@@ -86,7 +86,7 @@ namespace FlatBeatsPlaybackAgent
             get
             {
                 // TODO: HACK: Should load async 
-                return this.userSettings ?? (this.userSettings = ProfileService.GetSettingsAsync().FirstOrDefault());
+                return this.userSettings ?? (this.userSettings = ProfileService.Instance.GetSettingsAsync().FirstOrDefault());
             }
         }
 

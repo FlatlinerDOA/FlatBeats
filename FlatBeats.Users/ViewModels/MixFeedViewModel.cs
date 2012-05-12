@@ -12,19 +12,26 @@
 
     public class MixFeedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>, ILifetime<string>
     {
+        private readonly ProfileService profileService;
+
+        public MixFeedViewModel() : this(ProfileService.Instance)
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the MixFeedViewModel class.
         /// </summary>
-        public MixFeedViewModel()
+        public MixFeedViewModel(ProfileService profileService)
         {
-            this.Title = StringResources.Title_MixFeed;        
+            this.profileService = profileService;
+            this.Title = StringResources.Title_MixFeed;
         }
 
         public string UserId { get; private set; }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
+            return this.profileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<MixContract>)r.Mixes);
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

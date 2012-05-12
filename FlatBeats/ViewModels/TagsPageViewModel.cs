@@ -15,7 +15,6 @@
     /// </summary>
     public sealed class TagsPageViewModel : PageViewModel
     {
-        private readonly IAsyncDownloader downloader;
 
         #region Constants and Fields
 
@@ -28,20 +27,12 @@
         #endregion
 
         #region Constructors and Destructors
-        /// <summary>
-        ///   Initializes a new instance of the TagsPageViewModel class.
-        /// </summary>
-        public TagsPageViewModel() : this(Downloader.Instance)
-        {
-
-        }
 
         /// <summary>
         ///   Initializes a new instance of the TagsPageViewModel class.
         /// </summary>
-        public TagsPageViewModel(IAsyncDownloader downloader)
+        public TagsPageViewModel()
         {
-            this.downloader = downloader;
             this.Title = "tags";
         }
 
@@ -78,6 +69,11 @@
         /// </summary>
         public override void Load()
         {
+            if (this.IsDataLoaded)
+            {
+                return;
+            }
+
             this.ShowProgress(StringResources.Progress_Loading);
             var tagViewModels = from pageNumber in Observable.Range(1, 5)
                                 from response in MixesService.GetTagsAsync(pageNumber)

@@ -15,11 +15,14 @@
     /// </summary>
     public class FollowsUsersViewModel : InfiniteScrollPanelViewModel<UserListItemViewModel, UserContract>, ILifetime<string>
     {
+        private readonly ProfileService profileService;
+
         /// <summary>
         /// Initializes a new instance of the FollowsUsersViewModel class.
         /// </summary>
-        public FollowsUsersViewModel(bool isCurrentUser)
+        public FollowsUsersViewModel(bool isCurrentUser, ProfileService profileService)
         {
+            this.profileService = profileService;
             this.IsCurrentUser = isCurrentUser;
             if (this.IsCurrentUser)
             {
@@ -48,7 +51,7 @@
 
         protected override IObservable<IList<UserContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
-            return ProfileService.GetFollowsUsersAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
+            return this.profileService.GetFollowsUsersAsync(this.UserId, pageNumber, pageSize).Select(r => (IList<UserContract>)r.Users);
         }
 
         protected override void LoadItem(UserListItemViewModel viewModel, UserContract data)

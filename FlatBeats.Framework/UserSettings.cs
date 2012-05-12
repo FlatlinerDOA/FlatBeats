@@ -27,7 +27,7 @@ namespace FlatBeats.Framework
                         if (userSettings == null)
                         {
                             // TODO: HACK: Make load asynchronous
-                            userSettings = ProfileService.GetSettingsAsync().FirstOrDefault();
+                            userSettings = ProfileService.Instance.GetSettingsAsync().FirstOrDefault();
                         }
                     }
                 }

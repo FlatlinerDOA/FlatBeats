@@ -12,6 +12,8 @@ namespace FlatBeats.DataModel.Services
             get;
         }
 
+        string UserToken { get; set; }
+
         IObservable<Unit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite);
 
         IObservable<T> GetDeserializedCachedAndRefreshedAsync<T>(Uri url, string cacheFile) where T : class;

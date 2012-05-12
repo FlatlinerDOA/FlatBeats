@@ -56,16 +56,14 @@
                                       Background="Transparent"
                                       GroupViewOpened="LongListSelector_GroupViewOpened"
                                       GroupViewClosing="LongListSelector_GroupViewClosing"
-                                      SelectionChanged="LongListSelector_SelectionChanged">
+                                      Tap="ListSelectorTap">
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="0,0,0,17"
-                                    Width="432">
                             <TextBlock Text="{Binding TagName}"
                                        TextWrapping="NoWrap"
                                        Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                       Foreground="{StaticResource PhoneForegroundBrush}" Margin="0" />
-                        </StackPanel>
+                                       Foreground="{StaticResource PhoneForegroundBrush}" Margin="0,0,0,17"
+                                       Width="432" />
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>
                 <toolkit:LongListSelector.GroupItemsPanel>
