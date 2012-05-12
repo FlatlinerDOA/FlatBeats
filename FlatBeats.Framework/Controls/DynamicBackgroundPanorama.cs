@@ -53,8 +53,6 @@ namespace FlatBeats.Framework.Controls
         public static readonly DependencyProperty DynamicBackgroundProperty =
             DependencyProperty.Register("DynamicBackground", typeof(Brush), typeof(DynamicBackgroundPanorama), new PropertyMetadata(null, OnDynamicBackgroundChanged));
 
-        private TransitioningBackgroundControl transition;
-
         public static void OnDynamicBackgroundChanged(DependencyObject s, DependencyPropertyChangedEventArgs c)
         {
             ////var dp = (DynamicBackgroundPanorama)s;

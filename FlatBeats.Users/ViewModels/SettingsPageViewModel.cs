@@ -9,6 +9,7 @@
 
 namespace FlatBeats.Users.ViewModels
 {
+    using FlatBeats.Framework;
     using FlatBeats.ViewModels;
 
     using Microsoft.Phone.Reactive;
@@ -62,6 +63,44 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         public UserSettingsViewModel Settings { get; private set; }
 
+        private int currentPanelIndex;
+
+        public int CurrentPanelIndex
+        {
+            get
+            {
+                return this.currentPanelIndex;
+            }
+
+            set
+            {
+                this.currentPanelIndex = value;
+                this.LoadCurrentDataPanel(this.Settings.CurrentUserId);
+            }
+        }
+
+        private ILifetime<string> CurrentDataPanel
+        {
+            get
+            {
+                switch (this.currentPanelIndex)
+                {
+                    case 0:
+                        return null;
+                    case 1:
+                        return this.MixFeed;
+                    case 2:
+                        return this.Mixes;
+                    case 3:
+                        return this.FollowsUsers;
+                    case 4:
+                        return this.FollowedByUsers;
+                }
+
+                return null;
+            }
+        }
+
         #endregion
 
         #region Public Methods and Operators
@@ -73,6 +112,7 @@ namespace FlatBeats.Users.ViewModels
         {
             var progress = new[]
                 {
+                    this.Settings.IsInProgressChanges, 
                     this.Mixes.IsInProgressChanges, 
                     this.FollowsUsers.IsInProgressChanges, 
                     this.FollowedByUsers.IsInProgressChanges, 
@@ -80,7 +120,7 @@ namespace FlatBeats.Users.ViewModels
                 };
 
             this.AddToLifetime(progress.Merge().Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.Settings.CurrentUserIdChanges.ObserveOnDispatcher().Subscribe(this.LoadPanels));
+            this.AddToLifetime(this.Settings.CurrentUserIdChanges.ObserveOnDispatcher().Subscribe(this.LoadCurrentDataPanel));
             this.AddToLifetime(this.Settings.LoadAsync().ObserveOnDispatcher().Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
         }
 
@@ -94,7 +134,7 @@ namespace FlatBeats.Users.ViewModels
         /// <param name="userId">
         /// The user id.
         /// </param>
-        private void LoadPanels(string userId)
+        private void LoadCurrentDataPanel(string userId)
         {
             if (userId == null)
             {
@@ -102,12 +142,25 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
-            this.AddToLifetime(this.Mixes.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(
-                this.FollowsUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(
-                this.FollowedByUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(this.MixFeed.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            if (this.CurrentDataPanel != null)
+            {
+                if (!this.CurrentDataPanel.IsLoaded)
+                {
+                    this.AddToLifetime(
+                        this.CurrentDataPanel.LoadAsync(userId).Subscribe(
+                            _ =>
+                            {
+                            },
+                            this.HandleError));
+                }
+            }
+
+            ////this.AddToLifetime(this.Mixes.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(
+            ////    this.FollowsUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(
+            ////    this.FollowedByUsers.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+            ////this.AddToLifetime(this.MixFeed.LoadAsync(userId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
         }
 
         /// <summary>

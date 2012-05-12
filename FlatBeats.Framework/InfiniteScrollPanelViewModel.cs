@@ -12,7 +12,7 @@
     using Microsoft.Phone.Reactive;
     using System.Diagnostics;
 
-    public class InfiniteScrollPanelViewModel : PanelViewModel, IInfiniteScroll
+    public class InfiniteScrollPanelViewModel : PanelViewModel, IInfiniteScroll, ILifetime
     {
         private Subject<int> pageRequests;
 
@@ -44,7 +44,9 @@
         /// </summary>
         public int LoadedPage { get; set; }
 
-        public bool IsPageSubscriptionActive { get; set; }
+        public bool IsLoaded { get; protected set; }
+
+        public bool IsPageSubscriptionActive { get; protected set; }
 
         public virtual void StopLoadingPages()
         {
@@ -61,6 +63,7 @@
         public override void Unload()
         {
             this.StopLoadingPages();
+            this.IsLoaded = false;
             base.Unload();
         }
 
@@ -93,6 +96,10 @@
             return StringResources.Label_LoadingMore1;
         }
 
+        public virtual IObservable<Unit> LoadAsync()
+        {
+            return Observable.Empty<Unit>();
+        }
 
         public virtual void LoadFirstPage()
         {
@@ -131,7 +138,7 @@
 
         protected abstract IObservable<IList<TData>> GetPageOfItemsAsync(int pageNumber, int pageSize);
 
-        public virtual IObservable<Unit> LoadAsync()
+        public override IObservable<Unit> LoadAsync()
         {
             return this.LoadItemsAsync();
         }
@@ -144,6 +151,7 @@
 
         protected IObservable<Unit> LoadItemsAsync()
         {
+            this.IsLoaded = true;
             this.IsPageSubscriptionActive = true;
 
             var getItems = from page in this.StartPageRequests().Do(_ => 
@@ -160,14 +168,8 @@
                                 .ObserveOnDispatcher()
                                 .AddOrReloadPage(this.Items, this.LoadItem)
                                 .Do(
-                                _ =>
-                                {
-                                    this.OnLoadPageCompleted();
-                                }, 
-                                () => 
-                                {
-                                    this.OnLoadPageCompleted();
-                                })
+                                _ => this.OnLoadPageCompleted(), 
+                                this.OnLoadPageCompleted)
                                 .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
                             where response != null
                             select response;

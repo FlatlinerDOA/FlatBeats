@@ -10,7 +10,7 @@
 
     using Microsoft.Phone.Reactive;
 
-    public class MixFeedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
+    public class MixFeedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>, ILifetime<string>
     {
         /// <summary>
         /// Initializes a new instance of the MixFeedViewModel class.

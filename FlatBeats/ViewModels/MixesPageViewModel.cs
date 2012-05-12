@@ -212,7 +212,7 @@ namespace FlatBeats.ViewModels
 
         private void SearchPanel(MixListViewModel mixList)
         {
-            if (!mixList.IsPageSubscriptionActive)
+            if (!mixList.IsLoaded)
             {
                 this.AddToLifetime(mixList.LoadAsync().Subscribe(_ => { }, this.HandleError, this.HideProgress));
             }

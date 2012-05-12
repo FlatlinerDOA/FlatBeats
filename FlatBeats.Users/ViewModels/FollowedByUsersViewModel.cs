@@ -15,7 +15,7 @@
     /// <summary>
     /// Panel of list of users that a user is following
     /// </summary>
-    public class FollowedByUsersViewModel : InfiniteScrollPanelViewModel<UserListItemViewModel, UserContract>
+    public class FollowedByUsersViewModel : InfiniteScrollPanelViewModel<UserListItemViewModel, UserContract>, ILifetime<string>
     {
         /// <summary>
         /// Initializes a new instance of the FollowedByUsersViewModel class.
@@ -41,12 +41,6 @@
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            if (this.IsDataLoaded)
-            {
-                return ObservableEx.SingleUnit();
-            }
-
-            this.IsDataLoaded = true;
             return this.LoadAsync();
         }
 
@@ -54,7 +48,6 @@
 
         protected string UserId { get; set; }
 
-        protected bool IsDataLoaded { get; set; }
 
         protected override IObservable<IList<UserContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {

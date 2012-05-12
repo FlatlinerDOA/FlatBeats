@@ -11,7 +11,7 @@ namespace FlatBeats.Users.ViewModels
 
     using Microsoft.Phone.Reactive;
 
-    public class UserProfileMixesViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
+    public class UserProfileMixesViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>, ILifetime<string>
     {
         /// <summary>
         /// Initializes a new instance of the UserProfileMixesViewModel class.

@@ -13,7 +13,7 @@
     /// <summary>
     /// Panel of list of users that a user is following
     /// </summary>
-    public class FollowsUsersViewModel : InfiniteScrollPanelViewModel<UserListItemViewModel, UserContract>
+    public class FollowsUsersViewModel : InfiniteScrollPanelViewModel<UserListItemViewModel, UserContract>, ILifetime<string>
     {
         /// <summary>
         /// Initializes a new instance of the FollowsUsersViewModel class.
@@ -45,8 +45,6 @@
         protected bool IsCurrentUser { get; set; }
 
         protected string UserId { get; set; }
-
-        protected bool IsDataLoaded { get; set; }
 
         protected override IObservable<IList<UserContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {

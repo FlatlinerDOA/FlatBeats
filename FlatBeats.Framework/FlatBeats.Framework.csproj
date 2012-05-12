@@ -84,6 +84,7 @@
     <Compile Include="Extensions\ApplicationExtensions.cs" />
     <Compile Include="Extensions\ItemsControlHelper.cs" />
     <Compile Include="IInfiniteScroll.cs" />
+    <Compile Include="ILifetime.cs" />
     <Compile Include="INavigationItem.cs" />
     <Compile Include="Indexed.cs" />
     <Compile Include="Controls\InfiniteScrollBehavior.cs" />
