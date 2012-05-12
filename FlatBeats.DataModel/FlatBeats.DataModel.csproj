@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarContract.cs" />
+    <Compile Include="Contracts\IAsyncStorage.cs" />
     <Compile Include="CoverUrlContract.cs" />
     <Compile Include="Data\IAsyncRepository.cs" />
     <Compile Include="Data\IPaginatedAsyncRepository.cs" />
@@ -105,7 +106,7 @@
     <Compile Include="UserLoginResponseContract.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="SetContract.cs" />
-    <Compile Include="Storage.cs" />
+    <Compile Include="AsyncIsolatedStorage.cs" />
     <Compile Include="TagsResponseContract.cs" />
     <Compile Include="TrackContract.cs" />
     <Compile Include="UserContract.cs" />

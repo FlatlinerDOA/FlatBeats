@@ -24,6 +24,8 @@ namespace FlatBeats.DataModel
     {
         #region Constants and Fields
 
+        private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
+
         private static readonly object SyncRoot = new object();
 
         private static UserCredentialsContract userCredentials;
@@ -101,7 +103,7 @@ namespace FlatBeats.DataModel
             return GetStream(url, false).TrySelect(
                         stream =>
                         {
-                            Storage.Save(fileName, stream);
+                            storage.Save(fileName, stream);
                             return ObservableEx.Unit;
                         });
         }
@@ -109,27 +111,27 @@ namespace FlatBeats.DataModel
         public static IObservable<T> GetJsonCachedAndRefreshed<T>(Uri url, string cacheFile) where T : class
         {
             IObservable<T> sequence = Observable.Empty<T>();
-            if (Storage.Exists(cacheFile))
+            if (storage.Exists(cacheFile))
             {
-                sequence = Storage.LoadJsonAsync<T>(cacheFile);
+                sequence = storage.LoadJsonAsync<T>(cacheFile);
             }
 
             return sequence.Concat(
-                from cache in GetStream(url, false).Select(Json<T>.DeserializeAndClose)
-                from _ in Storage.SaveJsonAsync(cacheFile, cache)
+                from cache in GetStream(url, false).Select(Json<T>.Instance.DeserializeFromStream)
+                from _ in storage.SaveJsonAsync(cacheFile, cache)
                 select cache);
         }
 
 
         public static IObservable<T> GetJsonCached<T>(Uri url, string cacheFile) where T : class
         {
-            if (Storage.Exists(cacheFile))
+            if (storage.Exists(cacheFile))
             {
-                return Storage.LoadJsonAsync<T>(cacheFile);
+                return storage.LoadJsonAsync<T>(cacheFile);
             }
 
-            return from cache in GetStream(url, false).Select(Json<T>.DeserializeAndClose)
-                   from _ in Storage.SaveJsonAsync<T>(cacheFile, cache)
+            return from cache in GetStream(url, false).Select(Json<T>.Instance.DeserializeFromStream)
+                   from _ in storage.SaveJsonAsync<T>(cacheFile, cache)
                    select cache;
         }
 
@@ -173,7 +175,7 @@ namespace FlatBeats.DataModel
         /// <returns></returns>
         public static IObservable<T> GetJson<T>(Uri url) where T : class
         {
-            return GetStream(url, true).Select(Json<T>.DeserializeAndClose);
+            return GetStream(url, true).Select(Json<T>.Instance.DeserializeFromStream);
         }
 
         /// <summary>
@@ -191,9 +193,9 @@ namespace FlatBeats.DataModel
         public static IObservable<TResponse> PostAndGetJson<TRequest, TResponse>(Uri url, TRequest postData)
             where TRequest : class where TResponse : class
         {
-            var sequence = from postString in ObservableEx.DeferredStart(() => Json<TRequest>.Serialize(postData))
+            var sequence = from postString in ObservableEx.DeferredStart(() => Json<TRequest>.Instance.SerializeToString(postData))
                            from completed in PostAndGetString(url, postString)
-                           select Json<TResponse>.Deserialize(completed);
+                           select Json<TResponse>.Instance.DeserializeFromString(completed);
             return sequence;
         }
 
@@ -284,7 +286,7 @@ namespace FlatBeats.DataModel
             where TResponse : class
         {
             var sequence = from completed in PostAndGetString(url, postData)
-                           select Json<TResponse>.Deserialize(completed);
+                           select Json<TResponse>.Instance.DeserializeFromString(completed);
             return sequence;
         }
 
@@ -397,7 +399,7 @@ namespace FlatBeats.DataModel
                     b.Position = 0;
                     using (var sr = new StreamReader(b))
                     {
-                        var response = Json<ResponseContract>.Deserialize(sr.ReadToEnd());
+                        var response = Json<ResponseContract>.Instance.DeserializeFromString(sr.ReadToEnd());
                         if (response != null)
                         {
                             newError = new ServiceException(response.Errors, webException, response.ResponseStatus);

@@ -47,6 +47,10 @@
 
     public static class ProfileService
     {
+        private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
+
+        private static readonly Json<SettingsContract> settingsSerializer = Json<SettingsContract>.Instance;
+
         private const string LikedMixesCacheFile = "/cache/{0}/liked-{1}.json";
 
         private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}.json";
@@ -59,13 +63,13 @@
         
         public static IObservable<SettingsContract> GetSettingsAsync()
         {
-            return from json in Storage.LoadStringAsync(SettingsFilePath)
-                   select Json<SettingsContract>.Deserialize(json) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true, PreferredList = PreferredLists.Liked };
+            return from json in storage.LoadStringAsync(SettingsFilePath)
+                   select settingsSerializer.DeserializeFromString(json) ?? new SettingsContract() { CensorshipEnabled = true, PlayNextMix = true, PreferredList = PreferredLists.Liked };
         }
 
         public static IObservable<Unit> SaveSettingsAsync(SettingsContract settings)
         {
-            return Storage.SaveStringAsync(SettingsFilePath, Json<SettingsContract>.Serialize(settings));
+            return storage.SaveStringAsync(SettingsFilePath, settingsSerializer.SerializeToString(settings));
         }
 
         public static IObservable<UserLoginResponseContract> AuthenticateAsync(UserCredentialsContract userCredentials)
@@ -82,7 +86,7 @@
                 ApiUrl.Escape(userCredentials.UserName),
                 ApiUrl.Escape(userCredentials.Password));
             var userLogin = from response in Downloader.PostAndGetString(ApiUrl.Authenticate(), postData)
-                            let user = Json<UserLoginResponseContract>.Deserialize(response)
+                            let user = Json<UserLoginResponseContract>.Instance.DeserializeFromString(response)
                             where !string.IsNullOrWhiteSpace(user.UserToken)
                             select user;
 
@@ -100,22 +104,22 @@
 
         private static IObservable<Unit> SaveCredentialsAsync(UserCredentialsContract userCredentials)
         {
-            return Storage.SaveJsonAsync(CredentialsFilePath, userCredentials);
+            return storage.SaveJsonAsync(CredentialsFilePath, userCredentials);
         }
 
         public static IObservable<UserCredentialsContract> LoadCredentialsAsync()
         {
-            return Storage.LoadJsonAsync<UserCredentialsContract>(CredentialsFilePath).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
+            return storage.LoadJsonAsync<UserCredentialsContract>(CredentialsFilePath).Where(c => c != null).Do(c => Downloader.UserCredentials = c);
         }
 
         private static IObservable<Unit> SaveUserTokenAsync(UserLoginResponseContract login)
         {
-            return Storage.SaveJsonAsync(UserLoginFilePath, login);
+            return storage.SaveJsonAsync(UserLoginFilePath, login);
         }
 
         public static IObservable<UserLoginResponseContract> LoadUserTokenAsync()
         {
-            return Storage.LoadJsonAsync<UserLoginResponseContract>(UserLoginFilePath).NotNull()
+            return storage.LoadJsonAsync<UserLoginResponseContract>(UserLoginFilePath).NotNull()
                 .Where(c => c.CurrentUser != null)
                 .Do(user => Downloader.UserToken = user.UserToken);
         }
@@ -159,8 +163,8 @@
             PlayerService.StopAsync(null, TimeSpan.Zero).Subscribe();
             PlayerService.ClearRecentlyPlayed();
             PlayerService.DeletePlayToken();
-            Storage.Delete(UserLoginFilePath);
-            Storage.Delete(CredentialsFilePath);
+            storage.Delete(UserLoginFilePath);
+            storage.Delete(CredentialsFilePath);
             Downloader.UserToken = null;
             Downloader.UserCredentials = null;
         }

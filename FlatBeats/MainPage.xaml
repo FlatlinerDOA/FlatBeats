@@ -17,7 +17,6 @@
                             d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
                             SupportedOrientations="Portrait"
                             Orientation="Portrait"
-                         
                             shell:SystemTray.IsVisible="True"
                             shell:SystemTray.Opacity="0"
 							shell:SystemTray.BackgroundColor="Transparent"
@@ -26,7 +25,6 @@
     <ControlsF:ViewModelPage.Resources>
         <FlatBeats_ViewModels:MainPageViewModel x:Key="ViewModel" />
     	<FlatBeats_ViewModels:UpperCaseConverter x:Key="UpperCaseConverter"/>
-    	<SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#33000000" />
     	<Controls2:BooleanToVisibilityConverter x:Key="VisibilityConverter"
     		WhenFalse="Collapsed"
     		WhenTrue="Visible" />
@@ -385,13 +383,13 @@
                              Tap="ListBoxTap"
                              Style="{StaticResource WrapNavigationList}"
                              VerticalAlignment="Top"
-                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                  Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}" />
                 </Grid>
             </controls:PanoramaItem>
             <controls:PanoramaItem DataContext="{Binding TagsPanel}"
                                    Header="{Binding Title}"
-                                    Opacity="{Binding Opacity}"
+                                   Opacity="{Binding Opacity}"
                                    HeaderTemplate="{StaticResource TagsHeaderTemplate}" Margin="0">
                 <Grid >
                     <TextBlock Text="{Binding Message}"
@@ -409,12 +407,14 @@
                             <DataTemplate>
                                 <StackPanel Margin="0,0,0,0" Background="#00000000">
                                 	<Grid x:Name="firstItemSeparator"
-                                          Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" Style="{StaticResource FirstItemSeparatorStyle}" />
+                                          Visibility="{Binding IsFirstItem, Converter={StaticResource VisibilityConverter}}" 
+                                          Style="{StaticResource FirstItemSeparatorStyle}" />
                                 	<TextBlock Text="{Binding TagName}"
-                                		TextWrapping="NoWrap"
-                                		Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                		Foreground="White"
-                                		Margin="0" Height="60"
+                                		       TextWrapping="NoWrap"
+                                		       Style="{StaticResource PhoneTextExtraLargeStyle}"
+                                		       Foreground="White"
+                                		       Margin="0" 
+                                               Height="60"
                                 			/>
                                 	<Grid x:Name="lastItemSeparator" 
                                           Height="64"

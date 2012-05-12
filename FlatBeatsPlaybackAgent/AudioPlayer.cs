@@ -322,7 +322,7 @@ namespace FlatBeatsPlaybackAgent
                         var data = "Error playing next track, we have to stop!\r\n";
                         if (this.NowPlaying != null)
                         {
-                            data += Json<PlayingMixContract>.Serialize(this.NowPlaying);
+                            data += Json<PlayingMixContract>.Instance.SerializeToString(this.NowPlaying);
                         }
 
                         LittleWatsonLog.ReportException(ex, data);

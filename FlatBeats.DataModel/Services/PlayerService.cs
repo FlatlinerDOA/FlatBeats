@@ -22,6 +22,7 @@
 
     public static class PlayerService
     {
+        private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
         private const string PlayTokenFilePath = "playtoken.json";
 
         private const string NowPlayingFilePath = "nowplaying.json";
@@ -36,7 +37,7 @@
 
         public static void DeletePlayToken()
         {
-            Storage.Delete(PlayTokenFilePath);
+            storage.Delete(PlayTokenFilePath);
         }
 
         public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, BackgroundAudioPlayer player)
@@ -59,7 +60,7 @@
         public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
         {
             ResetNowPlayingTile();
-            Storage.Delete(NowPlayingFilePath);
+            storage.Delete(NowPlayingFilePath);
             
             if (nowPlaying == null)
             {
@@ -71,17 +72,17 @@
         
         public static void ClearRecentlyPlayed()
         {
-            Storage.Delete(RecentlyPlayedFilePath);
+            storage.Delete(RecentlyPlayedFilePath);
         }
 
         public static IObservable<Unit> SaveNowPlayingAsync(this PlayingMixContract playing)
         {
-            return Storage.SaveJsonAsync(NowPlayingFilePath, playing);
+            return storage.SaveJsonAsync(NowPlayingFilePath, playing);
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
-            return Storage.LoadJsonAsync<MixesResponseContract>(RecentlyPlayedFilePath)
+            return storage.LoadJsonAsync<MixesResponseContract>(RecentlyPlayedFilePath)
                 .Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
@@ -105,10 +106,10 @@
                                 m.Mixes.Remove(m.Mixes.Last());
                             }
                         })
-                   from mixes in Storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
+                   from mixes in storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
                        from save in Downloader.GetAndSaveFile(mix.Cover.ThumbnailUrl, imageFilePath).Do(d =>
                        {
-                           using (var stream = Storage.ReadStream(imageFilePath))
+                           using (var stream = storage.ReadStream(imageFilePath))
                            {
                                var mediaHistoryItem = new MediaHistoryItem { Title = mix.Name, ImageStream = stream };
                                mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
@@ -116,7 +117,7 @@
                                stream.Close();
                            }
 
-                           using (var secondStream = Storage.ReadStream(imageFilePath))
+                           using (var secondStream = storage.ReadStream(imageFilePath))
                            {
                                var item = new MediaHistoryItem { Title = mix.Name, ImageStream = secondStream };
                                item.PlayerContext.Add("MixId", mix.Id);
@@ -129,12 +130,12 @@
 
         public static bool NowPlayingExists()
         {
-            return Storage.Exists(NowPlayingFilePath);
+            return storage.Exists(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> LoadNowPlayingAsync()
         {
-            return Storage.LoadJsonAsync<PlayingMixContract>(NowPlayingFilePath);
+            return storage.LoadJsonAsync<PlayingMixContract>(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
@@ -329,7 +330,7 @@
             var remoteTrackUrl = new Uri(track.TrackUrl, UriKind.Absolute);
             var localFileName = "Track-" + track.Id + Path.GetExtension(track.TrackUrl);
             var localFullPath = "Audio/" + localFileName;
-            if (Storage.Exists(localFullPath))
+            if (storage.Exists(localFullPath))
             {
                 return Observable.Return(new Uri(localFullPath, UriKind.Relative));
             }

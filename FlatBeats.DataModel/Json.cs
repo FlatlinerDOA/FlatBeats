@@ -9,16 +9,21 @@ namespace FlatBeats.DataModel
     using System.Runtime.Serialization.Json;
     using System.Text;
 
-    public static class Json<T> where T : class 
+    using FlatBeats.DataModel.Contracts;
+
+    public class Json<T> : ISerializer<T> where T : class 
     {
         private static readonly DataContractJsonSerializer Serializer;
-        
+     
+        public static readonly Json<T> Instance;
+ 
         static Json()
         {
             Serializer = new DataContractJsonSerializer(typeof(T));
+            Instance = new Json<T>();
         }
 
-        public static string Serialize(T obj)
+        public string SerializeToString(T obj)
         {
             if (obj == null)
             {
@@ -36,7 +41,7 @@ namespace FlatBeats.DataModel
             return retVal;
         }
 
-        public static T Deserialize(string json) 
+        public T DeserializeFromString(string json) 
         {
             T obj = null;
             if (string.IsNullOrWhiteSpace(json))
@@ -51,22 +56,26 @@ namespace FlatBeats.DataModel
                     obj = (T)Serializer.ReadObject(ms);
                     ms.Close();
                 }
-                catch (SerializationException) { }
-                catch (ArgumentException) { }
+                catch (SerializationException)
+                {
+                }
+                catch (ArgumentException)
+                {
+                }
             }
 
             return obj;
         }
 
-        public static T DeserializeAndClose(Stream json)
+        public T DeserializeFromStream(Stream json)
         {
             T obj = default(T);
             using (json)
             {
                 try
                 {
-                    var data = new MemoryStream();
-                    json.CopyTo(data);
+                    ////var data = new MemoryStream();
+                    ////json.CopyTo(data);
 
 ////#if DEBUG
 ////                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
@@ -78,10 +87,13 @@ namespace FlatBeats.DataModel
 ////                    }
 
 ////#endif
-                    obj = (T)Serializer.ReadObject(data);
+                    ////obj = (T)Serializer.ReadObject(data);
+                    obj = (T)Serializer.ReadObject(json);
                     json.Close();
                 }
-                catch (SerializationException) { }
+                catch (SerializationException)
+                {
+                }
                 catch (ArgumentException)
                 {
                 }
@@ -90,9 +102,14 @@ namespace FlatBeats.DataModel
             return obj;
         }
 
-        public static void SerializeToStream(T item, IsolatedStorageFileStream stream)
+        public void SerializeToStream(T item, Stream stream)
         {
-            throw new NotImplementedException();
+            if (item == null)
+            {
+                return;
+            }
+
+            Serializer.WriteObject(stream, item);
         }
     }
 }
