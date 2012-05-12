@@ -30,6 +30,8 @@ namespace FlatBeats.ViewModels
     /// </summary>
     public sealed class PlayPageViewModel : PageViewModel, IApplicationBarViewModel
     {
+        private readonly IAsyncDownloader downloader;
+
         #region Constants and Fields
 
         /// <summary>
@@ -50,12 +52,19 @@ namespace FlatBeats.ViewModels
         #endregion
 
         #region Constructors and Destructors
+        /// <summary>
+        /// Initializes a new instance of the PlayPageViewModel class.
+        /// </summary>
+        public PlayPageViewModel() : this(Downloader.Instance)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the PlayPageViewModel class.
         /// </summary>
-        public PlayPageViewModel()
+        public PlayPageViewModel(IAsyncDownloader downloader)
         {
+            this.downloader = downloader;
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
             this.ApplicationBarMenuCommands = new ObservableCollection<ICommandLink>();
             this.PlayedPanel = new MixPlayedTracksViewModel();
@@ -310,7 +319,7 @@ namespace FlatBeats.ViewModels
         /// </returns>
         private bool CanAddReview()
         {
-            return Downloader.IsAuthenticated && this.mixData != null;
+            return this.downloader.IsAuthenticated && this.mixData != null;
         }
 
         /// <summary>
@@ -321,7 +330,7 @@ namespace FlatBeats.ViewModels
         /// </returns>
         private bool CanLikeUnlike()
         {
-            return Downloader.IsAuthenticated && this.mixData != null;
+            return this.downloader.IsAuthenticated && this.mixData != null;
         }
 
         /// <summary>

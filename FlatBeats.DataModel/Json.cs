@@ -9,7 +9,7 @@ namespace FlatBeats.DataModel
     using System.Runtime.Serialization.Json;
     using System.Text;
 
-    using FlatBeats.DataModel.Contracts;
+    using FlatBeats.DataModel.Services;
 
     public class Json<T> : ISerializer<T> where T : class 
     {

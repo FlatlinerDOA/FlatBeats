@@ -11,23 +11,21 @@ namespace FlatBeats.ViewModels
 {
     using System;
     using System.Text.RegularExpressions;
-    using System.Windows.Input;
 
-    using FlatBeats.Framework.Controls;
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
 
     using Flatliner.Phone;
-    using Flatliner.Phone.Data;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
-    using Microsoft.Phone.Tasks;
 
     /// <summary>
     /// </summary>
-    public class TrackViewModel : ViewModel, INavigationItem
+    public sealed class TrackViewModel : ViewModel, INavigationItem
     {
+        private readonly IAsyncDownloader downloader;
+
         #region Constants and Fields
 
         private static readonly Uri AddToFavouritesIcon = new Uri("/icons/appbar.favs.addto.rest.png", UriKind.Relative);
@@ -48,18 +46,24 @@ namespace FlatBeats.ViewModels
 
         #endregion
 
+        public TrackViewModel() : this(Downloader.Instance)
+        {
+            
+        }
+
         #region Constructors and Destructors
 
         /// <summary>
         /// Initializes a new instance of the TrackViewModel class.
         /// </summary>
-        public TrackViewModel()
+        public TrackViewModel(IAsyncDownloader downloader)
         {
+            this.downloader = downloader;
             this.ToggleFavouriteCommand = new CommandLink()
                 {
                     Command = new DelegateCommand(
                         this.ToggleFavourite, 
-                        () => Downloader.IsAuthenticated), 
+                        () => this.downloader.IsAuthenticated), 
                     IconUrl = AddToFavouritesIcon, 
                     HideWhenInactive = !IsInDesignMode
                 };
@@ -185,6 +189,8 @@ namespace FlatBeats.ViewModels
 
         public Uri NavigationUrl
         {
-            get; set; }
+            get; 
+            set; 
+        }
     }
 }

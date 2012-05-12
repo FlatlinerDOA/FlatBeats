@@ -19,7 +19,7 @@ namespace FlatBeats.ViewModels
 
     /// <summary>
     /// </summary>
-    public class MixesPageViewModel : PageViewModel
+    public sealed class MixesPageViewModel : PageViewModel
     {
         #region Constants and Fields
 

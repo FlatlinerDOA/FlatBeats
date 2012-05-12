@@ -5,7 +5,7 @@
     using System.IO.IsolatedStorage;
     using System.Text;
 
-    using FlatBeats.DataModel.Contracts;
+    using FlatBeats.DataModel.Services;
 
     using Flatliner.Phone;
 

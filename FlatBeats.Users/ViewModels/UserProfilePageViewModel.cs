@@ -29,6 +29,8 @@ namespace FlatBeats.Users.ViewModels
     /// </summary>
     public class UserProfilePageViewModel : PageViewModel, IApplicationBarViewModel
     {
+        private readonly IAsyncDownloader downloader;
+
         #region Constants and Fields
 
         /// <summary>
@@ -64,11 +66,17 @@ namespace FlatBeats.Users.ViewModels
 
         #region Constructors and Destructors
 
+        public UserProfilePageViewModel() : this(Downloader.Instance)
+        {
+            
+        }
+
         /// <summary>
         ///   Initializes a new instance of the UserProfilePageViewModel class.
         /// </summary>
-        public UserProfilePageViewModel()
+        public UserProfilePageViewModel(IAsyncDownloader downloader)
         {
+            this.downloader = downloader;
             this.Mixes = new UserProfileMixesViewModel(false);
             this.LikedMixes = new UserProfileLikedMixesViewModel(false);
             this.FollowedByUsers = new FollowedByUsersViewModel(false);
@@ -269,7 +277,7 @@ namespace FlatBeats.Users.ViewModels
         /// </returns>
         private bool CanToggleFollowUser()
         {
-            return Downloader.IsAuthenticated;
+            return this.downloader.IsAuthenticated;
         }
 
         /// <summary>

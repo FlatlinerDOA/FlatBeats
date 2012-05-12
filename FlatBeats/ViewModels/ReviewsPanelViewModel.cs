@@ -24,20 +24,10 @@
         public IObservable<Unit> LoadAsync(string mixId)
         {
             this.MixId = mixId;
-
-            if (this.IsDataLoaded)
-            {
-                return ObservableEx.SingleUnit();
-            }
-
-            this.IsDataLoaded = true;
-
             return this.LoadAsync();
         }
 
         public string MixId { get; private set; }
-
-        protected bool IsDataLoaded { get; set; }
 
         protected override IObservable<IList<ReviewContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {

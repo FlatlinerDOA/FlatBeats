@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
     using Flatliner.Phone.ViewModels;
@@ -14,6 +15,8 @@
     /// </summary>
     public sealed class TagsPageViewModel : PageViewModel
     {
+        private readonly IAsyncDownloader downloader;
+
         #region Constants and Fields
 
         /// <summary>
@@ -25,12 +28,20 @@
         #endregion
 
         #region Constructors and Destructors
+        /// <summary>
+        ///   Initializes a new instance of the TagsPageViewModel class.
+        /// </summary>
+        public TagsPageViewModel() : this(Downloader.Instance)
+        {
+
+        }
 
         /// <summary>
         ///   Initializes a new instance of the TagsPageViewModel class.
         /// </summary>
-        public TagsPageViewModel()
+        public TagsPageViewModel(IAsyncDownloader downloader)
         {
+            this.downloader = downloader;
             this.Title = "tags";
         }
 
@@ -69,7 +80,7 @@
         {
             this.ShowProgress(StringResources.Progress_Loading);
             var tagViewModels = from pageNumber in Observable.Range(1, 5)
-                                from response in Downloader.GetJson<TagsResponseContract>(new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + pageNumber))
+                                from response in MixesService.GetTagsAsync(pageNumber)
                                 from tag in response.Tags.ToObservable()
                                 select new TagViewModel(tag.Name);
 

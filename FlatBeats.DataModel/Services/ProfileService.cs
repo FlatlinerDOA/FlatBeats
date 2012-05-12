@@ -51,6 +51,8 @@
 
         private static readonly Json<SettingsContract> settingsSerializer = Json<SettingsContract>.Instance;
 
+        private static readonly Downloader Downloader = Downloader.Instance;
+
         private const string LikedMixesCacheFile = "/cache/{0}/liked-{1}.json";
 
         private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}.json";
@@ -85,7 +87,7 @@
                 "login={0}&password={1}",
                 ApiUrl.Escape(userCredentials.UserName),
                 ApiUrl.Escape(userCredentials.Password));
-            var userLogin = from response in Downloader.PostAndGetString(ApiUrl.Authenticate(), postData)
+            var userLogin = from response in Downloader.PostAndGetStringAsync(ApiUrl.Authenticate(), postData)
                             let user = Json<UserLoginResponseContract>.Instance.DeserializeFromString(response)
                             where !string.IsNullOrWhiteSpace(user.UserToken)
                             select user;
@@ -126,36 +128,36 @@
 
         public static IObservable<UserProfileResponseContract> GetUserProfileAsync(string userId)
         {
-            return Downloader.GetJson<UserProfileResponseContract>(ApiUrl.UserProfile(userId)).NotNull();
+            return Downloader.GetDeserializedAsync<UserProfileResponseContract>(ApiUrl.UserProfile(userId)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetUserMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            return Downloader.GetJson<MixesResponseContract>(ApiUrl.UserMixes(userId, pageNumber, pageSize)).NotNull();
+            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.UserMixes(userId, pageNumber, pageSize)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetLikedMixesAsync(string userId, int pageNumber, int pageSize)
         {
             var cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile).NotNull(); 
+            return Downloader.GetDeserializedCachedAndRefreshedAsync<MixesResponseContract>(ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile).NotNull(); 
         }
 
         public static IObservable<MixesResponseContract> GetMixFeedAsync(string userId, int pageNumber, int pageSize)
         {
             var cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
-            return Downloader.GetJsonCachedAndRefreshed<MixesResponseContract>(ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize), cacheFile).NotNull();
+            return Downloader.GetDeserializedCachedAndRefreshedAsync<MixesResponseContract>(ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize), cacheFile).NotNull();
         }
 
         public static IObservable<Unit> SetMixLikedAsync(string mixId, bool isLiked)
         {
             var urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId) : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
-            return Downloader.PostStringAndGetJson<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+            return Downloader.PostStringAndGetDeserializedAsync<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
         }
 
         public static IObservable<Unit> SetTrackFavouriteAsync(string trackId, bool isFavourite)
         {
             var urlFormat = isFavourite ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId) : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
-            return Downloader.PostStringAndGetJson<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+            return Downloader.PostStringAndGetDeserializedAsync<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
         }
 
         private static void DeleteCredentials()
@@ -172,19 +174,19 @@
         public static IObservable<ReviewsResponseContract> GetReviewsByUserAsync(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/reviews.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return Downloader.GetJson<ReviewsResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return Downloader.GetDeserializedAsync<ReviewsResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<FollowingUserResponseContract> GetFollowedByUsersAsync(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/followed_by_users.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return Downloader.GetJson<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return Downloader.GetDeserializedAsync<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<FollowingUserResponseContract> GetFollowsUsersAsync(string userId, int pageNumber, int pageSize)
         {
             var urlFormat = string.Format("http://8tracks.com/users/{0}/follows_users.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return Downloader.GetJson<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return Downloader.GetDeserializedAsync<FollowingUserResponseContract>(new Uri(urlFormat, UriKind.RelativeOrAbsolute));
         }
 
         public static IObservable<FollowUserResponseContract> SetFollowUserAsync(string userId, bool isFollowed)
@@ -193,14 +195,14 @@
                 string.Format("http://8tracks.com/users/{0}/follow.json", userId) : 
                 string.Format("http://8tracks.com/users/{0}/unfollow.json", userId);
             var url = new Uri(urlFormat, UriKind.Absolute);
-            return Downloader.PostStringAndGetJson<FollowUserResponseContract>(url, string.Empty);
+            return Downloader.PostStringAndGetDeserializedAsync<FollowUserResponseContract>(url, string.Empty);
         }
 
         public static IObservable<ReviewResponseContract> AddMixReviewAsync(string mixId, string review)
         {
             var url = new Uri("http://8tracks.com/reviews", UriKind.Absolute);
             string body = string.Format("review%5Bbody%5D={0}&review%5Bmix_id%5D={1}&format=json", ApiUrl.Escape(review), mixId);
-            return from response in Downloader.PostStringAndGetJson<ReviewResponseContract>(url, body)
+            return from response in Downloader.PostStringAndGetDeserializedAsync<ReviewResponseContract>(url, body)
                    from responseWithUser in GetUserProfileAsync(response.Review.UserId).Select(
                        userResponse =>
                            {

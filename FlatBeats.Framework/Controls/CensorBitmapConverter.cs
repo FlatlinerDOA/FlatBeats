@@ -47,7 +47,7 @@
 
             var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
             var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
-            ObservableExtensions.Subscribe<Stream>(Downloader.GetStream(safeUrl, false).ObserveOnDispatcher(), b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
+            Downloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
             return pixelated;
         }
 

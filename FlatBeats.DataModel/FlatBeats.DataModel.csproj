@@ -45,9 +45,6 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Reactive" />
-    <Reference Include="SharpGIS.GZipWebClient">
-      <HintPath>..\packages\SharpGIS.GZipWebClient.1.2\lib\sl40-wp71\SharpGIS.GZipWebClient.dll</HintPath>
-    </Reference>
     <Reference Include="System.Observable" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
@@ -60,7 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarContract.cs" />
-    <Compile Include="Contracts\IAsyncStorage.cs" />
+    <Compile Include="Services\IAsyncDownloader.cs" />
+    <Compile Include="Services\IAsyncStorage.cs" />
     <Compile Include="CoverUrlContract.cs" />
     <Compile Include="Data\IAsyncRepository.cs" />
     <Compile Include="Data\IPaginatedAsyncRepository.cs" />
@@ -94,6 +92,7 @@
     <Compile Include="FollowingUserResponseContract.cs" />
     <Compile Include="Services\ApiUrl.cs" />
     <Compile Include="Services\IProfileService.cs" />
+    <Compile Include="Services\ISerializer.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="TagContract.cs" />
@@ -125,7 +124,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
