@@ -52,9 +52,11 @@ namespace FlatBeats.Users.ViewModels
             this.Title = "FLAT BEATS";
             this.Settings = new UserSettingsViewModel(this.profileService);
             this.Mixes = new UserProfileMixesViewModel(true, this.profileService);
+            this.Liked = new UserProfileLikedMixesViewModel(true, this.profileService);
             this.MixFeed = new MixFeedViewModel(this.profileService);
             this.FollowedByUsers = new FollowedByUsersViewModel(true, this.profileService);
             this.FollowsUsers = new FollowsUsersViewModel(true, this.profileService);
+            this.Tracks = new UserProfileTracksViewModel(true, this.profileService);
         }
 
         #endregion
@@ -98,10 +100,20 @@ namespace FlatBeats.Users.ViewModels
         public UserProfileMixesViewModel Mixes { get; private set; }
 
         /// <summary>
+        /// Gets liked mixes
+        /// </summary>
+        public UserProfileLikedMixesViewModel Liked { get; private set; }
+
+        /// <summary>
         /// Gets Settings.
         /// </summary>
         public UserSettingsViewModel Settings { get; private set; }
 
+        /// <summary>
+        /// Gets the Tracks panel
+        /// </summary>
+        public UserProfileTracksViewModel Tracks { get; private set; }
+        
         #endregion
 
         #region Properties
@@ -121,8 +133,12 @@ namespace FlatBeats.Users.ViewModels
                     case 2:
                         return this.Mixes;
                     case 3:
-                        return this.FollowsUsers;
+                        return this.Liked;
                     case 4:
+                        return this.Tracks;
+                    case 5:
+                        return this.FollowsUsers;
+                    case 6:
                         return this.FollowedByUsers;
                 }
 
@@ -141,8 +157,12 @@ namespace FlatBeats.Users.ViewModels
         {
             var progress = new[]
                 {
-                    this.Settings.IsInProgressChanges, this.Mixes.IsInProgressChanges, 
-                    this.FollowsUsers.IsInProgressChanges, this.FollowedByUsers.IsInProgressChanges, 
+                    this.Settings.IsInProgressChanges, 
+                    this.Mixes.IsInProgressChanges, 
+                    this.Liked.IsInProgressChanges, 
+                    this.Tracks.IsInProgressChanges,
+                    this.FollowsUsers.IsInProgressChanges, 
+                    this.FollowedByUsers.IsInProgressChanges, 
                     this.MixFeed.IsInProgressChanges
                 };
 
@@ -186,8 +206,9 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private void ResetPanels()
         {
-            this.Mixes.Reset();
             this.MixFeed.Reset();
+            this.Mixes.Reset();
+            this.Liked.Reset();
             this.FollowedByUsers.Reset();
             this.FollowsUsers.Reset();
         }
@@ -197,6 +218,12 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private void UpdateIsInProgress()
         {
+            if (this.Settings.IsInProgress)
+            {
+                this.ShowProgress(this.Settings.InProgressMessage);
+                return;
+            }
+
             if (this.MixFeed.IsInProgress)
             {
                 this.ShowProgress(this.MixFeed.InProgressMessage);
@@ -206,6 +233,12 @@ namespace FlatBeats.Users.ViewModels
             if (this.Mixes.IsInProgress)
             {
                 this.ShowProgress(this.Mixes.InProgressMessage);
+                return;
+            }
+
+            if (this.Liked.IsInProgress)
+            {
+                this.ShowProgress(this.Liked.InProgressMessage);
                 return;
             }
 

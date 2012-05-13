@@ -21,6 +21,8 @@ namespace FlatBeats.ViewModels
 
         private string loadedList;
 
+        private bool censor;
+
         public MainPageLikedViewModel() : this(ProfileService.Instance)
         {
         }
@@ -31,21 +33,6 @@ namespace FlatBeats.ViewModels
         public MainPageLikedViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
-            this.loadedList = UserSettings.Current.PreferredList;
-
-            switch (this.loadedList)
-            {
-                case PreferredLists.Created:
-                    this.Title = StringResources.Title_CreatedMixes;
-                    break;
-                case PreferredLists.MixFeed:
-                    this.Title = StringResources.Title_MixFeed;
-                    break;
-                default:
-                    this.Title = StringResources.Title_LikedMixes;
-                    break;
-            }
-
         }
 
         private string UserId { get; set; }
@@ -58,27 +45,31 @@ namespace FlatBeats.ViewModels
 
         public override IObservable<Unit> LoadAsync()
         {
-            if (this.loadedList != UserSettings.Current.PreferredList)
-            {
-                this.Reset();
-            }
+            return from _ in this.profileService.GetSettingsAsync().ObserveOnDispatcher().Do(s =>
+                    {
+                        this.censor = s.CensorshipEnabled;
+                        if (this.loadedList != null && this.loadedList != s.PreferredList)
+                        {
+                            this.Reset();
+                        }
 
-            this.loadedList = UserSettings.Current.PreferredList;
+                        this.loadedList = s.PreferredList;
 
-            switch (this.loadedList)
-            {
-                case PreferredLists.Created:
-                    this.Title = StringResources.Title_CreatedMixes;
-                    break;
-                case PreferredLists.MixFeed:
-                    this.Title = StringResources.Title_MixFeed;
-                    break;
-                default:
-                    this.Title = StringResources.Title_LikedMixes;
-                    break;
-            }
-
-            return base.LoadAsync();
+                        switch (this.loadedList)
+                        {
+                            case PreferredLists.Created:
+                                this.Title = StringResources.Title_CreatedMixes;
+                                break;
+                            case PreferredLists.MixFeed:
+                                this.Title = StringResources.Title_MixFeed;
+                                break;
+                            default:
+                                this.Title = StringResources.Title_LikedMixes;
+                                break;
+                        }
+                    })
+                   from load in base.LoadAsync()
+                   select load;
         }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
@@ -106,7 +97,7 @@ namespace FlatBeats.ViewModels
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
-            viewModel.Load(data);
+            viewModel.Load(data, this.censor);
         }
 
         protected override void LoadPageCompleted()

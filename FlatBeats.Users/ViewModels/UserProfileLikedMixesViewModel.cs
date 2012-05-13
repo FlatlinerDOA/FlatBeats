@@ -15,6 +15,8 @@ namespace FlatBeats.Users.ViewModels
     {
         private readonly ProfileService profileService;
 
+        private bool censor;
+
         /// <summary>
         /// Initializes a new instance of the UserProfileMixesViewModel class.
         /// </summary>
@@ -28,7 +30,9 @@ namespace FlatBeats.Users.ViewModels
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            return this.LoadAsync();
+            return from _ in this.profileService.GetSettingsAsync().Do(s => this.censor = s.CensorshipEnabled) 
+                   from load in this.LoadAsync() 
+                   select load;
         }
 
         protected bool IsCurrentUser { get; set; }
@@ -47,7 +51,7 @@ namespace FlatBeats.Users.ViewModels
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
-            viewModel.Load(data);
+            viewModel.Load(data, this.censor);
         }
 
         protected override void LoadPageCompleted()

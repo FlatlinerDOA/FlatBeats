@@ -1,11 +1,22 @@
-﻿
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UserSettingsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace FlatBeats.Users.ViewModels
 {
     using System;
-    using System.Windows;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Windows;
 
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Profile;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
@@ -15,18 +26,56 @@ namespace FlatBeats.Users.ViewModels
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
-    using System.Collections.ObjectModel;
-    using FlatBeats.DataModel.Profile;
-    using System.Collections.Generic;
-    using FlatBeats.Users.ViewModels;
 
+    /// <summary>
+    /// </summary>
     public sealed class UserSettingsViewModel : PanelViewModel
     {
+        #region Constants and Fields
+
+        /// <summary>
+        /// </summary>
+        private readonly Subject<string> currentUserIdChanges = new Subject<string>();
+
+        /// <summary>
+        /// </summary>
+        private readonly Dictionary<string, string> preferredListMap = new Dictionary<string, string> {
+                { PreferredLists.Liked, StringResources.PreferredLists_Liked }, 
+                { PreferredLists.MixFeed, StringResources.PreferredLists_MixFeed }, 
+                { PreferredLists.Created, StringResources.PreferredLists_Created }
+            };
+
+        /// <summary>
+        /// </summary>
         private readonly ProfileService profileService;
 
         /// <summary>
         /// </summary>
+        private bool canLogin;
+
+        /// <summary>
+        /// </summary>
+        private bool censorshipEnabled;
+
+        /// <summary>
+        /// </summary>
+        private string censorshipEnabledText;
+
+        /// <summary>
+        /// </summary>
+        private bool isLoggedIn;
+
+        /// <summary>
+        /// </summary>
+        private bool isSettingsLoaded;
+
+        /// <summary>
+        /// </summary>
         private string loginLabelText;
+
+        /// <summary>
+        /// </summary>
+        private UserLoginResponseContract loginResponse;
 
         /// <summary>
         /// </summary>
@@ -38,13 +87,35 @@ namespace FlatBeats.Users.ViewModels
 
         /// <summary>
         /// </summary>
+        private bool playNextMix;
+
+        /// <summary>
+        /// </summary>
+        private string playNextMixText;
+
+        /// <summary>
+        /// </summary>
+        private bool playOverWifiOnly;
+
+        /// <summary>
+        /// </summary>
+        private string playOverWifiOnlyText;
+
+        /// <summary>
+        /// </summary>
+        private string preferredList;
+
+        /// <summary>
+        /// </summary>
+        private string preferredListText;
+
+        /// <summary>
+        /// </summary>
         private string resetLabelText;
 
         /// <summary>
         /// </summary>
         private string signupLabelText;
-
-        private string preferredListText;
 
         /// <summary>
         /// </summary>
@@ -54,10 +125,21 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private string userNameLabelText;
 
-        public UserSettingsViewModel() : this(ProfileService.Instance)
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// </summary>
+        public UserSettingsViewModel()
+            : this(ProfileService.Instance)
         {
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="profileService">
+        /// </param>
         public UserSettingsViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
@@ -78,8 +160,122 @@ namespace FlatBeats.Users.ViewModels
             this.ResetCommand = new DelegateCommand(this.SignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
             this.PreferredListChoices = new ObservableCollection<string>();
+            foreach (var item in this.preferredListMap)
+            {
+                this.PreferredListChoices.Add(item.Value);
+            }
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// </summary>
+        public bool CanLogin
+        {
+            get
+            {
+                return this.canLogin;
+            }
+
+            set
+            {
+                if (this.canLogin == value)
+                {
+                    return;
+                }
+
+                this.canLogin = value;
+                this.OnPropertyChanged("CanLogin");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public bool CensorshipEnabled
+        {
+            get
+            {
+                return this.censorshipEnabled;
+            }
+
+            set
+            {
+                if (this.censorshipEnabled == value)
+                {
+                    return;
+                }
+
+                this.censorshipEnabled = value;
+                this.OnPropertyChanged("CensorshipEnabled");
+                this.SaveSettings();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string CensorshipEnabledText
+        {
+            get
+            {
+                return this.censorshipEnabledText;
+            }
+
+            set
+            {
+                if (this.censorshipEnabledText == value)
+                {
+                    return;
+                }
+
+                this.censorshipEnabledText = value;
+                this.OnPropertyChanged("CensorshipEnabledText");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string CurrentUserId
+        {
+            get
+            {
+                return this.loginResponse != null && this.loginResponse.CurrentUser != null
+                           ? this.loginResponse.CurrentUser.Id
+                           : null;
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public IObservable<string> CurrentUserIdChanges
+        {
+            get
+            {
+                return this.currentUserIdChanges;
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return this.isLoggedIn;
+            }
+
+            set
+            {
+                if (this.isLoggedIn == value)
+                {
+                    return;
+                }
+
+                this.isLoggedIn = value;
+                this.OnPropertyChanged("IsLoggedIn");
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -148,96 +344,15 @@ namespace FlatBeats.Users.ViewModels
             }
         }
 
-        private bool censorshipEnabled;
-
-        public bool CensorshipEnabled
-        {
-            get
-            {
-                return this.censorshipEnabled;
-            }
-            set
-            {
-                if (this.censorshipEnabled == value)
-                {
-                    return;
-                }
-
-                this.censorshipEnabled = value;
-                this.OnPropertyChanged("CensorshipEnabled");
-                this.SaveSettings();
-
-            }
-        }
-
-        private string censorshipEnabledText;
-
-        public string CensorshipEnabledText
-        {
-            get
-            {
-                return this.censorshipEnabledText;
-            }
-            set
-            {
-                if (this.censorshipEnabledText == value)
-                {
-                    return;
-                }
-
-                this.censorshipEnabledText = value;
-                this.OnPropertyChanged("CensorshipEnabledText");
-            }
-        }
-
-        private string playOverWifiOnlyText;
-
-        public string PlayOverWifiOnlyText
-        {
-            get
-            {
-                return this.playOverWifiOnlyText;
-            }
-            set
-            {
-                if (this.playOverWifiOnlyText == value)
-                {
-                    return;
-                }
-
-                this.playOverWifiOnlyText = value;
-                this.OnPropertyChanged("PlayOverWifiOnlyText");
-            }
-        }
-
-        private string playNextMixText;
-
-        public string PlayNextMixText
-        {
-            get
-            {
-                return this.playNextMixText;
-            }
-            set
-            {
-                if (this.playNextMixText == value)
-                {
-                    return;
-                }
-
-                this.playNextMixText = value;
-                this.OnPropertyChanged("PlayNextMixText");
-            }
-        }
-
-        private bool playNextMix;
-
+        /// <summary>
+        /// </summary>
         public bool PlayNextMix
         {
             get
             {
                 return this.playNextMix;
             }
+
             set
             {
                 if (this.playNextMix == value)
@@ -250,14 +365,36 @@ namespace FlatBeats.Users.ViewModels
             }
         }
 
-        private bool playOverWifiOnly;
+        /// <summary>
+        /// </summary>
+        public string PlayNextMixText
+        {
+            get
+            {
+                return this.playNextMixText;
+            }
 
+            set
+            {
+                if (this.playNextMixText == value)
+                {
+                    return;
+                }
+
+                this.playNextMixText = value;
+                this.OnPropertyChanged("PlayNextMixText");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         public bool PlayOverWifiOnly
         {
             get
             {
                 return this.playOverWifiOnly;
             }
+
             set
             {
                 if (this.playOverWifiOnly == value)
@@ -268,7 +405,74 @@ namespace FlatBeats.Users.ViewModels
                 this.playOverWifiOnly = value;
                 this.OnPropertyChanged("PlayOverWifiOnly");
                 this.SaveSettings();
+            }
+        }
 
+        /// <summary>
+        /// </summary>
+        public string PlayOverWifiOnlyText
+        {
+            get
+            {
+                return this.playOverWifiOnlyText;
+            }
+
+            set
+            {
+                if (this.playOverWifiOnlyText == value)
+                {
+                    return;
+                }
+
+                this.playOverWifiOnlyText = value;
+                this.OnPropertyChanged("PlayOverWifiOnlyText");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string PreferredList
+        {
+            get
+            {
+                return this.preferredList;
+            }
+
+            set
+            {
+                if (this.preferredList == value)
+                {
+                    return;
+                }
+
+                this.preferredList = value;
+                this.OnPropertyChanged("PreferredList");
+                this.SaveSettings();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public ObservableCollection<string> PreferredListChoices { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public string PreferredListText
+        {
+            get
+            {
+                return this.preferredListText;
+            }
+
+            set
+            {
+                if (this.preferredListText == value)
+                {
+                    return;
+                }
+
+                this.preferredListText = value;
+                this.OnPropertyChanged("PreferredListText");
             }
         }
 
@@ -322,28 +526,6 @@ namespace FlatBeats.Users.ViewModels
             }
         }
 
-
-        /// <summary>
-        /// </summary>
-        public string PreferredListText
-        {
-            get
-            {
-                return this.preferredListText;
-            }
-
-            set
-            {
-                if (this.preferredListText == value)
-                {
-                    return;
-                }
-
-                this.preferredListText = value;
-                this.OnPropertyChanged("PreferredListText");
-            }
-        }
-
         /// <summary>
         /// </summary>
         public string UserName
@@ -386,26 +568,37 @@ namespace FlatBeats.Users.ViewModels
             }
         }
 
-        private void SaveSettings()
-        {
-            if (!this.isSettingsLoaded)
-            {
-                return;
-            }
+        #endregion
 
-            var saveProcess = from userSettings in this.profileService.GetSettingsAsync().Do(
-                                s =>
-                                    {
-                                        s.CensorshipEnabled = this.CensorshipEnabled;
-                                        s.PlayOverWifiOnly = this.PlayOverWifiOnly;
-                                        s.PlayNextMix = this.PlayNextMix;
-                                        s.PreferredList = preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
-                                    })
-                              from save in this.profileService.SaveSettingsAsync(userSettings)
-                    select ObservableEx.Unit;
-            this.AddToLifetime(saveProcess.Subscribe(_ => { }, this.HandleError));
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// </summary>
+        /// <returns>
+        /// </returns>
+        public IObservable<Unit> LoadAsync()
+        {
+            this.ShowProgress(StringResources.Progress_Loading);
+            var load = from settings in this.profileService.GetSettingsAsync().ObserveOnDispatcher().Do(this.LoadSettings)
+                   from creds in
+                       this.profileService.LoadCredentialsAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
+                           this.LoadCredentials)
+                   from token in
+                       this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
+                           this.LoadLoginResponse)
+                   select new Unit();
+
+            return load.Do( _ => { }, this.HandleError, this.HideProgress);
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        /// <param name="result">
+        /// </param>
         protected override void ShowErrorMessageOverride(ErrorMessage result)
         {
             if (result == null)
@@ -416,90 +609,24 @@ namespace FlatBeats.Users.ViewModels
             MessageBox.Show(result.Message, result.Title, MessageBoxButton.OK);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="ex">
+        /// </param>
+        /// <returns>
+        /// </returns>
         private ErrorMessage HandleSignInWebException(ServiceException ex)
         {
             switch (ex.StatusCode)
             {
                 case 422:
-                    return new ErrorMessage(StringResources.Error_SignInFailed_Title, StringResources.Error_SignInFailed_Message);
+                    return new ErrorMessage(
+                        StringResources.Error_SignInFailed_Title, StringResources.Error_SignInFailed_Message);
             }
 
-            return new ErrorMessage(StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
+            return new ErrorMessage(
+                StringResources.Error_ServerUnavailable_Title, StringResources.Error_ServerUnavailable_Message);
         }
-
-
-        private bool isSettingsLoaded;
-
-        private readonly Dictionary<string, string> preferredListMap = new Dictionary<string, string>()
-        {
-            { PreferredLists.Liked, StringResources.PreferredLists_Liked },
-            { PreferredLists.MixFeed, StringResources.PreferredLists_MixFeed },
-            { PreferredLists.Created, StringResources.PreferredLists_Created }
-        };
-
-        private void LoadSettings()
-        {
-            this.isSettingsLoaded = false;
-
-            this.PreferredListChoices.Clear();
-            foreach (var item in this.preferredListMap)
-            {
-                this.PreferredListChoices.Add(item.Value);
-            }
-
-            var userSettings = UserSettings.Current;
-            this.CensorshipEnabled = userSettings.CensorshipEnabled;
-            this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
-            this.PlayNextMix = userSettings.PlayNextMix;
-            this.PreferredList = this.preferredListMap[userSettings.PreferredList ?? PreferredLists.Created];
-            this.isSettingsLoaded = true;
-        }
-
-
-        public ObservableCollection<string> PreferredListChoices { get; private set; }
-
-        private bool isLoggedIn;
-
-        public bool IsLoggedIn
-        {
-            get
-            {
-                return this.isLoggedIn;
-            }
-            set
-            {
-                if (this.isLoggedIn == value)
-                {
-                    return;
-                }
-
-                this.isLoggedIn = value;
-                this.OnPropertyChanged("IsLoggedIn");
-            }
-        }
-
-        private bool canLogin;
-
-        private UserLoginResponseContract loginResponse;
-
-        public bool CanLogin
-        {
-            get
-            {
-                return this.canLogin;
-            }
-            set
-            {
-                if (this.canLogin == value)
-                {
-                    return;
-                }
-
-                this.canLogin = value;
-                this.OnPropertyChanged("CanLogin");
-            }
-        }
-
 
         /// <summary>
         /// </summary>
@@ -517,14 +644,87 @@ namespace FlatBeats.Users.ViewModels
             this.Password = creds.Password;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="user">
+        /// </param>
+        private void LoadLoginResponse(UserLoginResponseContract user)
+        {
+            this.loginResponse = user;
+            if (this.loginResponse == null || this.loginResponse.CurrentUser == null)
+            {
+                this.IsLoggedIn = false;
+                this.CanLogin = true;
+                return;
+            }
+
+            this.IsLoggedIn = true;
+            this.CanLogin = false;
+            this.currentUserIdChanges.OnNext(this.loginResponse.CurrentUser.Id);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="userSettings">
+        /// </param>
+        private void LoadSettings(SettingsContract userSettings)
+        {
+            this.isSettingsLoaded = false;
+
+            this.CensorshipEnabled = userSettings.CensorshipEnabled;
+            this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
+            this.PlayNextMix = userSettings.PlayNextMix;
+            this.PreferredList = this.preferredListMap[userSettings.PreferredList ?? PreferredLists.Created];
+            this.isSettingsLoaded = true;
+        }
+
+        /// <summary>
+        /// </summary>
+        private void SaveSettings()
+        {
+            if (!this.isSettingsLoaded)
+            {
+                return;
+            }
+
+            IObservable<Unit> saveProcess = from userSettings in this.profileService.GetSettingsAsync().Do(
+                s =>
+                    {
+                        s.CensorshipEnabled = this.CensorshipEnabled;
+                        s.PlayOverWifiOnly = this.PlayOverWifiOnly;
+                        s.PlayNextMix = this.PlayNextMix;
+                        s.PreferredList = this.preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
+                    })
+                                            from save in this.profileService.SaveSettingsAsync(userSettings)
+                                            select ObservableEx.Unit;
+            this.AddToLifetime(saveProcess.Subscribe(_ => { }, this.HandleError));
+        }
+
+        /// <summary>
+        /// </summary>
+        private void SignIn()
+        {
+            var creds = new UserCredentialsContract { UserName = this.UserName.Trim(), Password = this.Password };
+            this.CanLogin = false;
+            this.ShowProgress(StringResources.Progress_SigningIn);
+            this.AddToLifetime(
+                this.profileService.AuthenticateAsync(creds).ObserveOnDispatcher().Subscribe(
+                    this.LoadLoginResponse, 
+                    ex =>
+                        {
+                            this.CanLogin = true;
+                            this.HandleError(ex);
+                        }, 
+                    this.HideProgress));
+        }
 
         /// <summary>
         /// </summary>
         private void SignOut()
         {
-            var response = MessageBox.Show(
-                StringResources.MessageBox_ResetSettings_Message,
-                StringResources.MessageBox_ResetSettings_Title,
+            MessageBoxResult response = MessageBox.Show(
+                StringResources.MessageBox_ResetSettings_Message, 
+                StringResources.MessageBox_ResetSettings_Title, 
                 MessageBoxButton.OKCancel);
 
             if (response == MessageBoxResult.Cancel)
@@ -532,7 +732,7 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
-            var playState = BackgroundAudioPlayer.Instance.PlayerState;
+            PlayState playState = BackgroundAudioPlayer.Instance.PlayerState;
             switch (playState)
             {
                 case PlayState.Paused:
@@ -552,111 +752,28 @@ namespace FlatBeats.Users.ViewModels
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(
                 this.profileService.ResetAsync().ObserveOnDispatcher().Subscribe(
-                    _ => { },
+                    _ => { }, 
                     () =>
-                    {
-                        this.UserName = null;
-                        this.Password = null;
-                        this.currentUserIdChanges.OnNext(null);
-                        // this.ResetPanels();
-                        this.CanLogin = true;
-                        this.IsLoggedIn = false;
-                        this.HideProgress();
-                    }));
-        }
-
-        private readonly Subject<string> currentUserIdChanges = new Subject<string>();
-        public IObservable<string> CurrentUserIdChanges 
-        { 
-            get 
-            {
-                return this.currentUserIdChanges;
-            } 
-        }
-
-        /// <summary>
-        /// </summary>
-        private void SignIn()
-        {
-            var creds = new UserCredentialsContract { UserName = this.UserName.Trim(), Password = this.Password };
-            this.CanLogin = false;
-            this.ShowProgress(StringResources.Progress_SigningIn);
-            this.AddToLifetime(
-                profileService.AuthenticateAsync(creds).ObserveOnDispatcher()
-                    .Subscribe(
-                        this.LoadLoginResponse,
-                        ex =>
                         {
+                            this.UserName = null;
+                            this.Password = null;
+                            this.currentUserIdChanges.OnNext(null);
+
+                            // this.ResetPanels();
                             this.CanLogin = true;
-                            this.HandleError(ex);
-                        },
-                        this.HideProgress));
+                            this.IsLoggedIn = false;
+                            this.HideProgress();
+                        }));
         }
 
         /// <summary>
         /// </summary>
         private void Signup()
         {
-            var task = new WebBrowserTask
-            {
-                Uri = new Uri("http://8tracks.com/signup", UriKind.Absolute)
-            };
+            var task = new WebBrowserTask { Uri = new Uri("http://8tracks.com/signup", UriKind.Absolute) };
             task.Show();
         }
 
-        public string CurrentUserId
-        {
-            get
-            {
-                return this.loginResponse != null && this.loginResponse.CurrentUser != null ? this.loginResponse.CurrentUser.Id : null;
-            }
-        }
-
-        private string preferredList;
-
-        public string PreferredList
-        {
-            get
-            {
-                return this.preferredList;
-            }
-
-            set
-            {
-                if (this.preferredList == value)
-                {
-                    return;
-                }
-
-                this.preferredList = value;
-                this.OnPropertyChanged("PreferredList");
-                this.SaveSettings();
-            }
-        }
-
-
-        public IObservable<Unit> LoadAsync()
-        {
-            this.ShowProgress(StringResources.Progress_Loading);
-            this.LoadSettings();
-            return from creds in this.profileService.LoadCredentialsAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadCredentials)
-                   from token in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(this.LoadLoginResponse)
-                   select new Unit();
-        }
-
-        private void LoadLoginResponse(UserLoginResponseContract user)
-        {
-            this.loginResponse = user;
-            if (this.loginResponse == null || this.loginResponse.CurrentUser == null)
-            {
-                this.IsLoggedIn = false;
-                this.CanLogin = true;
-                return;
-            }
-
-            this.IsLoggedIn = true;
-            this.CanLogin = false;
-            this.currentUserIdChanges.OnNext(this.loginResponse.CurrentUser.Id);
-        }
+        #endregion
     }
 }

@@ -379,4 +379,13 @@ Link:
   <data name="PreferredLists_MixFeed" xml:space="preserve">
     <value>Mix feed</value>
   </data>
+  <data name="Title_FavoriteTracks" xml:space="preserve">
+    <value>tracks</value>
+  </data>
+  <data name="Message_UserHasNoFavoriteTracks" xml:space="preserve">
+    <value>This person hasn't found any tracks they like yet.</value>
+  </data>
+  <data name="Message_YouHaveNoFavoriteTracks" xml:space="preserve">
+    <value>You haven't favorited any tracks yet, go listen to some music and star the ones you like!</value>
+  </data>
 </root>

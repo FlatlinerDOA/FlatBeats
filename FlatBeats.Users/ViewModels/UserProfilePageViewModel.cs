@@ -64,6 +64,8 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private string userName;
 
+        private bool censor;
+
         #endregion
 
         #region Constructors and Destructors
@@ -98,6 +100,33 @@ namespace FlatBeats.Users.ViewModels
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Private property backing field
+        /// </summary>
+        private int currentPanelIndex;
+
+        /// <summary>
+        /// Gets or sets the index of the current panel being displayed
+        /// </summary>
+        public int CurrentPanelIndex
+        {
+            get
+            {
+                return this.currentPanelIndex;
+            }
+            set
+            {
+                if (this.currentPanelIndex == value)
+                {
+                    return;
+                }
+
+                this.currentPanelIndex = value;
+                this.OnPropertyChanged(() => this.CurrentPanelIndex);
+                this.LoadCurrentPanel();
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -249,16 +278,20 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         public override void Load()
         {
-            this.AddToLifetime(this.Mixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.LikedMixes.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowsUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
-            this.AddToLifetime(this.FollowedByUsers.IsInProgressChanges.Subscribe(_ => this.UpdateIsInProgress()));
+            var progressChanges = new[]
+                {
+                    this.Mixes.IsInProgressChanges,
+                    this.LikedMixes.IsInProgressChanges,
+                    this.FollowsUsers.IsInProgressChanges,
+                    this.FollowedByUsers.IsInProgressChanges
+                };
+            this.AddToLifetime(progressChanges.Merge().Subscribe(_ => this.UpdateIsInProgress()));
 
             if (this.IsDataLoaded)
             {
                 if (this.UserId != null)
                 {
-                    this.LoadPanels(false);
+                    this.LoadCurrentPanel();
                 }
                 return;
             }
@@ -267,7 +300,7 @@ namespace FlatBeats.Users.ViewModels
             this.ShowProgress(StringResources.Progress_Loading);
             this.AddToLifetime(
                 this.LoadUserAsync().ObserveOnDispatcher().Subscribe(
-                    _ => this.LoadPanels(true), this.HandleError, this.LoadCompleted));
+                    _ => this.LoadCurrentPanel(), this.HandleError, this.LoadCompleted));
         }
 
         #endregion
@@ -285,23 +318,22 @@ namespace FlatBeats.Users.ViewModels
 
         /// <summary>
         /// </summary>
-        private void LoadPanels(bool loadData)
+        private void LoadCurrentPanel()
         {
-            this.AddToLifetime(
-    this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(
-                this.LikedMixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(
-                this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-            this.AddToLifetime(
-                this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
-
-            if (loadData)
+            switch (this.CurrentPanelIndex)
             {
-                this.Mixes.LoadFirstPage();
-                this.LikedMixes.LoadFirstPage();
-                this.FollowsUsers.LoadFirstPage();
-                this.FollowedByUsers.LoadFirstPage();
+                case 1:
+                    this.AddToLifetime(this.Mixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    break;
+                case 2:
+                    this.AddToLifetime(this.LikedMixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    break;
+                case 3:
+                    this.AddToLifetime(this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    break;
+                case 4:
+                    this.AddToLifetime(this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    break;
             }
         }
 
@@ -311,7 +343,8 @@ namespace FlatBeats.Users.ViewModels
         /// </returns>
         private IObservable<Unit> LoadUserAsync()
         {
-            var profile = from response in this.profileService.GetUserProfileAsync(this.UserId) 
+            var profile = from settings in this.profileService.GetSettingsAsync().Do(s => this.censor = s.CensorshipEnabled)
+                from response in this.profileService.GetUserProfileAsync(this.UserId) 
                           select response.User;
             return profile.ObserveOnDispatcher().Do(this.LoadUserProfile).FinallySelect(() => new Unit());
         }
@@ -325,7 +358,7 @@ namespace FlatBeats.Users.ViewModels
             this.AvatarImageUrl = Avatar.GetLargeImageUrl(userContract.Avatar);
             this.Location = userContract.Location;
             var text = Html.ConvertToPlainText(userContract.BioHtml).Trim();
-            this.BioHtml = UserSettings.Current.CensorshipEnabled ? Censorship.Censor(text) : text;
+            this.BioHtml = this.censor ? Censorship.Censor(text) : text;
             this.UserName = userContract.Name;
             this.IsCurrentUserFollowing = userContract.IsFollowed;
         }

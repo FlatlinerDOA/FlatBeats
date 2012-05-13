@@ -79,9 +79,9 @@ namespace FlatBeats.ViewModels
         {
         }
 
-        public ReviewViewModel(ReviewContract review)
+        public ReviewViewModel(ReviewContract review, bool censor)
         {
-            this.Load(review);
+            this.Load(review, censor);
         }
 
         public DateTime Created
@@ -106,7 +106,7 @@ namespace FlatBeats.ViewModels
         {
             get; private set; }
 
-        public void Load(ReviewContract review)
+        public void Load(ReviewContract review, bool censor)
         {
             if (review.User != null)
             {
@@ -116,7 +116,7 @@ namespace FlatBeats.ViewModels
             }
 
             var text = Html.ConvertToPlainText(review.Body).Trim();
-            this.Body = UserSettings.Current.CensorshipEnabled ? Censorship.Censor(text) : text;
+            this.Body = censor ? Censorship.Censor(text) : text;
             DateTimeOffset createdDate;
             if (DateTimeOffset.TryParse(review.Created, out createdDate))
             {

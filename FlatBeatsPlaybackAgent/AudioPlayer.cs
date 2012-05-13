@@ -51,18 +51,6 @@ namespace FlatBeatsPlaybackAgent
         {
             get
             {
-                if (this.nowPlaying == null)
-                {
-                    lock (this.syncRoot)
-                    {
-                        if (this.nowPlaying == null)
-                        {
-                            // HACK: Should load async
-                            this.nowPlaying = PlayerService.LoadNowPlayingAsync().FirstOrDefault();
-                        }
-                    }
-                }
-
                 return this.nowPlaying;
             }
 
@@ -75,18 +63,23 @@ namespace FlatBeatsPlaybackAgent
             }
         }
 
+        private IObservable<PlayingMixContract> LoadNowPlayingAsync()
+        {
+            return from settings in ProfileService.Instance.GetSettingsAsync().Do(s => this.userSettings = s)
+                   from nowPlaying in PlayerService.LoadNowPlayingAsync().Do(v => this.NowPlaying = v)
+                   select nowPlaying;
+        } 
         #endregion
 
         #region Properties
 
         /// <summary>
         /// </summary>
-        protected SettingsContract UserSettings
+        public SettingsContract UserSettings
         {
             get
             {
-                // TODO: HACK: Should load async 
-                return this.userSettings ?? (this.userSettings = ProfileService.Instance.GetSettingsAsync().FirstOrDefault());
+                return this.userSettings;
             }
         }
 
@@ -143,7 +136,10 @@ namespace FlatBeatsPlaybackAgent
             else
             {
                 player.Track = null;
-                this.Lifetime.Add(this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                var stopProcess = from _ in this.LoadNowPlayingAsync()
+                                  from stop in this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread)
+                                  select stop;
+                this.Lifetime.Add(stopProcess.Finally(this.Completed).Subscribe());
             }
         }
 
@@ -173,11 +169,16 @@ namespace FlatBeatsPlaybackAgent
                 case PlayState.Stopped:
                     break;
                 case PlayState.TrackEnded:
-                    this.Lifetime.Add(this.PlayNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                    this.Lifetime.Add(
+                        (from _ in this.LoadNowPlayingAsync()
+                        from t in this.PlayNextTrackAsync(player)
+                        select t).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
                 case PlayState.Error:
                     this.Lifetime.Add(
-                        this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                        (from _ in this.LoadNowPlayingAsync()
+                         from stop in this.NowPlaying.StopAsync(TimeSpan.Zero)
+                         select stop).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
             }
 
@@ -209,14 +210,14 @@ namespace FlatBeatsPlaybackAgent
         protected override void OnUserAction(
             BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
-            // Ensure user settings are reloaded on each user action.
-            this.userSettings = null;
             switch (action)
             {
                 case UserAction.Stop:
                     if (player.PlayerState != PlayState.Paused || !PlayerService.NowPlayingExists())
                     {
-                        this.Lifetime.Add(this.StopPlayingAsync(player).Finally(this.Completed).Subscribe());
+                        this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
+                                          from __ in this.StopPlayingAsync(player)
+                                          select __).Finally(this.Completed).Subscribe());
                         return;
                     }
 
@@ -225,10 +226,14 @@ namespace FlatBeatsPlaybackAgent
                     player.Pause();
                     break;
                 case UserAction.Play:
-                    this.Lifetime.Add(this.PlayTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                    this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
+                                       from __ in this.PlayTrackAsync(player) 
+                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
                 case UserAction.SkipNext:
-                    this.Lifetime.Add(this.SkipToNextTrackAsync(player).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                    this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
+                                       from __ in this.SkipToNextTrackAsync(player)
+                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
                     return;
             }
 

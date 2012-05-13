@@ -13,14 +13,13 @@ namespace FlatBeats.DataModel
 
     public class Json<T> : ISerializer<T> where T : class 
     {
-        private static readonly DataContractJsonSerializer Serializer;
-     
-        public static readonly Json<T> Instance;
+        private readonly DataContractJsonSerializer Serializer;
+
+        public static readonly Json<T> Instance = new Json<T>();
  
-        static Json()
+        public Json()
         {
-            Serializer = new DataContractJsonSerializer(typeof(T));
-            Instance = new Json<T>();
+            this.Serializer = new DataContractJsonSerializer(typeof(T));
         }
 
         public string SerializeToString(T obj)
@@ -33,7 +32,7 @@ namespace FlatBeats.DataModel
             string retVal; 
             using (var ms = new MemoryStream())
             {
-                Serializer.WriteObject(ms, obj);
+                this.Serializer.WriteObject(ms, obj);
                 retVal = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
                 ms.Close();
             }
@@ -53,7 +52,7 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-                    obj = (T)Serializer.ReadObject(ms);
+                    obj = (T)this.Serializer.ReadObject(ms);
                     ms.Close();
                 }
                 catch (SerializationException)
@@ -74,22 +73,20 @@ namespace FlatBeats.DataModel
             {
                 try
                 {
-                    ////var data = new MemoryStream();
-                    ////json.CopyTo(data);
+#if DEBUG
+                    var data = new MemoryStream();
+                    json.CopyTo(data);
 
-////#if DEBUG
-////                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-////                    foreach (var line in
-////                            jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
-////                                new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-////                    {
-////                        Debug.WriteLine(line);
-////                    }
+                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+                    foreach (var line in jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        Debug.WriteLine(line);
+                    }
 
-////#endif
-                    ////obj = (T)Serializer.ReadObject(data);
-                    obj = (T)Serializer.ReadObject(json);
-                    json.Close();
+                    obj = (T)this.Serializer.ReadObject(data);
+#else
+                    obj = (T)this.Serializer.ReadObject(json);
+#endif
                 }
                 catch (SerializationException)
                 {
@@ -109,7 +106,7 @@ namespace FlatBeats.DataModel
                 return;
             }
 
-            Serializer.WriteObject(stream, item);
+            this.Serializer.WriteObject(stream, item);
         }
     }
 }

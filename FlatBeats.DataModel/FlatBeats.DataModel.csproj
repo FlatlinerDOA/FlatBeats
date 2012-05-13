@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarContract.cs" />
+    <Compile Include="FavouritedTrackListResponseContract.cs" />
     <Compile Include="Services\DownloadExtensions.cs" />
     <Compile Include="Services\IAsyncDownloader.cs" />
     <Compile Include="Services\IAsyncStorage.cs" />

@@ -11,11 +11,31 @@
 
     public sealed class MixListViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
+        private readonly ProfileService profileService;
+
+        public MixListViewModel() : this(ProfileService.Instance)
+        {
+        }
+
+        public MixListViewModel(ProfileService profileService)
+        {
+            this.profileService = profileService;
+        }
+
+        private bool censor;
+
         public string Sort { get; set; }
 
         public string Tag { get; set; }
 
         public string SearchQuery { get; set; }
+
+        public override IObservable<Unit> LoadAsync()
+        {
+            return from _ in this.profileService.GetSettingsAsync().Do(s => this.censor = s.CensorshipEnabled)
+                   from load in base.LoadAsync()
+                   select load;
+        }
 
         protected override IObservable<IList<MixContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
@@ -36,7 +56,7 @@
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
-            viewModel.Load(data);
+            viewModel.Load(data, this.censor);
         }
 
         protected override void LoadPageCompleted()

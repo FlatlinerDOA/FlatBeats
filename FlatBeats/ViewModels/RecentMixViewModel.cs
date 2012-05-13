@@ -15,7 +15,8 @@
         /// <summary>
         /// Initializes a new instance of the RecentMixViewModel class.
         /// </summary>
-        public RecentMixViewModel(MixContract mix) : base(mix)
+        public RecentMixViewModel(MixContract mix, bool censor)
+            : base(mix, censor)
         {
         }
 

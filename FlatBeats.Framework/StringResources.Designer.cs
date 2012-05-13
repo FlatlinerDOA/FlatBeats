@@ -488,6 +488,15 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This person hasn&apos;t found any tracks they like yet..
+        /// </summary>
+        public static string Message_UserHasNoFavoriteTracks {
+            get {
+                return ResourceManager.GetString("Message_UserHasNoFavoriteTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This user hasn&apos;t found anything they like yet..
         /// </summary>
         public static string Message_UserHasNoLikedMixes {
@@ -538,6 +547,15 @@ namespace FlatBeats.Framework {
         public static string Message_YouAreNotFollowingAnyone {
             get {
                 return ResourceManager.GetString("Message_YouAreNotFollowingAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t favorited any tracks yet, go listen to some music and star the ones you like!.
+        /// </summary>
+        public static string Message_YouHaveNoFavoriteTracks {
+            get {
+                return ResourceManager.GetString("Message_YouHaveNoFavoriteTracks", resourceCulture);
             }
         }
         
@@ -646,6 +664,15 @@ namespace FlatBeats.Framework {
         public static string Title_CreatedMixes {
             get {
                 return ResourceManager.GetString("Title_CreatedMixes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tracks.
+        /// </summary>
+        public static string Title_FavoriteTracks {
+            get {
+                return ResourceManager.GetString("Title_FavoriteTracks", resourceCulture);
             }
         }
         

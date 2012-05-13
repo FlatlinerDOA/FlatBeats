@@ -406,6 +406,13 @@ namespace FlatBeats.DataModel.Services
                     new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
         }
 
+        public IObservable<FavouritedTrackListResponseContract> GetFavouriteTracksAsync(string userId, int pageNumber, int pageSize)
+        {
+            string urlFormat = string.Format("http://8tracks.com/users/{0}/favorite_tracks.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
+
+            return this.downloader.GetDeserializedAsync<FavouritedTrackListResponseContract>(new Uri(urlFormat, UriKind.Absolute));
+        }
+
         #endregion
 
         #region Methods
@@ -447,5 +454,6 @@ namespace FlatBeats.DataModel.Services
         }
 
         #endregion
+
     }
 }

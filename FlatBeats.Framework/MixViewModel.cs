@@ -88,9 +88,9 @@ namespace FlatBeats.Framework
         /// </summary>
         /// <param name="mix">
         /// </param>
-        public MixViewModel(MixContract mix) : this()
+        public MixViewModel(MixContract mix, bool censor) : this()
         {
-            this.Load(mix);
+            this.Load(mix, censor);
         }
 
         #endregion
@@ -439,9 +439,8 @@ namespace FlatBeats.Framework
 
         #endregion
 
-        public void Load(MixContract mix)
+        public void Load(MixContract mix, bool censor)
         {
-            bool censor = UserSettings.Current.CensorshipEnabled;
             this.IsExplicit = mix.IsExplicit && censor;
             this.MixName = censor ? Censorship.Censor(mix.Name) : mix.Name;
             var lines =

@@ -13,18 +13,30 @@
 
     public sealed class ReviewsPanelViewModel : InfiniteScrollPanelViewModel<ReviewViewModel, ReviewContract>
     {
+        private readonly ProfileService profileService;
+
+        private bool censor;
+
+        public ReviewsPanelViewModel() : this(ProfileService.Instance)
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the ReviewsPanelViewModel class.
         /// </summary>
-        public ReviewsPanelViewModel()
+        public ReviewsPanelViewModel(ProfileService profileService)
         {
+            this.profileService = profileService;
             this.Title = Framework.StringResources.Title_Reviews;
         }
 
         public IObservable<Unit> LoadAsync(string mixId)
         {
             this.MixId = mixId;
-            return this.LoadAsync();
+            return from _ in this.profileService.GetSettingsAsync().Do(
+                s => this.censor = s.CensorshipEnabled)
+                   from load in this.LoadAsync()
+                   select load;
         }
 
         public string MixId { get; private set; }
@@ -38,7 +50,7 @@
 
         protected override void LoadItem(ReviewViewModel viewModel, ReviewContract data)
         {
-            viewModel.Load(data);
+            viewModel.Load(data, this.censor);
         }
 
         protected override void LoadPageCompleted()

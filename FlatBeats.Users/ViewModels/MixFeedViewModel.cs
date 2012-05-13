@@ -14,6 +14,8 @@
     {
         private readonly ProfileService profileService;
 
+        private bool censor;
+
         public MixFeedViewModel() : this(ProfileService.Instance)
         {
         }
@@ -36,7 +38,7 @@
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)
         {
-            viewModel.Load(data);
+            viewModel.Load(data, this.censor);
         }
 
         protected override void LoadPageCompleted()
@@ -55,7 +57,9 @@
         public IObservable<Unit> LoadAsync(string userId)
         {
             this.UserId = userId;
-            return this.LoadAsync();
+            return from settings in this.profileService.GetSettingsAsync().Do(s => this.censor = s.CensorshipEnabled)
+                   from load in this.LoadAsync()
+                   select load;
         }
     }
 }

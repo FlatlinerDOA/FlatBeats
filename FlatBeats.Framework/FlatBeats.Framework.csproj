@@ -104,7 +104,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="TagViewModel.cs" />
-    <Compile Include="UserSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">

@@ -167,6 +167,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="SampleData\dnic.json" />
+    <None Include="SampleData\favourite_tracks.json" />
     <None Include="SampleData\follows_users.json" />
     <None Include="SampleData\login.json" />
     <None Include="SampleData\mixes.json" />

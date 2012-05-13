@@ -51,6 +51,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private MixContract mixData;
 
+        private bool censor;
+
         #endregion
 
         #region Constructors and Destructors
@@ -251,7 +253,13 @@ namespace FlatBeats.ViewModels
                                           && this.NavigationParameters["play"] == "true";
 
             this.ShowProgress(StringResources.Progress_Loading);
-            IObservable<Unit> login = this.profileService.LoadUserTokenAsync().Select(_ => new Unit());
+            IObservable<Unit> login = from settings in this.profileService.GetSettingsAsync().Do(s =>
+                                        { 
+                                            this.censor = s.CensorshipEnabled;
+                                            this.PlayedPanel.PlayOverWifiOnly = s.PlayOverWifiOnly;
+                                        })
+                                      from userToken in this.profileService.LoadUserTokenAsync().Select(_ => new Unit())
+                                      select userToken;
             IObservable<Unit> loadMix = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
                                         from played in this.PlayedPanel.LoadAsync(mix)
                                         select new Unit();
@@ -309,7 +317,7 @@ namespace FlatBeats.ViewModels
                                                             this.MixId, response.EventArgs.Result)
                                                     select reviewAdded;
             q.ObserveOnDispatcher().Subscribe(
-                review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review)), 
+                review => this.ReviewsPanel.Items.Insert(0, new ReviewViewModel(review.Review, this.censor)), 
                 this.HandleError, 
                 this.HideProgress);
 
@@ -372,7 +380,7 @@ namespace FlatBeats.ViewModels
         {
             this.mixData = loadMix;
             this.CreatedByUserId = loadMix.User.Id;
-            this.Mix = new MixViewModel(loadMix);
+            this.Mix = new MixViewModel(loadMix, this.censor);
             this.UpdateLikedState();
 
             this.UpdatePinnedState();

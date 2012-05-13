@@ -219,13 +219,15 @@ namespace FlatBeats.ViewModels
             }
         }
 
+        public bool PlayOverWifiOnly { get; set; }
+
         /// <summary>
         /// </summary>
         public ObservableCollection<TrackViewModel> Tracks { get; private set; }
 
         private bool CanPlay()
         {
-            if (UserSettings.Current.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
+            if (this.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
             {
                 this.PlayPauseCommand.Text = "no wifi";
                 return false;

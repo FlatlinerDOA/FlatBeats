@@ -82,6 +82,7 @@
     <Compile Include="ViewModels\UserListItemViewModel.cs" />
     <Compile Include="ViewModels\UserProfileMixesViewModel.cs" />
     <Compile Include="ViewModels\UserProfilePageViewModel.cs" />
+    <Compile Include="ViewModels\UserProfileTracksViewModel.cs" />
     <Compile Include="ViewModels\UserSettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
