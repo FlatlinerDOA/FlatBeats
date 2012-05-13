@@ -25,7 +25,8 @@ namespace FlatBeats.Tracks.DataModel
         {
             var urlFormat = string.Format(
                 "https://gdata.youtube.com/feeds/api/videos?alt=json&max-results={0}&q={1}", maxResults, HttpUtility.UrlEncode(searchText));
-            return this.downloader.GetDeserializedAsync<VideoFeedContract>(new Uri(urlFormat, UriKind.Absolute));
+            ////return this.downloader.GetDeserializedAsync<VideoFeedContract>(new Uri(urlFormat, UriKind.Absolute));
+            throw new NotImplementedException();
         }
     }
 }
