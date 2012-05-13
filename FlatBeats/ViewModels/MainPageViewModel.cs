@@ -189,7 +189,7 @@ namespace FlatBeats.ViewModels
 
             if (this.IsDataLoaded)
             {
-                var likedLoad = from userToken in this.profileService.LoadUserTokenAsync().ObserveOnDispatcher().Do(u => this.UserId = u.CurrentUser.Id)
+                var likedLoad = from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null ? u.CurrentUser.Id : null)
                                 from liked in this.Liked.LoadAsync(this.UserId)
                                 select ObservableEx.SingleUnit();
                 this.AddToLifetime(likedLoad.Subscribe(_ => { }, this.HandleError, this.HideProgress));

@@ -210,13 +210,10 @@
 
         public void Reset()
         {
-            this.ObserveOn.Schedule(() =>
-            {
-                this.CurrentRequestedPage = 0;
-                this.LoadedPage = 0;
-                this.Items.Clear();
-                this.LoadPageCompleted();
-            });
+            this.CurrentRequestedPage = 0;
+            this.LoadedPage = 0;
+            this.Items.Clear();
+            this.LoadPageCompleted();
         }
 
         protected abstract void LoadPageCompleted();

@@ -23,6 +23,8 @@ namespace FlatBeats.ViewModels
 
         private bool censor;
 
+        private string loadedUserId;
+
         public MainPageLikedViewModel() : this(ProfileService.Instance)
         {
         }
@@ -48,13 +50,13 @@ namespace FlatBeats.ViewModels
             return from _ in this.profileService.GetSettingsAsync().ObserveOnDispatcher().Do(s =>
                     {
                         this.censor = s.CensorshipEnabled;
-                        if (this.loadedList != null && this.loadedList != s.PreferredList)
+                        if (this.loadedList != null && this.loadedList != s.PreferredList || this.UserId != this.loadedUserId)
                         {
                             this.Reset();
                         }
 
                         this.loadedList = s.PreferredList;
-
+                        this.loadedList = this.UserId;
                         switch (this.loadedList)
                         {
                             case PreferredLists.Created:
