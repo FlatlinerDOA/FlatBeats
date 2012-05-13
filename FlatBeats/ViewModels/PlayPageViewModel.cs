@@ -252,7 +252,9 @@ namespace FlatBeats.ViewModels
 
             this.ShowProgress(StringResources.Progress_Loading);
             IObservable<Unit> login = this.profileService.LoadUserTokenAsync().Select(_ => new Unit());
-            IObservable<Unit> loadMix = this.LoadMixAsync(this.MixId).TakeLast(1).Select(_ => new Unit());
+            IObservable<Unit> loadMix = from mix in this.LoadMixAsync(this.MixId).TakeLast(1)
+                                        from played in this.PlayedPanel.LoadAsync(mix)
+                                        select new Unit();
             this.AddToLifetime(
                 login.Concat(loadMix).ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
