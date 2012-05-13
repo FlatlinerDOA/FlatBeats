@@ -97,7 +97,11 @@ namespace FlatBeats.DataModel.Services
             return this.GetStreamAsync(url, false).TrySelect(
                         stream =>
                         {
-                            this.storage.Save(fileName, stream);
+                            using (stream)
+                            {
+                                this.storage.Save(fileName, stream);
+                            }
+
                             return ObservableEx.Unit;
                         });
         }

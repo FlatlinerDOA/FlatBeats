@@ -11,6 +11,8 @@
 
     public class AsyncIsolatedStorage : IAsyncStorage
     {
+        private readonly object syncRoot = new object();
+
         public static readonly AsyncIsolatedStorage Instance = new AsyncIsolatedStorage();
         
         /// <summary>
@@ -64,9 +66,20 @@
             return ObservableEx.DeferredStart(
                 () =>
                 {
-                    var json = Json<T>.Instance.SerializeToString(data);
-                    this.Save(file, json);
-                }, Scheduler.ThreadPool);
+                    lock (this.syncRoot)
+                    {
+                        using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            this.CreateFolderForFile(storage, file);
+                            using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
+                            {
+                                Json<T>.Instance.SerializeToStream(data, fileStream);
+                                fileStream.Flush();
+                            }
+                        }
+                    }
+                }, 
+                Scheduler.ThreadPool);
         }
 
         public IObservable<Unit> SaveStringAsync(string file, string text)
@@ -74,13 +87,29 @@
             return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool);
         }
 
-        public IObservable<T> LoadJsonAsync<T>(string file) where T : class
+        public IObservable<T> LoadJsonAsync<T>(string filePath) where T : class
         {
             return ObservableEx.DeferredStart(() =>
             {
-                var json = this.Load(file);
-                return Json<T>.Instance.DeserializeFromString(json);
-            }, Scheduler.ThreadPool);
+                lock (this.syncRoot)
+                {
+                    using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!storage.FileExists(filePath))
+                        {
+                            return default(T);
+                        }
+
+                        using (
+                            var input = new IsolatedStorageFileStream(
+                                filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
+                        {
+                            return Json<T>.Instance.DeserializeFromStream(input);
+                        }
+                    }
+                }
+            }, 
+            Scheduler.ThreadPool);
         }
 
         public IObservable<string> LoadStringAsync(string file)

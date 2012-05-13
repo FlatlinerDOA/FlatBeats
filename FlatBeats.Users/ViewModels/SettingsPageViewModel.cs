@@ -242,6 +242,12 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
+            if (this.Tracks.IsInProgress)
+            {
+                this.ShowProgress(this.Tracks.InProgressMessage);
+                return;
+            }
+
             if (this.FollowsUsers.IsInProgress)
             {
                 this.ShowProgress(this.FollowsUsers.InProgressMessage);

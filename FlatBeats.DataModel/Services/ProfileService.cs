@@ -63,6 +63,8 @@ namespace FlatBeats.DataModel.Services
         /// </summary>
         private SettingsContract userSettings;
 
+        private readonly object syncRoot = new object();
+
         #endregion
 
         #region Constructors and Destructors
@@ -264,20 +266,30 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<SettingsContract> GetSettingsAsync()
         {
-            if (this.userSettings != null)
+            lock (this.syncRoot)
             {
-                return Observable.Return(this.userSettings);
+                if (this.userSettings != null)
+                {
+                    return Observable.Return(this.userSettings);
+                }
             }
 
-            return (from json in this.storage.LoadStringAsync(SettingsFilePath)
-                    select
-                        this.settingsSerializer.DeserializeFromString(json)
-                        ??
+            return (from settings in this.storage.LoadJsonAsync<SettingsContract>(SettingsFilePath)
+                    select settings ??
                         new SettingsContract
                             {
-                               CensorshipEnabled = true, PlayNextMix = true, PreferredList = PreferredLists.Liked 
+                               CensorshipEnabled = true, 
+                               PlayNextMix = true, 
+                               PreferredList = PreferredLists.Liked, 
+                               PlayOverWifiOnly = false 
                             }).Do(
-                                s => this.userSettings = s);
+                                s =>
+                                    {
+                                        lock (this.syncRoot)
+                                        {
+                                            this.userSettings = s;
+                                        }
+                                    });
         }
 
         /// <summary>
@@ -348,9 +360,14 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<Unit> SaveSettingsAsync(SettingsContract settings)
         {
-            return
-                this.storage.SaveStringAsync(SettingsFilePath, this.settingsSerializer.SerializeToString(settings)).Do(
-                    s => this.userSettings = settings);
+            return this.storage.SaveJsonAsync(SettingsFilePath, settings).Do(
+                    s =>
+                        {
+                            lock (this.syncRoot)
+                            {
+                                this.userSettings = settings;
+                            }
+                        });
         }
 
         /// <summary>

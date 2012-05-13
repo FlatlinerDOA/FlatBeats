@@ -84,6 +84,7 @@ namespace FlatBeats.Users.ViewModels
             this.profileService = profileService;
             this.Mixes = new UserProfileMixesViewModel(false, this.profileService);
             this.LikedMixes = new UserProfileLikedMixesViewModel(false, this.profileService);
+            this.Tracks = new UserProfileTracksViewModel(false, this.profileService);
             this.FollowedByUsers = new FollowedByUsersViewModel(false, this.profileService);
             this.FollowsUsers = new FollowsUsersViewModel(false, this.profileService);
             this.ApplicationBarButtonCommands = new ObservableCollection<ICommandLink>();
@@ -217,6 +218,10 @@ namespace FlatBeats.Users.ViewModels
 
         /// <summary>
         /// </summary>
+        public UserProfileTracksViewModel Tracks { get; private set; }
+
+        /// <summary>
+        /// </summary>
         public CommandLink ToggleFollowUserCommandLink { get; private set; }
 
         /// <summary>
@@ -329,9 +334,12 @@ namespace FlatBeats.Users.ViewModels
                     this.AddToLifetime(this.LikedMixes.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
                     break;
                 case 3:
-                    this.AddToLifetime(this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    this.AddToLifetime(this.Tracks.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
                     break;
                 case 4:
+                    this.AddToLifetime(this.FollowsUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
+                    break;
+                case 5:
                     this.AddToLifetime(this.FollowedByUsers.LoadAsync(this.UserId).Subscribe(_ => { }, this.HandleError, this.HideProgress));
                     break;
             }
@@ -389,6 +397,12 @@ namespace FlatBeats.Users.ViewModels
             if (this.LikedMixes.IsInProgress)
             {
                 this.ShowProgress(this.LikedMixes.InProgressMessage);
+                return;
+            }
+
+            if (this.Tracks.IsInProgress)
+            {
+                this.ShowProgress(this.Tracks.InProgressMessage);
                 return;
             }
 

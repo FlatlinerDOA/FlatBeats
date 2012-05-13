@@ -10,20 +10,20 @@
         /// <summary>
         /// TODO: Make async 
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        bool Exists(string file);
+        bool Exists(string filePath);
 
-        IObservable<Unit> SaveStringAsync(string file, string text);
+        IObservable<Unit> SaveStringAsync(string filePath, string text);
 
-        IObservable<Unit> SaveJsonAsync<T>(string file, T data) where T : class;
+        IObservable<Unit> SaveJsonAsync<T>(string filePath, T data) where T : class;
 
         /// <summary>
         /// TODO: Make async
         /// </summary>
         /// <param name="file"></param>
         /// <param name="data"></param>
-        void Save(string file, Stream data);
+        void Save(string filePath, Stream data);
 
         /// <summary>
         /// TODO: Make async
@@ -38,8 +38,8 @@
         /// <returns></returns>
         Stream ReadStream(string filePath);
 
-        IObservable<T> LoadJsonAsync<T>(string file) where T : class;
+        IObservable<T> LoadJsonAsync<T>(string filePath) where T : class;
 
-        IObservable<string> LoadStringAsync(string file);
+        IObservable<string> LoadStringAsync(string filePath);
     }
 }

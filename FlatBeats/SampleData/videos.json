@@ -1,0 +1,114 @@
+{
+	"version":"1.0",
+	"encoding":"UTF-8",
+	"feed":
+	{
+		"xmlns":"http://www.w3.org/2005/Atom",
+		"xmlns$media":"http://search.yahoo.com/mrss/",
+		"xmlns$openSearch":"http://a9.com/-/spec/opensearchrss/1.0/",
+		"xmlns$gd":"http://schemas.google.com/g/2005",
+		"xmlns$yt":"http://gdata.youtube.com/schemas/2007",
+		"id":{"$t":"http://gdata.youtube.com/feeds/api/videos"},
+		"updated":{"$t":"2012-05-13T14:25:34.038Z"},
+		"category":[{"scheme":"http://schemas.google.com/g/2005#kind",
+		"term":"http://gdata.youtube.com/schemas/2007#video"}],
+		"title":{"$t":"YouTube Videos matching query: Matt & Kim Cameras",
+		"type":"text"},
+		"logo":{"$t":"http://www.youtube.com/img/pic_youtubelogo_123x63.gif"},
+		"link":
+		[
+			{"rel":"alternate", "type":"text/html", "href":"https://www.youtube.com"},
+			{"rel":"http://schemas.google.com/g/2005#feed", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos"},
+			{"rel":"http://schemas.google.com/g/2005#batch", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos/batch"},
+			{"rel":"self", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos?alt=json&q=Matt+%26+Kim+Cameras&start-index=1&max-results=1"},
+			{"rel":"next", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos?alt=json&q=Matt+%26+Kim+Cameras&start-index=2&max-results=1"}
+		],
+		"author":[{"name":{"$t":"YouTube"},"uri":{"$t":"http://www.youtube.com/"}}],
+		"generator":{"$t":"YouTube data API",
+		"version":"2.1",
+		"uri":"http://gdata.youtube.com"},
+		"openSearch$totalResults":{"$t":4090},
+		"openSearch$startIndex":{"$t":1},
+		"openSearch$itemsPerPage":{"$t":1},
+		"entry":
+		[
+			{
+				"id":{"$t":"http://gdata.youtube.com/feeds/api/videos/9mN3Frq1xYI"},
+				"published":{"$t":"2011-01-20T21:37:06.000Z"},
+				"updated":{"$t":"2012-05-12T20:24:14.000Z"},
+				"category":
+				[
+					{"scheme":"http://schemas.google.com/g/2005#kind", "term":"http://gdata.youtube.com/schemas/2007#video"},
+					{"scheme":"http://gdata.youtube.com/schemas/2007/categories.cat","term":"Music","label":"Music"},
+					{"scheme":"http://gdata.youtube.com/schemas/2007/keywords.cat", "term":"matt"},
+					{"scheme":"http://gdata.youtube.com/schemas/2007/keywords.cat", "term":"kim"}, 
+					{"scheme":"http://gdata.youtube.com/schemas/2007/keywords.cat", "term":"cameras"},
+					{"scheme":"http://gdata.youtube.com/schemas/2007/keywords.cat", "term":"video"}, 
+					{"scheme":"http://gdata.youtube.com/schemas/2007/keywords.cat", "term":"sidewalks"}
+				],
+				"title":{"$t":"MATT AND KIM - \"CAMERAS\" (OFFICIAL MUSIC VIDEO)", "type":"text"},
+				"content":{"$t":"The official music video for \"Cameras\" SIDEWALKS Available Now iTunes (US) bit.ly iTunes (UK) bit.ly iTunes (EU) bit.ly", "type":"text"},
+				"link":
+				[
+					{"rel":"alternate", "type":"text/html", "href":"https://www.youtube.com/watch?v=9mN3Frq1xYI&feature=youtube_gdata"},
+					{"rel":"http://gdata.youtube.com/schemas/2007#video.responses", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos/9mN3Frq1xYI/responses"},
+					{"rel":"http://gdata.youtube.com/schemas/2007#video.related", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos/9mN3Frq1xYI/related"},
+					{"rel":"http://gdata.youtube.com/schemas/2007#mobile", "type":"text/html", "href":"https://m.youtube.com/details?v=9mN3Frq1xYI"},
+					{"rel":"self", "type":"application/atom+xml", "href":"https://gdata.youtube.com/feeds/api/videos/9mN3Frq1xYI"}
+				],
+				"author":
+				[
+					{"name":{"$t":"mattandkim"},"uri":{"$t":"https://gdata.youtube.com/feeds/api/users/mattandkim"}}
+				],
+				"gd$comments":{"gd$feedLink":{"rel":"http://gdata.youtube.com/schemas/2007#comments", "href":"https://gdata.youtube.com/feeds/api/videos/9mN3Frq1xYI/comments", "countHint":5135}},"yt$hd":{},"media$group":{"media$category":[{"$t":"Music","label":"Music",
+				"scheme":"http://gdata.youtube.com/schemas/2007/categories.cat"}],
+				"media$content":
+				[
+					{
+						"url":"https://www.youtube.com/v/9mN3Frq1xYI?version=3&f=videos&app=youtube_gdata", 
+						"type":"application/x-shockwave-flash", 
+						"medium":"video", 
+						"isDefault":"true",
+						"expression":"full", 
+						"duration":238,
+						"yt$format":5
+					},
+					{
+						"url":"rtsp://v7.cache5.c.youtube.com/CiILENy73wIaGQmCxbW6Fndj9hMYDSANFEgGUgZ2aWRlb3MM/0/0/0/video.3gp",
+						"type":"video/3gpp",
+						"medium":"video",
+						"expression":"full",
+						"duration":238,
+						"yt$format":1
+					},
+					{
+						"url":"rtsp://v8.cache8.c.youtube.com/CiILENy73wIaGQmCxbW6Fndj9hMYESARFEgGUgZ2aWRlb3MM/0/0/0/video.3gp",
+						"type":"video/3gpp",
+						"medium":"video",
+						"expression":"full",
+						"duration":238,
+						"yt$format":6
+					}
+				],
+				"media$description":{"$t":"The official music video for \"Cameras\" SIDEWALKS Available Now iTunes (US) bit.ly iTunes (UK) bit.ly iTunes (EU) bit.ly", "type":"plain"},
+				"media$keywords":{"$t":"matt, kim, cameras, video, sidewalks"},
+				"media$player":
+				[
+					{"url":"https://www.youtube.com/watch?v=9mN3Frq1xYI&feature=youtube_gdata_player"}
+				],
+				"media$restriction":{"$t":"DE", "type":"country", "relationship":"deny"},
+				"media$thumbnail":
+				[
+					{"url":"http://i.ytimg.com/vi/9mN3Frq1xYI/0.jpg", "height":360,"width":480,"time":"00:01:59"},
+					{"url":"http://i.ytimg.com/vi/9mN3Frq1xYI/1.jpg", "height":90,"width":120,"time":"00:00:59.500"},
+					{"url":"http://i.ytimg.com/vi/9mN3Frq1xYI/2.jpg", "height":90,"width":120,"time":"00:01:59"},
+					{"url":"http://i.ytimg.com/vi/9mN3Frq1xYI/3.jpg", "height":90,"width":120,"time":"00:02:58.500"}
+				],
+				"media$title":{"$t":"MATT AND KIM - \"CAMERAS\" (OFFICIAL MUSIC VIDEO)", "type":"plain"},
+				"yt$duration":{"seconds":"238"}
+			},
+			"gd$rating":{"average":4.940468,"max":5,"min":1,"numRaters":11624,"rel":"http://schemas.google.com/g/2005#overall"},
+			"yt$statistics":{"favoriteCount":"12162", "viewCount":"1682843"}}
+		]
+	}
+}

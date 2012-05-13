@@ -82,7 +82,7 @@ namespace FlatBeats.DataModel
                     {
                         Debug.WriteLine(line);
                     }
-
+                    data.Position = 0;
                     obj = (T)this.Serializer.ReadObject(data);
 #else
                     obj = (T)this.Serializer.ReadObject(json);
