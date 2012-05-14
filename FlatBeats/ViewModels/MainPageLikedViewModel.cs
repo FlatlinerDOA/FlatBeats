@@ -35,6 +35,7 @@ namespace FlatBeats.ViewModels
         public MainPageLikedViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
+            this.Title = " ";
         }
 
         private string UserId { get; set; }
@@ -50,7 +51,7 @@ namespace FlatBeats.ViewModels
             return from _ in this.profileService.GetSettingsAsync().ObserveOnDispatcher().Do(s =>
                     {
                         this.censor = s.CensorshipEnabled;
-                        if (this.loadedList != null && this.loadedList != s.PreferredList || this.UserId != this.loadedUserId)
+                        if ((this.loadedList != null && this.loadedList != s.PreferredList) || (this.UserId != this.loadedUserId))
                         {
                             this.Reset();
                         }
@@ -81,20 +82,20 @@ namespace FlatBeats.ViewModels
                 return Observable.Empty<IList<MixContract>>();
             }
 
-            if (loadedList == PreferredLists.Created)
+            if (this.loadedList == PreferredLists.Created)
             {
-                return (from page in this.profileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)
-                        select (IList<MixContract>)page.Mixes);
+                return from page in this.profileService.GetUserMixesAsync(this.UserId, pageNumber, pageSize)
+                       select (IList<MixContract>)page.Mixes;
             }
 
-            if (loadedList == PreferredLists.MixFeed)
+            if (this.loadedList == PreferredLists.MixFeed)
             {
-                return (from page in this.profileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize)
-                        select (IList<MixContract>)page.Mixes);
+                return from page in this.profileService.GetMixFeedAsync(this.UserId, pageNumber, pageSize)
+                       select (IList<MixContract>)page.Mixes;
             }
 
-            return (from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
-                    select (IList<MixContract>)page.Mixes);
+            return from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
+                   select (IList<MixContract>)page.Mixes;
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

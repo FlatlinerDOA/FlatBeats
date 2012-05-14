@@ -25,6 +25,7 @@
         private static readonly AsyncDownloader Downloader = AsyncDownloader.Instance;
 
         private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
+
         private const string PlayTokenFilePath = "playtoken.json";
 
         private const string NowPlayingFilePath = "nowplaying.json";
@@ -260,6 +261,7 @@
                         using (var file = isolatedStorageFile.CreateFile("/Shared/ShellContent/NowPlaying.jpg"))
                         {
                             wb.SaveJpeg(file, 173, 173, 0, 85);
+                            file.Flush();
                             file.Close();
                         }
                     }
@@ -321,8 +323,9 @@
 
         public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
+            var cacheFile = string.Format("mixes/tracks-{0}.json", mix.Id);
             var playedTracks = from playToken in GetOrCreatePlayTokenAsync()
-                               from response in Downloader.GetDeserializedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id))
+                               from response in Downloader.GetDeserializedCachedAndRefreshedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id), cacheFile)
                                select response;
             return playedTracks;
         }

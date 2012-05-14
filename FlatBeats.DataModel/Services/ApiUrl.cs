@@ -164,7 +164,7 @@
         public static Uri ReportTrack(string playToken, string mixId, string trackId)
         {
             var urlFormat = string.Format(
-                @"http://8tracks.com/sets/{0}/report.json?track_id={1}&mix_id={2}&api_version={3}",
+                "http://8tracks.com/sets/{0}/report.json?track_id={1}&mix_id={2}&api_version={3}",
                 playToken,
                 trackId,
                 mixId, 
