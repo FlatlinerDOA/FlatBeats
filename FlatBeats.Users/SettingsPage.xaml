@@ -131,6 +131,7 @@
                             <TextBlock Text="{Binding UserNameLabelText}"
                                        Margin="12,0" />
                             <TextBox Text="{Binding UserName, Mode=TwoWay}"
+                                     IsEnabled="{Binding CanLogin}"
                                      IsReadOnly="{Binding IsLoggedIn}"
                                      InputScope="LogOnName" />
                             <TextBlock Text="{Binding PasswordLabelText}"
@@ -183,11 +184,12 @@
                                            Style="{StaticResource PhoneTextNormalStyle}"
                                            Margin="0,-12,12,0" />
                             </toolkit:ToggleSwitch>
-                        </StackPanel>
-                        <HyperlinkButton Margin="12,24,12,12"
-                                         VerticalAlignment="Bottom"
+                            <HyperlinkButton Margin="0,-12,0,0"
+                                             Padding="12,0,12,48"
+                                             Background="Transparent"
                                          Content="About this application"
                                          NavigateUri="/FlatBeatsUsers;component/AboutPage.xaml" />
+                        </StackPanel>
                     </Grid>
                 </ScrollViewer>
             </controls:PivotItem>
