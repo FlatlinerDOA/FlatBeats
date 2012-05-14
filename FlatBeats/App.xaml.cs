@@ -4,9 +4,12 @@
     using System.Windows;
     using System.Windows.Navigation;
 
+    using FlatBeats.DataModel.Services;
+
     using Flatliner.Phone;
 
     using Microsoft.Phone.Controls;
+    using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
 
     public partial class App : Application
@@ -52,6 +55,7 @@
             }
 
         }
+
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated

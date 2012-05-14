@@ -57,7 +57,7 @@ namespace FlatBeats.ViewModels
                         }
 
                         this.loadedList = s.PreferredList;
-                        this.loadedList = this.UserId;
+                        this.loadedUserId = this.UserId;
                         switch (this.loadedList)
                         {
                             case PreferredLists.Created:

@@ -12,25 +12,22 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
+    using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
+    using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
-    using Flatliner.Phone;
-    using System.Windows;
-    using FlatBeats.DataModel;
-    using FlatBeats.DataModel.Services;
 
     /// <summary>
     /// </summary>
     public sealed class MainPageViewModel : PageViewModel
     {
-        private readonly ProfileService profileService;
-
         #region Constants and Fields
 
         /// <summary>
@@ -39,7 +36,15 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        private readonly ProfileService profileService;
+
+        /// <summary>
+        /// </summary>
         private readonly Random random = new Random();
+
+        /// <summary>
+        /// </summary>
+        private static volatile bool HasCheckedForRating;
 
         /// <summary>
         /// </summary>
@@ -49,23 +54,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private Uri backgroundImageUrl;
 
-        public Uri BackgroundImageUrl
-        {
-            get
-            {
-                return this.backgroundImageUrl;
-            }
-            set
-            {
-                if (this.backgroundImageUrl == value)
-                {
-                    return;
-                }
-
-                this.backgroundImageUrl = value;
-                this.OnPropertyChanged("BackgroundImageUrl");
-            }
-        }
         /// <summary>
         /// </summary>
         private int currentSectionIndex;
@@ -74,17 +62,22 @@ namespace FlatBeats.ViewModels
 
         #region Constructors and Destructors
 
-        public MainPageViewModel() : this(ProfileService.Instance)
+        /// <summary>
+        /// </summary>
+        public MainPageViewModel()
+            : this(ProfileService.Instance)
         {
         }
 
         /// <summary>
-        ///   Initializes a new instance of the MainViewModel class.
+        /// Initializes a new instance of the MainViewModel class.
         /// </summary>
+        /// <param name="profileService">
+        /// </param>
         public MainPageViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
-            this.Liked = new MainPageLikedViewModel() { Opacity = 1 };
+            this.Liked = new MainPageLikedViewModel { Opacity = 1 };
             this.Recent = new MainPageRecentViewModel();
             this.Latest = new MainPageLatestViewModel();
             this.TagsPanel = new MainPageTagsViewModel();
@@ -118,6 +111,27 @@ namespace FlatBeats.ViewModels
 
         /// <summary>
         /// </summary>
+        public Uri BackgroundImageUrl
+        {
+            get
+            {
+                return this.backgroundImageUrl;
+            }
+
+            set
+            {
+                if (this.backgroundImageUrl == value)
+                {
+                    return;
+                }
+
+                this.backgroundImageUrl = value;
+                this.OnPropertyChanged("BackgroundImageUrl");
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         public int CurrentSectionIndex
         {
             get
@@ -139,37 +153,37 @@ namespace FlatBeats.ViewModels
                 this.Recent.Opacity = this.InRangeOf(1);
                 this.Latest.Opacity = this.InRangeOf(2);
                 this.TagsPanel.Opacity = this.InRangeOf(3);
-             }
+            }
         }
 
         /// <summary>
-        ///   Gets the latest mixes panel.
+        /// Gets the latest mixes panel.
         /// </summary>
         public MainPageLatestViewModel Latest { get; private set; }
 
         /// <summary>
-        ///   Gets the liked mixes panel
+        /// Gets the liked mixes panel
         /// </summary>
         public MainPageLikedViewModel Liked { get; private set; }
 
         /// <summary>
-        ///   Gets the recent mixes panel
+        /// Gets the recent mixes panel
         /// </summary>
         public MainPageRecentViewModel Recent { get; private set; }
 
         /// <summary>
-        ///   Gets the tags panel
+        /// Gets the tags panel
         /// </summary>
         public MainPageTagsViewModel TagsPanel { get; private set; }
-        
+
         /// <summary>
         /// Gets the current user id
         /// </summary>
         public string UserId { get; private set; }
-        
+
         #endregion
 
-        #region Public Methods
+        #region Public Methods and Operators
 
         /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
@@ -178,35 +192,44 @@ namespace FlatBeats.ViewModels
         {
             this.BackgroundImageUrl = this.State.GetValueOrDefault<Uri>("BackgroundUrl");
 
-            var progressSources = new[] 
-            {   
-                this.Liked.IsInProgressChanges,
-                this.Recent.IsInProgressChanges,
-                this.Latest.IsInProgressChanges
-            };
+            var progressSources = new[]
+                {
+                   this.Liked.IsInProgressChanges, this.Recent.IsInProgressChanges, this.Latest.IsInProgressChanges 
+                };
 
             this.AddToLifetime(progressSources.Merge().Subscribe(_ => this.UpdateIsInProgress()));
 
             if (this.IsDataLoaded)
             {
-                var likedLoad = from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null ? u.CurrentUser.Id : null)
-                                from liked in this.Liked.LoadAsync(this.UserId)
-                                select ObservableEx.SingleUnit();
+                IObservable<IObservable<Unit>> likedLoad =
+                    from userToken in
+                        this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
+                            u => this.UserId = u != null ? u.CurrentUser.Id : null)
+                    from liked in this.Liked.LoadAsync(this.UserId)
+                    select ObservableEx.SingleUnit();
                 this.AddToLifetime(likedLoad.Subscribe(_ => { }, this.HandleError, this.HideProgress));
-                this.AddToLifetime(this.Recent.LoadAsync().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
+                this.AddToLifetime(
+                    this.Recent.LoadAsync().Subscribe(
+                        _ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
                 return;
             }
 
-            var pageLoad = from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
-                           from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
-                           from liked in this.Liked.LoadAsync(this.UserId)
-                           select ObservableEx.SingleUnit();
+            this.CheckForRating();
+
+            IObservable<IObservable<Unit>> pageLoad =
+                from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
+                from userToken in
+                    this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
+                        u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
+                from liked in this.Liked.LoadAsync(this.UserId)
+                select ObservableEx.SingleUnit();
 
             this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
-            var delayedLoad = from second in Observable.Timer(TimeSpan.FromSeconds(3))
-                               .ObserveOnDispatcher()
-                               .Do(_ => this.LoadRecentAndLatestPanels())
-                              select ObservableEx.SingleUnit();
+            IObservable<IObservable<Unit>> delayedLoad =
+                from second in
+                    Observable.Timer(TimeSpan.FromSeconds(3)).ObserveOnDispatcher().Do(
+                        _ => this.LoadRecentAndLatestPanels())
+                select ObservableEx.SingleUnit();
             this.AddToLifetime(delayedLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
         }
 
@@ -231,6 +254,58 @@ namespace FlatBeats.ViewModels
 
         #region Methods
 
+        /// <summary>
+        /// </summary>
+        private void CheckForRating()
+        {
+            if (HasCheckedForRating)
+            {
+                return;
+            }
+
+            HasCheckedForRating = true;
+
+            var rateApp = this.profileService.GetSettingsAsync().ObserveOnDispatcher().SelectMany(
+                s =>
+                    {
+                        if (!s.PromptedToRate)
+                        {
+                            s.StartCount++;
+                            if (s.StartCount >= 10)
+                            {
+                                s.PromptedToRate = true;
+                                var response =
+                                    MessageBox.Show(
+                                        StringResources.MessageBox_RateThisApp_Message,
+                                        StringResources.MessageBox_RateThisApp_Title,
+                                        MessageBoxButton.OKCancel);
+
+                                return this.profileService.SaveSettingsAsync(s).ObserveOnDispatcher().Do(
+                                    _ =>
+                                        {
+                                            if (response == MessageBoxResult.OK)
+                                            {
+                                                this.Navigation.NavigateTo(
+                                                    new Uri("rate:application", UriKind.Absolute));
+                                            }
+                                        });
+                            }
+
+                            return this.profileService.SaveSettingsAsync(s).ObserveOnDispatcher();
+                        }
+
+                        return Observable.Empty<Unit>();
+                    });
+
+            this.AddToLifetime(rateApp.Subscribe(_ => { }, this.HandleError));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="section">
+        /// </param>
+        /// <returns>
+        /// </returns>
         private int InRangeOf(int section)
         {
             return ((Math.Abs(this.CurrentSectionIndex - section) + 3) % 3) > 1 ? 0 : 1;
@@ -259,32 +334,32 @@ namespace FlatBeats.ViewModels
         private void LoadRecentAndLatestPanels()
         {
             this.ShowProgress(StringResources.Progress_Loading);
-            var load = from recent in this.Recent.LoadAsync() 
-                       from latest in this.Latest.LoadAsync() 
-                       select latest;
+            IObservable<IList<MixViewModel>> load = from recent in this.Recent.LoadAsync()
+                                                    from latest in this.Latest.LoadAsync()
+                                                    select latest;
 
             this.AddToLifetime(
-                load.ObserveOnDispatcher().Subscribe(_ =>
-                    this.PickRandomBackground(), this.HandleError, this.LoadAllDataCompleted));
+                load.ObserveOnDispatcher().Subscribe(
+                    _ => this.PickRandomBackground(), this.HandleError, this.LoadAllDataCompleted));
         }
 
         /// <summary>
         /// </summary>
-        /// <param name="results">
-        /// </param>
         private void PickRandomBackground()
         {
-            var url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault() ?? 
-                this.BackgroundImageUrl ?? 
-                this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? 
-                DefaultBackground;
+            Uri url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault()
+                      ??
+                      this.BackgroundImageUrl
+                      ??
+                      this.Latest.Mixes.Where(mix => !mix.IsExplicit).Select(r => r.ImageUrl).Skip(
+                          this.random.Next(this.Latest.Mixes.Count - 2)).FirstOrDefault() ?? DefaultBackground;
             if (this.BackgroundImageUrl != url || this.BackgroundImage == null)
             {
                 this.BackgroundImageUrl = url;
                 this.BackgroundImage = new ImageBrush
                     {
-                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation },
-                        Opacity = 0.3,
+                        ImageSource = new BitmapImage(url) { CreateOptions = BitmapCreateOptions.DelayCreation }, 
+                        Opacity = 0.3, 
                         Stretch = Stretch.UniformToFill
                     };
             }

@@ -388,4 +388,10 @@ Link:
   <data name="Message_YouHaveNoFavoriteTracks" xml:space="preserve">
     <value>You haven't favorited any tracks yet, go listen to some music and star the ones you like!</value>
   </data>
+  <data name="MessageBox_RateThisApp_Message" xml:space="preserve">
+    <value>If you like this app, please take a second to spread the word by giving it 5 stars!</value>
+  </data>
+  <data name="MessageBox_RateThisApp_Title" xml:space="preserve">
+    <value>Rate this app?</value>
+  </data>
 </root>

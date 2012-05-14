@@ -578,6 +578,24 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you like this app, please take a second to spread the word by giving it 5 stars!.
+        /// </summary>
+        public static string MessageBox_RateThisApp_Message {
+            get {
+                return ResourceManager.GetString("MessageBox_RateThisApp_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate this app?.
+        /// </summary>
+        public static string MessageBox_RateThisApp_Title {
+            get {
+                return ResourceManager.GetString("MessageBox_RateThisApp_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wait! If you sign out we will forget which mixes you played recently!.
         /// </summary>
         public static string MessageBox_ResetSettings_Message {
