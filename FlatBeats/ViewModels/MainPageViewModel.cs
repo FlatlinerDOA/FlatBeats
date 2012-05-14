@@ -214,7 +214,6 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Unload()
         {
-
             if (this.State != null)
             {
                 this.State["BackgroundUrl"] = this.BackgroundImageUrl;

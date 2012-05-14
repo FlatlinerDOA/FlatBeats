@@ -17,5 +17,11 @@
 
         [DataMember(Name = "preferred_list")]
         public string PreferredList { get; set; }
+
+        [DataMember(Name = "start_count")]
+        public int StartCount { get; set; }
+
+        [DataMember(Name = "prompted_to_rate")]
+        public bool PromptedToRate { get; set; }
     }
 }

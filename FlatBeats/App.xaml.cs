@@ -4,17 +4,10 @@
     using System.Windows;
     using System.Windows.Navigation;
 
-    using FlatBeats.DataModel.Profile;
-    using FlatBeats.DataModel.Services;
-
     using Flatliner.Phone;
-    using Flatliner.Phone.Data;
 
     using Microsoft.Phone.Controls;
     using Microsoft.Phone.Shell;
-    using FlatBeats.ViewModels;
-    using System.Net;
-    using FlatBeats.DataModel;
 
     public partial class App : Application
     {
@@ -30,7 +23,7 @@
         public App()
         {
             // Global handler for uncaught exceptions. 
-            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 5);
+            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 6);
 
             // Standard Silverlight initialization
             InitializeComponent();
