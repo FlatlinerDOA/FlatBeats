@@ -74,6 +74,7 @@
     <Compile Include="UserProfilePage.xaml.cs">
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\UserProfileLikedMixesViewModel.cs" />
     <Compile Include="ViewModels\FollowedByUsersViewModel.cs" />
     <Compile Include="ViewModels\FollowsUsersViewModel.cs" />
@@ -84,6 +85,9 @@
     <Compile Include="ViewModels\UserProfilePageViewModel.cs" />
     <Compile Include="ViewModels\UserProfileTracksViewModel.cs" />
     <Compile Include="ViewModels\UserSettingsViewModel.cs" />
+    <Compile Include="Views\TrackListView.xaml.cs">
+      <DependentUpon>TrackListView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
@@ -117,6 +121,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TrackListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

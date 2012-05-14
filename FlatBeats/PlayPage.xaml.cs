@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media.Animation;
 
@@ -122,13 +123,15 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
 
 
         private void ButtonTap(object sender, GestureEventArgs e)
         {
-            this.NavigationService.NavigateTo(((Button)sender).DataContext as INavigationItem);
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
     }
 }

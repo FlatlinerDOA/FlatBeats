@@ -11,7 +11,8 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
     xmlns:Controls2="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework"
-    xmlns:ViewModels1="clr-namespace:FlatBeats.Users.ViewModels" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:ViewModels1="clr-namespace:FlatBeats.Users.ViewModels" xmlns:Views="clr-namespace:FlatBeats.Users.Views"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
@@ -19,7 +20,6 @@
     shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels1:UserProfilePageViewModel x:Key="ViewModel" />
-
         <Style x:Key="MessageTextStyle"
                TargetType="TextBlock"
                BasedOn="{StaticResource PhoneTextSubtleStyle}">
@@ -30,40 +30,6 @@
             <Setter Property="FontFamily"
                     Value="Segoe WP Light" />
         </Style>
-        <DataTemplate x:Key="TrackItemTemplate">
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel HorizontalAlignment="Left">
-                    <TextBlock Margin="8,4,4,4"
-                                                    TextWrapping="Wrap"
-                                                    Text="{Binding Artist}"
-                                                    Style="{StaticResource PhoneTextAccentStyle}"
-                                                    FontSize="26.667" />
-                    <TextBlock Margin="8,0,12,4"
-                                                    TextWrapping="Wrap"
-                                                    Text="{Binding Title}"
-                                                    Style="{StaticResource PhoneTextNormalStyle}"
-                                                    Foreground="{StaticResource PhoneForegroundBrush}" />
-                </StackPanel>
-                <!--<Button Style="{StaticResource CircleButtonStyle}"
-                                            Margin="12,12,24,0"
-                                            VerticalAlignment="Top"
-                                            HorizontalAlignment="Right"
-                                            Grid.Column="1"
-                                            Command="{Binding ToggleFavouriteCommand.Command}"
-                                            Foreground="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}"
-                                            Visibility="{Binding ToggleFavouriteCommand.Visibility}">
-                    <Border Background="{Binding IsFavourite, Converter={StaticResource AccentWhenTrueConverter}}" Width="48" Height="48">
-                        <Border.OpacityMask>
-                            <ImageBrush ImageSource="{Binding ToggleFavouriteCommand.IconUrl}" Stretch="None" />
-                        </Border.OpacityMask>
-                    </Border>
-                </Button>-->
-            </Grid>
-        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.DataContext>
         <Binding Source="{StaticResource ViewModel}" />
@@ -167,24 +133,9 @@
                 </Grid>
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding Tracks}"
-                                Header="{Binding Title}">
-                <Grid>
-                    <TextBlock Text="{Binding Message}"
-                               Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
-                               Style="{StaticResource PhoneTextSubtleStyle}"
-                               FontSize="32"
-                               FontFamily="Segoe WP Light"
-                               TextWrapping="Wrap" />
-                    <ListBox Margin="0,0,-12,0"
-                             Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
-                             ItemsSource="{Binding Items}"
-                             ItemTemplate="{StaticResource TrackItemTemplate}"
-                             Tap="ListBoxTap">
-                        <i:Interaction.Behaviors>
-                            <Controls2:InfiniteScrollBehavior />
-                        </i:Interaction.Behaviors>
-                    </ListBox>
-                </Grid>
+                                Header="{Binding Title}"
+                                Margin="12,28,12,84">
+                <Views:TrackListView x:Name="trackList" />
             </controls:PivotItem>
             <controls:PivotItem DataContext="{Binding FollowsUsers}"
                                 Header="{Binding Title}"

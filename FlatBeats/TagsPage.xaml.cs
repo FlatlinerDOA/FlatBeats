@@ -39,10 +39,6 @@
             base.OnBackKeyPress(e);
         }
 
-        private void LongListSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-
         private bool isGroupOpen;
 
         private void LongListSelector_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)

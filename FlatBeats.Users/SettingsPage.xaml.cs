@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.Users
 {
     using System;
+    using System.Windows;
     using System.Windows.Controls;
 
     using Clarity.Phone.Controls;
@@ -13,11 +14,13 @@
         {
             InitializeComponent();
             this.AnimationContext = this.LayoutRoot;
+            this.trackList.NavigateFunction = navItem => this.NavigationService.NavigateTo(navItem);
         }
 
         private void ListBoxTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
     }
 }

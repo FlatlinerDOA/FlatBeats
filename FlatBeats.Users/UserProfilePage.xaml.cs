@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.Users
 {
     using System;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
 
@@ -19,6 +20,8 @@
         {
             InitializeComponent();
             this.AnimationContext = this.LayoutRoot;
+            this.trackList.NavigateFunction = navItem => this.NavigationService.NavigateTo(navItem);
+
         }
 
         protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
@@ -58,7 +61,14 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            this.NavigationService.NavigateTo(((ListBox)sender).SelectedItem as INavigationItem);
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
+        }
+
+        private void ButtonTap(object sender, GestureEventArgs e)
+        {
+            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+            this.NavigationService.NavigateTo(navItem);
         }
     }
 }
