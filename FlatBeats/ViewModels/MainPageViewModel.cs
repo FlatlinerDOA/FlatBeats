@@ -16,6 +16,7 @@ namespace FlatBeats.ViewModels
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
+    using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
 
@@ -201,36 +202,38 @@ namespace FlatBeats.ViewModels
 
             if (this.IsDataLoaded)
             {
-                IObservable<IObservable<Unit>> likedLoad =
-                    from userToken in
-                        this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
-                            u => this.UserId = u != null ? u.CurrentUser.Id : null)
-                    from liked in this.Liked.LoadAsync(this.UserId)
-                    select ObservableEx.SingleUnit();
+                var likedLoad = from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty()
+                                    .ObserveOnDispatcher()
+                                    .Do(u => this.LoadCurrentUser(u))
+                                from liked in this.Liked.LoadAsync(this.UserId)
+                                select liked;
                 this.AddToLifetime(likedLoad.Subscribe(_ => { }, this.HandleError, this.HideProgress));
-                this.AddToLifetime(
-                    this.Recent.LoadAsync().Subscribe(
-                        _ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
+                this.AddToLifetime(this.Recent.LoadAsync().ObserveOnDispatcher().Subscribe(_ => this.PickRandomBackground(), this.HandleError, this.HideProgress));
                 return;
             }
 
             this.CheckForRating();
 
-            IObservable<IObservable<Unit>> pageLoad =
+            var pageLoad =
                 from first in Observable.Timer(TimeSpan.FromMilliseconds(500)).ObserveOnDispatcher()
-                from userToken in
-                    this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher().Do(
-                        u => this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null)
+                from userToken in this.profileService.LoadUserTokenAsync().DefaultIfEmpty().ObserveOnDispatcher()
+                    .Do(u => this.LoadCurrentUser(u))
                 from liked in this.Liked.LoadAsync(this.UserId)
-                select ObservableEx.SingleUnit();
+                select ObservableEx.Unit;
 
             this.AddToLifetime(pageLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
-            IObservable<IObservable<Unit>> delayedLoad =
-                from second in
-                    Observable.Timer(TimeSpan.FromSeconds(3)).ObserveOnDispatcher().Do(
-                        _ => this.LoadRecentAndLatestPanels())
-                select ObservableEx.SingleUnit();
-            this.AddToLifetime(delayedLoad.Subscribe(_ => { }, this.HandleError, this.LoadCompleted));
+            var delayedLoad = Observable.Timer(TimeSpan.FromSeconds(3));
+            this.AddToLifetime(delayedLoad.ObserveOnDispatcher().Subscribe(_ => this.LoadRecentAndLatestPanels(), this.HandleError, this.LoadCompleted));
+        }
+
+        /// <summary>
+        /// Loads the login response
+        /// </summary>
+        /// <param name="u"></param>
+        /// <returns></returns>
+        private string LoadCurrentUser(UserLoginResponseContract u)
+        {
+            return this.UserId = u != null && u.CurrentUser != null ? u.CurrentUser.Id : null;
         }
 
         /// <summary>

@@ -209,6 +209,7 @@ namespace FlatBeats.Users.ViewModels
             this.MixFeed.Reset();
             this.Mixes.Reset();
             this.Liked.Reset();
+            this.Tracks.Reset();
             this.FollowedByUsers.Reset();
             this.FollowsUsers.Reset();
         }

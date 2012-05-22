@@ -214,6 +214,7 @@
             this.LoadedPage = 0;
             this.Items.Clear();
             this.LoadPageCompleted();
+            this.IsLoaded = false;
         }
 
         protected abstract void LoadPageCompleted();

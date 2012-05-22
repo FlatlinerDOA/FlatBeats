@@ -156,14 +156,25 @@ namespace FlatBeats.Users.ViewModels
             this.CanLogin = false;
             this.IsLoggedIn = false;
             this.SignupCommand = new DelegateCommand(this.Signup);
-            this.LoginCommand = new DelegateCommand(this.SignIn);
-            this.ResetCommand = new DelegateCommand(this.SignOut);
+            this.LoginCommand = new DelegateCommand(this.SignIn, this.CanSignIn);
+            this.ResetCommand = new DelegateCommand(this.SignOut, this.CanSignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
             this.PreferredListChoices = new ObservableCollection<string>();
             foreach (var item in this.preferredListMap)
             {
                 this.PreferredListChoices.Add(item.Value);
             }
+        }
+
+        private bool CanSignOut()
+        {
+            return this.IsLoggedIn;
+        }
+
+        private bool CanSignIn()
+        {
+            return this.CanLogin && !string.IsNullOrWhiteSpace(this.UserName)
+                   && !string.IsNullOrWhiteSpace(this.Password);
         }
 
         #endregion
@@ -188,6 +199,8 @@ namespace FlatBeats.Users.ViewModels
 
                 this.canLogin = value;
                 this.OnPropertyChanged("CanLogin");
+                this.LoginCommand.RaiseCanExecuteChanged();
+                this.ResetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -274,6 +287,8 @@ namespace FlatBeats.Users.ViewModels
 
                 this.isLoggedIn = value;
                 this.OnPropertyChanged("IsLoggedIn");
+                this.LoginCommand.RaiseCanExecuteChanged();
+                this.ResetCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -320,6 +335,7 @@ namespace FlatBeats.Users.ViewModels
 
                 this.password = value;
                 this.OnPropertyChanged("Password");
+                this.LoginCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -362,6 +378,7 @@ namespace FlatBeats.Users.ViewModels
 
                 this.playNextMix = value;
                 this.OnPropertyChanged("PlayNextMix");
+                this.SaveSettings();
             }
         }
 
@@ -544,6 +561,7 @@ namespace FlatBeats.Users.ViewModels
 
                 this.userName = value;
                 this.OnPropertyChanged("UserName");
+                this.LoginCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -757,9 +775,9 @@ namespace FlatBeats.Users.ViewModels
                         {
                             this.UserName = null;
                             this.Password = null;
+                            this.loginResponse = null;
                             this.currentUserIdChanges.OnNext(null);
 
-                            // this.ResetPanels();
                             this.CanLogin = true;
                             this.IsLoggedIn = false;
                             this.HideProgress();

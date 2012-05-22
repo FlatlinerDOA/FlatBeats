@@ -98,14 +98,16 @@
                         <StackPanel Margin="0,0,0,24">
                             <TextBlock Text="{Binding UserNameLabelText}"
                                        Margin="12,0" />
-                            <TextBox Text="{Binding UserName, Mode=TwoWay}"
+                            <TextBox Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                                     TextChanged="TextBox_TextChanged"
                                      IsEnabled="{Binding CanLogin}"
                                      IsReadOnly="{Binding IsLoggedIn}"
                                      InputScope="LogOnName" />
                             <TextBlock Text="{Binding PasswordLabelText}"
                                        Margin="12,0"
                                        Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}" />
-                            <PasswordBox Password="{Binding Password, Mode=TwoWay}"
+                            <PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                                         PasswordChanged="PasswordBox_PasswordChanged" 
                                          Visibility="{Binding CanLogin, Converter={StaticResource ShowConverter}}" />
                             <Button Command="{Binding LoginCommand}"
                                     Content="{Binding LoginLabelText}"
