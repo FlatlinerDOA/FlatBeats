@@ -53,10 +53,10 @@ namespace Flatliner.UnitTests
         [TestMethod]
         public void Range()
         {
-            var set = Enumerate.Range(0, 3)();
-            Assert.AreEqual(0, set().Value);
-            Assert.AreEqual(1, set().Value);
+            var set = Enumerate.Range(2, 3)();
             Assert.AreEqual(2, set().Value);
+            Assert.AreEqual(3, set().Value);
+            Assert.AreEqual(4, set().Value);
             Assert.IsFalse(set().HasValue);
         }
 

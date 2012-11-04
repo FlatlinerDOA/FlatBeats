@@ -29,7 +29,6 @@ namespace Flatliner.Functional
             }
         }
 
-
         public static List<T> ToList<T>(this Enumerable<T> source)
         {
             var list = new List<T>();
@@ -68,7 +67,7 @@ namespace Flatliner.Functional
                 int i = start;
                 return () =>
                     {
-                        var result = i < count ? new Some<int>(i) : (IMaybe<int>)new None<int>();
+                        var result = i < start + count ? new Some<int>(i) : (IMaybe<int>)new None<int>();
                         i++;
                         return result;
                     };

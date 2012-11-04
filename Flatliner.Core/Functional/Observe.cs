@@ -24,7 +24,7 @@ namespace Flatliner.Functional
         {
             return handler =>
                 {
-                    for (int i = start; i < count; i++)
+                    for (int i = start; i < start + count; i++)
                     {
                         handler(new Some<int>(i));   
                     }
@@ -120,10 +120,13 @@ namespace Flatliner.Functional
                         {
                             var innerSet = innerSource(outerSet.Value);
                             innerSet(
-                                innerValue => o(
-                                    !innerValue.HasValue
-                                        ? innerValue.TransposeEmpty<TResult>()
-                                        : new Some<TResult>(selector(outerSet.Value, innerValue.Value))));
+                                innerValue =>
+                                    {
+                                        if (innerValue is Some<TInner>)
+                                        {
+                                            o(new Some<TResult>(selector(outerSet.Value, innerValue.Value)));
+                                        }
+                                    });
                         }
                     });
         }
@@ -161,6 +164,71 @@ namespace Flatliner.Functional
                     o(isEmpty ? new Some<T>(defaultValue) : t);
                 });
         }
+
+        public static Observable<T> Concat<T>(this Observable<T> source, Observable<T> secondSource)
+        {
+            return o => source(x =>
+            {
+                if (x is None<T>)
+                {
+                    secondSource(o);
+                } 
+                else
+                {
+                    o(x);
+                }
+            });
+        }
+
+
+        public static Observable<T> Merge<T>(this Observable<T> source, params Observable<T>[] secondSources)
+        {
+            var queue = new Queue<IMaybe<T>>();
+            return o => 
+            { 
+                source(v => PushToQueue(queue, v, o));
+                foreach (var secondSource in secondSources)
+                {
+                    secondSource(v => PushToQueue(queue, v, o));
+                }
+
+                lock (queue)
+                {
+                    if (queue.Count != 0)
+                    {
+                        o(queue.Dequeue());
+                    }
+                }
+            };
+        }
+
+        private static void PushToQueue<T>(Queue<IMaybe<T>> queue, IMaybe<T> v, Observer<T> o)
+        {
+            lock (queue)
+            {
+                queue.Enqueue(v);
+            }
+
+            lock (queue)
+            {
+                if (queue.Count != 0)
+                {
+                    o(queue.Dequeue());
+                }
+            }
+        }
+
+        public static Observable<T> Merge<T>(params Observable<T>[] sources)
+        {
+            return o =>
+            {
+                foreach (var source in sources)
+                {
+                    source(o);
+                }
+            };
+        }
+
 
         public static Observable<List<T>> ToList<T>(this Observable<T> source)
         {
