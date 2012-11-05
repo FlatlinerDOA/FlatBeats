@@ -1,13 +1,13 @@
 ﻿namespace FlatBeats.DataModel.Data
 {
     using System;
-    using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     public interface IAsyncRepository<T> where T : class
     {
-        IObservable<Unit> SaveAsync(T item);
+        IObservable<PortableUnit> SaveAsync(T item);
 
-        IObservable<Unit> DeleteAsync(T item);
+        IObservable<PortableUnit> DeleteAsync(T item);
 
         IObservable<T> GetAsync(string key);
 

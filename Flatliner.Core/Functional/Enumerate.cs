@@ -8,7 +8,7 @@ namespace Flatliner.Functional
     /// </summary>
     public static class Enumerate
     {
-        public static Enumerable<T> ToFunctional<T>(this IEnumerable<T> source)
+        public static Enumerate<T> ToFunctional<T>(this IEnumerable<T> source)
         {
             return () =>
                 {
@@ -19,7 +19,7 @@ namespace Flatliner.Functional
                 };
         }
 
-        public static IEnumerable<T> ToEnumerable<T>(this Enumerable<T> source)
+        public static IEnumerable<T> ToEnumerable<T>(this Enumerate<T> source)
         {
             var e = source();
             IMaybe<T> value;
@@ -29,7 +29,7 @@ namespace Flatliner.Functional
             }
         }
 
-        public static List<T> ToList<T>(this Enumerable<T> source)
+        public static List<T> ToList<T>(this Enumerate<T> source)
         {
             var list = new List<T>();
             var e = source();
@@ -42,12 +42,12 @@ namespace Flatliner.Functional
             return list;
         }
 
-        public static Enumerable<T> Empty<T>()
+        public static Enumerate<T> Empty<T>()
         {
             return () => () => new None<T>();
         }
 
-        public static Enumerable<T> Return<T>(T value)
+        public static Enumerate<T> Return<T>(T value)
         {
             return () =>
                 {
@@ -60,7 +60,7 @@ namespace Flatliner.Functional
         }
 
 
-        public static Enumerable<int> Range(int start, int count)
+        public static Enumerate<int> Range(int start, int count)
         {
             return () =>
             {
@@ -74,19 +74,19 @@ namespace Flatliner.Functional
             };
         }
 
-        public static Enumerable<T> Throw<T>(Exception error)
+        public static Enumerate<T> Throw<T>(Exception error)
         {
             return () => () => new Error<T>(error);
         }
 
-        public static Enumerable<TResult> SelectMany<T, TResult>(this Enumerable<T> source, Func<T, Enumerable<TResult>> selector)
+        public static Enumerate<TResult> SelectMany<T, TResult>(this Enumerate<T> source, Func<T, Enumerate<TResult>> selector)
         {
             return () =>
                 {
                     var e = source();
                     IMaybe<T> lastOuter = new None<T>();
                     IMaybe<TResult> lastInner = new None<TResult>();
-                    Enumerator<TResult> innerSet = null;
+                    Enumeration<TResult> innerSet = null;
                     return () =>
                         {
                             do
@@ -127,14 +127,14 @@ namespace Flatliner.Functional
         /// <param name="selector"></param>
         /// <param name="combiner"></param>
         /// <returns></returns>
-        public static Enumerable<TResult> SelectMany<TOuter, TInner, TResult>(this Enumerable<TOuter> source, Func<TOuter, Enumerable<TInner>> selector, Func<TOuter, TInner, TResult> combiner)
+        public static Enumerate<TResult> SelectMany<TOuter, TInner, TResult>(this Enumerate<TOuter> source, Func<TOuter, Enumerate<TInner>> selector, Func<TOuter, TInner, TResult> combiner)
         {
             return () =>
                 {
                     var outerSet = source();
                     IMaybe<TOuter> lastOuter = new None<TOuter>();
                     IMaybe<TInner> lastInner = new None<TInner>();
-                    Enumerator<TInner> innerSet = null;
+                    Enumeration<TInner> innerSet = null;
                     return () =>
                         {
                             do
@@ -164,12 +164,12 @@ namespace Flatliner.Functional
                 };
         }
 
-        public static Enumerable<TResult> Select<T, TResult>(this Enumerable<T> source, Func<T, TResult> selector)
+        public static Enumerate<TResult> Select<T, TResult>(this Enumerate<T> source, Func<T, TResult> selector)
         {
             return source.SelectMany(a => Return(selector(a)));
         }
 
-        public static Enumerable<T> Where<T>(this Enumerable<T> source, Func<T, bool> filter)
+        public static Enumerate<T> Where<T>(this Enumerate<T> source, Func<T, bool> filter)
         {
             return source.SelectMany(t => filter(t) ? Return(t) : Empty<T>());
         }

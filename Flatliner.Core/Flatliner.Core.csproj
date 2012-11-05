@@ -36,17 +36,19 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functional\Enumerable.cs" />
-    <Compile Include="Functional\Enumerator.cs" />
+    <Compile Include="Functional\Enumerate{T}.cs" />
+    <Compile Include="Functional\Enumeration.cs" />
     <Compile Include="Functional\Error.cs" />
     <Compile Include="Functional\Enumerate.cs" />
     <Compile Include="Functional\IMaybe.cs" />
     <Compile Include="Functional\None.cs" />
     <Compile Include="Functional\Observe.cs" />
-    <Compile Include="Functional\Observer.cs" />
+    <Compile Include="Functional\Observation.cs" />
+    <Compile Include="Functional\PortableUnit.cs" />
+    <Compile Include="Functional\ScheduleAction.cs" />
     <Compile Include="Functional\Some.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Functional\Observable.cs" />
+    <Compile Include="Functional\Observe{T}.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

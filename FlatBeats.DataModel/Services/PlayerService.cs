@@ -19,12 +19,13 @@
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Shell;
+    using Flatliner.Functional;
 
     public static class PlayerService
     {
-        private static readonly AsyncDownloader Downloader = AsyncDownloader.Instance;
+        private static readonly IAsyncDownloader Downloader = AsyncDownloader.Instance;
 
-        private static readonly AsyncIsolatedStorage storage = AsyncIsolatedStorage.Instance;
+        private static readonly IAsyncStorage Storage = AsyncIsolatedStorage.Instance;
 
         private const string PlayTokenFilePath = "playtoken.json";
 
@@ -40,10 +41,10 @@
 
         public static void DeletePlayToken()
         {
-            storage.Delete(PlayTokenFilePath);
+            Storage.Delete(PlayTokenFilePath);
         }
 
-        public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, BackgroundAudioPlayer player)
+        public static IObservable<PortableUnit> StopAsync(this PlayingMixContract nowPlaying, BackgroundAudioPlayer player)
         {
             TimeSpan playedDuration = GetPlayedDuration(player);
             return nowPlaying.StopAsync(playedDuration);
@@ -60,10 +61,10 @@
             return playedDuration;
         }
 
-        public static IObservable<Unit> StopAsync(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
+        public static IObservable<PortableUnit> StopAsync(this PlayingMixContract nowPlaying, TimeSpan timePlayed)
         {
             ResetNowPlayingTile();
-            storage.Delete(NowPlayingFilePath);
+            Storage.Delete(NowPlayingFilePath);
             
             if (nowPlaying == null)
             {
@@ -75,21 +76,21 @@
         
         public static void ClearRecentlyPlayed()
         {
-            storage.Delete(RecentlyPlayedFilePath);
+            Storage.Delete(RecentlyPlayedFilePath);
         }
 
-        public static IObservable<Unit> SaveNowPlayingAsync(this PlayingMixContract playing)
+        public static IObservable<PortableUnit> SaveNowPlayingAsync(this PlayingMixContract playing)
         {
-            return storage.SaveJsonAsync(NowPlayingFilePath, playing);
+            return Storage.SaveJsonAsync(NowPlayingFilePath, playing);
         }
 
         public static IObservable<MixesResponseContract> RecentlyPlayedAsync()
         {
-            return storage.LoadJsonAsync<MixesResponseContract>(RecentlyPlayedFilePath)
+            return Storage.LoadJsonAsync<MixesResponseContract>(RecentlyPlayedFilePath)
                 .Select(m => m ?? new MixesResponseContract() { Mixes = new List<MixContract>() });
         }
 
-        public static IObservable<Unit> AddToRecentlyPlayedAsync(MixContract mix)
+        public static IObservable<PortableUnit> AddToRecentlyPlayedAsync(MixContract mix)
         {
             string imageFilePath = "/Shared/Media/" + mix.Id + "-Original.jpg";
 
@@ -109,10 +110,10 @@
                                 m.Mixes.Remove(m.Mixes.Last());
                             }
                         })
-                   from mixes in storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
+                   from mixes in Storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
                        from save in Downloader.GetAndSaveFileAsync(mix.Cover.ThumbnailUrl, imageFilePath, false).Do(d =>
                        {
-                           using (var stream = storage.ReadStream(imageFilePath))
+                           using (var stream = Storage.ReadStream(imageFilePath))
                            {
                                var mediaHistoryItem = new MediaHistoryItem { Title = mix.Name, ImageStream = stream };
                                mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
@@ -120,7 +121,7 @@
                                stream.Close();
                            }
 
-                           using (var secondStream = storage.ReadStream(imageFilePath))
+                           using (var secondStream = Storage.ReadStream(imageFilePath))
                            {
                                var item = new MediaHistoryItem { Title = mix.Name, ImageStream = secondStream };
                                item.PlayerContext.Add("MixId", mix.Id);
@@ -133,12 +134,12 @@
 
         public static bool NowPlayingExists()
         {
-            return storage.Exists(NowPlayingFilePath);
+            return Storage.Exists(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> LoadNowPlayingAsync()
         {
-            return storage.LoadJsonAsync<PlayingMixContract>(NowPlayingFilePath);
+            return Storage.LoadJsonAsync<PlayingMixContract>(NowPlayingFilePath);
         }
 
         public static IObservable<PlayingMixContract> StartPlayingAsync(this MixContract mix)
@@ -227,10 +228,10 @@
         private static IObservable<Uri> SaveFadedThumbnailAsync(PlayingMixContract mix)
         {
             var bitmap = new BitmapImage();
-            var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").Select(_ => new Unit()).Take(1);
+            var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").ToUnit().Take(1);
             var failed = from failure in Observable.FromEvent<ExceptionRoutedEventArgs>(bitmap, "ImageFailed").Take(1)
                          from result in Observable.Throw<Exception>(failure.EventArgs.ErrorException)
-                         select new Unit();
+                         select new PortableUnit();
 
             bitmap.CreateOptions = BitmapCreateOptions.None;
             bitmap.UriSource = mix.Cover.ThumbnailUrl;
@@ -293,7 +294,7 @@
             && ((response.Set.Track != null && response.Set.Track.TrackUrl != null) || response.Set.IsPastLastTrack);
         }
 
-        public static IObservable<Unit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
+        public static IObservable<PortableUnit> AddToMixTrackHistoryAsync(this PlayingMixContract playing, TimeSpan timePlayed)
         {
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))
@@ -302,9 +303,9 @@
             }
 
             var payment = from response in Downloader.GetDeserializedAsync<ResponseContract>(ApiUrl.ReportTrack(playing.PlayToken, playing.MixId, playing.Set.Track.Id))
-                          select new Unit();
+                          select new PortableUnit();
 
-            return payment.Catch<Unit, Exception>(ex => ObservableEx.SingleUnit());
+            return payment.Catch<PortableUnit, Exception>(ex => ObservableEx.SingleUnit());
         }
 
         public static IObservable<PlayResponseContract> SkipToNextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)
@@ -335,7 +336,7 @@
             var remoteTrackUrl = new Uri(track.TrackUrl, UriKind.Absolute);
             var localFileName = "Track-" + track.Id + Path.GetExtension(track.TrackUrl);
             var localFullPath = "Audio/" + localFileName;
-            if (storage.Exists(localFullPath))
+            if (Storage.Exists(localFullPath))
             {
                 return Observable.Return(new Uri(localFullPath, UriKind.Relative));
             }

@@ -56,7 +56,7 @@
         public void ToFunctional()
         {
             int i = 0;
-            var array = System.Reactive.Linq.Observable.Range(0, 3);
+            var array = Observable.Range(0, 3);
             array.ToFunctional()(
                 set =>
                     {
@@ -234,18 +234,55 @@
         [TestMethod]
         public void Merge()
         {
-            var a = Observe.Range(0, 2).Select(n => "A" + n);
-            var b = Observe.Range(0, 2).Select(n => "B" + n);
-
+            Observation<string> observerA = null;
+            Observation<string> observerB = null;
+            Observe<string> a = x => observerA = x;
+            Observe<string> b = x => observerB = x; 
             a.Merge(b).ToList()(
                 result =>
                     {
                         var v = result.Value;
+                        Assert.AreEqual(4, v.Count);
                         Assert.AreEqual("A0", v[0]);
                         Assert.AreEqual("B0", v[1]);
                         Assert.AreEqual("A1", v[2]);
                         Assert.AreEqual("B1", v[3]);
                     });
+
+            observerA(new Some<string>("A0"));
+            observerB(new Some<string>("B0"));
+            observerA(new Some<string>("A1"));
+            observerB(new Some<string>("B1"));
+            observerA(new None<string>());
+            observerB(new Some<string>("B2"));
+        }
+
+        [TestMethod]
+        public void MergeAll()
+        {
+            Observation<string> observerA = null;
+            Observation<string> observerB = null;
+            Observation<string> observerC = null;
+            Observe<string> a = x => observerA = x;
+            Observe<string> b = x => observerB = x;
+            Observe<string> c = x => observerC = x;
+            Observe.Merge(a, b, c).ToList()(
+                result =>
+                {
+                    var v = result.Value;
+                    Assert.AreEqual(4, v.Count);
+                    Assert.AreEqual("A0", v[0]);
+                    Assert.AreEqual("B0", v[1]);
+                    Assert.AreEqual("A1", v[2]);
+                    Assert.AreEqual("B1", v[3]);
+                });
+
+            observerA(new Some<string>("A0"));
+            observerB(new Some<string>("B0"));
+            observerA(new Some<string>("A1"));
+            observerB(new Some<string>("B1"));
+            observerC(new None<string>());
+            observerB(new Some<string>("B2"));
         }
 
         [TestMethod]
@@ -264,5 +301,24 @@
                     Assert.AreEqual("B1", v[3]);
                 });
         }
+
+        [TestMethod]
+        public void Finally()
+        {
+            var finallyCount = 0;
+            Observation<string> observer = null;
+            Observe<string> a = x => observer = x;
+            var results = new List<IMaybe<string>>();
+            a.Finally(() => finallyCount++)(results.Add);
+
+            observer(new Some<string>("A0"));
+            observer(new Some<string>("A1"));
+            observer(new None<string>());
+            observer(new Some<string>("After Completion"));
+            Assert.AreEqual(1, finallyCount);
+
+            Assert.AreEqual(3, results.Count);
+        }
+
     }
 }

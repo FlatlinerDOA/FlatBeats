@@ -16,6 +16,7 @@ namespace FlatBeats.DataModel.Services
     using Flatliner.Phone;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     /// <summary>
     /// </summary>
@@ -304,8 +305,7 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<MixesResponseContract> GetUserMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            return
-                this.downloader.GetDeserializedAsync<MixesResponseContract>(
+            return this.downloader.GetDeserializedAsync<MixesResponseContract>(
                     ApiUrl.UserMixes(userId, pageNumber, pageSize)).NotNull();
         }
 
@@ -317,8 +317,7 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<UserProfileResponseContract> GetUserProfileAsync(string userId)
         {
-            return
-                this.downloader.GetDeserializedAsync<UserProfileResponseContract>(ApiUrl.UserProfile(userId)).NotNull();
+            return this.downloader.GetDeserializedAsync<UserProfileResponseContract>(ApiUrl.UserProfile(userId)).NotNull();
         }
 
         /// <summary>
@@ -347,7 +346,7 @@ namespace FlatBeats.DataModel.Services
         /// </summary>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> ResetAsync()
+        public IObservable<PortableUnit> ResetAsync()
         {
             return ObservableEx.DeferredStart(this.DeleteCredentials);
         }
@@ -358,7 +357,7 @@ namespace FlatBeats.DataModel.Services
         /// </param>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> SaveSettingsAsync(SettingsContract settings)
+        public IObservable<PortableUnit> SaveSettingsAsync(SettingsContract settings)
         {
             return this.storage.SaveJsonAsync(SettingsFilePath, settings).Do(
                     s =>
@@ -395,14 +394,14 @@ namespace FlatBeats.DataModel.Services
         /// </param>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> SetMixLikedAsync(string mixId, bool isLiked)
+        public IObservable<PortableUnit> SetMixLikedAsync(string mixId, bool isLiked)
         {
             string urlFormat = isLiked
                                    ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId)
                                    : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
             return
                 this.downloader.PostStringAndGetDeserializedAsync<LikedMixResponseContract>(
-                    new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+                    new Uri(urlFormat, UriKind.Absolute), string.Empty).ToUnit();
         }
 
         /// <summary>
@@ -413,14 +412,14 @@ namespace FlatBeats.DataModel.Services
         /// </param>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> SetTrackFavouriteAsync(string trackId, bool isFavourite)
+        public IObservable<PortableUnit> SetTrackFavouriteAsync(string trackId, bool isFavourite)
         {
             string urlFormat = isFavourite
                                    ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId)
                                    : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
             return
                 this.downloader.PostStringAndGetDeserializedAsync<FavouritedTrackResponseContract>(
-                    new Uri(urlFormat, UriKind.Absolute), string.Empty).Select(r => new Unit());
+                    new Uri(urlFormat, UriKind.Absolute), string.Empty).ToUnit();
         }
 
         public IObservable<FavouritedTrackListResponseContract> GetFavouriteTracksAsync(string userId, int pageNumber, int pageSize)
@@ -454,7 +453,7 @@ namespace FlatBeats.DataModel.Services
         /// </param>
         /// <returns>
         /// </returns>
-        private IObservable<Unit> SaveCredentialsAsync(UserCredentialsContract userCredentials)
+        private IObservable<PortableUnit> SaveCredentialsAsync(UserCredentialsContract userCredentials)
         {
             return this.storage.SaveJsonAsync(CredentialsFilePath, userCredentials);
         }
@@ -465,7 +464,7 @@ namespace FlatBeats.DataModel.Services
         /// </param>
         /// <returns>
         /// </returns>
-        private IObservable<Unit> SaveUserTokenAsync(UserLoginResponseContract login)
+        private IObservable<PortableUnit> SaveUserTokenAsync(UserLoginResponseContract login)
         {
             return this.storage.SaveJsonAsync(UserLoginFilePath, login);
         }

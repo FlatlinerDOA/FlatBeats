@@ -10,7 +10,7 @@
 
     public static class MixesService
     {
-        private static readonly AsyncDownloader Downloader = AsyncDownloader.Instance;
+        private static readonly IAsyncDownloader Downloader = AsyncDownloader.Instance;
 
         private const string LatestMixesCacheFile = "/cache/latestmixes.json";
 

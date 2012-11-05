@@ -8,17 +8,17 @@ namespace Flatliner.UnitTests
 
     public static class ObserveExtensions
     {
-        public static IObservable<T> ToObservable<T>(this Observable<T> source)
+        public static IObservable<T> ToObservable<T>(this Observe<T> source)
         {
             return Observable.Create<T>(o => () => source.Subscribe(o.OnNext, o.OnError, o.OnCompleted));
         }
 
-        public static Observable<T> ToFunctional<T>(this IObservable<T> source)
+        public static Observe<T> ToFunctional<T>(this IObservable<T> source)
         {
             return o => source.Subscribe(value => o(new Some<T>(value)), ex => o(new Error<T>(ex)), () => o(new None<T>()));
         }
 
-        public static ObservableAwaiter<T> GetAwaiter<T>(this Observable<T> source)
+        public static ObservableAwaiter<T> GetAwaiter<T>(this Observe<T> source)
         {
             return new ObservableAwaiter<T>(source);
         }
@@ -26,7 +26,7 @@ namespace Flatliner.UnitTests
 
     public sealed class ObservableAwaiter<T> : INotifyCompletion
     {
-        private readonly Observable<T> observable;
+        private readonly Observe<T> observable;
 
         private bool isCompleted;
 
@@ -34,7 +34,7 @@ namespace Flatliner.UnitTests
 
         private IMaybe<T> result;
 
-        public ObservableAwaiter(Observable<T> observable)
+        public ObservableAwaiter(Observe<T> observable)
         {
             this.result = new None<T>();
             this.onCompleted = null;

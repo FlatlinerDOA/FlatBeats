@@ -18,6 +18,7 @@ namespace FlatBeatsPlaybackAgent
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Net.NetworkInformation;
     using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     /// <summary>
     /// </summary>
@@ -270,7 +271,7 @@ namespace FlatBeatsPlaybackAgent
         /// <param name="player">
         /// The BackgroundAudioPlayer
         /// </param>
-        private IObservable<Unit> PlayNextTrackAsync(BackgroundAudioPlayer player)
+        private IObservable<PortableUnit> PlayNextTrackAsync(BackgroundAudioPlayer player)
         {
             Debug.WriteLine("Player: PlayNextTrackAsync");
 
@@ -303,8 +304,8 @@ namespace FlatBeatsPlaybackAgent
                                    from play in this.PlayTrackAsync(player)
                                    select play;
                     return nextMix
-                        .Catch<Unit, ServiceException>(ex => this.StopPlayingAsync(player))
-                        .Catch<Unit, WebException>(ex => this.StopPlayingAsync(player));
+                        .Catch<PortableUnit, ServiceException>(ex => this.StopPlayingAsync(player))
+                        .Catch<PortableUnit, WebException>(ex => this.StopPlayingAsync(player));
                 }
 
                 return this.StopPlayingAsync(player);
@@ -319,9 +320,9 @@ namespace FlatBeatsPlaybackAgent
                                 select play;
 
             return playNextTrack
-                .Catch<Unit, ServiceException>(ex => this.StopPlayingAsync(player))
-                .Catch<Unit, WebException>(ex => this.StopPlayingAsync(player))
-                .Catch<Unit, Exception>(
+                .Catch<PortableUnit, ServiceException>(ex => this.StopPlayingAsync(player))
+                .Catch<PortableUnit, WebException>(ex => this.StopPlayingAsync(player))
+                .Catch<PortableUnit, Exception>(
                 ex =>
                     {
                         var data = "Error playing next track, we have to stop!\r\n";
@@ -340,7 +341,7 @@ namespace FlatBeatsPlaybackAgent
         /// </summary>
         /// <param name="player">
         /// </param>
-        private IObservable<Unit> PlayTrackAsync(BackgroundAudioPlayer player)
+        private IObservable<PortableUnit> PlayTrackAsync(BackgroundAudioPlayer player)
         {
             if (this.UserSettings.PlayOverWifiOnly && NetworkInterface.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
             {
@@ -404,13 +405,13 @@ namespace FlatBeatsPlaybackAgent
         /// <param name="player">
         /// The BackgroundAudioPlayer
         /// </param>
-        private IObservable<Unit> SkipToNextTrackAsync(BackgroundAudioPlayer player)
+        private IObservable<PortableUnit> SkipToNextTrackAsync(BackgroundAudioPlayer player)
         {
             Debug.WriteLine("Player: SkipToNextTrackAsync");
 
             if (!this.NowPlaying.Set.SkipAllowed)
             {
-                return Observable.Empty<Unit>();
+                return Observable.Empty<PortableUnit>();
             }
 
             var nextTrack = from nextResponse in this.NowPlaying.SkipToNextTrackAsync(player).Do(
@@ -422,7 +423,7 @@ namespace FlatBeatsPlaybackAgent
                    from play in this.PlayTrackAsync(player)
                    select play;
 
-            return nextTrack.Catch<Unit, WebException>(ex =>
+            return nextTrack.Catch<PortableUnit, WebException>(ex =>
                 {
                     // TODO: Do more testing on this...
                     ////if (player.Track != null)
@@ -432,8 +433,8 @@ namespace FlatBeatsPlaybackAgent
                     ////    player.Track.EndEdit();
                     ////}
 
-                    return Observable.Empty<Unit>();
-                }).OnErrorResumeNext(Observable.Empty<Unit>());
+                    return Observable.Empty<PortableUnit>();
+                }).OnErrorResumeNext(Observable.Empty<PortableUnit>());
         }
 
         /// <summary>
@@ -442,12 +443,12 @@ namespace FlatBeatsPlaybackAgent
         /// </param>
         /// <returns>
         /// </returns>
-        private IObservable<Unit> StopPlayingAsync(BackgroundAudioPlayer player)
+        private IObservable<PortableUnit> StopPlayingAsync(BackgroundAudioPlayer player)
         {
             Debug.WriteLine("Player: StopPlayingAsync");
             return this.NowPlaying.StopAsync(player)
-                .Catch<Unit, ServiceException>(ex => ObservableEx.SingleUnit())
-                .Catch<Unit, WebException>(ex => ObservableEx.SingleUnit())
+                .Catch<PortableUnit, ServiceException>(ex => ObservableEx.SingleUnit())
+                .Catch<PortableUnit, WebException>(ex => ObservableEx.SingleUnit())
                 .ObserveOn(Scheduler.CurrentThread)
                 .Do(_ => this.StopPlayingMix(player), ex => this.StopPlayingMix(player));
         }

@@ -21,6 +21,7 @@ namespace FlatBeats.DataModel.Data
     using Flatliner.Phone;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     public class JsonFileRepository<T> : IAsyncRepository<T> where T : class
     {
@@ -64,14 +65,14 @@ namespace FlatBeats.DataModel.Data
             storage.CreateDirectory(this.folderPath);
         }
 
-        public IObservable<Unit> SaveAsync(T item)
+        public IObservable<PortableUnit> SaveAsync(T item)
         {
             if (item == null)
             {
                 return ObservableEx.SingleUnit();
             }
 
-            return Observable.CreateWithDisposable<Unit>(
+            return Observable.CreateWithDisposable<PortableUnit>(
                observer => Scheduler.ThreadPool.Schedule(() =>
                 {
                     try
@@ -110,7 +111,7 @@ namespace FlatBeats.DataModel.Data
             return filePath;
         }
 
-        public IObservable<Unit> DeleteAsync(T item)
+        public IObservable<PortableUnit> DeleteAsync(T item)
         {
             return Observable.Defer(
             () =>
@@ -137,7 +138,7 @@ namespace FlatBeats.DataModel.Data
                 return Observable.Empty<T>();
             }
 
-            return Observable.Defer<T>(
+            return Observable.Defer(
                 () =>
                 {
                     var filePath = this.GetFilePath(key);

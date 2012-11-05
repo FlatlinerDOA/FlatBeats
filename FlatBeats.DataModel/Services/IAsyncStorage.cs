@@ -2,8 +2,7 @@
 {
     using System;
     using System.IO;
-
-    using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     public interface IAsyncStorage
     {
@@ -14,9 +13,9 @@
         /// <returns></returns>
         bool Exists(string filePath);
 
-        IObservable<Unit> SaveStringAsync(string filePath, string text);
+        IObservable<PortableUnit> SaveStringAsync(string filePath, string text);
 
-        IObservable<Unit> SaveJsonAsync<T>(string filePath, T data) where T : class;
+        IObservable<PortableUnit> SaveJsonAsync<T>(string filePath, T data) where T : class;
 
         /// <summary>
         /// TODO: Make async

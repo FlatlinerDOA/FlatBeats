@@ -228,6 +228,10 @@
       <Project>{C0731CB6-1F3B-45A5-B15C-2DBB57035EE8}</Project>
       <Name>FlatBeatsPlaybackAgent</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Flatliner.Core\Flatliner.Core.csproj">
+      <Project>{BDF2032B-CB48-4BEB-BA37-9761006148AC}</Project>
+      <Name>Flatliner.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

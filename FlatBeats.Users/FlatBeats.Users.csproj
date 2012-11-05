@@ -106,6 +106,10 @@
       <Project>{973F0060-AB8B-4212-A79A-2C7683511CF3}</Project>
       <Name>FlatBeats.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Flatliner.Core\Flatliner.Core.csproj">
+      <Project>{BDF2032B-CB48-4BEB-BA37-9761006148AC}</Project>
+      <Name>Flatliner.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

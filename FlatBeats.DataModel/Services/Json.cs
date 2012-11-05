@@ -11,7 +11,7 @@ namespace FlatBeats.DataModel
 
     using FlatBeats.DataModel.Services;
 
-    public class Json<T> : ISerializer<T> where T : class 
+    public sealed class Json<T> : ISerializer<T> where T : class 
     {
         private readonly DataContractJsonSerializer Serializer;
 

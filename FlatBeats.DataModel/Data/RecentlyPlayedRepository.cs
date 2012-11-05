@@ -14,6 +14,7 @@ namespace FlatBeats.DataModel.Data
     using System.Linq;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     public class RecentlyPlayedRepository : IAsyncRepository<MixContract>
     {
@@ -28,7 +29,7 @@ namespace FlatBeats.DataModel.Data
         {
         }
 
-        public IObservable<Unit> SaveAsync(MixContract mix)
+        public IObservable<PortableUnit> SaveAsync(MixContract mix)
         {
             return from updatedList in this.repository.GetAsync(Key).Select(
                 mixList =>
@@ -52,7 +53,7 @@ namespace FlatBeats.DataModel.Data
                    select unit;
         }
 
-        public IObservable<Unit> DeleteAsync(MixContract item)
+        public IObservable<PortableUnit> DeleteAsync(MixContract item)
         {
             return from list in this.repository.GetAsync(Key).Select(
                 mixList =>

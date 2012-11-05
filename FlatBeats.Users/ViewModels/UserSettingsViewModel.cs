@@ -26,6 +26,7 @@ namespace FlatBeats.Users.ViewModels
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Reactive;
     using Microsoft.Phone.Tasks;
+    using Flatliner.Functional;
 
     /// <summary>
     /// </summary>
@@ -705,7 +706,7 @@ namespace FlatBeats.Users.ViewModels
                 return;
             }
 
-            IObservable<Unit> saveProcess = from userSettings in this.profileService.GetSettingsAsync().Do(
+            IObservable<PortableUnit> saveProcess = from userSettings in this.profileService.GetSettingsAsync().Do(
                 s =>
                     {
                         s.CensorshipEnabled = this.CensorshipEnabled;

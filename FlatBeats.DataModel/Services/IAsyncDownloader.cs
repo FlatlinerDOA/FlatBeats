@@ -3,7 +3,7 @@ namespace FlatBeats.DataModel.Services
     using System;
     using System.IO;
 
-    using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     public interface IAsyncDownloader
     {
@@ -14,7 +14,7 @@ namespace FlatBeats.DataModel.Services
 
         string UserToken { get; set; }
 
-        IObservable<Unit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite);
+        IObservable<PortableUnit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite);
 
         IObservable<T> GetDeserializedCachedAndRefreshedAsync<T>(Uri url, string cacheFile) where T : class;
 

@@ -1,4 +1,4 @@
-﻿namespace FlatBeats.DataModel.Services
+namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.IO;
@@ -10,12 +10,14 @@
     using Microsoft.Phone.Reactive;
     using Flatliner.Functional;
 
-    public sealed class AsyncIsolatedStorage : IAsyncStorage
+    public sealed class FunctionalAsyncStorage
     {
+        private const int ChunkSize = 4096;
+
         private readonly object syncRoot = new object();
 
-        public static readonly IAsyncStorage Instance = new AsyncIsolatedStorage();
-        
+        public static readonly FunctionalAsyncStorage Instance = new FunctionalAsyncStorage();
+
         /// <summary>
         /// 
         /// </summary>
@@ -62,10 +64,9 @@
             }
         }
 
-        public IObservable<PortableUnit> SaveJsonAsync<T>(string file, T data) where T : class
+        public Observe<PortableUnit> SaveJsonAsync<T>(string file, T data) where T : class
         {
-            return ObservableEx.DeferredStart(
-                () =>
+            return Observe.DeferredStart(() =>
                 {
                     lock (this.syncRoot)
                     {
@@ -79,18 +80,17 @@
                             }
                         }
                     }
-                }, 
-                Scheduler.ThreadPool);
+                }).SubscribeOn(Scheduler.ThreadPool.Schedule);
         }
 
-        public IObservable<PortableUnit> SaveStringAsync(string file, string text)
+        public Observe<PortableUnit> SaveStringAsync(string file, string text)
         {
-            return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool);
+            return Observe.DeferredStart(() => this.Save(file, text)).SubscribeOn(Scheduler.ThreadPool.Schedule);
         }
 
-        public IObservable<T> LoadJsonAsync<T>(string filePath) where T : class
+        public Observe<T> LoadJsonAsync<T>(string filePath) where T : class
         {
-            return ObservableEx.DeferredStart(() =>
+            return Observe.DeferredStart(() =>
             {
                 lock (this.syncRoot)
                 {
@@ -109,13 +109,12 @@
                         }
                     }
                 }
-            }, 
-            Scheduler.ThreadPool);
+            }).SubscribeOn(Scheduler.ThreadPool.Schedule);
         }
 
-        public IObservable<string> LoadStringAsync(string file)
+        public Observe<string> LoadStringAsync(string file)
         {
-            return ObservableEx.DeferredStart(() => this.Load(file), Scheduler.ThreadPool);
+            return Observe.DeferredStart(() => this.Load(file)).SubscribeOn(Scheduler.ThreadPool.Schedule);
         }
 
         /// <summary>
@@ -147,8 +146,7 @@
             }
         }
 
-        private const int ChunkSize = 4096;
-
+ 
         public void Save(string file, Stream data)
         {
             using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
@@ -184,7 +182,7 @@
             {
                 return;
             }
-            
+
             storage.CreateDirectory(folder);
         }
 

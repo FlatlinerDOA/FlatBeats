@@ -14,19 +14,19 @@ namespace FlatBeats.DataModel.Services
     using Flatliner.Phone;
 
     using Microsoft.Phone.Reactive;
-
+    using Flatliner.Functional;
 
     /// <summary>
     /// </summary>
-    public class AsyncDownloader : IAsyncDownloader
+    public sealed class AsyncDownloader : IAsyncDownloader
     {
-        public static readonly AsyncDownloader Instance = new AsyncDownloader();
+        public static readonly IAsyncDownloader Instance = new AsyncDownloader();
 
         #region Constants and Fields
 
         private readonly IAsyncStorage storage;
 
-        private readonly object SyncRoot = new object();
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// </summary>
@@ -59,7 +59,7 @@ namespace FlatBeats.DataModel.Services
         {
             get
             {
-                lock (this.SyncRoot)
+                lock (this.syncRoot)
                 {
                     return this.userToken;
                 }
@@ -67,7 +67,7 @@ namespace FlatBeats.DataModel.Services
 
             set
             {
-                lock (this.SyncRoot)
+                lock (this.syncRoot)
                 {
                     this.userToken = value;
                 }
@@ -87,7 +87,7 @@ namespace FlatBeats.DataModel.Services
         /// <param name="overwrite">A value indicating whether to overwrite any existing file</param>
         /// <returns>
         /// </returns>
-        public IObservable<Unit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite)
+        public IObservable<PortableUnit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite)
         {
             if (!overwrite && this.storage.Exists(fileName))
             {

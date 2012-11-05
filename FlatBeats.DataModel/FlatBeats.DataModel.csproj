@@ -59,6 +59,8 @@
     <Compile Include="AvatarContract.cs" />
     <Compile Include="FavouritedTrackListResponseContract.cs" />
     <Compile Include="Services\DownloadExtensions.cs" />
+    <Compile Include="Services\FunctionalAsyncDownloader.cs" />
+    <Compile Include="Services\FunctionalAsyncStorage.cs" />
     <Compile Include="Services\IAsyncDownloader.cs" />
     <Compile Include="Services\IAsyncStorage.cs" />
     <Compile Include="CoverUrlContract.cs" />
@@ -123,6 +125,10 @@
     <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
       <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
       <Name>Flatliner.Phone.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Flatliner.Core\Flatliner.Core.csproj">
+      <Project>{BDF2032B-CB48-4BEB-BA37-9761006148AC}</Project>
+      <Name>Flatliner.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

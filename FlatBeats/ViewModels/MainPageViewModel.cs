@@ -24,6 +24,7 @@ namespace FlatBeats.ViewModels
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.Reactive;
+    using Flatliner.Functional;
 
     /// <summary>
     /// </summary>
@@ -297,7 +298,7 @@ namespace FlatBeats.ViewModels
                             return this.profileService.SaveSettingsAsync(s).ObserveOnDispatcher();
                         }
 
-                        return Observable.Empty<Unit>();
+                        return Observable.Empty<PortableUnit>();
                     });
 
             this.AddToLifetime(rateApp.Subscribe(_ => { }, this.HandleError));
