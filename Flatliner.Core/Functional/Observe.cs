@@ -189,7 +189,83 @@ namespace Flatliner.Functional
         /// <returns></returns>
         public static Observe<TResult> Select<TSource, TResult>(this Observe<TSource> source, Func<TSource, TResult> selector)
         {
-            return o => source(x => o(!x.HasValue ? x.TransposeEmpty<TResult>() : new Some<TResult>(selector(x.Value))));
+            return o =>
+                {
+                    bool completed = false;
+                    source(
+                        x =>
+                        {
+                            if (completed)
+                            {
+                                return;
+                            }
+
+                            if (!x.HasValue)
+                            {
+                                completed = true;
+                                o(x.TransposeEmpty<TResult>());
+                            }
+                            else
+                            {
+                                TResult result;
+                                try
+                                {
+                                    result = selector(x.Value);
+                                }
+                                catch (Exception ex)
+                                {
+                                    completed = true;
+                                    o(new Error<TResult>(ex));
+                                    return;
+                                }
+
+                                o(new Some<TResult>(result));
+                            }
+                        });
+                };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Observe<TSource> Do<TSource>(this Observe<TSource> source, Action<TSource> onNext)
+        {
+            return o =>
+            {
+                bool completed = false;
+                source(
+                    x =>
+                    {
+                        if (completed)
+                        {
+                            return;
+                        }
+
+                        if (!x.HasValue)
+                        {
+                            completed = true;
+                            o(x);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                onNext(x.Value);
+                            }
+                            catch (Exception ex)
+                            {
+                                completed = true;
+                                o(new Error<TSource>(ex));
+                                return;
+                            }
+
+                            o(x);
+                        }
+                    });
+            };
         }
 
         /// <summary>
@@ -202,15 +278,42 @@ namespace Flatliner.Functional
         /// <returns></returns>
         public static Observe<TResult> Select<TSource, TResult>(this Observe<TSource> source, Func<TSource, int, TResult> selector)
         {
-            return o =>
-                {
-                    int counter = 0;
-                    source(x =>
+            return o => 
+            {
+                bool completed = false;
+                int counter = 0;
+                source(
+                    x =>
+                    {
+                        if (completed)
                         {
-                            o(!x.HasValue ? x.TransposeEmpty<TResult>() : new Some<TResult>(selector(x.Value, counter)));
+                            return;
+                        }
+
+                        if (!x.HasValue)
+                        {
+                            completed = true;
+                            o(x.TransposeEmpty<TResult>());
+                        }
+                        else
+                        {
+                            TResult result;
+                            try
+                            {
+                                result = selector(x.Value, counter);
+                            }
+                            catch (Exception ex)
+                            {
+                                completed = true;
+                                o(new Error<TResult>(ex));
+                                return;
+                            }
+
+                            o(new Some<TResult>(result));
                             counter++;
-                        });
-                };
+                        }
+                    });
+            };
         }
 
         /// <summary>
@@ -312,29 +415,31 @@ namespace Flatliner.Functional
         public static Observe<TResult> TrySelect<TSource, TResult>(this Observe<TSource> source, Func<TSource, TResult> selector)
         {
             return o => source(x =>
+            {
+                if (!x.HasValue)
                 {
-                    if (!x.HasValue)
+                    o(x.TransposeEmpty<TResult>());
+                }
+                else
+                {
+                    TResult result;
+                    try
                     {
-                        o(x.TransposeEmpty<TResult>());
+                        result = selector(x.Value);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        TResult result;
-                        try
-                        {
-                            result = selector(x.Value);
-                        }
-                        catch (Exception ex)
-                        {
-                            o(new Error<TResult>(ex));
-                            return;
-                        }
+                        o(new Error<TResult>(ex));
+                        return;
+                    }
 
-                        o(new Some<TResult>(result));
-                    }
-                });
+                    o(new Some<TResult>(result));
+                }
+            });
         }
 
+
+    
         /// <summary>
         /// 
         /// </summary>

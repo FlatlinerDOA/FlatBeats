@@ -224,7 +224,15 @@ namespace FlatBeatsPlaybackAgent
 
                     break;
                 case UserAction.Pause:
-                    player.Pause();
+                    try
+                    {
+                        player.Pause();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Probably no track.. just continue on our merry way
+                    }
+
                     break;
                 case UserAction.Play:
                     this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()

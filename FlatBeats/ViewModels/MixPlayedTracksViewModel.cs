@@ -20,6 +20,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.Framework;
 
     using Flatliner.Phone;
+    using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.BackgroundAudio;
     using Microsoft.Phone.Net.NetworkInformation;
@@ -296,8 +297,15 @@ namespace FlatBeats.ViewModels
                     from _ in this.NowPlaying.SaveNowPlayingAsync().ObserveOn(Scheduler.Dispatcher)
                     .Do(_ =>
                     {
-                        this.Player.Play();
-                        this.UpdateIsNowPlaying();
+                        try
+                        {
+                            this.Player.Play();
+                            this.UpdateIsNowPlaying();
+                        } 
+                        catch (InvalidOperationException ioEx)
+                        {
+                            this.HandleError(ioEx);
+                        }
                     })
                     select true;
 
@@ -369,8 +377,20 @@ namespace FlatBeats.ViewModels
 
         private void InitializeBackgroundAudioPlayer()
         {
-            this.Player = BackgroundAudioPlayer.Instance;
-            this.AddToLifetime(Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(_ => this.UpdatePlayerState()));
+            try
+            {
+                this.Player = BackgroundAudioPlayer.Instance;
+                this.AddToLifetime(
+                    Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(
+                        _ => this.UpdatePlayerState()));
+            } 
+            catch (ArgumentException)
+            {
+                this.Player = null;
+                this.ShowErrorMessage(new ErrorMessage(
+                    StringResources.Error_BackgroundAudioPlayer_Title, 
+                    StringResources.Error_BackgroundAudioPlayer_Message));
+            }
         }
 
         private void LoadNowPlaying()
@@ -660,12 +680,20 @@ namespace FlatBeats.ViewModels
                     return false;
                 }
 
-                if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
+                try
                 {
+                    if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
+                    {
+                        return false;
+                    }
+
+                    return this.Player.Track.Tag.StartsWith(this.currentMix.Id + "|");
+                }
+                catch (Exception)
+                {
+                    // Gotta catch em all!
                     return false;
                 }
-
-                return this.Player.Track.Tag.StartsWith(this.currentMix.Id + "|");
             }
         }
 
@@ -682,12 +710,21 @@ namespace FlatBeats.ViewModels
                 {
                     return false;
                 }
-                if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
+
+                try
                 {
+                    if (!this.Player.IsPlayingATrack() || this.Player.Track.Tag == null)
+                    {
+                        return false;
+                    }
+
+                    return this.Player.Track.Tag.EndsWith("|" + this.CurrentTrack.Id);
+                } 
+                catch (Exception)
+                {
+                    // Gotta catch em all!
                     return false;
                 }
-
-                return this.Player.Track.Tag.EndsWith("|" + this.CurrentTrack.Id);
             }
         }
 

@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeatsPlaybackAgent", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeats.DataModel", "FlatBeats.DataModel\FlatBeats.DataModel.csproj", "{92D3291E-4113-4E79-A817-6428F8DCE8B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Phone", "..\..\Flatliner\Dev\Flatliner.Phone\Flatliner.Phone.csproj", "{90246C22-25B6-41A1-AE6F-6F1762DCB619}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Phone.Core", "..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj", "{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeats.Users", "FlatBeats.Users\FlatBeats.Users.csproj", "{7F4967B9-F611-4596-BB8D-6B52E8B77621}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBeats.Framework", "FlatBeats.Framework\FlatBeats.Framework.csproj", "{973F0060-AB8B-4212-A79A-2C7683511CF3}"
@@ -26,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Core", "Flatliner.Core\Flatliner.Core.csproj", "{BDF2032B-CB48-4BEB-BA37-9761006148AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.UnitTests", "Flatliner.UnitTests\Flatliner.UnitTests.csproj", "{CFCD3DC2-FC5C-4CF7-A8F5-ACF52EF6CBF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Phone.Core", "Flatliner.Phone.Core\Flatliner.Phone.Core.csproj", "{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flatliner.Phone", "Flatliner.Phone\Flatliner.Phone.csproj", "{90246C22-25B6-41A1-AE6F-6F1762DCB619}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,14 +47,6 @@ Global
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D3291E-4113-4E79-A817-6428F8DCE8B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F4967B9-F611-4596-BB8D-6B52E8B77621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F4967B9-F611-4596-BB8D-6B52E8B77621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F4967B9-F611-4596-BB8D-6B52E8B77621}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +67,14 @@ Global
 		{CFCD3DC2-FC5C-4CF7-A8F5-ACF52EF6CBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFCD3DC2-FC5C-4CF7-A8F5-ACF52EF6CBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFCD3DC2-FC5C-4CF7-A8F5-ACF52EF6CBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90246C22-25B6-41A1-AE6F-6F1762DCB619}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

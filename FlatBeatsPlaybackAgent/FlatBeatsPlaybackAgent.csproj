@@ -59,10 +59,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Flatliner\Dev\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
-      <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
-      <Name>Flatliner.Phone.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FlatBeats.DataModel\FlatBeats.DataModel.csproj">
       <Project>{92D3291E-4113-4E79-A817-6428F8DCE8B1}</Project>
       <Name>FlatBeats.DataModel</Name>
@@ -70,6 +66,10 @@
     <ProjectReference Include="..\Flatliner.Core\Flatliner.Core.csproj">
       <Project>{BDF2032B-CB48-4BEB-BA37-9761006148AC}</Project>
       <Name>Flatliner.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Flatliner.Phone.Core\Flatliner.Phone.Core.csproj">
+      <Project>{B5EBB8E5-FD14-461E-9A0D-7C245C722A22}</Project>
+      <Name>Flatliner.Phone.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

@@ -476,11 +476,16 @@ namespace FlatBeats.Framework
             }
 
             this.Tags = mix.Tags;
-
         }
 
         private Uri AddQuery(Uri uri, string value)
         {
+            if (!uri.IsAbsoluteUri)
+            {
+                // Forget about it! Better than crashing amirite?
+                return uri;
+            }
+
             var newUrl = new UriBuilder(uri);
             if (newUrl.Query.Length == 0)
             {

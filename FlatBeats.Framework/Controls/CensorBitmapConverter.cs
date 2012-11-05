@@ -54,31 +54,41 @@
 
         private void Pixelate(WriteableBitmap target, Stream source, int startX, int startY, int width, int height, int pixelateSize)
         {
-            target.SetSource(source);
-
-            // look at every pixel in the rectangle while making sure we're within the image bounds
-            var endY = Math.Min(startY + height, target.PixelHeight);
-            var endX = Math.Min(startX + width, target.PixelWidth);
-            var halfStep = pixelateSize / 2;
-
-            for (var sourceY = startY + halfStep; sourceY < endY; sourceY += pixelateSize)
+            try
             {
-                for (var sourceX = startX + halfStep; sourceX < endX; sourceX += pixelateSize)
-                {
-                    // get the pixel color in the center of the soon to be pixelated area
-                    var pixelIndex = ((sourceY - 1) * target.PixelWidth) + sourceX;
-                    int pixel = target.Pixels[pixelIndex];
+                target.SetSource(source);
 
-                    // for each pixel in the pixelate size, set it to the center color
-                    for (int setY = sourceY - halfStep; setY < Math.Min(sourceY + halfStep, endY); setY++)
+                // look at every pixel in the rectangle while making sure we're within the image bounds
+                var endY = Math.Min(startY + height, target.PixelHeight);
+                var endX = Math.Min(startX + width, target.PixelWidth);
+                var halfStep = pixelateSize / 2;
+
+                for (var sourceY = startY + halfStep; sourceY < endY; sourceY += pixelateSize)
+                {
+                    for (var sourceX = startX + halfStep; sourceX < endX; sourceX += pixelateSize)
                     {
-                        for (int setX = sourceX - halfStep; setX < Math.Min(sourceX + halfStep, endX); setX++)
+                        // get the pixel color in the center of the soon to be pixelated area
+                        var pixelIndex = ((sourceY - 1) * target.PixelWidth) + sourceX;
+                        int pixel = target.Pixels[pixelIndex];
+
+                        // for each pixel in the pixelate size, set it to the center color
+                        for (int setY = sourceY - halfStep; setY < Math.Min(sourceY + halfStep, endY); setY++)
                         {
-                            var setPixelIndex = (setY * target.PixelWidth) + setX;
-                            target.Pixels[setPixelIndex] = pixel;
+                            for (int setX = sourceX - halfStep; setX < Math.Min(sourceX + halfStep, endX); setX++)
+                            {
+                                var setPixelIndex = (setY * target.PixelWidth) + setX;
+                                target.Pixels[setPixelIndex] = pixel;
+                            }
                         }
                     }
                 }
+            } 
+            catch (Exception)
+            {
+                // Gotta catch em all! 
+                // (thanks for throwing System.Exception Windows Phone guys)
+                /*at MS.Internal.XcpImports.CheckHResult(UInt32 hr)
+                  at MS.Internal.XcpImports.BitmapSource_SetSource(BitmapSource bitmapSource, CValue& byteStream)*/
             }
         }
 
@@ -110,7 +120,7 @@
         /// <param name="value">The target data being passed to the source.</param><param name="targetType">The <see cref="T:System.Type"/> of data expected by the source object.</param><param name="parameter">An optional parameter to be used in the converter logic.</param><param name="culture">The culture of the conversion.</param>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

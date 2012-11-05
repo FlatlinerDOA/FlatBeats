@@ -1,12 +1,9 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     using Flatliner.Phone;
     using Microsoft.Phone.Reactive;
-    using Microsoft.Phone.Shell;
 
     public static class MixesService
     {
@@ -41,13 +38,13 @@
             return from response in Downloader.GetDeserializedCachedAndRefreshedAsync<MixResponseContract>(
                        ApiUrl.Mix(mixId), 
                        string.Format(MixCacheFile, mixId))
+                   where response != null && response.Mix != null
                    select response.Mix;
         }
 
         public static IObservable<TagsResponseContract> GetTagsAsync(int pageNumber)
         {
-            return
-                Downloader.GetDeserializedAsync<TagsResponseContract>(
+            return Downloader.GetDeserializedAsync<TagsResponseContract>(
                     new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + pageNumber));
         }
     }
