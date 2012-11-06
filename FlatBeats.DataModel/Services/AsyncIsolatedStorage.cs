@@ -75,7 +75,6 @@
                             using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
                             {
                                 Json<T>.Instance.SerializeToStream(data, fileStream);
-                                fileStream.Flush();
                             }
                         }
                     }

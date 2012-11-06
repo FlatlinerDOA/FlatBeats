@@ -15,7 +15,7 @@ namespace FlatBeats.DataModel
     {
         private readonly DataContractJsonSerializer Serializer;
 
-        public static readonly Json<T> Instance = new Json<T>();
+        public static readonly ISerializer<T> Instance = new StackJson<T>();
  
         public Json()
         {
@@ -24,79 +24,91 @@ namespace FlatBeats.DataModel
 
         public string SerializeToString(T obj)
         {
-            if (obj == null)
+            using (new TraceTimer("SerializeToString {0}"))
             {
-                return null;
-            }
+                if (obj == null)
+                {
+                    return null;
+                }
 
-            string retVal; 
-            using (var ms = new MemoryStream())
-            {
-                this.Serializer.WriteObject(ms, obj);
-                retVal = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
-                ms.Close();
-            }
+                string retVal;
+                using (var ms = new MemoryStream())
+                {
+                    this.Serializer.WriteObject(ms, obj);
+                    retVal = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
+                    ms.Close();
+                }
 
-            return retVal;
+                return retVal;
+            }
         }
 
         public T DeserializeFromString(string json) 
         {
-            T obj = null;
-            if (string.IsNullOrWhiteSpace(json))
+            using (new TraceTimer("DeserializeFromString {0}"))
             {
+                T obj = null;
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    return obj;
+                }
+
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+                {
+                    try
+                    {
+                        obj = (T)this.Serializer.ReadObject(ms);
+                        ms.Close();
+                    }
+                    catch (SerializationException)
+                    {
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                }
+
                 return obj;
             }
-
-            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-            {
-                try
-                {
-                    obj = (T)this.Serializer.ReadObject(ms);
-                    ms.Close();
-                }
-                catch (SerializationException)
-                {
-                }
-                catch (ArgumentException)
-                {
-                }
-            }
-
-            return obj;
         }
 
         public T DeserializeFromStream(Stream json)
         {
-            T obj = default(T);
-            using (json)
+            using (new TraceTimer("DeserializeFromStream {0}"))
             {
-                try
+                T obj = default(T);
+                using (json)
                 {
-#if DEBUG
-                    var data = new MemoryStream();
-                    json.CopyTo(data);
-
-                    var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
-                    foreach (var line in jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    try
                     {
-                        Debug.WriteLine(line);
-                    }
-                    data.Position = 0;
-                    obj = (T)this.Serializer.ReadObject(data);
-#else
-                    obj = (T)this.Serializer.ReadObject(json);
-#endif
-                }
-                catch (SerializationException)
-                {
-                }
-                catch (ArgumentException)
-                {
-                }
-            }
+////#if DEBUG
+////                        var data = new MemoryStream();
+////                        json.CopyTo(data);
 
-            return obj;
+////                        var jsonText = Encoding.UTF8.GetString(data.ToArray(), 0, (int)data.Length);
+////                        foreach (
+////                            var line in
+////                                jsonText.Replace("{", "\r\n{\r\n").Replace("}", "\r\n}\r\n").Split(
+////                                    new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+////                        {
+////                            Debug.WriteLine(line);
+////                        }
+////                        data.Position = 0;
+////                        obj = (T)this.Serializer.ReadObject(data);
+////#else
+                    obj = (T)this.Serializer.ReadObject(json);
+////#endif
+                    }
+                    catch (SerializationException)
+                    {
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                }
+
+                return obj;
+            }
         }
 
         public void SerializeToStream(T item, Stream stream)
@@ -106,7 +118,10 @@ namespace FlatBeats.DataModel
                 return;
             }
 
-            this.Serializer.WriteObject(stream, item);
+            using (new TraceTimer("SerializeToStream {0}"))
+            {
+                this.Serializer.WriteObject(stream, item);
+            }
         }
     }
 }

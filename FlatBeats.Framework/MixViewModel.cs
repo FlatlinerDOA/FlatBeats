@@ -425,6 +425,7 @@ namespace FlatBeats.Framework
             {
                 return this.isExplicit;
             }
+
             set
             {
                 if (this.isExplicit == value)
@@ -452,7 +453,11 @@ namespace FlatBeats.Framework
             this.TileTitle = this.MixName.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
             this.NavigationUrl = PageUrl.Play(this.MixId, false);
-            this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
+            if (mix.RestUrl != null)
+            {
+                this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
+            }
+
             this.Liked = mix.Liked;
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
