@@ -43,7 +43,7 @@
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <!--Pivot Control-->
-        <controls:Pivot Title="{Binding Title}" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
+        <controls:Pivot x:Name="pivot" Title="{Binding Title}" SelectedIndex="{Binding CurrentPanelIndex, Mode=TwoWay}">
             <!--Pivot item one-->
             <controls:PivotItem Header="profile"
                                 Margin="12,28,12,84">
@@ -60,7 +60,8 @@
                     <TextBlock Text="{Binding Message}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}"
                                Style="{StaticResource MessageTextStyle}" />
-                    <TextBlock Text="{Binding UserName}"
+                    <TextBlock x:Name="userNameTextBlock"
+                               Text="{Binding UserName}"
                                Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                                Style="{StaticResource PhoneTextTitle2Style}"
                                TextWrapping="Wrap"
@@ -147,7 +148,8 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap" />
-                    <ListBox Margin="0,0,-12,0"
+                    <ListBox x:Name="followsListBox"
+                        Margin="0,0,-12,0"
                              Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource UserListItemTemplate}"
@@ -168,7 +170,8 @@
                                FontSize="32"
                                FontFamily="Segoe WP Light"
                                TextWrapping="Wrap" />
-                    <ListBox Margin="0,0,-12,0"
+                    <ListBox x:Name="followedByListBox"
+                        Margin="0,0,-12,0"
                              Visibility="{Binding ShowMessage, Converter={StaticResource HideConverter}}"
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource UserListItemTemplate}"

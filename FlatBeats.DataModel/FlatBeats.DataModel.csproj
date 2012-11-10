@@ -102,7 +102,6 @@
     <Compile Include="Services\ISerializer.cs" />
     <Compile Include="Services\MixesService.cs" />
     <Compile Include="Services\PlayerService.cs" />
-    <Compile Include="Services\StackJson.cs" />
     <Compile Include="TagContract.cs" />
     <Compile Include="UserProfileResponseContract.cs" />
     <Compile Include="DataStrings.Designer.cs">

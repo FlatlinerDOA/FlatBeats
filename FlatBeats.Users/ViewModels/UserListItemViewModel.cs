@@ -71,7 +71,7 @@ namespace FlatBeats.Users.ViewModels
             this.Location = data.Location;
             this.Bio = Html.ConvertToPlainText(data.BioHtml);
             this.AvatarUrl = Avatar.GetImageUrl(data.Avatar);
-            this.NavigationUrl = PageUrl.UserProfile(this.userId);
+            this.NavigationUrl = PageUrl.UserProfile(this.userId, this.Name);
         }
 
         #endregion

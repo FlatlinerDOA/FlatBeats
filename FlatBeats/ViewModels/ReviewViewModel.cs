@@ -6,6 +6,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.Framework;
 
+    using Flatliner.Phone.Core;
     using Flatliner.Phone.Data;
 
     public sealed class ReviewViewModel : ListItemViewModel, INavigationItem
@@ -112,11 +113,12 @@ namespace FlatBeats.ViewModels
             {
                 this.UserName = review.User.Name;
                 this.AvatarUrl = Avatar.GetImageUrl(review.User.Avatar);
-                this.NavigationUrl = PageUrl.UserProfile(review.User.Id);
+                this.NavigationUrl = PageUrl.UserProfile(review.User.Id, review.User.Name);
             }
 
             var text = Html.ConvertToPlainText(review.Body).Trim();
             this.Body = censor ? Censorship.Censor(text) : text;
+            this.Created = review.Created.ParseToLocalDateTimeEnsurePast();
             DateTimeOffset createdDate;
             if (DateTimeOffset.TryParse(review.Created, out createdDate))
             {

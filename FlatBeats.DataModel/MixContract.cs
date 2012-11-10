@@ -41,5 +41,11 @@
 
         [DataMember(Name = "nsfw")]
         public bool IsExplicit { get; set; }
+
+        [DataMember(Name = "duration")]
+        public int DurationSeconds { get; set; }
+
+        [DataMember(Name = "tracks_count")]
+        public int TrackCount { get; set; }
     }
 }

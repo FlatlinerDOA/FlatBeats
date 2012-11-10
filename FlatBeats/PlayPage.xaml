@@ -9,9 +9,11 @@
                             xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
                             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
                             xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions" 
-                           xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions" 
-    xmlns:Controls1="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
-    xmlns:ControlsX="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" x:Class="FlatBeats.PlayPage"
+                            xmlns:eim="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions" 
+                            xmlns:Controls1="clr-namespace:FlatBeats.Framework.Controls;assembly=FlatBeats.Framework" 
+                            xmlns:ControlsX="clr-namespace:Clarity.Phone.Controls;assembly=FlatBeats.Framework" 
+                            xmlns:ViewModels1="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
+                            x:Class="FlatBeats.PlayPage"
                             mc:Ignorable="d"
                             d:DesignWidth="480"
                             d:DesignHeight="768"
@@ -273,7 +275,7 @@
                             <Image Source="{Binding Mix.ThumbnailUrl, Converter={StaticResource CensorImageConverter}}" />
                         </Border>
                         <TextBlock x:Name="mixNameTextBlock"
-                            Text="{Binding Mix.MixName}"
+                            Text="{Binding MixName}"
                                    Style="{StaticResource PhoneTextLargeStyle}"
                                    TextWrapping="Wrap"
                                    Margin="12,0,12,8"
@@ -321,7 +323,8 @@
                                     <Image Source="{Binding Mix.CreatedByAvatarUrl, Converter={StaticResource ImageConverter}}" />
                     	        </Border>
                                 <StackPanel Grid.Column="1">
-							        <TextBlock Text="{Binding Mix.CreatedBy}"
+                                    <TextBlock x:Name="createdByTextBlock"
+                                        Text="{Binding Mix.CreatedBy}"
                                            TextWrapping="Wrap"
                                            Margin="8,0,0,0"
                                            Style="{StaticResource PhoneTextAccentStyle}"
@@ -333,13 +336,7 @@
                                        d:LayoutOverrides="Height"
                                        Style="{StaticResource PhoneTextSmallStyle}"
                                        FontSize="16" />
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <Grid.ColumnDefinitions>
-                                        	<ColumnDefinition Width="Auto" />
-                                        	<ColumnDefinition Width="92.333" />
-                                        	<ColumnDefinition Width="Auto" />
-                                        	<ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                                         <TextBlock Margin="8,4,4,4"
                                                    TextWrapping="Wrap"
                                                    Text="{Binding Mix.PlaysCountLabel}"
@@ -351,21 +348,38 @@
                                                    Text="{Binding Mix.PlaysCount}"
                                                    d:LayoutOverrides="Height"
                                                    Style="{StaticResource PhoneTextSmallStyle}"
-                                                   FontSize="16" Grid.Column="1" />
-                                        <TextBlock Margin="8,4,4,4"
+                                                   FontSize="16" />
+                                        <TextBlock Margin="16,4,4,4"
                                                    TextWrapping="Wrap"
                                                    Text="{Binding Mix.LikesCountLabel}"
                                                    d:LayoutOverrides="Height"
                                                    Style="{StaticResource PhoneTextSmallStyle}"
-                                                   FontSize="16" Grid.Column="2" />
+                                                   FontSize="16" />
                                         <TextBlock Margin="8,4,4,4"
                                                    TextWrapping="Wrap"
                                                    Text="{Binding Mix.LikesCount}"
                                                    d:LayoutOverrides="Height"
                                                    Style="{StaticResource PhoneTextSmallStyle}"
-                                                   FontSize="16"
-                                                   Grid.Column="3" />
-                                    </Grid>
+                                                   FontSize="16" />
+                                        <TextBlock Margin="16,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.TrackCountLabel}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16" />
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.TrackCount}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16"/>
+                                        <TextBlock Margin="8,4,4,4"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Mix.TotalDuration}"
+                                                   d:LayoutOverrides="Height"
+                                                   Style="{StaticResource PhoneTextSmallStyle}"
+                                                   FontSize="16" />
+                                    </StackPanel>
                                 </StackPanel>								   
                             </Grid>
                         </Button>
@@ -383,7 +397,8 @@
                                TextWrapping="Wrap"
                                Visibility="{Binding ShowMessage, Converter={StaticResource VisibilityConverter}}"
                                VerticalAlignment="Top" />
-                    <ListBox Margin="0,0,-12,0"
+                    <ListBox x:Name="reviewsListBox"
+                        Margin="0,0,-12,0"
                                              ItemsSource="{Binding Items}"
                                              ItemTemplate="{StaticResource ReviewListItemTemplate}"
                              Tap="ListBoxTap">

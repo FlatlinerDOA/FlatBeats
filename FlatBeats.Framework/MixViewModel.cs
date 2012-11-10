@@ -16,6 +16,7 @@ namespace FlatBeats.Framework
     using FlatBeats.DataModel;
     using FlatBeats.ViewModels;
 
+    using Flatliner.Phone.Core;
     using Flatliner.Phone.Data;
 
     /// <summary>
@@ -82,12 +83,14 @@ namespace FlatBeats.Framework
             this.TileTitle = string.Empty;
             this.PlaysCountLabel = "plays";
             this.LikesCountLabel = "likes";
+            this.TrackCountLabel = "tracks";
         }
 
         /// <summary>
         /// </summary>
         /// <param name="mix">
         /// </param>
+        /// <param name="censor"></param>
         public MixViewModel(MixContract mix, bool censor) : this()
         {
             this.Load(mix, censor);
@@ -280,6 +283,7 @@ namespace FlatBeats.Framework
             {
                 return this.likesCount;
             }
+
             set
             {
                 if (this.likesCount == value)
@@ -300,6 +304,7 @@ namespace FlatBeats.Framework
             {
                 return this.playsCount;
             }
+
             set
             {
                 if (this.playsCount == value)
@@ -353,6 +358,87 @@ namespace FlatBeats.Framework
 
                 this.thumbnailUrl = value;
                 this.OnPropertyChanged("ThumbnailUrl");
+            }
+        }
+
+
+        private string trackCountLabel;
+
+        public string TrackCountLabel
+        {
+            get
+            {
+                return this.trackCountLabel;
+            }
+            set
+            {
+                if (this.trackCountLabel == value)
+                {
+                    return;
+                }
+
+                this.trackCountLabel = value;
+                this.OnPropertyChanged(() => this.TrackCountLabel);
+            }
+        }
+
+        private int trackCount;
+
+        public int TrackCount
+        {
+            get
+            {
+                return this.trackCount;
+            }
+            set
+            {
+                if (this.trackCount == value)
+                {
+                    return;
+                }
+
+                this.trackCount = value;
+                this.OnPropertyChanged(() => this.TrackCount);
+            }
+        }
+
+        private string totalDurationLabel;
+
+        public string TotalDurationLabel
+        {
+            get
+            {
+                return this.totalDurationLabel;
+            }
+            set
+            {
+                if (this.totalDurationLabel == value)
+                {
+                    return;
+                }
+
+                this.totalDurationLabel = value;
+                this.OnPropertyChanged(() => this.TotalDurationLabel);
+            }
+        }
+
+        private string totalDuration;
+
+        public string TotalDuration
+        {
+            get
+            {
+                return this.totalDuration;
+            }
+            set
+            {
+                if (this.totalDuration == value)
+                {
+                    return;
+                }
+
+                this.totalDuration = value;
+                this.OnPropertyChanged(() => this.TotalDuration);
             }
         }
 
@@ -452,7 +538,12 @@ namespace FlatBeats.Framework
             this.ImageUrl = this.IsExplicit ? this.AddQuery(mix.Cover.OriginalUrl, "nsfw") : mix.Cover.OriginalUrl;
             this.TileTitle = this.MixName.Replace(" ", Environment.NewLine);
             this.MixId = mix.Id;
-            this.NavigationUrl = PageUrl.Play(this.MixId, false);
+            this.NavigationUrl = PageUrl.Play(this.MixId, false, this.MixName);
+
+
+            this.TrackCount = mix.TrackCount;
+            var duration = TimeSpan.FromSeconds(mix.DurationSeconds);
+            this.TotalDuration = "(" + duration.ToFormattedString() + ")";
             if (mix.RestUrl != null)
             {
                 this.LinkUrl = new Uri(mix.RestUrl, UriKind.RelativeOrAbsolute);
@@ -461,25 +552,9 @@ namespace FlatBeats.Framework
             this.Liked = mix.Liked;
             this.CreatedBy = mix.User.Name;
             this.CreatedByAvatarUrl = new Uri(mix.User.Avatar.ImageUrl, UriKind.RelativeOrAbsolute);
-
-            DateTimeOffset createdDate;
-            if (DateTimeOffset.TryParse(mix.Created, out createdDate))
-            {
-                this.Created = createdDate.ToLocalTime().DateTime;
-            } 
-            else
-            {
-                this.Created = DateTime.Now.AddSeconds(-1);
-            }
-
+            this.Created = mix.Created.ParseToLocalDateTimeEnsurePast();
             this.PlaysCount = mix.PlaysCount;
             this.LikesCount = mix.LikesCount;
-
-            if (this.Created > DateTime.Now)
-            {
-                this.Created = DateTime.Now.AddSeconds(-1);
-            }
-
             this.Tags = mix.Tags;
         }
 

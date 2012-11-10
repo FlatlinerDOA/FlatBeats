@@ -38,15 +38,24 @@
 
         protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
-            ////if (toOrFrom != null)
-            ////{
-            ////    if (toOrFrom.OriginalString.Contains("UserProfilePage"))
-            ////    {
-            ////        return null;
-            ////    }
-            ////}
+            if ((animationType == AnimationType.NavigateForwardOut || animationType == AnimationType.NavigateBackwardIn) && toOrFrom.IsForPage("UserProfilePage"))
+            {
+                if (this.pivot.SelectedIndex == 0)
+                {
+                    return this.GetContinuumAnimation(this.FindName("createdByTextBlock") as FrameworkElement, animationType);
+                } 
+                else
+                {
+                    return this.GetContinuumAnimation(this.reviewsListBox.ItemContainerGenerator.ContainerFromIndex(this.reviewsListBox.SelectedIndex) as FrameworkElement, animationType);
+                }
+            }
 
-            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardIn)
+            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardOut)
+            {
+                return this.GetContinuumAnimation(this.FindName("mixNameTextBlock") as FrameworkElement, animationType);
+            }
+
+            if (animationType == AnimationType.NavigateBackwardIn)
             {
                 return new SlideUpAnimator() { RootElement = LayoutRoot };
             }
@@ -118,7 +127,7 @@
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(PageUrl.UserProfile(this.PageViewModel.CreatedByUserId));
+            this.NavigationService.Navigate(PageUrl.UserProfile(this.PageViewModel.CreatedByUserId, this.PageViewModel.CreatedByUserName));
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)

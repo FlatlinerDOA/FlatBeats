@@ -20,25 +20,28 @@
 
         public static IObservable<MixesResponseContract> GetLatestMixesAsync()
         {
-            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.LatestMixes()).Where(m => m != null); //, LatestMixesCacheFile);
+            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.LatestMixes()).NotNull(); //, LatestMixesCacheFile);
+        }
+
+        public static IObservable<MixesResponseContract> GetHistoryMixesAsync()
+        {
+            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.HistoryMixes()).NotNull(); //, LatestMixesCacheFile);
         }
 
         public static IObservable<MixesResponseContract> GetTagMixesAsync(string tag, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.TaggedMixes(tag, sort, pageNumber, perPage)).Where(m => m != null);
+            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.TaggedMixes(tag, sort, pageNumber, perPage)).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetSearchMixesAsync(string query, string sort, int pageNumber, int perPage)
         {
-            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.SearchMixes(query, sort, pageNumber, perPage)).Where(m => m != null);
+            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.SearchMixes(query, sort, pageNumber, perPage)).NotNull();
         }
 
         public static IObservable<MixContract> GetMixAsync(string mixId)
         {
-            return from response in Downloader.GetDeserializedCachedAndRefreshedAsync<MixResponseContract>(
-                       ApiUrl.Mix(mixId), 
-                       string.Format(MixCacheFile, mixId))
-                   where response != null && response.Mix != null
+            return from response in Downloader.GetDeserializedCachedAndRefreshedAsync<MixResponseContract>(ApiUrl.Mix(mixId), string.Format(MixCacheFile, mixId)).NotNull()
+                   where response.Mix != null
                    select response.Mix;
         }
 

@@ -283,6 +283,11 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         public override void Load()
         {
+            if (this.NavigationParameters.ContainsKey("username"))
+            {
+                this.UserName = this.NavigationParameters["username"];
+            }
+
             var progressChanges = new[]
                 {
                     this.Mixes.IsInProgressChanges,

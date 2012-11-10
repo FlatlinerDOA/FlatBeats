@@ -20,6 +20,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.Framework;
 
     using Flatliner.Phone;
+    using Flatliner.Phone.Core;
     using Flatliner.Phone.ViewModels;
 
     using Microsoft.Phone.BackgroundAudio;
@@ -750,9 +751,9 @@ namespace FlatBeats.ViewModels
 
                 this.Progress = position.TotalSeconds / Math.Max(1, duration.TotalSeconds) * 100D;
                 var sb = new StringBuilder();
-                sb.AppendFormat("{0:00}:{1:00}", (int)position.TotalMinutes, position.Seconds);
+                sb.Append(position.ToFormattedString());
                 sb.Append(" / ");
-                sb.AppendFormat("{0:00}:{1:00}", (int)duration.TotalMinutes, duration.Seconds);
+                sb.Append(duration.ToFormattedString());
                 this.ProgressStatusText = sb.ToString();
                 this.IsProgressIndeterminate = false;
 

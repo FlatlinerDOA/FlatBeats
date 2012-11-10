@@ -72,6 +72,9 @@
     <Compile Include="EnumerateSpec.cs" />
     <Compile Include="ObserveExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReactiveAssert.cs" />
+    <Compile Include="ReactiveTest.cs" />
+    <Compile Include="Recorded.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Flatliner.Core\Flatliner.Core.csproj">

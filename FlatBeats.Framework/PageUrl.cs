@@ -1,22 +1,19 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.Framework
+﻿namespace FlatBeats.Framework
 {
+    using System;
+
     public static class PageUrl
     {
         public static Uri UserProfile(string userId)
         {
             return new Uri("/FlatBeatsUsers;component/UserProfilePage.xaml?userid=" + userId, UriKind.Relative);
         }
+
+        public static Uri UserProfile(string userId, string userName)
+        {
+            return new Uri("/FlatBeatsUsers;component/UserProfilePage.xaml?userid=" + userId + "&username=" + Uri.EscapeDataString(userName), UriKind.Relative);
+        }
+
 
         public static Uri Settings()
         {
@@ -38,10 +35,20 @@ namespace FlatBeats.Framework
             return new Uri("/PlayPage.xaml?mix=" + mixId + "&play=" + autoPlay.ToString().ToLowerInvariant(), UriKind.Relative);
         }
 
+        public static Uri Play(string mixId, bool autoPlay, string title)
+        {
+            return new Uri("/PlayPage.xaml?mix=" + mixId + "&play=" + autoPlay.ToString().ToLowerInvariant() + "&title=" + Uri.EscapeDataString(title), UriKind.Relative);
+        }
+
+
         public static Uri Tags()
         {
             return new Uri("/TagsPage.xaml", UriKind.Relative);
         }
 
+        public static bool IsForPage(this Uri url, string pageName)
+        {
+            return url.OriginalString.IndexOf("/" + pageName + ".xaml", StringComparison.OrdinalIgnoreCase) != -1;
+        }
     }
 }

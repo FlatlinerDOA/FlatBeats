@@ -8,6 +8,7 @@
     using Clarity.Phone.Controls;
     using Clarity.Phone.Controls.Animations;
 
+    using FlatBeats.Framework;
     using FlatBeats.ViewModels;
 
     using Flatliner.Phone.ViewModels;
@@ -18,34 +19,51 @@
 
         public UserProfilePage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.AnimationContext = this.LayoutRoot;
             this.trackList.NavigateFunction = navItem => this.NavigationService.NavigateTo(navItem);
-
         }
 
         protected override AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
-            ////if (toOrFrom != null)
-            ////{
-            ////    if (toOrFrom.OriginalString.Contains("MixesPage.xaml"))
-            ////    {
-            ////        if (animationType == AnimationType.NavigateForwardIn)
-            ////        {
-            ////            return new TurnstileFeatherForwardInAnimator() { RootElement = LayoutRoot, ListBox = this.mixesListBox };
-            ////        }
+            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardOut)
+            {
+                return this.GetContinuumAnimation(this.FindName("userNameTextBlock") as FrameworkElement, animationType);
+            }
 
-            ////        return new TurnstileFeatherBackwardInAnimator() { RootElement = LayoutRoot, ListBox = this.mixesListBox };
+            if ((animationType == AnimationType.NavigateForwardOut || animationType == AnimationType.NavigateBackwardIn) && 
+                (toOrFrom.IsForPage("PlayPage") || toOrFrom.IsForPage("UserProfilePage")) && 
+                this.CurrentListBox != null)
+            {
+                return this.GetContinuumAnimation(this.CurrentListBox.ItemContainerGenerator.ContainerFromIndex(this.CurrentListBox.SelectedIndex) as FrameworkElement, animationType);
+            }
 
-            ////    }
-            ////}
-
-            if (animationType == AnimationType.NavigateForwardIn || animationType == AnimationType.NavigateBackwardIn)
+            if (animationType == AnimationType.NavigateBackwardIn)
             {
                 return new SlideUpAnimator() { RootElement = LayoutRoot };
             }
 
             return new SlideDownAnimator() { RootElement = LayoutRoot };
+        }
+
+        public ListBox CurrentListBox
+        {
+            get
+            {
+                switch (pivot.SelectedIndex)
+                {
+                    case 1:
+                        return this.mixesListBox;
+                    case 2:
+                        return this.likedMixesListBox;
+                    case 3:
+                        return this.followsListBox;
+                    case 4:
+                        return this.followedByListBox;
+                }
+
+                return null;
+            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

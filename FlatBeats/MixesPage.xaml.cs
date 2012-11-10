@@ -22,7 +22,7 @@
         {
             if (animationType == AnimationType.NavigateForwardOut || animationType == AnimationType.NavigateBackwardIn)
             {
-                return GetContinuumAnimation(this.CurrentListBox.ItemContainerGenerator.ContainerFromIndex(this.CurrentListBox.SelectedIndex) as FrameworkElement, animationType);
+                return this.GetContinuumAnimation(this.CurrentListBox.ItemContainerGenerator.ContainerFromIndex(this.CurrentListBox.SelectedIndex) as FrameworkElement, animationType);
             }
 
             return base.GetAnimation(animationType, toOrFrom);

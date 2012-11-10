@@ -30,26 +30,35 @@
         /// <param name="value">The source data being passed to the target.</param><param name="targetType">The <see cref="T:System.Type"/> of data expected by the target dependency property.</param><param name="parameter">An optional parameter to be used in the converter logic.</param><param name="culture">The culture of the conversion.</param>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            try
+            {
+                if (value == null)
+                {
+                    return null;
+                }
+
+                var url = GetUrl(value);
+                if (url == null)
+                {
+                    return null;
+                }
+
+                if (!url.OriginalString.EndsWith("nsfw"))
+                {
+                    return new BitmapImage(url)
+                        { CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation };
+                }
+
+                var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
+                var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
+                AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(
+                    b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
+                return pixelated;
+            } 
+            catch (Exception)
             {
                 return null;
             }
-
-            var url = GetUrl(value);
-            if (url == null)
-            {
-                return null;
-            }
-
-            if (!url.OriginalString.EndsWith("nsfw"))
-            {
-                return new BitmapImage(url) { CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation };
-            }
-
-            var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
-            var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
-            AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
-            return pixelated;
         }
 
         private void Pixelate(WriteableBitmap target, Stream source, int startX, int startY, int width, int height, int pixelateSize)

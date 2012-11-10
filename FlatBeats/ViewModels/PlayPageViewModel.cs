@@ -123,6 +123,22 @@ namespace FlatBeats.ViewModels
         public string CreatedByUserId { get; set; }
 
         /// <summary>
+        /// Gets or sets the username of the user that created the mix
+        /// </summary>
+        public string CreatedByUserName
+        {
+            get
+            {
+                if (this.Mix != null)
+                {
+                    return this.Mix.CreatedBy;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets CurrentPanelIndex.
         /// </summary>
         public int CurrentPanelIndex
@@ -230,6 +246,8 @@ namespace FlatBeats.ViewModels
         /// </summary>
         public override void Load()
         {
+           
+
             this.AddToLifetime(
                 this.PlayedPanel.IsPlayingChanges.Where(playing => playing).Subscribe(
                     _ => { this.CurrentPanelIndex = 2; }));
@@ -251,7 +269,6 @@ namespace FlatBeats.ViewModels
             this.MixId = this.NavigationParameters["mix"];
             this.PlayedPanel.PlayOnLoad = this.NavigationParameters.ContainsKey("play")
                                           && this.NavigationParameters["play"] == "true";
-
             this.ShowProgress(StringResources.Progress_Loading);
             IObservable<Unit> login = from settings in this.profileService.GetSettingsAsync().Do(s =>
                                         { 
@@ -266,6 +283,24 @@ namespace FlatBeats.ViewModels
             this.AddToLifetime(
                 login.Concat(loadMix).ObserveOnDispatcher().Subscribe(
                     _ => this.UpdatePinnedState(), this.HandleError, this.LoadCompleted));
+        }
+
+        public string MixName
+        {
+            get
+            {
+                if (this.NavigationParameters.ContainsKey("title"))
+                {
+                    return this.NavigationParameters["title"];
+                }
+
+                if (this.Mix != null)
+                {
+                    return this.Mix.MixName;
+                }
+
+                return string.Empty;
+            }
         }
 
         /// <summary>

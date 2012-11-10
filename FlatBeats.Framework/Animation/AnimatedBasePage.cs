@@ -303,13 +303,13 @@ namespace Clarity.Phone.Controls
 
         public AnimatorHelperBase GetContinuumAnimation(FrameworkElement element, AnimationType animationType)
         {
-            TextBlock nameText;
+            TextBlock nameText = null;
 
             if (element is TextBlock)
             {
                 nameText = element as TextBlock;
             }
-            else
+            else if (element != null)
             {
                 nameText = Flatliner.Phone.Extensions.VisualTreeExtensions.GetVisualDescendants(element).OfType<TextBlock>().FirstOrDefault();
             }
@@ -333,6 +333,7 @@ namespace Clarity.Phone.Controls
                     return new ContinuumBackwardOutAnimator() { RootElement = nameText, LayoutRoot = AnimationContext };
                 }
             }
+
             return null;
         }
 

@@ -14,12 +14,20 @@
         /// 8tracks.com api version number
         /// </summary>
         private const string ApiVersion = "2";
+
+        private const string ApiVersion21 = "2.1";
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mixId"></param>
+        /// <returns></returns>
+        /// <remarks>Include=Length is new in API 2.1</remarks>
         public static Uri Mix(string mixId)
         {
             var mixUrl = string.Format(
-                "http://8tracks.com/mixes/{0}.json?api_version={1}", 
-                mixId, 
+                "http://8tracks.com/mixes/{0}.json?api_version={1}", //&include=length
+                mixId,
                 ApiVersion);
             return new Uri(mixUrl, UriKind.Absolute);
         }        
@@ -95,6 +103,24 @@
                 pageSize, 
                 ApiVersion);
             return new Uri(urlFormat, UriKind.Absolute);
+        }
+
+        /// <summary>
+        /// Gets the currently authenticated users mix history
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>New in API 2.1</remarks>
+        public static Uri HistoryMixes()
+        {
+            /*
+            http://8tracks.com/mix_sets/history.json?include=mixes 
+            http://8tracks.com/mix_sets/feed.json?include=mixes 
+            http://8tracks.com/mix_sets/recommended.json?include=mixes 
+            http://8tracks.com/mix_sets/liked.json?include=mixes 
+            http://8tracks.com/mix_sets/dj.json?include=mixes 
+            */
+
+            return new Uri("http://8tracks.com/mix_sets/history.json?api_version={0}&include=mixes");
         }
 
         /// <summary>
