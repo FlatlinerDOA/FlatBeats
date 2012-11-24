@@ -47,8 +47,8 @@
 
         public static IObservable<TagsResponseContract> GetTagsAsync(int pageNumber)
         {
-            return Downloader.GetDeserializedAsync<TagsResponseContract>(
-                    new Uri("http://8tracks.com/all/mixes/tags.json?sort=recent&tag_page=" + pageNumber));
+            var url = ApiUrl.Tags(pageNumber);
+            return Downloader.GetDeserializedAsync<TagsResponseContract>(url);
         }
     }
 }

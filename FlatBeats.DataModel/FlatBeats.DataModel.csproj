@@ -45,9 +45,6 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Reactive" />
-    <Reference Include="ServiceStack.Text.WP">
-      <HintPath>..\packages\ServiceStack.Text.3.9.27\lib\sl4-windowsphone71\ServiceStack.Text.WP.dll</HintPath>
-    </Reference>
     <Reference Include="System.Observable" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
@@ -136,9 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contracts\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

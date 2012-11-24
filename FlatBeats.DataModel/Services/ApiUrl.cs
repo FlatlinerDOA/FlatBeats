@@ -197,5 +197,14 @@
                 ApiVersion);
             return new Uri(urlFormat, UriKind.Absolute);
         }
+
+        public static Uri Tags(int pageNumber)
+        {
+            return new Uri(
+                string.Format(
+                    "http://8tracks.com/tags.json?sort=recent&page={0}&api_version={1}", 
+                    pageNumber, 
+                    ApiVersion));
+        }
     }
 }

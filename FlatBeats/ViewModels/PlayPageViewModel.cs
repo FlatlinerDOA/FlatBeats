@@ -90,18 +90,31 @@ namespace FlatBeats.ViewModels
                 {
                    Command = new DelegateCommand(this.PinToStart), Text = StringResources.Command_PinToStart 
                 };
+
+            this.ShareCommand =  new CommandLink
+                {
+                    Text = StringResources.Command_ShareMix,
+                    Command = new DelegateCommand(this.Share, () => this.Mix != null)
+                };
             this.ApplicationBarButtonCommands.Add(this.PlayedPanel.PlayPauseCommand);
             this.ApplicationBarButtonCommands.Add(this.PlayedPanel.NextTrackCommand);
             this.ApplicationBarButtonCommands.Add(this.LikeUnlikeCommand);
             this.ApplicationBarMenuCommands.Add(this.ReviewMixCommand);
             this.ApplicationBarMenuCommands.Add(this.PinToStartCommand);
-            this.ApplicationBarMenuCommands.Add(
-                new CommandLink { Text = StringResources.Command_ShareMix, Command = new DelegateCommand(this.Share) });
+            this.ApplicationBarMenuCommands.Add(this.ShareCommand);
 
-            this.ApplicationBarMenuCommands.Add(
-                new CommandLink { Text = StringResources.Command_EmailMix, Command = new DelegateCommand(this.Email) });
+            this.EmailCommand = new CommandLink
+                {
+                    Text = StringResources.Command_EmailMix,
+                    Command = new DelegateCommand(this.Email, () => this.Mix != null)
+                };
+            this.ApplicationBarMenuCommands.Add(this.EmailCommand);
+               
             this.Title = StringResources.Title_Mix;
         }
+
+        public CommandLink ShareCommand { get; set; }
+        public CommandLink EmailCommand { get; set; }
 
         #endregion
 
@@ -310,7 +323,9 @@ namespace FlatBeats.ViewModels
         {
             var task = new ShareLinkTask
                 {
-                   Title = StringResources.Title_ShareMix, Message = this.Mix.MixName, LinkUri = this.Mix.LinkUrl 
+                   Title = StringResources.Title_ShareMix, 
+                   Message = this.Mix.MixName, 
+                   LinkUri = this.Mix.LinkUrl 
                 };
             task.Show();
         }
@@ -420,6 +435,8 @@ namespace FlatBeats.ViewModels
 
             this.UpdatePinnedState();
             this.ReviewMixCommand.RaiseCanExecuteChanged();
+            this.ShareCommand.RaiseCanExecuteChanged();
+            this.EmailCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

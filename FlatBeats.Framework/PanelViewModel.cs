@@ -28,8 +28,7 @@
 
         internal static ErrorMessage GetUnknownErrorMessage(Exception error)
         {
-            return new ErrorMessage(
-                Framework.StringResources.Error_UnknownError_Title, Framework.StringResources.Error_UnknownError_Message) { IsCritical = true };
+            return new ErrorMessage(Framework.StringResources.Error_UnknownError_Title, Framework.StringResources.Error_UnknownError_Message) { IsCritical = true };
         }
 
         internal static ErrorMessage GetSocketErrorMessage(SocketException ex)
@@ -59,8 +58,8 @@
                             return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, Framework.StringResources.Error_ServerUnavailable_Message);
                         case HttpStatusCode.RequestEntityTooLarge:
                         case HttpStatusCode.BadRequest:
-                        case HttpStatusCode.RequestUriTooLong:
                         case HttpStatusCode.InternalServerError:
+                        case HttpStatusCode.RequestUriTooLong:
                         case HttpStatusCode.NotImplemented:
                         case HttpStatusCode.HttpVersionNotSupported:
                             return new ErrorMessage(Framework.StringResources.Error_BadRequest_Title, Framework.StringResources.Error_BadRequest_Message);

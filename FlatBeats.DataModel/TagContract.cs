@@ -12,6 +12,6 @@
         public string Path { get; set; }
 
         [DataMember(Name = "cool_taggings_count")]
-        public int Count { get; set; }
+        public string Count { get; set; }
     }
 }
