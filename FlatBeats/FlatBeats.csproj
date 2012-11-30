@@ -106,6 +106,7 @@
     <Compile Include="ViewModels\MixPlayedTracksViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\PinHelper.cs" />
+    <Compile Include="ViewModels\PlatformHelper.cs" />
     <Compile Include="ViewModels\PlayPageViewModel.cs" />
     <Compile Include="ViewModels\RecentMixViewModel.cs" />
     <Compile Include="ViewModels\ReviewsPanelViewModel.cs" />
