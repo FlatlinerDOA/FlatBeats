@@ -417,15 +417,12 @@ namespace FlatBeats.DataModel.Services
             string urlFormat = isFavourite
                                    ? string.Format("http://8tracks.com/tracks/{0}/fav.json", trackId)
                                    : string.Format("http://8tracks.com/tracks/{0}/unfav.json", trackId);
-            return
-                this.downloader.PostStringAndGetDeserializedAsync<FavouritedTrackResponseContract>(
-                    new Uri(urlFormat, UriKind.Absolute), string.Empty).ToUnit();
+            return this.downloader.PostStringAndGetDeserializedAsync<FavouritedTrackResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty).ToUnit();
         }
 
         public IObservable<FavouritedTrackListResponseContract> GetFavouriteTracksAsync(string userId, int pageNumber, int pageSize)
         {
             string urlFormat = string.Format("http://8tracks.com/users/{0}/favorite_tracks.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-
             return this.downloader.GetDeserializedAsync<FavouritedTrackListResponseContract>(new Uri(urlFormat, UriKind.Absolute));
         }
 

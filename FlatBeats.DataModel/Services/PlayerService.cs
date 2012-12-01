@@ -12,7 +12,6 @@
     using System.Windows.Media.Imaging;
 
     using FlatBeats.DataModel.Profile;
-    using FlatBeats.ViewModels;
 
     using Flatliner.Phone;
 
@@ -195,31 +194,19 @@
             }
 
             return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Do(
-                url =>
-                    {
-                        PinHelper.UpdateFlipTile(
+                url => PinHelper.UpdateFlipTile(
                             title, 
                             backTitle, 
                             mix.MixName, 
                             mix.MixName, 
                             0, 
                             PinHelper.DefaultTileUrl, 
-                            PinHelper.ApplicationTileBackground, 
+                            url, 
                             url,
                             null,
-                            mix.Cover.OriginalUrl, 
-                            null);
-                        ////var newAppTile = new StandardTileData
-                        ////{
-                        ////    BackContent = mix.MixName,
-                        ////    BackTitle = backTitle,
-                        ////    BackBackgroundImage = url,
-                        ////    BackgroundImage = new Uri("Background.png", UriKind.Relative),
-                        ////    Title = title
-                        ////};
-                        ////appTile.Update(newAppTile);
-                        
-                    }).Select(_ => new Unit());
+                            new Uri(url.OriginalString.Replace(".jpg", ".wide.jpg"), UriKind.RelativeOrAbsolute), 
+                            null)
+                    ).Select(_ => new Unit());
         }
         
 
@@ -232,17 +219,39 @@
                          select new PortableUnit();
 
             bitmap.CreateOptions = BitmapCreateOptions.None;
-            bitmap.UriSource = mix.Cover.ThumbnailUrl;
+            if (PlatformHelper.IsWindowsPhone78OrLater)
+            {
+                bitmap.UriSource = mix.Cover.OriginalUrl;
+            }
+            else
+            {
+                bitmap.UriSource = mix.Cover.ThumbnailUrl;
+            }
+            
             return opened.Amb(failed).Select(
                 _ =>
                 {
+                    if (PlatformHelper.IsWindowsPhone78OrLater)
+                    {
+                        ResizeAndFade(bitmap, "NowPlaying.wide.jpg", 691, 336);
+                    }
+                    
                     return ResizeAndFade(bitmap, "NowPlaying.jpg", 173, 173);
                 });
         }
 
         private static Uri ResizeAndFade(BitmapImage bitmap, string fileName, int width, int height)
         {
-            var img = new Image() { Source = bitmap, Stretch = Stretch.Uniform, Opacity = 0.5, Width = width, Height = height };
+            var img = new Image
+                {
+                    Source = bitmap,
+                    Stretch = Stretch.UniformToFill,
+                    Opacity = 0.70,
+                    Width = width,
+                    Height = height,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                };
 
             img.Measure(new Size(width, height));
             img.Arrange(new Rect(0, 0, width, height));
@@ -264,7 +273,7 @@
                 }
             }
 
-            return new Uri("isostore:/Shared/ShellContent/NowPlaying.jpg", UriKind.RelativeOrAbsolute);
+            return new Uri("isostore:/Shared/ShellContent/" + fileName, UriKind.RelativeOrAbsolute);
         }
 
         public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)
@@ -295,10 +304,12 @@
             // If play duration was more than 30 seconds, post the report to Pay The Man
             if (timePlayed < TimeSpan.FromSeconds(30))
             {
-                return ObservableEx.SingleUnit();
+                return AddToMixesPlayedTracks(playing.MixId, new List<TrackContract>() { playing.Set.Track }).ToUnit().Catch<PortableUnit, Exception>(ex => ObservableEx.SingleUnit());
             }
 
+
             var payment = from response in Downloader.GetDeserializedAsync<ResponseContract>(ApiUrl.ReportTrack(playing.PlayToken, playing.MixId, playing.Set.Track.Id))
+                          from mixTrackList in AddToMixesPlayedTracks(playing.MixId, new List<TrackContract>() { playing.Set.Track})
                           select new PortableUnit();
 
             return payment.Catch<PortableUnit, Exception>(ex => ObservableEx.SingleUnit());
@@ -320,11 +331,29 @@
 
         public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
-            var cacheFile = string.Format("mixes/tracks-{0}.json", mix.Id);
             var playedTracks = from playToken in GetOrCreatePlayTokenAsync()
-                               from response in Downloader.GetDeserializedCachedAndRefreshedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id), cacheFile)
-                               select response;
+                               from response in Downloader.GetDeserializedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id))
+                               from updatedList in AddToMixesPlayedTracks(mix.Id, response.Tracks)
+                               select updatedList;
             return playedTracks;
+        }
+
+        public static IObservable<PlayedTracksResponseContract> AddToMixesPlayedTracks(this string mixId, IList<TrackContract> addTracks)
+        {
+            var cacheFile = string.Format("mixes/tracks-{0}.json", mixId);
+            return from updatedList in Storage.LoadJsonAsync<PlayedTracksResponseContract>(cacheFile).Select(
+                        cached =>
+                            {
+                                var trackList = cached ?? new PlayedTracksResponseContract
+                                                        {
+                                                            Tracks = new List<TrackContract>()
+                                                        };
+                                var preserved = addTracks.Concat(trackList.Tracks.Where(u => !addTracks.Any(t => u.Id == t.Id))).ToList();
+                                trackList.Tracks = preserved;
+                                return trackList;
+                            })
+                   from saved in Storage.SaveJsonAsync(cacheFile, updatedList)
+                   select updatedList;
         }
 
         public static IObservable<Uri> GetTrackAddressAsync(TrackContract track)

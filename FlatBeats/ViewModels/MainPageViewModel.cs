@@ -351,23 +351,17 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void PickRandomBackground()
         {
-            var featuredMix = this.Recent.Mixes.FirstOrDefault(p => p.IsNowPlaying) ?? this.Latest.Mixes
-                .Where(mix => !mix.IsExplicit)
-                .Skip(this.random.Next(this.Latest.Mixes.Count - 2))
-                .FirstOrDefault();
-            Uri url;
-            if (featuredMix != null)
-            {
-                url = featuredMix.ImageUrl;
-            }
-            else
-            {
-                url = this.BackgroundImageUrl ?? DefaultBackground;
-            }
-                   
+            var featuredMix =
+                this.Latest.Mixes.Where(mix => !mix.IsExplicit)
+                    .Skip(this.random.Next(this.Latest.Mixes.Count - 2))
+                    .FirstOrDefault();
+             Uri url = this.Recent.Mixes.Where(p => p.IsNowPlaying).Select(p => p.ImageUrl).FirstOrDefault() 
+                 ?? this.BackgroundImageUrl 
+                 ?? (featuredMix != null ? featuredMix.ImageUrl : null) 
+                 ?? DefaultBackground;
             if (this.BackgroundImageUrl != url || this.BackgroundImage == null)
             {
-                if (featuredMix != null)
+                if (!this.Recent.Mixes.Any(p => p.IsNowPlaying) && featuredMix != null)
                 {
                     // No now playing so use the background mix
                     PinHelper.UpdateFlipTile("Flat Beats", featuredMix.MixName, featuredMix.Description, featuredMix.Description, 0, new Uri("/", UriKind.Relative), featuredMix.ThumbnailUrl, featuredMix.ThumbnailUrl, null, featuredMix.ImageUrl, null);

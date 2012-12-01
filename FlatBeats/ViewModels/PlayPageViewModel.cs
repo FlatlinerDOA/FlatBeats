@@ -431,6 +431,7 @@ namespace FlatBeats.ViewModels
             this.mixData = loadMix;
             this.CreatedByUserId = loadMix.User.Id;
             this.Mix = new MixViewModel(loadMix, this.censor);
+            this.OnPropertyChanged("MixName");
             this.UpdateLikedState();
 
             this.UpdatePinnedState();

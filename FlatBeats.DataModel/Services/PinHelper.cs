@@ -1,5 +1,5 @@
 ﻿
-namespace FlatBeats.ViewModels
+namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.Linq;
@@ -10,6 +10,7 @@ namespace FlatBeats.ViewModels
 
     public static class PinHelper
     {
+        private static readonly Uri ResetUrl = new Uri(string.Empty, UriKind.Relative);
         public static readonly Uri DefaultTileUrl = new Uri("/", UriKind.Relative);
 
         public static readonly Uri ApplicationTileBackground = new Uri("appdata:Background.png");
@@ -30,7 +31,7 @@ namespace FlatBeats.ViewModels
             var newAppTile = new StandardTileData()
             {
                 BackContent = string.Empty,
-                BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
+                BackBackgroundImage = ResetUrl,
                 BackTitle = string.Empty,
                 BackgroundImage = ApplicationTileBackground,
                 Title = "Flat Beats"
@@ -53,7 +54,7 @@ namespace FlatBeats.ViewModels
             Uri wideBackBackgroundImage, 
             bool updateWinPhone7 = true)
         {
-            var tileToUpdate = ShellTile.ActiveTiles.FirstOrDefault(tile => tile.NavigationUri == tileUrl);
+            var tileToUpdate = ShellTile.ActiveTiles.FirstOrDefault(tile => tile.NavigationUri.ToString() == tileUrl.ToString());
             if (tileToUpdate == null)
             {
                 return;
@@ -63,24 +64,34 @@ namespace FlatBeats.ViewModels
             {
                 // Get the new FlipTileData type.
                 Type flipTileDataType = Type.GetType("Microsoft.Phone.Shell.FlipTileData, Microsoft.Phone");
-
+                 
                 // Get the ShellTile type so we can call the new version of "Update" that takes the new Tile templates.
                 Type shellTileType = Type.GetType("Microsoft.Phone.Shell.ShellTile, Microsoft.Phone");
+                if (flipTileDataType == null || shellTileType == null)
+                {
+                    return;
+                }
 
                 // Get the constructor for the new FlipTileData class and assign it to our variable to hold the Tile properties.
-                var updateTileData = flipTileDataType.GetConstructor(new Type[] { }).Invoke(null);
+                var c = flipTileDataType.GetConstructor(new Type[] { });
+                if (c == null)
+                {
+                    return;
+                }
+
+                var updateTileData = c.Invoke(null);
 
                 // Set the properties. 
-                SetProperty(updateTileData, "Title", title);
+                SetProperty(updateTileData, "Title", title ?? string.Empty);
                 SetProperty(updateTileData, "Count", count);
-                SetProperty(updateTileData, "BackTitle", backTitle);
-                SetProperty(updateTileData, "BackContent", backContent);
-                SetProperty(updateTileData, "SmallBackgroundImage", smallBackgroundImage);
-                SetProperty(updateTileData, "BackgroundImage", backgroundImage);
-                SetProperty(updateTileData, "BackBackgroundImage", backBackgroundImage);
-                SetProperty(updateTileData, "WideBackgroundImage", wideBackgroundImage);
-                SetProperty(updateTileData, "WideBackBackgroundImage", wideBackBackgroundImage);
-                SetProperty(updateTileData, "WideBackContent", wideBackContent);
+                SetProperty(updateTileData, "BackTitle", backTitle ?? string.Empty);
+                SetProperty(updateTileData, "BackContent", backContent ?? string.Empty);
+                SetProperty(updateTileData, "SmallBackgroundImage", smallBackgroundImage ?? ResetUrl);
+                SetProperty(updateTileData, "BackgroundImage", backgroundImage ?? ResetUrl);
+                SetProperty(updateTileData, "BackBackgroundImage", backBackgroundImage ?? ResetUrl);
+                SetProperty(updateTileData, "WideBackgroundImage", wideBackgroundImage ?? ResetUrl);
+                SetProperty(updateTileData, "WideBackBackgroundImage", wideBackBackgroundImage ?? ResetUrl);
+                SetProperty(updateTileData, "WideBackContent", wideBackContent ?? string.Empty);
 
                 // Invoke the new version of ShellTile.Update.
                 shellTileType.GetMethod("Update").Invoke(tileToUpdate, new[] { updateTileData });
@@ -89,12 +100,12 @@ namespace FlatBeats.ViewModels
             {
                 var newAppTile = new StandardTileData
                 {
-                    BackContent = backContent,
+                    BackContent = backContent ?? string.Empty,
                     Count = count,
-                    BackTitle = backTitle,
-                    BackBackgroundImage = backBackgroundImage,
-                    BackgroundImage = backgroundImage,
-                    Title = title
+                    BackTitle = backTitle ?? string.Empty,
+                    BackBackgroundImage = backBackgroundImage ?? ResetUrl,
+                    BackgroundImage = backgroundImage ?? ResetUrl,
+                    Title = title ?? string.Empty
                 };
 
                 tileToUpdate.Update(newAppTile);
@@ -119,7 +130,7 @@ namespace FlatBeats.ViewModels
 
         private static Uri GetPlayPageUrl(MixContract mix)
         {
-            return new Uri("/PlayPage.xaml?mix=" + mix.Id, UriKind.Relative);
+            return new Uri("/PlayPage.xaml?mix=" + mix.Id + "&title=" + Uri.EscapeDataString(mix.Name), UriKind.Relative);
         }
 
         public static void PinToStart(MixContract mix)
@@ -131,10 +142,10 @@ namespace FlatBeats.ViewModels
                     tileUrl,
                     new StandardTileData
                     {
-                        Title = mix.Name,
-                        BackContent = mix.Description,
-                        BackgroundImage = mix.Cover.ThumbnailUrl,
-                        BackTitle = mix.Name
+                        Title = mix.Name ?? string.Empty,
+                        BackContent = mix.Description ?? string.Empty,
+                        BackgroundImage = mix.Cover.ThumbnailUrl ?? ResetUrl,
+                        BackTitle = mix.Name ?? string.Empty
                     });
 
                 UpdateFlipTile(mix.Name, mix.Name, mix.Description, mix.Description, mix.TrackCount, tileUrl, mix.Cover.ThumbnailUrl, mix.Cover.ThumbnailUrl, null, mix.Cover.OriginalUrl, null, false);
@@ -143,7 +154,7 @@ namespace FlatBeats.ViewModels
 
         public static void UnpinFromStart(MixContract mix)
         {
-            var tile = ShellTile.ActiveTiles.FirstOrDefault(t => t.NavigationUri == GetPlayPageUrl(mix));
+            var tile = ShellTile.ActiveTiles.FirstOrDefault(t => t.NavigationUri.ToString() == GetPlayPageUrl(mix).ToString());
             if (tile != null)
             {
                 tile.Delete();
