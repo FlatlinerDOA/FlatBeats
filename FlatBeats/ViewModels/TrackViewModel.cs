@@ -78,8 +78,8 @@ namespace FlatBeats.ViewModels
         /// </param>
         public TrackViewModel(TrackContract track) : this()
         {
-            this.title = track.Name;
-            this.artist = track.Artist;
+            this.title = (track.Name ?? string.Empty).Trim();
+            this.artist = (track.Artist ?? string.Empty).Trim();
             this.Id = track.Id;
             const string Pattern = @"\((.|\n)*?\)";
 

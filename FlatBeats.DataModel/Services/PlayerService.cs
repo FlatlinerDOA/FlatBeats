@@ -12,6 +12,7 @@
     using System.Windows.Media.Imaging;
 
     using FlatBeats.DataModel.Profile;
+    using FlatBeats.ViewModels;
 
     using Flatliner.Phone;
 
@@ -183,28 +184,12 @@
 
         public static void ResetNowPlayingTile()
         {
-            var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
-            if (appTile == null)
-            {
-                return;
-            }
-
-            var newAppTile = new StandardTileData()
-            {
-                BackContent = string.Empty,
-                BackBackgroundImage = new Uri(string.Empty, UriKind.Relative),
-                BackTitle = string.Empty,
-                BackgroundImage = new Uri("appdata:Background.png"),
-                Title = "Flat Beats"
-            };
-
-            appTile.Update(newAppTile);
+            PinHelper.ResetApplicationTile();
         }
 
         public static IObservable<Unit> SetNowPlayingTileAsync(PlayingMixContract mix, string title, string backTitle)
         {
-            var appTile = ShellTile.ActiveTiles.Where(tile => tile.NavigationUri == new Uri("/", UriKind.Relative)).FirstOrDefault();
-            if (appTile == null)
+            if (!PinHelper.IsApplicationPinnedToStart())
             {
                 return Observable.Empty<Unit>();
             }
@@ -212,15 +197,28 @@
             return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Do(
                 url =>
                     {
-                        var newAppTile = new StandardTileData
-                            {
-                                BackContent = mix.MixName,
-                                BackTitle = backTitle,
-                                BackBackgroundImage = url,
-                                BackgroundImage = new Uri("Background.png", UriKind.Relative),
-                                Title = title 
-                            };
-                        appTile.Update(newAppTile);
+                        PinHelper.UpdateFlipTile(
+                            title, 
+                            backTitle, 
+                            mix.MixName, 
+                            mix.MixName, 
+                            0, 
+                            PinHelper.DefaultTileUrl, 
+                            PinHelper.ApplicationTileBackground, 
+                            url,
+                            null,
+                            mix.Cover.OriginalUrl, 
+                            null);
+                        ////var newAppTile = new StandardTileData
+                        ////{
+                        ////    BackContent = mix.MixName,
+                        ////    BackTitle = backTitle,
+                        ////    BackBackgroundImage = url,
+                        ////    BackgroundImage = new Uri("Background.png", UriKind.Relative),
+                        ////    Title = title
+                        ////};
+                        ////appTile.Update(newAppTile);
+                        
                     }).Select(_ => new Unit());
         }
         
@@ -238,37 +236,35 @@
             return opened.Amb(failed).Select(
                 _ =>
                 {
-                    var img = new Image()
-                    {
-                        Source = bitmap,
-                        Stretch = Stretch.Uniform,
-                        Opacity = 0.5,
-                        Width = 173,
-                        Height = 173
-                    };
-
-                    img.Measure(new Size(173, 173));
-                    img.Arrange(new Rect(0, 0, 173, 173));
-                    var wb = new WriteableBitmap(173, 173);
-                    wb.Render(img, new TranslateTransform());
-                    wb.Invalidate();
-                    using (var isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        if (!isolatedStorageFile.DirectoryExists("Images"))
-                        {
-                            isolatedStorageFile.CreateDirectory("Images");
-                        }
-
-                        using (var file = isolatedStorageFile.CreateFile("/Shared/ShellContent/NowPlaying.jpg"))
-                        {
-                            wb.SaveJpeg(file, 173, 173, 0, 85);
-                            file.Flush();
-                            file.Close();
-                        }
-                    }
-
-                    return new Uri("isostore:/Shared/ShellContent/NowPlaying.jpg", UriKind.RelativeOrAbsolute);
+                    return ResizeAndFade(bitmap, "NowPlaying.jpg", 173, 173);
                 });
+        }
+
+        private static Uri ResizeAndFade(BitmapImage bitmap, string fileName, int width, int height)
+        {
+            var img = new Image() { Source = bitmap, Stretch = Stretch.Uniform, Opacity = 0.5, Width = width, Height = height };
+
+            img.Measure(new Size(width, height));
+            img.Arrange(new Rect(0, 0, width, height));
+            var wb = new WriteableBitmap(width, height);
+            wb.Render(img, new TranslateTransform());
+            wb.Invalidate();
+            using (var isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!isolatedStorageFile.DirectoryExists("Images"))
+                {
+                    isolatedStorageFile.CreateDirectory("Images");
+                }
+
+                using (var file = isolatedStorageFile.CreateFile("/Shared/ShellContent/" + fileName))
+                {
+                    wb.SaveJpeg(file, width, height, 0, 85);
+                    file.Flush();
+                    file.Close();
+                }
+            }
+
+            return new Uri("isostore:/Shared/ShellContent/NowPlaying.jpg", UriKind.RelativeOrAbsolute);
         }
 
         public static IObservable<PlayResponseContract> NextTrackAsync(this PlayingMixContract playing, BackgroundAudioPlayer player)

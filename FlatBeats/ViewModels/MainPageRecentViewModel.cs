@@ -47,7 +47,7 @@
                                           vm.IsNowPlaying = playing != null && playing.MixId == mix.Id;
                                       }) 
                               select recentlyPlayed;
-            return recentMixes.FinallySelect(
+            return recentMixes.ObserveOnDispatcher().FinallySelect(
                     () =>
                     {
                         if (this.Mixes.Count == 0)

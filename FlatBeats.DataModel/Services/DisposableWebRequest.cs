@@ -5,7 +5,7 @@
 
     public sealed class DisposableWebRequest : WebRequest, IDisposable
     {
-        private readonly WebRequest request;
+        private readonly HttpWebRequest request;
 
         private volatile bool disposed = false;
 

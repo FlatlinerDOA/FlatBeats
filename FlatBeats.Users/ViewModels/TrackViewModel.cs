@@ -74,8 +74,8 @@ namespace FlatBeats.Users.ViewModels
 
         public void Load(TrackContract track, bool censor)
         {
-            this.title = track.Name;
-            this.artist = track.Artist;
+            this.title = (track.Name ?? string.Empty).Trim();
+            this.artist = (track.Artist ?? string.Empty).Trim();
             this.Id = track.Id;
             const string Pattern = @"\((.|\n)*?\)";
 
