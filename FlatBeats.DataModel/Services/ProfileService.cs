@@ -34,11 +34,11 @@ namespace FlatBeats.DataModel.Services
 
         /// <summary>
         /// </summary>
-        private const string LikedMixesCacheFile = "/cache/{0}/liked-{1}.json";
+        private const string LikedMixesCacheFile = "/cache/{0}/liked-{1}-{2}.json";
 
         /// <summary>
         /// </summary>
-        private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}.json";
+        private const string MixFeedCacheFile = "/cache/{0}/mixfeed-{1}-{2}.json";
 
         /// <summary>
         /// </summary>
@@ -218,7 +218,7 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<MixesResponseContract> GetLikedMixesAsync(string userId, int pageNumber, int pageSize)
         {
-            string cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber);
+            string cacheFile = string.Format(LikedMixesCacheFile, userId, pageNumber, pageSize);
             return
                 this.downloader.GetDeserializedCachedAndRefreshedAsync<MixesResponseContract>(
                     ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile).NotNull();
@@ -236,7 +236,7 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<MixesResponseContract> GetMixFeedAsync(string userId, int pageNumber, int pageSize)
         {
-            string cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber);
+            string cacheFile = string.Format(MixFeedCacheFile, userId, pageNumber, pageSize);
             return
                 this.downloader.GetDeserializedCachedAndRefreshedAsync<MixesResponseContract>(
                     ApiUrl.UserMixes(userId, "mix_feed", pageNumber, pageSize), cacheFile).NotNull();

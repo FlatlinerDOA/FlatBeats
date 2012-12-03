@@ -1,16 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace FlatBeats.DataModel.Data
+﻿namespace FlatBeats.DataModel.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.IsolatedStorage;
@@ -23,7 +13,7 @@ namespace FlatBeats.DataModel.Data
     using Microsoft.Phone.Reactive;
     using Flatliner.Functional;
 
-    public class JsonFileRepository<T> : IAsyncRepository<T> where T : class
+    public sealed class JsonFileRepository<T> : IAsyncRepository<T> where T : class
     {
         private readonly Func<T, string> getKeyFromItem;
 

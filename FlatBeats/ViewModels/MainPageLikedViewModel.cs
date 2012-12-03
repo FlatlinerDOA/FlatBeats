@@ -4,6 +4,7 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
 
@@ -94,7 +95,7 @@ namespace FlatBeats.ViewModels
                        select (IList<MixContract>)page.Mixes;
             }
 
-            return from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
+            return from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize).Do(m => Debug.WriteLine("Liked : Page {0} of {1} actual {2}", pageNumber, pageSize, m.Mixes != null ? m.Mixes.Count : 0))
                    select (IList<MixContract>)page.Mixes;
         }
 

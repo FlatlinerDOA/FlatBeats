@@ -82,6 +82,26 @@
                 Scheduler.ThreadPool);
         }
 
+        ////public IObservable<PortableUnit> SaveProtoBufAsync<T>(string file, T data) where T : class
+        ////{
+        ////    return ObservableEx.DeferredStart(
+        ////        () =>
+        ////        {
+        ////            lock (this.syncRoot)
+        ////            {
+        ////                using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+        ////                {
+        ////                    this.CreateFolderForFile(storage, file);
+        ////                    using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
+        ////                    {
+        ////                        ProtoBuf.Serializer.Serialize(fileStream, data);
+        ////                    }
+        ////                }
+        ////            }
+        ////        },
+        ////        Scheduler.ThreadPool);
+        ////}
+
         public IObservable<PortableUnit> SaveStringAsync(string file, string text)
         {
             return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool);
@@ -100,8 +120,7 @@
                             return default(T);
                         }
 
-                        using (
-                            var input = new IsolatedStorageFileStream(
+                        using (var input = new IsolatedStorageFileStream(
                                 filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
                         {
                             return Json<T>.Instance.DeserializeFromStream(input);
@@ -111,6 +130,30 @@
             }, 
             Scheduler.ThreadPool);
         }
+
+        ////public IObservable<T> LoadProtoBufAsync<T>(string filePath) where T : class
+        ////{
+        ////    return ObservableEx.DeferredStart(() =>
+        ////    {
+        ////        lock (this.syncRoot)
+        ////        {
+        ////            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+        ////            {
+        ////                if (!storage.FileExists(filePath))
+        ////                {
+        ////                    return default(T);
+        ////                }
+
+        ////                using (var input = new IsolatedStorageFileStream(
+        ////                        filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
+        ////                {
+        ////                    return ProtoBuf.Serializer.Deserialize<T>(input);
+        ////                }
+        ////            }
+        ////        }
+        ////    },
+        ////    Scheduler.ThreadPool);
+        ////}
 
         public IObservable<string> LoadStringAsync(string file)
         {

@@ -175,7 +175,7 @@
                                 .Do(
                                 _ => this.OnLoadPageCompleted(), 
                                 this.OnLoadPageCompleted)
-                                .ContinueWhile(r => r != null && r.Count == this.PageSize, this.StopLoadingPages)
+                                .ContinueWhile(r => r != null && r.Count != 0, this.StopLoadingPages)
                             where response != null
                             select response;
             return getItems.Do(

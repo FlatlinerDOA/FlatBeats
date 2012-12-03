@@ -16,6 +16,7 @@
         IObservable<PortableUnit> SaveStringAsync(string filePath, string text);
 
         IObservable<PortableUnit> SaveJsonAsync<T>(string filePath, T data) where T : class;
+        ////IObservable<PortableUnit> SaveProtoBufAsync<T>(string filePath, T data) where T : class;
 
         /// <summary>
         /// TODO: Make async
@@ -38,6 +39,7 @@
         Stream ReadStream(string filePath);
 
         IObservable<T> LoadJsonAsync<T>(string filePath) where T : class;
+        ////IObservable<T> LoadProtoBufAsync<T>(string filePath) where T : class;
 
         IObservable<string> LoadStringAsync(string filePath);
     }

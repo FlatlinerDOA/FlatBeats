@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvatarContract.cs" />
+    <Compile Include="Data\ProtobufFileRepository.cs" />
     <Compile Include="FavouritedTrackListResponseContract.cs" />
     <Compile Include="Services\DownloadExtensions.cs" />
     <Compile Include="Services\FunctionalAsyncDownloader.cs" />
