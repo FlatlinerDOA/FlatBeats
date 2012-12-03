@@ -1,6 +1,8 @@
 <MarketplaceDetails>
-  <SmallAppTile>SmallApplicationTile.png</SmallAppTile>
+  <SmallAppTile>MarketplaceTile.png</SmallAppTile>
   <LargeAppTile>LargeApplicationTile.png</LargeAppTile>
   <PCAppTile>MarketplaceTile.png</PCAppTile>
-  <ScreenShots>1_5_Screen1.png;1_5_Screen2.png;1_5_Screen3.png;1_5_Screen4.png;1_5_Screen8.png;1_5_Screen5.png;1_5_Screen7.png;1_5_Screen9.png;</ScreenShots>
+  <ScreenShots>1_5_Screen1.png;1_5_Screen2.png;1_5_Screen3.png;1_5_Screen4.png;1_5_Screen8.png;1_5_Screen5.png;1_5_Screen7.png;Settings.png;</ScreenShots>
+  <ScreenShotsWXGA>;;;;;;;;</ScreenShotsWXGA>
+  <ScreenShots720P>;;;;;;;;</ScreenShots720P>
 </MarketplaceDetails>
