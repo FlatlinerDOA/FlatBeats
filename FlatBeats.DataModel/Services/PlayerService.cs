@@ -183,24 +183,24 @@
 
         public static void ResetNowPlayingTile()
         {
-            PinHelper.ResetApplicationTile();
+            BackgroundPinService.ResetApplicationTile();
         }
 
         public static IObservable<Unit> SetNowPlayingTileAsync(PlayingMixContract mix, string title, string backTitle)
         {
-            if (!PinHelper.IsApplicationPinnedToStart())
+            if (!BackgroundPinService.IsApplicationPinnedToStart())
             {
                 return Observable.Empty<Unit>();
             }
 
             return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Do(
-                url => PinHelper.UpdateFlipTile(
+                url => BackgroundPinService.UpdateFlipTile(
                             title, 
                             backTitle, 
                             mix.MixName, 
                             mix.MixName, 
                             0, 
-                            PinHelper.DefaultTileUrl, 
+                            BackgroundPinService.DefaultTileUrl, 
                             url, 
                             url,
                             null,

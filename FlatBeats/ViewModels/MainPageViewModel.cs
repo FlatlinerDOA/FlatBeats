@@ -364,7 +364,7 @@ namespace FlatBeats.ViewModels
                 if (!this.Recent.Mixes.Any(p => p.IsNowPlaying) && featuredMix != null)
                 {
                     // No now playing so use the background mix
-                    PinHelper.UpdateFlipTile("Flat Beats", featuredMix.MixName, featuredMix.Description, featuredMix.Description, 0, new Uri("/", UriKind.Relative), featuredMix.ThumbnailUrl, featuredMix.ThumbnailUrl, null, featuredMix.ImageUrl, null);
+                    BackgroundPinService.UpdateFlipTile("Flat Beats", featuredMix.MixName, featuredMix.Description, featuredMix.Description, 0, new Uri("/", UriKind.Relative), featuredMix.ThumbnailUrl, featuredMix.ThumbnailUrl, null, featuredMix.ImageUrl, null);
                 }
 
                 this.BackgroundImageUrl = url;

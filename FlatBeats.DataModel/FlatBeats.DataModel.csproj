@@ -99,7 +99,7 @@
     <Compile Include="Services\IProfileService.cs" />
     <Compile Include="Services\ISerializer.cs" />
     <Compile Include="Services\MixesService.cs" />
-    <Compile Include="Services\PinHelper.cs" />
+    <Compile Include="Services\BackgroundPinService.cs" />
     <Compile Include="Services\PlatformHelper.cs" />
     <Compile Include="Services\PlayerService.cs" />
     <Compile Include="TagContract.cs" />

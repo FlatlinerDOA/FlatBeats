@@ -18,6 +18,7 @@ namespace FlatBeats.ViewModels
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Services;
     using FlatBeats.Framework;
+    using FlatBeats.Services;
 
     using Flatliner.Phone;
     using Flatliner.Phone.ViewModels;
@@ -458,13 +459,13 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void PinToStart()
         {
-            if (PinHelper.IsPinned(this.mixData))
+            if (ForegroundPinService.IsPinned(this.mixData))
             {
-                PinHelper.UnpinFromStart(this.mixData);
+                ForegroundPinService.UnpinFromStart(this.mixData);
             }
             else
             {
-                PinHelper.PinToStart(this.mixData);
+                ForegroundPinService.PinToStart(this.mixData);
             }
 
             this.UpdatePinnedState();
@@ -513,7 +514,7 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void UpdatePinnedState()
         {
-            if (PinHelper.IsPinned(this.mixData))
+            if (BackgroundPinService.IsPinned(this.mixData))
             {
                 this.PinToStartCommand.Text = StringResources.Command_UnpinStart;
             }
