@@ -36,7 +36,7 @@
                         Grid.Row="0"
                         Margin="12,17,0,0">
                 <TextBlock x:Name="ApplicationTitle"
-                           Text="FLAT BEATS - VERSION 1.6"
+                           Text="FLAT BEATS - VERSION 1.7"
                            Style="{StaticResource PhoneTextNormalStyle}" />
                 <TextBlock x:Name="PageTitle"
                            Text="about"
@@ -81,6 +81,30 @@
                                          Padding="0,12,12,12"
                                          Click="HyperlinkButton_Click"
                                          Tag="rate:application" />
+                        <TextBlock Text="8-tracks"
+                                   FontWeight="Bold"
+                                   Margin="8,16,8,4" />
+                        <HyperlinkButton HorizontalAlignment="Left"
+                                         Content="Privacy Policy"
+                                         Margin="-3,8,0,8"
+                                         Background="Transparent"
+                                         Padding="0,12,12,12"
+                                         Click="HyperlinkButton_Click"
+                                         Tag="http://8tracks.com/privacy/" />
+                        <HyperlinkButton HorizontalAlignment="Left"
+                                         Content="Licensing"
+                                         Margin="-3,8,0,8"
+                                         Background="Transparent"
+                                         Padding="0,12,12,12"
+                                         Click="HyperlinkButton_Click"
+                                         Tag="http://8tracks.com/licensing/" />
+                        <HyperlinkButton HorizontalAlignment="Left"
+                                         Content="Terms"
+                                         Margin="-3,8,0,8"
+                                         Background="Transparent"
+                                         Padding="0,12,12,12"
+                                         Click="HyperlinkButton_Click"
+                                         Tag="http://8tracks.com/terms/" />
                         <TextBlock Text="Artwork"
                                    FontWeight="Bold"
                                    Margin="8,16,8,4" />
@@ -103,7 +127,7 @@
                                          Click="HyperlinkButton_Click" />
                         <TextBlock Margin="0,0,20,0"
                                    Text="Copyright (c) Andrew Chisholm 2011"
-                                   Padding="8,0,0,0"
+                                   Padding="8,0,0,40"
                                    Style="{StaticResource PhoneTextSmallStyle}" />
                     </StackPanel>
                 </ScrollViewer>
