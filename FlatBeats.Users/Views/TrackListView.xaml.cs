@@ -20,11 +20,16 @@
 
         private void ButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
-            this.NavigateFunction(navItem);
+            try
+            {
+                var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+                this.NavigateFunction(navItem);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         public Action<INavigationItem> NavigateFunction { get; set; }
-
     }
 }

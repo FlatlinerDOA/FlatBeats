@@ -65,7 +65,7 @@
         public static Uri MixReviews(string mixId, int pageNumber, int perPage)
         {
             var urlFormat = string.Format(
-                "http://8tracks.com/mixes/{0}/reviews.json?&page={1}&per_page={2}&api_version={3}",
+                "http://8tracks.com/mixes/{0}/reviews.json?page={1}&per_page={2}&api_version={3}",
                 mixId,
                 pageNumber,
                 perPage, 

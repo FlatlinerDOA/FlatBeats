@@ -127,20 +127,38 @@
 
         private void UserButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(PageUrl.UserProfile(this.PageViewModel.CreatedByUserId, this.PageViewModel.CreatedByUserName));
+            try
+            {
+                this.NavigationService.Navigate(PageUrl.UserProfile(this.PageViewModel.CreatedByUserId, this.PageViewModel.CreatedByUserName));
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
+            try
+            {
+                var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+                this.NavigationService.NavigateTo(navItem);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
 
         private void ButtonTap(object sender, GestureEventArgs e)
         {
-            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
+            try
+            {
+                var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+                this.NavigationService.NavigateTo(navItem);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
     }
 }

@@ -48,6 +48,11 @@
 
         public static bool IsForPage(this Uri url, string pageName)
         {
+            if (url == null || pageName == null)
+            {
+                return false;
+            }
+
             return url.OriginalString.IndexOf("/" + pageName + ".xaml", StringComparison.OrdinalIgnoreCase) != -1;
         }
     }

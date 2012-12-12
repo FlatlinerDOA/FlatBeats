@@ -277,7 +277,8 @@ namespace FlatBeats.ViewModels
                 // Get what is currently playing and report it
                 this.AddToLifetime((from playing in PlayerService.LoadNowPlayingAsync()
                                    from _ in playing.AddToMixTrackHistoryAsync(this.Player.Track.Duration)
-                                   select _).Finally(this.StartPlayingMixFromBeginning).Subscribe());
+                                   select _).Finally(this.StartPlayingMixFromBeginning).Subscribe(
+                                       _ => { }, this.HandleError));
                 return;
             }
 
@@ -383,7 +384,7 @@ namespace FlatBeats.ViewModels
                 this.Player = BackgroundAudioPlayer.Instance;
                 this.AddToLifetime(
                     Observable.FromEvent<EventArgs>(this.Player, "PlayStateChanged").Subscribe(
-                        _ => this.UpdatePlayerState()));
+                        _ => this.UpdatePlayerState(), this.HandleError));
             } 
             catch (ArgumentException)
             {
@@ -489,7 +490,7 @@ namespace FlatBeats.ViewModels
                 this.refreshSubscription.Dispose();
             }
 
-            this.refreshSubscription = Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(_ => this.UpdatePlayingProgress());
+            this.refreshSubscription = Observable.Interval(TimeSpan.FromSeconds(1), Scheduler.Dispatcher).Subscribe(_ => this.UpdatePlayingProgress(), this.HandleError);
             this.AddToLifetime(this.refreshSubscription);
         }
 
@@ -733,13 +734,13 @@ namespace FlatBeats.ViewModels
         /// </summary>
         private void UpdatePlayingProgress()
         {
-            if (!this.IsPlayingTrackTheCurrentTrack)
-            {
-                return;
-            }
-
             try
             {
+                if (!this.IsPlayingTrackTheCurrentTrack)
+                {
+                    return;
+                }
+
                 var track = this.Player.Track;
                 if (track == null)
                 {
@@ -756,7 +757,6 @@ namespace FlatBeats.ViewModels
                 sb.Append(duration.ToFormattedString());
                 this.ProgressStatusText = sb.ToString();
                 this.IsProgressIndeterminate = false;
-
             }
             catch (Exception)
             {

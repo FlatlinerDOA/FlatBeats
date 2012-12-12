@@ -20,8 +20,14 @@
 
         private void ListBoxTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
+            try
+            {
+                var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+                this.NavigationService.NavigateTo(navItem);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)

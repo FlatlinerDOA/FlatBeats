@@ -161,7 +161,7 @@ namespace FlatBeats.ViewModels
                 this.Popular.IsInProgressChanges
             };
 
-            this.AddToLifetime(progress.Merge().Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(progress.Merge().Subscribe(_ => this.UpdateIsInProgress(), this.HandleError));
             ////if (this.IsDataLoaded && this.Tag == loadTag && this.SearchQuery == loadQuery)
             ////{
             ////    return;

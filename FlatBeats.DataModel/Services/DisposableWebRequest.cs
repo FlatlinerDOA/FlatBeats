@@ -120,7 +120,14 @@
 
         public override void Abort()
         {
-            this.request.Abort();
+            try
+            {
+                this.request.Abort();
+            }
+            catch (ObjectDisposedException)
+            {
+                // HACK: Ignore disposed Dispatcher.
+            }
         }
 
         public void Dispose()

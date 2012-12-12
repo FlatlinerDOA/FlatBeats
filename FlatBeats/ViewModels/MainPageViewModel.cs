@@ -199,7 +199,7 @@ namespace FlatBeats.ViewModels
                    this.Liked.IsInProgressChanges, this.Recent.IsInProgressChanges, this.Latest.IsInProgressChanges 
                 };
 
-            this.AddToLifetime(progressSources.Merge().Subscribe(_ => this.UpdateIsInProgress()));
+            this.AddToLifetime(progressSources.Merge().Subscribe(_ => this.UpdateIsInProgress(), this.HandleError));
 
             if (this.IsDataLoaded)
             {

@@ -79,8 +79,14 @@
 
         private void ListBoxTap(object sender, GestureEventArgs e)
         {
-            var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
-            this.NavigationService.NavigateTo(navItem);
+            try
+            {
+                var navItem = ((FrameworkElement)e.OriginalSource).DataContext as INavigationItem;
+                this.NavigationService.NavigateTo(navItem);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         private void ButtonTap(object sender, GestureEventArgs e)

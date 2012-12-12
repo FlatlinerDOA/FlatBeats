@@ -260,7 +260,7 @@ namespace FlatBeats.DataModel.Services
                 {
                     Debug.WriteLine("GET " + address.OriginalString);
                     return Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)();
-                });
+                }).Catch<WebResponse, WebException>(DownloadExtensions.HandleWebException<WebResponse>);
         }
 
         /// <summary>
