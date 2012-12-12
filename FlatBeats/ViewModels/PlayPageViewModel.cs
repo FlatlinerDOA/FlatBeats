@@ -407,7 +407,11 @@ namespace FlatBeats.ViewModels
             this.UpdateLikedState();
             this.ShowProgress(StringResources.Progress_Loading);
             this.profileService.SetMixLikedAsync(this.MixId, this.Mix.Liked).ObserveOnDispatcher().Subscribe(
-                _ => { }, this.HandleError, this.HideProgress);
+                _ =>
+                {
+                    // HACK: To force reloading the main liked page
+                    MainPageLikedViewModel.ForceReload = true;
+                }, this.HandleError, this.HideProgress);
         }
 
         /// <summary>

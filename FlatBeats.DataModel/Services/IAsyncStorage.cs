@@ -34,6 +34,12 @@
         /// <summary>
         /// TODO: Make async
         /// </summary>
+        /// <param name="searchPattern"></param>
+        void DeleteFiles(string searchPattern);
+
+        /// <summary>
+        /// TODO: Make async
+        /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
         Stream ReadStream(string filePath);

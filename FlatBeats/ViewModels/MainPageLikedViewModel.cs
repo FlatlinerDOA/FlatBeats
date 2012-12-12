@@ -18,6 +18,8 @@ namespace FlatBeats.ViewModels
 
     public sealed class MainPageLikedViewModel : InfiniteScrollPanelViewModel<MixViewModel, MixContract>
     {
+        public static bool ForceReload = false;
+        
         private readonly ProfileService profileService;
 
         private string loadedList;
@@ -51,12 +53,13 @@ namespace FlatBeats.ViewModels
         {
             return from _ in this.profileService.GetSettingsAsync().ObserveOnDispatcher().Do(s =>
                     {
-                        this.censor = s.CensorshipEnabled;
-                        if ((this.loadedList != null && this.loadedList != s.PreferredList) || (this.UserId != this.loadedUserId))
+                        if (ForceReload || (this.loadedList != null && this.loadedList != s.PreferredList) || (this.UserId != this.loadedUserId) || this.censor != s.CensorshipEnabled)
                         {
+                            ForceReload = false;
                             this.Reset();
                         }
 
+                        this.censor = s.CensorshipEnabled;
                         this.loadedList = s.PreferredList;
                         this.loadedUserId = this.UserId;
                         switch (this.loadedList)
@@ -108,7 +111,19 @@ namespace FlatBeats.ViewModels
         {
             if (this.Items.Count == 0)
             {
-                this.Message = StringResources.Message_NoLikedMixes;
+                switch (this.loadedList)
+                {
+                    case PreferredLists.Created:
+                        this.Message = StringResources.Message_YouHaveNoMixes;
+                        break;
+                    case PreferredLists.MixFeed:
+                        this.Message = StringResources.Message_NoMixesInFeed;
+                        break;
+                    default:
+                        this.Message = string.IsNullOrEmpty(this.loadedUserId) ? StringResources.Message_NoLikedMixes : StringResources.Message_YouHaveNoLikedMixes;
+                        break;
+                }
+
                 this.ShowMessage = true;
             }
             else

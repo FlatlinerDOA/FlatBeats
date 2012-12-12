@@ -224,6 +224,13 @@ namespace FlatBeats.DataModel.Services
                     ApiUrl.UserMixes(userId, "liked", pageNumber, pageSize), cacheFile).NotNull();
         }
 
+        public IObservable<PortableUnit> DeleteLikedMixesCacheAsync(string userId)
+        {
+            string cacheFile = string.Format("/cache/{0}/liked-*.json", userId);
+            this.storage.DeleteFiles(cacheFile);
+            return Observable.Return(new PortableUnit());
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="userId">
@@ -396,12 +403,13 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<PortableUnit> SetMixLikedAsync(string mixId, bool isLiked)
         {
-            string urlFormat = isLiked
-                                   ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId)
-                                   : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
-            return
-                this.downloader.PostStringAndGetDeserializedAsync<LikedMixResponseContract>(
-                    new Uri(urlFormat, UriKind.Absolute), string.Empty).ToUnit();
+            string urlFormat = isLiked ? string.Format("http://8tracks.com/mixes/{0}/like.json", mixId)
+                                       : string.Format("http://8tracks.com/mixes/{0}/unlike.json", mixId);
+            return (from save in this.downloader.PostStringAndGetDeserializedAsync<LikedMixResponseContract>(new Uri(urlFormat, UriKind.Absolute), string.Empty)
+                    from token in this.LoadUserTokenAsync()
+                    where token != null && token.CurrentUser != null
+                    from refreshedCache in this.DeleteLikedMixesCacheAsync(token.CurrentUser.Id)
+                    select new PortableUnit()).DefaultIfEmpty(new PortableUnit());
         }
 
         /// <summary>

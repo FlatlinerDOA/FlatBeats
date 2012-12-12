@@ -470,7 +470,7 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mixes found, make sure you&apos;re following someone to see what they&apos;re creating..
+        ///   Looks up a localized string similar to No mixes in your feed, make sure you&apos;re following someone to see what they&apos;re creating..
         /// </summary>
         public static string Message_NoMixesInFeed {
             get {

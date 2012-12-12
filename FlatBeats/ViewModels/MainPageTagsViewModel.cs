@@ -18,6 +18,7 @@
         {
             this.Tags = new ObservableCollection<TagViewModel>();
             this.Title = StringResources.Title_Tags;
+            this.Message = StringResources.Progress_Loading;
         }
 
         /// <summary>
@@ -30,6 +31,15 @@
         {
             var tagList = TagViewModel.SplitAndMergeIntoTags(mixes.Select(m => m.Tags).NotNullOrEmpty()).OrderBy(t => t.TagName).ToList();
             tagList.Add(new TagViewModel("more..."));
+
+            if (tagList.Count == 0)
+            {
+                this.Message = StringResources.Error_NoNetwork_Message;
+            }
+            else
+            {
+                this.Message = null;
+            }
 
             this.Tags.Clear();
             foreach (var tagViewModel in tagList.SetListItemPositions())

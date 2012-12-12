@@ -219,6 +219,18 @@
             }
         }
 
+        public void DeleteFiles(string searchPattern)
+        {
+            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                foreach (var fileName in storage.GetFileNames(searchPattern))
+                {
+                    var fullPath = Path.Combine(Path.GetDirectoryName(searchPattern) ?? "/", fileName);
+                    storage.DeleteFile(fullPath);
+                }
+            }
+        }
+
         private void CreateFolderForFile(IsolatedStorageFile storage, string filePath)
         {
             var folder = Path.GetDirectoryName(filePath);
