@@ -506,6 +506,15 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sorry couldn&apos;t find any tags right now, try using the search to find mixes by tag instead..
+        /// </summary>
+        public static string Message_NoTagsFound {
+            get {
+                return ResourceManager.GetString("Message_NoTagsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This person hasn&apos;t found any tracks they like yet..
         /// </summary>
         public static string Message_UserHasNoFavoriteTracks {

@@ -202,9 +202,52 @@
         {
             return new Uri(
                 string.Format(
-                    "http://8tracks.com/tags.json?sort=recent&page={0}&api_version={1}", 
+                    "http://8tracks.com/tags.json?page={0}&api_version={1}",
+                    pageNumber,
+                    ApiVersion)); 
+            ////return new Uri(
+            ////    string.Format(
+            ////        "http://8tracks.com/tags.json?sort=recent&page={0}&api_version={1}", 
+            ////        pageNumber, 
+            ////        ApiVersion));
+        }
+
+        public static Uri FollowsUsers(string userId, int pageNumber, int pageSize)
+        {
+            return new Uri(
+                string.Format(
+                    "http://8tracks.com/users/{0}/follows_users.json?page={1}&per_page={2}&api_version={3}", 
+                    userId, 
                     pageNumber, 
-                    ApiVersion));
+                    pageSize, 
+                    ApiVersion), 
+                UriKind.Absolute);
+        }
+
+        public static Uri FollowedByUsers(string userId, int pageNumber, int pageSize)
+        {
+            return
+                new Uri(
+                    string.Format(
+                        "http://8tracks.com/users/{0}/followed_by_users.json?page={1}&per_page={2}&api_version={3}",
+                        userId,
+                        pageNumber,
+                        pageSize,
+                        ApiVersion),
+                    UriKind.Absolute);
+        }
+
+        public static Uri FavouriteTracks(string userId, int pageNumber, int pageSize)
+        {
+            return
+                new Uri(
+                    string.Format(
+                        "http://8tracks.com/users/{0}/favorite_tracks.json?page={1}&per_page={2}&api_version={3}",
+                        userId,
+                        pageNumber,
+                        pageSize,
+                        ApiVersion),
+                    UriKind.Absolute);
         }
     }
 }

@@ -17,7 +17,7 @@
         /// </summary>
         public Page(IList<T> items, int pageNumber, int pageSize)
         {
-            this.Items = items;
+            this.Items = items ?? new List<T>();
             this.PageNumber = pageNumber;
             this.PageSize = pageSize;
         }

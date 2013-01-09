@@ -43,7 +43,7 @@ namespace FlatBeats.Users.ViewModels
         {
             if (this.UserId == null)
             {
-                return Observable.Empty<IList<MixContract>>();
+                return Observable.Return<IList<MixContract>>(new List<MixContract>());
             }
 
             return this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize).Select(p => (IList<MixContract>)p.Mixes);

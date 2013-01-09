@@ -400,4 +400,7 @@ Link:
   <data name="Error_BackgroundAudioPlayer_Title" xml:space="preserve">
     <value>Audio Playback not Available</value>
   </data>
+  <data name="Message_NoTagsFound" xml:space="preserve">
+    <value>Sorry couldn't find any tags right now, try using the search to find mixes by tag instead.</value>
+  </data>
 </root>

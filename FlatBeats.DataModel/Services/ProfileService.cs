@@ -176,14 +176,7 @@ namespace FlatBeats.DataModel.Services
         public IObservable<FollowingUserResponseContract> GetFollowedByUsersAsync(
             string userId, int pageNumber, int pageSize)
         {
-            string urlFormat = string.Format(
-                "http://8tracks.com/users/{0}/followed_by_users.json?page={1}&per_page={2}", 
-                userId, 
-                pageNumber, 
-                pageSize);
-            return
-                this.downloader.GetDeserializedAsync<FollowingUserResponseContract>(
-                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return this.downloader.GetDeserializedAsync<FollowingUserResponseContract>(ApiUrl.FollowedByUsers(userId, pageNumber, pageSize)).NotNull().Catch(Observable.Return(new FollowingUserResponseContract()));
         }
 
         /// <summary>
@@ -199,11 +192,7 @@ namespace FlatBeats.DataModel.Services
         public IObservable<FollowingUserResponseContract> GetFollowsUsersAsync(
             string userId, int pageNumber, int pageSize)
         {
-            string urlFormat = string.Format(
-                "http://8tracks.com/users/{0}/follows_users.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return
-                this.downloader.GetDeserializedAsync<FollowingUserResponseContract>(
-                    new Uri(urlFormat, UriKind.RelativeOrAbsolute));
+            return this.downloader.GetDeserializedAsync<FollowingUserResponseContract>(ApiUrl.FollowsUsers(userId, pageNumber, pageSize)).NotNull().Catch(Observable.Return(new FollowingUserResponseContract()));
         }
 
         /// <summary>
@@ -430,8 +419,7 @@ namespace FlatBeats.DataModel.Services
 
         public IObservable<FavouritedTrackListResponseContract> GetFavouriteTracksAsync(string userId, int pageNumber, int pageSize)
         {
-            string urlFormat = string.Format("http://8tracks.com/users/{0}/favorite_tracks.json?page={1}&per_page={2}", userId, pageNumber, pageSize);
-            return this.downloader.GetDeserializedAsync<FavouritedTrackListResponseContract>(new Uri(urlFormat, UriKind.Absolute));
+            return this.downloader.GetDeserializedAsync<FavouritedTrackListResponseContract>(ApiUrl.FavouriteTracks(userId, pageNumber, pageSize)).NotNull().Catch(Observable.Return(new FavouritedTrackListResponseContract()));
         }
 
         #endregion

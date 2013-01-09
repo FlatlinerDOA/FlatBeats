@@ -27,7 +27,7 @@
         public ReviewsPanelViewModel(ProfileService profileService)
         {
             this.profileService = profileService;
-            this.Title = Framework.StringResources.Title_Reviews;
+            this.Title = StringResources.Title_Reviews;
         }
 
         public IObservable<Unit> LoadAsync(string mixId)
@@ -44,7 +44,6 @@
         protected override IObservable<IList<ReviewContract>> GetPageOfItemsAsync(int pageNumber, int pageSize)
         {
             return MixesService.GetMixReviewsAsync(this.MixId, pageNumber, pageSize)
-                .Where(r => r.Reviews != null)
                 .Select(r => (IList<ReviewContract>)r.Reviews);
         }
 

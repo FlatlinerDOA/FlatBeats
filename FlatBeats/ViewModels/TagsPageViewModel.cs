@@ -75,8 +75,9 @@
             }
 
             this.ShowProgress(StringResources.Progress_Loading);
-            var tagViewModels = from pageNumber in Observable.Range(1, 5)
+            var tagViewModels = from pageNumber in Observable.Range(1, 5, Scheduler.Immediate)
                                 from response in MixesService.GetTagsAsync(pageNumber)
+                                where response != null && response.Tags != null
                                 from tag in response.Tags.ToObservable()
                                 select new TagViewModel(tag.Name);
 
@@ -87,7 +88,18 @@
                 { 
                     var t = new TagsByFirstLetter(list);
                     this.Tags = t;
+
                     this.LoadCompleted();
+
+                    if (list.Count == 0)
+                    {
+                        this.Message = StringResources.Message_NoTagsFound;
+                        this.ShowMessage = true;
+                    }
+                    else
+                    {
+                        this.Message = null;
+                    }
                 });
         }
 

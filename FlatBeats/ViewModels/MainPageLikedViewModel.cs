@@ -83,7 +83,7 @@ namespace FlatBeats.ViewModels
         {
             if (this.UserId == null)
             {
-                return Observable.Empty<IList<MixContract>>();
+                return Observable.Return<IList<MixContract>>(new List<MixContract>());
             }
 
             if (this.loadedList == PreferredLists.Created)
@@ -98,7 +98,10 @@ namespace FlatBeats.ViewModels
                        select (IList<MixContract>)page.Mixes;
             }
 
-            return from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize).Do(m => Debug.WriteLine("Liked : Page {0} of {1} actual {2}", pageNumber, pageSize, m.Mixes != null ? m.Mixes.Count : 0))
+            return from page in this.profileService.GetLikedMixesAsync(this.UserId, pageNumber, pageSize)
+#if DEBUG
+                       .Do(m => Debug.WriteLine("Liked : Page {0} of {1} actual {2}", pageNumber, pageSize, m.Mixes != null ? m.Mixes.Count : 0))
+#endif
                    select (IList<MixContract>)page.Mixes;
         }
 

@@ -67,19 +67,26 @@
             return ObservableEx.DeferredStart(
                 () =>
                 {
-                    lock (this.syncRoot)
+                    try
                     {
-                        using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+                        lock (this.syncRoot)
                         {
-                            this.CreateFolderForFile(storage, file);
-                            using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
+                            using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
                             {
-                                Json<T>.Instance.SerializeToStream(data, fileStream);
+                                this.CreateFolderForFile(storage, file);
+                                using (IsolatedStorageFileStream fileStream = storage.CreateFile(file))
+                                {
+                                    Json<T>.Instance.SerializeToStream(data, fileStream);
+                                }
                             }
                         }
                     }
-                }, 
-                Scheduler.ThreadPool);
+                    catch (IsolatedStorageException inner)
+                    {
+                        throw new IsolatedStorageException("Could not SaveJsonAsync to file '" + file + "'", inner);
+                    }
+                },
+                Scheduler.ThreadPool).Retry(2);
         }
 
         ////public IObservable<PortableUnit> SaveProtoBufAsync<T>(string file, T data) where T : class
@@ -104,31 +111,39 @@
 
         public IObservable<PortableUnit> SaveStringAsync(string file, string text)
         {
-            return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool);
+            return ObservableEx.DeferredStart(() => this.Save(file, text), Scheduler.ThreadPool).Retry(2);
         }
 
         public IObservable<T> LoadJsonAsync<T>(string filePath) where T : class
         {
             return ObservableEx.DeferredStart(() =>
             {
-                lock (this.syncRoot)
+                try
                 {
-                    using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
+                    lock (this.syncRoot)
                     {
-                        if (!storage.FileExists(filePath))
+                        using (var storage = IsolatedStorageFile.GetUserStoreForApplication())
                         {
-                            return default(T);
-                        }
+                            if (!storage.FileExists(filePath))
+                            {
+                                return default(T);
+                            }
 
-                        using (var input = new IsolatedStorageFileStream(
-                                filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
-                        {
-                            return Json<T>.Instance.DeserializeFromStream(input);
+                            using (
+                                var input = new IsolatedStorageFileStream(
+                                    filePath, FileMode.Open, FileAccess.Read, FileShare.Read, storage))
+                            {
+                                return Json<T>.Instance.DeserializeFromStream(input);
+                            }
                         }
                     }
                 }
-            }, 
-            Scheduler.ThreadPool);
+                catch (IsolatedStorageException inner)
+                {
+                    throw new IsolatedStorageException("Could not LoadJsonAsync for file '" + filePath + "'", inner);
+                }
+            },
+            Scheduler.ThreadPool).Retry(2);
         }
 
         ////public IObservable<T> LoadProtoBufAsync<T>(string filePath) where T : class
@@ -157,7 +172,7 @@
 
         public IObservable<string> LoadStringAsync(string file)
         {
-            return ObservableEx.DeferredStart(() => this.Load(file), Scheduler.ThreadPool);
+            return ObservableEx.DeferredStart(() => this.Load(file), Scheduler.ThreadPool).Retry(2);
         }
 
         /// <summary>

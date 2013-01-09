@@ -43,7 +43,7 @@
         {
             if (this.UserId == null)
             {
-                return Observable.Empty<IList<TrackContract>>();
+                return Observable.Return<IList<TrackContract>>(new List<TrackContract>());
             }
 
             return this.profileService.GetFavouriteTracksAsync(this.UserId, pageNumber, pageSize).Select(p => (IList<TrackContract>)p.Tracks);

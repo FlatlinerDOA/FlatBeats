@@ -87,6 +87,12 @@
                         obj = (T)this.Serializer.ReadObject(json);
 #endif
                     }
+                    catch (InvalidDataContractException)
+                    {
+                    }
+                    catch (InvalidCastException)
+                    {
+                    }
                     catch (SerializationException)
                     {
                     }

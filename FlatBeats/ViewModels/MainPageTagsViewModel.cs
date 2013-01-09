@@ -35,6 +35,7 @@
             if (tagList.Count == 0)
             {
                 this.Message = StringResources.Error_NoNetwork_Message;
+                this.ShowMessage = true;
             }
             else
             {

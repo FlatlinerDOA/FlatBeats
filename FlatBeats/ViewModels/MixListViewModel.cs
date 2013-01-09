@@ -51,7 +51,7 @@
                     .Select(r => (IList<MixContract>)r.Mixes);
             }
 
-            return Observable.Empty<IList<MixContract>>();
+            return Observable.Return<IList<MixContract>>(new List<MixContract>());
         }
 
         protected override void LoadItem(MixViewModel viewModel, MixContract data)

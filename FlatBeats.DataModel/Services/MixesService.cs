@@ -1,6 +1,7 @@
 ﻿namespace FlatBeats.DataModel.Services
 {
     using System;
+    using System.Net;
 
     using Flatliner.Phone;
     using Microsoft.Phone.Reactive;
@@ -15,7 +16,7 @@
 
         public static IObservable<ReviewsResponseContract> GetMixReviewsAsync(string mixId, int pageNumber, int perPage)
         {
-            return Downloader.GetDeserializedAsync<ReviewsResponseContract>(ApiUrl.MixReviews(mixId, pageNumber, perPage)).NotNull();
+            return Downloader.GetDeserializedAsync<ReviewsResponseContract>(ApiUrl.MixReviews(mixId, pageNumber, perPage)).Catch<ReviewsResponseContract>(Observable.Return(new ReviewsResponseContract())).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetLatestMixesAsync()
@@ -47,8 +48,7 @@
 
         public static IObservable<TagsResponseContract> GetTagsAsync(int pageNumber)
         {
-            var url = ApiUrl.Tags(pageNumber);
-            return Downloader.GetDeserializedAsync<TagsResponseContract>(url);
+            return Downloader.GetDeserializedAsync<TagsResponseContract>(ApiUrl.Tags(pageNumber));
         }
     }
 }
