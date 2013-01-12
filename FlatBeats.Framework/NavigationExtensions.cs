@@ -103,7 +103,14 @@ namespace FlatBeats.ViewModels
             }
             else
             {
-                navService.Navigate(url);
+                try
+                {
+                    navService.Navigate(url);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Thrown when task is not in the foreground.
+                }
             }
         }
     }

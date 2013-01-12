@@ -80,14 +80,22 @@
 
         private void NavigateToPage()
         {
-            if (this.page == null)
+            try
             {
-                return;
-            }
+                if (this.page == null)
+                {
+                    return;
+                }
 
-            var root = (FrameworkElement)Application.Current.RootVisual;
-            root.DataContext = ((Selector)this.AssociatedObject).SelectedItem;
-            this.page.NavigationService.Navigate(new Uri("/" + this.Page.OriginalString, UriKind.RelativeOrAbsolute));
+                var root = (FrameworkElement)Application.Current.RootVisual;
+                root.DataContext = ((Selector)this.AssociatedObject).SelectedItem;
+                this.page.NavigationService.Navigate(
+                    new Uri("/" + this.Page.OriginalString, UriKind.RelativeOrAbsolute));
+            }
+            catch (InvalidOperationException)
+            {
+                // Ignore if app is no longer active.
+            }
         }
     }
 }

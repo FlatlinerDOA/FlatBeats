@@ -110,7 +110,14 @@ namespace FlatBeats
             }
 
             this.Searches.OnNext(this.searchText.Text);
-            this.Navigation.Navigate(PageUrl.SearchMixes(this.searchText.Text));
+            try
+            {
+                this.Navigation.Navigate(PageUrl.SearchMixes(this.searchText.Text));
+            }
+            catch (InvalidOperationException)
+            {
+                // Thrown when task is not in the foreground.
+            }
         }
     }
 }
