@@ -84,26 +84,32 @@
             this.playMixId = null;
             if (e.NavigationMode == NavigationMode.New && NavigationContext.QueryString.ContainsKey(PlayMixKey))
             {
-                // We were launched from a history item.
-                // Change _playingSong even if something was already playing 
-                // because the user directly chose a song history item.
-
-                // Use the navigation context to find the song by name.
-                this.playMixId = NavigationContext.QueryString[PlayMixKey];
-
-                // Set a flag to indicate that we were started from a 
-                // history item and that we should immediately start 
-                // playing the song once the UI has finished loading.
-                this.historyItemLaunch = true;
-
-                if (this.historyItemLaunch)
+                try
                 {
-                    this.NavigationService.Navigate(PageUrl.Play(this.playMixId, true));
+                    // We were launched from a history item.
+                    // Change _playingSong even if something was already playing 
+                    // because the user directly chose a song history item.
+
+                    // Use the navigation context to find the song by name.
+                    this.playMixId = NavigationContext.QueryString[PlayMixKey];
+
+                    // Set a flag to indicate that we were started from a 
+                    // history item and that we should immediately start 
+                    // playing the song once the UI has finished loading.
+                    this.historyItemLaunch = true;
+
+                    if (this.historyItemLaunch)
+                    {
+                        this.NavigationService.Navigate(PageUrl.Play(this.playMixId, true));
+                    }
+
+                    return;
                 }
-
-                return;
+                catch (InvalidOperationException)
+                {
+                    // Couldn't navigate we're probably being closed
+                }
             }
-
 
             base.OnNavigatedTo(e);
         }
@@ -129,9 +135,17 @@
                 .Subscribe(
                     q =>
                         {
-                            if (q.EventArgs.PopUpResult == PopUpResult.Ok && !string.IsNullOrWhiteSpace(q.EventArgs.Result))
+                            try
                             {
-                                this.NavigationService.Navigate(PageUrl.SearchMixes(q.EventArgs.Result));
+                                if (q.EventArgs.PopUpResult == PopUpResult.Ok
+                                    && !string.IsNullOrWhiteSpace(q.EventArgs.Result))
+                                {
+                                    this.NavigationService.Navigate(PageUrl.SearchMixes(q.EventArgs.Result));
+                                }
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                // Couldn't navigate we're probably being closed
                             }
                         });
             
@@ -141,7 +155,14 @@
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(PageUrl.Settings());
+            try
+            {
+                this.NavigationService.Navigate(PageUrl.Settings());
+            }
+            catch (InvalidOperationException)
+            {
+                // Couldn't navigate we're probably being closed
+            }
         }
 
         private void ListBoxTap(object sender, GestureEventArgs e)
