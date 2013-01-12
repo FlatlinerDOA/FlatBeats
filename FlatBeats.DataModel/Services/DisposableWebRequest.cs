@@ -112,10 +112,8 @@
             {
                 return this.request.EndGetResponse(asyncResult);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public override void Abort()
