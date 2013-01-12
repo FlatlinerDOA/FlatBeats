@@ -13,8 +13,11 @@ namespace FlatBeats.DataModel.Services
 
     using Flatliner.Phone;
 
+    using Microsoft.Phone.Net.NetworkInformation;
     using Microsoft.Phone.Reactive;
     using Flatliner.Functional;
+
+    using NetworkInterface = System.Net.NetworkInformation.NetworkInterface;
 
     /// <summary>
     /// </summary>
@@ -254,6 +257,11 @@ namespace FlatBeats.DataModel.Services
 
         private IObservable<WebResponse> WebRequestAsync(Uri address, bool noCache)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                return Observable.Throw<WebResponse>(new WebException("Network is not available"));
+            }
+
             return Observable.Using(
                 () => this.CreateRequest(address, noCache),
                 r =>

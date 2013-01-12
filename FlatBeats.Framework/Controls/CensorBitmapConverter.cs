@@ -3,6 +3,7 @@
     using System;
     using System.Globalization;
     using System.IO;
+    using System.Net;
     using System.Windows.Data;
     using System.Windows.Media.Imaging;
 
@@ -52,7 +53,11 @@
                 var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
                 var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
                 AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(
-                    b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize));
+                    b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize),
+                    ex =>
+                    {
+                        // Image failed to download who cares!
+                    });
                 return pixelated;
             } 
             catch (Exception)
