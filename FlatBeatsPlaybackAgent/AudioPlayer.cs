@@ -214,12 +214,19 @@ namespace FlatBeatsPlaybackAgent
             switch (action)
             {
                 case UserAction.Stop:
-                    if (player.PlayerState != PlayState.Paused || !PlayerService.NowPlayingExists())
+                    try
                     {
-                        this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
-                                          from __ in this.StopPlayingAsync(player)
-                                          select __).Finally(this.Completed).Subscribe());
-                        return;
+                        if (player.PlayerState != PlayState.Paused || !PlayerService.NowPlayingExists())
+                        {
+                            this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
+                                               from __ in this.StopPlayingAsync(player)
+                                               select __).Finally(this.Completed).Subscribe());
+                            return;
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Uh oh background resources not available.
                     }
 
                     break;
@@ -364,15 +371,23 @@ namespace FlatBeatsPlaybackAgent
                 return this.StopPlayingAsync(player);
             }
 
-            if (player.PlayerState == PlayState.Paused && player.Track.Tag.StartsWith(this.NowPlaying.MixId + "|"))
+            try
             {
-                Debug.WriteLine("Player: PlayTrackAsync (Resume from Paused)");
+                if (player.PlayerState == PlayState.Paused && player.Track.Tag.StartsWith(this.NowPlaying.MixId + "|"))
+                {
+                    Debug.WriteLine("Player: PlayTrackAsync (Resume from Paused)");
 
-                // If we're paused, we already have 
-                // the track set, so just resume playing.
-                player.Volume = 1;
-                player.Play();
+                    // If we're paused, we already have 
+                    // the track set, so just resume playing.
+                    player.Volume = 1;
+                    player.Play();
 
+                    return ObservableEx.SingleUnit();
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Background audio resources not available
                 return ObservableEx.SingleUnit();
             }
 

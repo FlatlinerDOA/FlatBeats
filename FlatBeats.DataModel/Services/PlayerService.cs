@@ -53,9 +53,16 @@
         private static TimeSpan GetPlayedDuration(BackgroundAudioPlayer player)
         {
             TimeSpan playedDuration = TimeSpan.Zero;
-            if (player.PlayerState != PlayState.Unknown && player.Track != null)
+            try
             {
-                playedDuration = player.Position;
+                if (player.PlayerState != PlayState.Unknown && player.Track != null)
+                {
+                    playedDuration = player.Position;
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Background audio resources no longer available
             }
 
             return playedDuration;

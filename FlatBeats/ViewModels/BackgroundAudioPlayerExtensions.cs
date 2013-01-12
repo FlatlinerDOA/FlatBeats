@@ -9,7 +9,17 @@ namespace FlatBeats.ViewModels
     {
         public static IObservable<PlayState> PlayStateChanges(this BackgroundAudioPlayer player)
         {
-            var events = Observable.FromEvent<EventArgs>(player, "PlayStateChanged").Select(_ => player.PlayerState);
+            var events = Observable.FromEvent<EventArgs>(player, "PlayStateChanged").Select(_ =>
+                {
+                    try
+                    {
+                        return player.PlayerState;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        return PlayState.Error;
+                    }
+                });
             return events;
         }
 

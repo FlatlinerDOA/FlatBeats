@@ -750,22 +750,28 @@ namespace FlatBeats.Users.ViewModels
             {
                 return;
             }
-
-            PlayState playState = BackgroundAudioPlayer.Instance.PlayerState;
-            switch (playState)
+            try
             {
-                case PlayState.Paused:
-                case PlayState.Playing:
-                case PlayState.BufferingStarted:
-                case PlayState.BufferingStopped:
-                case PlayState.TrackReady:
-                case PlayState.TrackEnded:
-                case PlayState.Rewinding:
-                case PlayState.FastForwarding:
-                    BackgroundAudioPlayer.Instance.Stop();
-                    break;
-                default:
-                    break;
+                PlayState playState = BackgroundAudioPlayer.Instance.PlayerState;
+                switch (playState)
+                {
+                    case PlayState.Paused:
+                    case PlayState.Playing:
+                    case PlayState.BufferingStarted:
+                    case PlayState.BufferingStopped:
+                    case PlayState.TrackReady:
+                    case PlayState.TrackEnded:
+                    case PlayState.Rewinding:
+                    case PlayState.FastForwarding:
+                        BackgroundAudioPlayer.Instance.Stop();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Background audio resources no longer available
             }
 
             this.ShowProgress(StringResources.Progress_Loading);
