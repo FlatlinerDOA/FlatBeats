@@ -11,6 +11,11 @@
 
         public static Uri UserProfile(string userId, string userName)
         {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return UserProfile(userId);
+            }
+
             return new Uri("/FlatBeatsUsers;component/UserProfilePage.xaml?userid=" + userId + "&username=" + Uri.EscapeDataString(userName), UriKind.Relative);
         }
 
@@ -37,6 +42,11 @@
 
         public static Uri Play(string mixId, bool autoPlay, string title)
         {
+            if (string.IsNullOrEmpty(title))
+            {
+                return Play(mixId, autoPlay);
+            }
+
             return new Uri("/PlayPage.xaml?mix=" + mixId + "&play=" + autoPlay.ToString().ToLowerInvariant() + "&title=" + Uri.EscapeDataString(title), UriKind.Relative);
         }
 
