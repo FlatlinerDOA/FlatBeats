@@ -21,7 +21,7 @@
 
         public static IObservable<MixesResponseContract> GetLatestMixesAsync()
         {
-            return Downloader.GetDeserializedAsync<MixesResponseContract>(ApiUrl.LatestMixes()).NotNull(); //, LatestMixesCacheFile);
+            return Downloader.GetDeserializedCachedAndRefreshedAsync<MixesResponseContract>(ApiUrl.LatestMixes(), LatestMixesCacheFile).NotNull();
         }
 
         public static IObservable<MixesResponseContract> GetHistoryMixesAsync()

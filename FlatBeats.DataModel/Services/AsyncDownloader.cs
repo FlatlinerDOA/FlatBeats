@@ -118,9 +118,10 @@ namespace FlatBeats.DataModel.Services
             }
 
             return sequence.Concat(
-                from cache in this.GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream)
+                (from cache in this.GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream)
                 from _ in this.storage.SaveJsonAsync(cacheFile, cache)
-                select cache);
+                select cache)
+                .Catch<T, WebException>(ex => Observable.Empty<T>()));
         }
 
 
