@@ -296,18 +296,19 @@ namespace FlatBeats.ViewModels
                     {
                         this.NowPlaying = m;
                     })
-                    from _ in this.NowPlaying.SaveNowPlayingAsync().ObserveOn(Scheduler.Dispatcher)
+                    from _ in this.NowPlaying.SaveNowPlayingAsync().ObserveOnDispatcher()
                     .Do(_ =>
                     {
                         try
                         {
                             this.Player.Play();
-                            this.UpdateIsNowPlaying();
                         } 
-                        catch (InvalidOperationException ioEx)
+                        catch (InvalidOperationException)
                         {
-                            this.HandleError(ioEx);
+                            this.HideProgress();
                         }
+
+                        this.UpdateIsNowPlaying();
                     })
                     select true;
 
