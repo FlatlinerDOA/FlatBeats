@@ -339,7 +339,7 @@
         public static IObservable<PlayedTracksResponseContract> PlayedTracksAsync(this MixContract mix)
         {
             var playedTracks = from playToken in GetOrCreatePlayTokenAsync()
-                               from response in Downloader.GetDeserializedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id))
+                               from response in Downloader.GetDeserializedAsync<PlayedTracksResponseContract>(ApiUrl.PlayedTracks(playToken, mix.Id)).NotNull()
                                from updatedList in AddToMixesPlayedTracks(mix.Id, response.Tracks)
                                select updatedList;
             return playedTracks;

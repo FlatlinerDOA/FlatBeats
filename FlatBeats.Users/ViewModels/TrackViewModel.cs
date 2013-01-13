@@ -79,8 +79,8 @@ namespace FlatBeats.Users.ViewModels
             this.Id = track.Id;
             const string Pattern = @"\((.|\n)*?\)";
 
-            var simplifiedArtistName = Regex.Replace(track.Artist, Pattern, string.Empty);
-            var simplifiedTrackName = Regex.Replace(track.Name, Pattern, string.Empty);
+            var simplifiedArtistName = track.Artist != null ? Regex.Replace(track.Artist, Pattern, string.Empty) : string.Empty;
+            var simplifiedTrackName = track.Name != null ? Regex.Replace(track.Name, Pattern, string.Empty) : string.Empty;
             this.NavigationUrl = new Uri("music://zune?" + simplifiedArtistName + " " + simplifiedTrackName, UriKind.Absolute);
             this.IsFavourite = track.IsFavourite;
         }
