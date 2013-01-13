@@ -33,6 +33,11 @@
             return source.Where(x => x != null);
         }
 
+        public static IObservable<T> Coalesce<T>(this IObservable<T> source, Func<T> defaultValue) where T : class
+        {
+            return source.Select(x => x ?? defaultValue());
+        }
+
         public static IObservable<PortableUnit> ToUnit<T>(this IObservable<T> source)
         {
             return source.Select(_ => Unit);
