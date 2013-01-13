@@ -3,6 +3,8 @@
     using System;
     using System.Net;
 
+    using SharpGIS;
+
     public sealed class DisposableWebRequest : WebRequest, IDisposable
     {
         private readonly HttpWebRequest request;
@@ -11,7 +13,8 @@
 
         public DisposableWebRequest(Uri url)
         {
-            this.request = HttpWebRequest.CreateHttp(url);
+            this.request = WebRequest.CreateHttp(url);
+            this.request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip"; 
         }
 
         public override IAsyncResult BeginGetRequestStream(AsyncCallback callback, object state)
@@ -110,7 +113,16 @@
         {
             if (!this.disposed)
             {
-                return this.request.EndGetResponse(asyncResult);
+                var response = this.request.EndGetResponse(asyncResult);
+                // Response would be GZipWebResponse would be the case if WebRequestCreator was also used
+                if (response != null && 
+                    !(response is GZipWebClient.GZipWebResponse) && 
+                    response.Headers[HttpRequestHeader.ContentEncoding] == "gzip")
+                {
+                    return new GZipWebClient.GZipWebResponse(response); //If gzipped response, uncompress
+                }
+
+                return response;
             }
 
             return null;

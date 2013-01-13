@@ -54,22 +54,29 @@ namespace FlatBeats.DataModel.Services
         private static Exception ConvertWebException(WebException webException)
         {
             Exception newError = webException;
-            if (webException.Response != null)
+            try
             {
-                using (var s = webException.Response.GetResponseStream())
+                if (webException.Response != null)
                 {
-                    var b = new MemoryStream();
-                    s.CopyTo(b);
-                    b.Position = 0;
-                    using (var sr = new StreamReader(b))
+                    using (var s = webException.Response.GetResponseStream())
                     {
-                        var response = Json<ResponseContract>.Instance.DeserializeFromString(sr.ReadToEnd());
-                        if (response != null)
+                        var b = new MemoryStream();
+                        s.CopyTo(b);
+                        b.Position = 0;
+                        using (var sr = new StreamReader(b))
                         {
-                            newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                            var response = Json<ResponseContract>.Instance.DeserializeFromString(sr.ReadToEnd());
+                            if (response != null)
+                            {
+                                newError = new ServiceException(response.Errors, webException, response.ResponseStatus);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                // Ignore all at this point
             }
 
             return newError;

@@ -62,6 +62,7 @@
     <Compile Include="Services\DownloadExtensions.cs" />
     <Compile Include="Services\FunctionalAsyncDownloader.cs" />
     <Compile Include="Services\FunctionalAsyncStorage.cs" />
+    <Compile Include="Services\GZipWebClient.cs" />
     <Compile Include="Services\IAsyncDownloader.cs" />
     <Compile Include="Services\IAsyncStorage.cs" />
     <Compile Include="CoverUrlContract.cs" />
@@ -102,6 +103,15 @@
     <Compile Include="Services\BackgroundPinService.cs" />
     <Compile Include="Services\PlatformHelper.cs" />
     <Compile Include="Services\PlayerService.cs" />
+    <Compile Include="Services\ZLib\Crc32.cs" />
+    <Compile Include="Services\ZLib\FlushType.cs" />
+    <Compile Include="Services\ZLib\GZipStream.cs" />
+    <Compile Include="Services\ZLib\Inflate.cs" />
+    <Compile Include="Services\ZLib\InfTree.cs" />
+    <Compile Include="Services\ZLib\ZLib.cs" />
+    <Compile Include="Services\ZLib\ZLibCodec.cs" />
+    <Compile Include="Services\ZLib\ZLibConstants.cs" />
+    <Compile Include="Services\ZLib\ZLibStream.cs" />
     <Compile Include="TagContract.cs" />
     <Compile Include="UserProfileResponseContract.cs" />
     <Compile Include="DataStrings.Designer.cs">
