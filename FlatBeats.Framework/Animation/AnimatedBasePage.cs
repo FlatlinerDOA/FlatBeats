@@ -208,7 +208,9 @@ namespace Clarity.Phone.Controls
             else
             {
                 if (AnimationContext != null)
+                {
                     AnimationContext.Opacity = 1;
+                }
 
                 OnTransitionAnimationCompleted();
             }
@@ -216,7 +218,9 @@ namespace Clarity.Phone.Controls
             //OnFirstLayoutUpdated(!_isForwardNavigation, _fromUri);
 
             if (_isForwardNavigation)
+            {
                 _isForwardNavigation = false;
+            }
         }
 
         protected virtual void OnFirstLayoutUpdated(bool isBackNavigation, Uri from) { }
@@ -242,8 +246,6 @@ namespace Clarity.Phone.Controls
 
             Dispatcher.BeginInvoke(() =>
             {
-                AnimatorHelperBase transitionAnimation;
-
                 if (animation == null)
                 {
                     AnimationContext.Opacity = 1;
@@ -251,7 +253,7 @@ namespace Clarity.Phone.Controls
                 }
                 else
                 {
-                    transitionAnimation = animation;
+                    AnimatorHelperBase transitionAnimation = animation;
                     AnimationContext.Opacity = 1;
                     transitionAnimation.Begin(OnTransitionAnimationCompleted);
                 }
@@ -274,22 +276,30 @@ namespace Clarity.Phone.Controls
             {
                 this.Dispatcher.BeginInvoke(() =>
                 {
-                    //Debug.WriteLine("{0} - Animation complete: {1}", this, _currentAnimationType);
-                    //Debug.WriteLine("nav mode : {0}", _currentNavigationMode);
-                    switch (_currentNavigationMode)
+                    try
                     {
-                        case NavigationMode.Forward:
-                            Application.Current.GoForward();
-                            break;
+                        //Debug.WriteLine("{0} - Animation complete: {1}", this, _currentAnimationType);
+                        //Debug.WriteLine("nav mode : {0}", _currentNavigationMode);
+                        switch (_currentNavigationMode)
+                        {
+                            case NavigationMode.Forward:
+                                Application.Current.GoForward();
+                                break;
 
-                        case NavigationMode.Back:
-                            Application.Current.GoBack();
-                            break;
+                            case NavigationMode.Back:
+                                Application.Current.GoBack();
+                                break;
 
-                        case NavigationMode.New:
-                            Application.Current.Navigate(_nextUri);
-                            break;
+                            case NavigationMode.New:
+                                Application.Current.Navigate(_nextUri);
+                                break;
+                        }
                     }
+                    catch (InvalidOperationException)
+                    {
+                        // Do nothing if the app is no longer visible.
+                    }
+
                     _isNavigating = false;
                 });
             }
