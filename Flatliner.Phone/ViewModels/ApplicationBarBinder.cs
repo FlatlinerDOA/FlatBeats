@@ -61,6 +61,11 @@
 
         private void RefreshButtons(IApplicationBarViewModel viewModel)
         {
+            if (this.Page == null || this.Page.ApplicationBar == null)
+            {
+                return;
+            }
+
             this.Page.ApplicationBar.Buttons.Clear();
             foreach (var commandLink in viewModel.ApplicationBarButtonCommands)
             {
@@ -70,6 +75,11 @@
 
         private void RefreshMenuItems(IApplicationBarViewModel appBarViewModel)
         {
+            if (this.Page == null || this.Page.ApplicationBar == null)
+            {
+                return;
+            }
+
             this.Page.ApplicationBar.MenuItems.Clear();
             foreach (var commandLink in appBarViewModel.ApplicationBarMenuCommands)
             {
@@ -84,7 +94,7 @@
                 return;
             }
 
-            if (this.Page.ApplicationBar == null)
+            if (this.Page == null || this.Page.ApplicationBar == null)
             {
                 return;
             }
@@ -147,7 +157,12 @@
 
         private void UpdateButtonCanExecute(ICommandLink commandLink, ApplicationBarIconButton button)
         {
-            bool canExecute = commandLink.Command.CanExecute(null);
+            if (commandLink == null || commandLink.Command == null)
+            {
+                return;
+            }
+
+            bool canExecute =  commandLink.Command.CanExecute(null);
             button.IsEnabled = canExecute;
             button.IconUri = commandLink.IconUrl;
             button.Text = commandLink.Text;
@@ -156,7 +171,10 @@
                 return;
             }
 
-            if (canExecute == this.Page.ApplicationBar.Buttons.Contains(button))
+            if (this.Page == null || 
+                this.Page.ApplicationBar == null || 
+                this.Page.ApplicationBar.Buttons == null || 
+                canExecute == this.Page.ApplicationBar.Buttons.Contains(button))
             {
                 return;
             }
@@ -173,6 +191,11 @@
 
         private void UpdateMenuItemCanExecute(ICommandLink commandLink, ApplicationBarMenuItem button)
         {
+            if (commandLink == null || commandLink.Command == null)
+            {
+                return;
+            }
+
             bool canExecute = commandLink.Command.CanExecute(null);
             button.IsEnabled = canExecute;
             button.Text = commandLink.Text;
@@ -181,7 +204,10 @@
                 return;
             }
 
-            if (canExecute == this.Page.ApplicationBar.MenuItems.Contains(button))
+            if (this.Page == null ||
+                this.Page.ApplicationBar == null ||
+                this.Page.ApplicationBar.MenuItems == null || 
+                canExecute == this.Page.ApplicationBar.MenuItems.Contains(button))
             {
                 return;
             }
@@ -233,7 +259,10 @@
         /// </summary>
         public void Dispose()
         {
-            this.Page.ApplicationBar.StateChanged -= this.UpdateSystemTray;
+            if (this.Page != null && this.Page.ApplicationBar != null)
+            {
+                this.Page.ApplicationBar.StateChanged -= this.UpdateSystemTray;
+            }
 
             this.appBarSubscriptions.Dispose();
         }
