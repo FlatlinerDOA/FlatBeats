@@ -6,6 +6,7 @@
     using System.IO.IsolatedStorage;
     using System.Linq;
     using System.Net;
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
@@ -118,22 +119,45 @@
                             }
                         })
                    from mixes in Storage.SaveJsonAsync(RecentlyPlayedFilePath, recentlyPlayed)
-                       from save in Downloader.GetAndSaveFileAsync(mix.Cover.ThumbnailUrl, imageFilePath, false).Do(d =>
+                   from save in Downloader.GetAndSaveFileAsync(mix.Cover.ThumbnailUrl, imageFilePath, false).Do(d =>
                        {
-                           using (var stream = Storage.ReadStream(imageFilePath))
+                           try
                            {
-                               var mediaHistoryItem = new MediaHistoryItem { Title = mix.Name, ImageStream = stream };
-                               mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
-                               MediaHistory.Instance.NowPlaying = mediaHistoryItem;
-                               stream.Close();
-                           }
+                               using (var stream = Storage.ReadStream(imageFilePath))
+                               {
+                                   if (stream.Length >= 76800)
+                                   {
+                                       // TODO: Something else..?
+                                       return;
+                                   }
 
-                           using (var secondStream = Storage.ReadStream(imageFilePath))
+                                   var mediaHistoryItem = new MediaHistoryItem
+                                                              {
+                                                                  Title = mix.Name,
+                                                                  ImageStream = stream
+                                                              };
+                                   mediaHistoryItem.PlayerContext.Add("MixId", mix.Id);
+                                   MediaHistory.Instance.NowPlaying = mediaHistoryItem;
+                                   stream.Close();
+                               }
+
+                               using (var secondStream = Storage.ReadStream(imageFilePath))
+                               {
+                                   if (secondStream.Length >= 76800)
+                                   {
+                                       // TODO: Something else..?
+                                       return;
+                                   }
+
+                                   var item = new MediaHistoryItem { Title = mix.Name, ImageStream = secondStream };
+                                   item.PlayerContext.Add("MixId", mix.Id);
+                                   MediaHistory.Instance.WriteRecentPlay(item);
+                                   secondStream.Close();
+                               }
+                           }
+                           catch (COMException)
                            {
-                               var item = new MediaHistoryItem { Title = mix.Name, ImageStream = secondStream };
-                               item.PlayerContext.Add("MixId", mix.Id);
-                               MediaHistory.Instance.WriteRecentPlay(item);
-                               secondStream.Close();
+                               // No COM you can't stop the music.
                            }
                        })
                    select ObservableEx.Unit;
