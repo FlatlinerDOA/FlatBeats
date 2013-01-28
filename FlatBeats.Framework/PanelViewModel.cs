@@ -28,7 +28,15 @@
 
         internal static ErrorMessage GetUnknownErrorMessage(Exception error)
         {
-            return new ErrorMessage(Framework.StringResources.Error_UnknownError_Title, Framework.StringResources.Error_UnknownError_Message) { IsCritical = true };
+            if (error.Message.Contains("AG_E_NETWORK_ERROR"))
+            {
+                return new ErrorMessage(Framework.StringResources.Error_ServerUnavailable_Title, Framework.StringResources.Error_ServerUnavailable_Message);
+            }
+
+            return new ErrorMessage(Framework.StringResources.Error_UnknownError_Title, Framework.StringResources.Error_UnknownError_Message)
+                       {
+                           IsCritical = true
+                       };
         }
 
         internal static ErrorMessage GetSocketErrorMessage(SocketException ex)
