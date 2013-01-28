@@ -6,6 +6,7 @@
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
+    using System.Xml;
 
     public sealed class Json<T> : ISerializer<T> where T : class 
     {
@@ -51,10 +52,19 @@
                         obj = (T)this.Serializer.ReadObject(ms);
                         ms.Close();
                     }
+                    catch (InvalidDataContractException)
+                    {
+                    }
+                    catch (InvalidCastException)
+                    {
+                    }
                     catch (SerializationException)
                     {
                     }
                     catch (ArgumentException)
+                    {
+                    }
+                    catch (XmlException)
                     {
                     }
                 }
@@ -97,6 +107,9 @@
                     {
                     }
                     catch (ArgumentException)
+                    {
+                    }
+                    catch (XmlException)
                     {
                     }
                 }
