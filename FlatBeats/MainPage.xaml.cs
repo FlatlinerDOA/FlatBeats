@@ -82,9 +82,9 @@
         {
             this.historyItemLaunch = false;
             this.playMixId = null;
-            if (e.NavigationMode == NavigationMode.New && NavigationContext.QueryString.ContainsKey(PlayMixKey))
+            try
             {
-                try
+                if (e.NavigationMode == NavigationMode.New && NavigationContext.QueryString.ContainsKey(PlayMixKey))
                 {
                     // We were launched from a history item.
                     // Change _playingSong even if something was already playing 
@@ -105,10 +105,11 @@
 
                     return;
                 }
-                catch (InvalidOperationException)
-                {
-                    // Couldn't navigate we're probably being closed
-                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Couldn't navigate we're probably being closed
+                return;
             }
 
             base.OnNavigatedTo(e);
