@@ -233,7 +233,7 @@ namespace FlatBeatsPlaybackAgent
                         {
                             this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
                                                from __ in this.StopPlayingAsync(player)
-                                               select __).Finally(this.Completed).Subscribe());
+                                               select __).Finally(this.Completed).Subscribe(_ => { }, ex => this.ReportFatalStopError(ex, null)));
                             return;
                         }
                     }
