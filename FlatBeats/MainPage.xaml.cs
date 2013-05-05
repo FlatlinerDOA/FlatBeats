@@ -105,14 +105,13 @@
 
                     return;
                 }
+
+                base.OnNavigatedTo(e);
             }
             catch (InvalidOperationException)
             {
                 // Couldn't navigate we're probably being closed
-                return;
             }
-
-            base.OnNavigatedTo(e);
         }
 
         private void pano_SelectionChanged(object sender, SelectionChangedEventArgs e)
