@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TrackViewModel.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace FlatBeats.ViewModels
+﻿namespace FlatBeats.ViewModels
 {
     using System;
     using System.Text.RegularExpressions;
@@ -83,8 +74,8 @@ namespace FlatBeats.ViewModels
             this.Id = track.Id;
             const string Pattern = @"\((.|\n)*?\)";
 
-            var simplifiedArtistName = Regex.Replace(track.Artist, Pattern, string.Empty);
-            var simplifiedTrackName = Regex.Replace(track.Name, Pattern, string.Empty);
+            var simplifiedArtistName = Regex.Replace(this.artist, Pattern, string.Empty);
+            var simplifiedTrackName = Regex.Replace(this.title, Pattern, string.Empty);
             this.NavigationUrl = new Uri("music://zune?" + simplifiedArtistName + " " + simplifiedTrackName, UriKind.Absolute);
             this.IsFavourite = track.IsFavourite;
         }
@@ -109,7 +100,6 @@ namespace FlatBeats.ViewModels
             }
 
             this.ToggleFavouriteCommand.RaiseCanExecuteChanged();
-
         }
 
         #endregion
