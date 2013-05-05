@@ -121,7 +121,7 @@
     <value>Something went wrong...</value>
   </data>
   <data name="Error_UnknownError" xml:space="preserve">
-    <value>Something unexpected happened! Please report this error when you are asked, the next time you run this app.</value>
+    <value>Something unexpected happened! Please report this error if you are asked to.</value>
   </data>
   <data name="TransitioningContentControl_TransitionNotFound" xml:space="preserve">
     <value>Transition '{0}' was not defined.</value>

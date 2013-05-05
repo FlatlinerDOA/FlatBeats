@@ -239,7 +239,7 @@ Link:
     <value>We are having a disagreement with the server by attempting this, please report this if it continues to happen.</value>
   </data>
   <data name="Error_UnknownError_Message" xml:space="preserve">
-    <value>Something really unexpected happened! Please report this when you are asked, next time you run this app.</value>
+    <value>Something really unexpected happened! Please report this if you are asked to.</value>
   </data>
   <data name="Command_UnpinStart" xml:space="preserve">
     <value>unpin from start</value>

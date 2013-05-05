@@ -48,10 +48,12 @@
                 if (contents != null && !LittleWatsonLog.IsExceptionIgnored(contents))
                 {
                     if (MessageBox.Show(
-                            "A problem occurred the last time you ran this application. Would you like to send an email to report it?",
-                            "Problem Report",
+                            "An error occurred the last time you ran this application. Would you like to send an email to report it? (If you do, you won't be asked again for this type of error)",
+                            "Report error?",
                             MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                     {
+                        LittleWatsonLog.IgnoreException(contents);
+
                         var email = new EmailComposeTask 
                         {
                             To = reportTo,
@@ -62,12 +64,11 @@
                         LittleWatsonLog.DeleteLog(); // line added 1/15/2011
                         email.Show();
                     }
-
-                    LittleWatsonLog.IgnoreException(contents);
                 }
             }
             catch (Exception)
             {
+                // Gotta catch em all!
             }
             finally
             {

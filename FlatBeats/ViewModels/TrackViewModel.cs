@@ -69,6 +69,11 @@
         /// </param>
         public TrackViewModel(TrackContract track) : this()
         {
+            if (track == null)
+            {
+                return;
+            }
+
             this.title = (track.Name ?? string.Empty).Trim();
             this.artist = (track.Artist ?? string.Empty).Trim();
             this.Id = track.Id;

@@ -74,13 +74,17 @@ namespace FlatBeats.Users.ViewModels
 
         public void Load(TrackContract track, bool censor)
         {
+            if (track == null)
+            {
+                return;
+            }
             this.title = (track.Name ?? string.Empty).Trim();
             this.artist = (track.Artist ?? string.Empty).Trim();
             this.Id = track.Id;
             const string Pattern = @"\((.|\n)*?\)";
 
-            var simplifiedArtistName = track.Artist != null ? Regex.Replace(this.artist, Pattern, string.Empty) : string.Empty;
-            var simplifiedTrackName = track.Name != null ? Regex.Replace(this.title, Pattern, string.Empty) : string.Empty;
+            var simplifiedArtistName = Regex.Replace(this.artist, Pattern, string.Empty);
+            var simplifiedTrackName = Regex.Replace(this.title, Pattern, string.Empty);
             this.NavigationUrl = new Uri("music://zune?" + simplifiedArtistName + " " + simplifiedTrackName, UriKind.Absolute);
             this.IsFavourite = track.IsFavourite;
         }
