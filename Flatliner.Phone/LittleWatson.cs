@@ -45,23 +45,25 @@
             try
             {
                 var contents = LittleWatsonLog.ReadLog();
-
-                if (contents != null)
+                if (contents != null && !LittleWatsonLog.IsExceptionIgnored(contents))
                 {
                     if (MessageBox.Show(
                             "A problem occurred the last time you ran this application. Would you like to send an email to report it?",
                             "Problem Report",
                             MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                     {
-                        EmailComposeTask email = new EmailComposeTask();
-
-                        email.To = reportTo;
-                        email.Subject = string.Format("{0} {1}.{2} Error Report", title, major, minor);
-                        email.Body = contents;
+                        var email = new EmailComposeTask 
+                        {
+                            To = reportTo,
+                            Subject = string.Format("{0} {1}.{2} Error Report", title, major, minor),
+                            Body = contents
+                        };
 
                         LittleWatsonLog.DeleteLog(); // line added 1/15/2011
                         email.Show();
                     }
+
+                    LittleWatsonLog.IgnoreException(contents);
                 }
             }
             catch (Exception)
