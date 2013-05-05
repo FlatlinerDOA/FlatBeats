@@ -140,8 +140,17 @@ namespace FlatBeatsPlaybackAgent
                 var stopProcess = from _ in this.LoadNowPlayingAsync()
                                   from stop in this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread)
                                   select stop;
-                this.Lifetime.Add(stopProcess.Finally(this.Completed).Subscribe());
+                this.Lifetime.Add(stopProcess.Finally(this.Completed).Subscribe(
+                    _ => { },
+                    ex => this.ReportFatalStopError(ex, error)));
             }
+        }
+
+        private void ReportFatalStopError(Exception stopError, Exception originalError)
+        {
+            LittleWatsonLog.ReportException(stopError, "Errored trying to handle another error: " + originalError);
+            this.Abort();
+            
         }
 
         /// <summary>
@@ -173,13 +182,17 @@ namespace FlatBeatsPlaybackAgent
                     this.Lifetime.Add(
                         (from _ in this.LoadNowPlayingAsync()
                         from t in this.PlayNextTrackAsync(player)
-                        select t).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                        select t).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe(
+                            _ => { },
+                            ex => this.ReportFatalStopError(ex, null)));
                     return;
                 case PlayState.Error:
                     this.Lifetime.Add(
                         (from _ in this.LoadNowPlayingAsync()
                          from stop in this.NowPlaying.StopAsync(TimeSpan.Zero)
-                         select stop).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                         select stop).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe(
+                            _ => { },
+                            ex => this.ReportFatalStopError(ex, null)));
                     return;
             }
 
@@ -243,13 +256,17 @@ namespace FlatBeatsPlaybackAgent
                     break;
                 case UserAction.Play:
                     this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
-                                       from __ in this.PlayTrackAsync(player) 
-                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                                       from __ in this.PlayTrackAsync(player)
+                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe(_ => { },
+                        ex => this.ReportFatalStopError(ex, null)));
+
                     return;
                 case UserAction.SkipNext:
                     this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
                                        from __ in this.SkipToNextTrackAsync(player)
-                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe());
+                                       select __).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe(_ => { },
+                        ex => this.ReportFatalStopError(ex, null)));
+
                     return;
             }
 

@@ -209,18 +209,21 @@ namespace FlatBeats.DataModel.Services
                 {
                     Debug.WriteLine("GET " + url.OriginalString);
 
-                    return from requestStream in Observable.FromAsyncPattern<Stream>(r.BeginGetRequestStream, r.EndGetRequestStream)().Do(
-                               s =>
-                               {
-                                   var data = Encoding.UTF8.GetBytes(postData);
-                                   s.Write(data, 0, data.Length);
-                                   s.Flush();
-                                   s.Close();
-                               })
+                    return from requestStream in Observable.FromAsyncPattern<Stream>(r.BeginGetRequestStream, r.EndGetRequestStream)()
+                               .TrySelect(
+                                   s =>
+                                   {
+                                       var data = Encoding.UTF8.GetBytes(postData);
+                                       s.Write(data, 0, data.Length);
+                                       s.Flush();
+                                       s.Close();
+                                       return s;
+                                   })
                            from response in Observable.FromAsyncPattern<WebResponse>((c, st) => r.BeginGetResponse(c, st), (ar) => r.EndGetResponse(ar))()
-                           .Catch<WebResponse, WebException>(DownloadExtensions.HandleWebException<WebResponse>)
+                                .Catch<WebResponse, WebException>(DownloadExtensions.HandleWebException<WebResponse>)
                            select response;
-                }).TrySelect(t =>
+                })
+                .TrySelect(t =>
                 {
                     using (var responseStream = t.GetResponseStream())
                     {

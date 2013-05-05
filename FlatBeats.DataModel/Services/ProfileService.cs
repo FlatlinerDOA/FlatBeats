@@ -344,7 +344,7 @@ namespace FlatBeats.DataModel.Services
         /// </returns>
         public IObservable<PortableUnit> ResetAsync()
         {
-            return ObservableEx.DeferredStart(this.DeleteCredentials);
+            return this.DeleteCredentialsAsync();
         }
 
         /// <summary>
@@ -428,16 +428,16 @@ namespace FlatBeats.DataModel.Services
 
         /// <summary>
         /// </summary>
-        private void DeleteCredentials()
+        private IObservable<PortableUnit> DeleteCredentialsAsync()
         {
-            PlayerService.StopAsync(null, TimeSpan.Zero).Subscribe();
-            PlayerService.ClearRecentlyPlayed();
-            PlayerService.DeletePlayToken();
-            this.storage.Delete(UserLoginFilePath);
-            this.storage.Delete(CredentialsFilePath);
-            this.downloader.UserToken = null;
-
-            // downloader.UserCredentials = null;
+            return PlayerService.StopAsync(null, TimeSpan.Zero).Finally(() =>
+                {
+                    PlayerService.ClearRecentlyPlayed();
+                    PlayerService.DeletePlayToken();
+                    this.storage.Delete(UserLoginFilePath);
+                    this.storage.Delete(CredentialsFilePath);
+                    this.downloader.UserToken = null;
+                });
         }
 
         /// <summary>
