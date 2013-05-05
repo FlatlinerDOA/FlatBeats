@@ -131,7 +131,12 @@ namespace FlatBeats.DataModel.Services
 
         protected static Uri GetPlayPageUrl(MixContract mix)
         {
-            return new Uri("/PlayPage.xaml?mix=" + mix.Id + "&title=" + Uri.EscapeDataString(mix.Name), UriKind.Relative);
+            if (mix == null || mix.Id == null)
+            {
+                return null;
+            }
+
+            return new Uri("/PlayPage.xaml?mix=" + mix.Id + "&title=" + Uri.EscapeDataString(mix.Name ?? string.Empty), UriKind.Relative);
         }
 
 

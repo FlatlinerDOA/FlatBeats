@@ -17,6 +17,10 @@ namespace FlatBeats.Services
             if (!IsPinned(mix))
             {
                 var tileUrl = GetPlayPageUrl(mix);
+                if (tileUrl == null)
+                {
+                    return;
+                }
 
                 if (PlatformHelper.IsWindowsPhone78OrLater)
                 {
