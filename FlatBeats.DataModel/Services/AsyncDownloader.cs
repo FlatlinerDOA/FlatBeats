@@ -17,6 +17,8 @@ namespace FlatBeats.DataModel.Services
     using Microsoft.Phone.Reactive;
     using Flatliner.Functional;
 
+    using SharpGIS.ZLib;
+
     using NetworkInterface = System.Net.NetworkInformation.NetworkInterface;
 
     /// <summary>

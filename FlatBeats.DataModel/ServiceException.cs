@@ -3,15 +3,11 @@
     using System;
     using System.Linq;
 
+    /// <summary>
+    /// Thrown when the 8tracks web service has given us an error.
+    /// </summary>
     public class ServiceException : Exception
     {
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
         public ServiceException()
         {
         }
@@ -29,6 +25,12 @@
             {
                 this.StatusCode = status;
             }
+        }
+
+        public ServiceException(string message, Exception inner, int status)
+            : base(message, inner)
+        {
+            this.StatusCode = status;
         }
 
         public int StatusCode { get; private set; }

@@ -6,6 +6,8 @@ namespace FlatBeats.DataModel.Services
 
     using Microsoft.Phone.Reactive;
 
+    using SharpGIS.ZLib;
+
     internal static class DownloadExtensions
     {
         /// <summary>
@@ -35,7 +37,11 @@ namespace FlatBeats.DataModel.Services
                             {
                                 Exception newError = ConvertWebException(webException);
                                 d.OnError(newError);
-
+                            }
+                            catch (ZlibException zlibException)
+                            {
+                                var zlibError = new ServiceException("The response from the server was interrupted, please try again later", zlibException, 444);
+                                d.OnError(zlibError);
                             }
                             catch (Exception ex)
                             {
