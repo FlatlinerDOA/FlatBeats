@@ -14,7 +14,7 @@ namespace FlatBeats.Services
     {
         public static void PinToStart(MixContract mix)
         {
-            if (!IsPinned(mix))
+            if (!BackgroundPinService.IsPinned(mix))
             {
                 var tileUrl = GetPlayPageUrl(mix);
                 if (tileUrl == null)
