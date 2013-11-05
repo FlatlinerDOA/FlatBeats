@@ -26,7 +26,7 @@
         public App()
         {
             // Global handler for uncaught exceptions. 
-            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 11);
+            LittleWatson.Initialize(this, "flatlinerdoa@gmail.com", "Flat Beats", 1, 13);
 
             // Standard Silverlight initialization
             InitializeComponent();

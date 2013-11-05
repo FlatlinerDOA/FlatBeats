@@ -36,7 +36,7 @@
                         Grid.Row="0"
                         Margin="12,17,0,0">
                 <TextBlock x:Name="ApplicationTitle"
-                           Text="FLAT BEATS - VERSION 1.12"
+                           Text="FLAT BEATS - VERSION 1.13"
                            Style="{StaticResource PhoneTextNormalStyle}" />
                 <TextBlock x:Name="PageTitle"
                            Text="about"
