@@ -560,7 +560,7 @@ namespace FlatBeats.Framework
 
         private Uri AddQuery(Uri uri, string value)
         {
-            if (!uri.IsAbsoluteUri)
+            if (uri == null || !uri.IsAbsoluteUri)
             {
                 // Forget about it! Better than crashing amirite?
                 return uri;
