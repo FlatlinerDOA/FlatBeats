@@ -181,7 +181,8 @@
                                  .Log("StartPlayingAsync: Attempting")
                                  .TakeFirst(ValidResponse)
                                  .Log("StartPlayingAsync: Valid Response")
-                             from added in AddToRecentlyPlayedAsync(mix)
+                             from added in AddToRecentlyPlayedAsync(mix).Log("AddToRecentlyPlayedAsync: Done")
+
                              select new PlayingMixContract
                              {
                                  PlayToken = playToken,
@@ -194,8 +195,9 @@
             return from playing in playingMix
                    from tile in SetNowPlayingTileAsync(
                            playing, 
-                           DataStrings.Title_ApplicationName, 
+                           DataStrings.Title_ApplicationName,
                            DataStrings.Title_NowPlaying)
+                    .Log("SetNowPlayingTileAsync: Done")
                    select playing;
         }
 
@@ -224,7 +226,7 @@
                 return Observable.Empty<Unit>();
             }
 
-            return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Do(
+            return Observable.Defer(() => SaveFadedThumbnailAsync(mix)).SubscribeOnDispatcher().Try(
                 url => BackgroundPinService.UpdateFlipTile(
                             title, 
                             backTitle, 
@@ -239,36 +241,68 @@
                             null)
                     ).Select(_ => new Unit());
         }
-        
 
         private static IObservable<Uri> SaveFadedThumbnailAsync(PlayingMixContract mix)
         {
-            var bitmap = new BitmapImage();
-            var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").ToUnit().Take(1);
-            var failed = from failure in Observable.FromEvent<ExceptionRoutedEventArgs>(bitmap, "ImageFailed").Take(1)
-                         from result in Observable.Throw<Exception>(failure.EventArgs.ErrorException)
-                         select new PortableUnit();
+            ////var bitmap = new BitmapImage() { CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation };
+            ////var opened = Observable.FromEvent<RoutedEventArgs>(bitmap, "ImageOpened").ToUnit().Take(1);
+            ////var failed = from failure in Observable.FromEvent<ExceptionRoutedEventArgs>(bitmap, "ImageFailed").Take(1)
+            ////             from result in Observable.Throw<Exception>(failure.EventArgs.ErrorException)
+            ////             select new PortableUnit();
 
-            bitmap.CreateOptions = BitmapCreateOptions.None;
+
+            Uri source;
             if (PlatformHelper.IsWindowsPhone78OrLater)
             {
-                bitmap.UriSource = mix.Cover.OriginalUrl;
+                source = mix.Cover.OriginalUrl ?? mix.Cover.Max200Url ?? mix.Cover.ThumbnailUrl;
             }
             else
             {
-                bitmap.UriSource = mix.Cover.ThumbnailUrl;
+                source = mix.Cover.ThumbnailUrl ?? mix.Cover.Max200Url;
             }
-            
-            return opened.Amb(failed).Select(
-                _ =>
+
+            if (source == null)
+            {
+                return Observable.Return<Uri>(null);
+            }
+
+            var result = Downloader.GetStreamAsync(source, false).ObserveOnDispatcher().Select(
+                b =>
                 {
-                    if (PlatformHelper.IsWindowsPhone78OrLater)
+                    try
                     {
-                        ResizeAndFade(bitmap, "NowPlaying.wide.jpg", 691, 336);
+                        var bitmap = new BitmapImage();
+                        bitmap.SetSource(b);
+                        bitmap.CreateOptions = BitmapCreateOptions.None;
+
+                        if (PlatformHelper.IsWindowsPhone78OrLater)
+                        {
+                            ResizeAndFade(bitmap, "NowPlaying.wide.jpg", 691, 336);
+                        }
+                        else
+                        {
+                            ResizeAndFade(bitmap, "NowPlaying.jpg", 173, 173);
+                        }
                     }
-                    
-                    return ResizeAndFade(bitmap, "NowPlaying.jpg", 173, 173);
+                    catch (Exception)
+                    {
+                        // Gotta catch 'em all!
+                    }
+
+                    return source;
                 });
+            return result;
+
+            ////return opened.Amb(failed).Select(
+            ////    _ =>
+            ////    {
+            ////        if (PlatformHelper.IsWindowsPhone78OrLater)
+            ////        {
+            ////            ResizeAndFade(bitmap, "NowPlaying.wide.jpg", 691, 336);
+            ////        }
+
+            ////        return ResizeAndFade(bitmap, "NowPlaying.jpg", 173, 173);
+            ////    });
         }
 
         private static Uri ResizeAndFade(BitmapImage bitmap, string fileName, int width, int height)

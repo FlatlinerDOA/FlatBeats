@@ -47,7 +47,9 @@
                 if (!url.OriginalString.EndsWith("nsfw"))
                 {
                     return new BitmapImage(url)
-                        { CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation };
+                           {
+                               CreateOptions = BitmapCreateOptions.BackgroundCreation | BitmapCreateOptions.DelayCreation
+                           };
                 }
 
                 var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
@@ -112,7 +114,7 @@
             if (uriValue != null)
             {
                 return uriValue;
-                ///return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
+                ////return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
             }
 
             var textValue = value.ToString();

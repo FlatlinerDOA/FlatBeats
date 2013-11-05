@@ -4,6 +4,8 @@ namespace FlatBeats.DataModel.Services
     using System.IO;
     using System.Net;
 
+    using Flatliner.Functional;
+
     using Microsoft.Phone.Reactive;
 
     using SharpGIS.ZLib;
@@ -48,6 +50,49 @@ namespace FlatBeats.DataModel.Services
                                 d.OnError(ex);
                             }
                         },
+                    d.OnError,
+                    d.OnCompleted));
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name = "items">
+        /// </param>
+        /// <param name = "selector">
+        /// </param>
+        /// <typeparam name = "T">
+        /// </typeparam>
+        /// <typeparam name = "TResult">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<PortableUnit> Try<T>(this IObservable<T> items, Action<T> selector)
+        {
+            return Observable.CreateWithDisposable<PortableUnit>(
+                d => items.Subscribe(
+                    item =>
+                    {
+                        try
+                        {
+                            selector(item);
+                            d.OnNext(new PortableUnit());
+                        }
+                        catch (WebException webException)
+                        {
+                            Exception newError = ConvertWebException(webException);
+                            d.OnError(newError);
+                        }
+                        catch (ZlibException zlibException)
+                        {
+                            var zlibError = new ServiceException("The response from the server was interrupted, please try again later", zlibException, 444);
+                            d.OnError(zlibError);
+                        }
+                        catch (Exception ex)
+                        {
+                            d.OnError(ex);
+                        }
+                    },
                     d.OnError,
                     d.OnCompleted));
         }
