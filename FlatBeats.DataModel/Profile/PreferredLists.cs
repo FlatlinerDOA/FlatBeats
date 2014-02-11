@@ -6,4 +6,11 @@ namespace FlatBeats.DataModel.Profile
         public const string Created = "Created";
         public const string Liked = "Liked";
     }
+
+    public static class MusicStores
+    {
+        public const string WindowsPhone = "WindowsPhone";
+
+        public const string NokiaMixRadio = "NokiaMixRadio";
+    }
 }

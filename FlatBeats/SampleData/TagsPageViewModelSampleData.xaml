@@ -1,7 +1,6 @@
 ﻿<FlatBeats_ViewModels:TagsPageViewModel 
     xmlns:FlatBeats_ViewModels="clr-namespace:FlatBeats.ViewModels" 
     xmlns:ViewModels="clr-namespace:FlatBeats.ViewModels;assembly=FlatBeats.Framework" 
-    IsInProgress="True" 
     Message="Duis himenaeos imperdiet vestibulum" 
     ShowMessage="False" 
     Title="Adipiscing interdum">

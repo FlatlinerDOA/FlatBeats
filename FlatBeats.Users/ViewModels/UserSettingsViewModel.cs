@@ -48,6 +48,13 @@ namespace FlatBeats.Users.ViewModels
 
         /// <summary>
         /// </summary>
+        private readonly Dictionary<string, string> musicStoreMap = new Dictionary<string, string> {
+                { MusicStores.WindowsPhone, StringResources.MusicStores_WindowsPhone }, 
+                { MusicStores.NokiaMixRadio, StringResources.MusicStores_NokiaMixRadio }
+            };
+
+        /// <summary>
+        /// </summary>
         private readonly ProfileService profileService;
 
         /// <summary>
@@ -126,6 +133,8 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private string userNameLabelText;
 
+        private string musicStore;
+
         #endregion
 
         #region Constructors and Destructors
@@ -161,9 +170,16 @@ namespace FlatBeats.Users.ViewModels
             this.ResetCommand = new DelegateCommand(this.SignOut, this.CanSignOut);
             this.RegisterErrorHandler<ServiceException>(this.HandleSignInWebException);
             this.PreferredListChoices = new ObservableCollection<string>();
+
             foreach (var item in this.preferredListMap)
             {
                 this.PreferredListChoices.Add(item.Value);
+            }
+
+            this.MusicStoreChoices = new ObservableCollection<string>();
+            foreach (var item in this.musicStoreMap)
+            {
+                this.MusicStoreChoices.Add(item.Value);
             }
         }
 
@@ -202,6 +218,28 @@ namespace FlatBeats.Users.ViewModels
                 this.OnPropertyChanged("CanLogin");
                 this.LoginCommand.RaiseCanExecuteChanged();
                 this.ResetCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public string MusicStore
+        {
+            get
+            {
+                return this.musicStore;
+            }
+
+            set
+            {
+                if (this.musicStore == value)
+                {
+                    return;
+                }
+
+                this.musicStore = value;
+                this.OnPropertyChanged("MusicStore");
+                this.SaveSettings();
             }
         }
 
@@ -473,6 +511,7 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         public ObservableCollection<string> PreferredListChoices { get; private set; }
 
+        public ObservableCollection<string> MusicStoreChoices { get; private set; }
         /// <summary>
         /// </summary>
         public string PreferredListText
@@ -694,6 +733,7 @@ namespace FlatBeats.Users.ViewModels
             this.PlayOverWifiOnly = userSettings.PlayOverWifiOnly;
             this.PlayNextMix = userSettings.PlayNextMix;
             this.PreferredList = this.preferredListMap[userSettings.PreferredList ?? PreferredLists.Created];
+            this.MusicStore = this.musicStoreMap[userSettings.MusicStore ?? MusicStores.WindowsPhone];
             this.isSettingsLoaded = true;
         }
 
@@ -713,6 +753,7 @@ namespace FlatBeats.Users.ViewModels
                         s.PlayOverWifiOnly = this.PlayOverWifiOnly;
                         s.PlayNextMix = this.PlayNextMix;
                         s.PreferredList = this.preferredListMap.FirstOrDefault(p => p.Value == this.PreferredList).Key;
+                        s.MusicStore = this.musicStoreMap.FirstOrDefault(p => p.Value == this.musicStore).Key;
                     })
                                             from save in this.profileService.SaveSettingsAsync(userSettings)
                                             select ObservableEx.Unit;

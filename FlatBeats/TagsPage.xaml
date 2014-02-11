@@ -58,13 +58,13 @@
                     Foreground="LightGray"
                     TextWrapping="Wrap" Margin="12,8,12,0" 
                     Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}" />
-            <toolkit:LongListSelector x:Name="tagsList"
+            <phone:LongListSelector x:Name="tagsList"
                 ItemsSource="{Binding Tags}"
                                       Background="Transparent"
-                                      GroupViewOpened="LongListSelector_GroupViewOpened"
-                                      GroupViewClosing="LongListSelector_GroupViewClosing"
+                                    JumpListOpening="TagsList_OnJumpListOpening"
+                                    JumpListClosed="TagsList_OnJumpListClosed"
                                       Tap="ListSelectorTap">
-                <toolkit:LongListSelector.ItemTemplate>
+                <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                             <TextBlock Text="{Binding TagName}"
                                        TextWrapping="NoWrap"
@@ -72,32 +72,36 @@
                                        Foreground="{StaticResource PhoneForegroundBrush}" Margin="0,0,0,17"
                                        Width="432" />
                     </DataTemplate>
-                </toolkit:LongListSelector.ItemTemplate>
-                <toolkit:LongListSelector.GroupItemsPanel>
-                    <ItemsPanelTemplate>
-                        <toolkit:WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </toolkit:LongListSelector.GroupItemsPanel>
-                <toolkit:LongListSelector.GroupItemTemplate>
-                    <DataTemplate>
-                        <Border Background="{Binding HasItems, Converter={StaticResource BooleanToAccentConverter}}"
-                                Width="99"
-                                Height="99"
-                                Margin="6"
-                                IsHitTestVisible="{Binding HasItems}">
-                            <TextBlock Text="{Binding Key}"
+                </phone:LongListSelector.ItemTemplate>
+
+                <phone:LongListSelector.JumpListStyle>
+                    <Style TargetType="phone:LongListSelector">
+                        <Setter Property="GridCellSize"  Value="113,113"/>
+                        <Setter Property="LayoutMode" Value="Grid" />
+                        <Setter Property="ItemTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Border Background="{Binding HasItems, Converter={StaticResource BooleanToAccentConverter}}"
+                                        Width="99"
+                                        Height="99"
+                                        Margin="6"
+                                        IsHitTestVisible="{Binding HasItems}">
+                                        <TextBlock Text="{Binding Key}"
                                        FontFamily="{StaticResource PhoneFontFamilySemiBold}"
                                        FontSize="48"
                                        Margin="8,0,0,0"
                                        Foreground="{StaticResource PhoneForegroundBrush}"
                                        VerticalAlignment="Bottom" />
-                            <Border.Projection>
-                                <PlaneProjection RotationX="-90" />
-                            </Border.Projection>
-                        </Border>
-                    </DataTemplate>
-                </toolkit:LongListSelector.GroupItemTemplate>
-                <toolkit:LongListSelector.GroupHeaderTemplate>
+                                        <Border.Projection>
+                                            <PlaneProjection RotationX="-90" />
+                                        </Border.Projection>
+                                    </Border>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </phone:LongListSelector.JumpListStyle>
+                <phone:LongListSelector.GroupHeaderTemplate>
                     <DataTemplate>
                         <Border Background="Transparent"
                                 Margin="12,8,0,8">
@@ -115,8 +119,8 @@
                             </Border>
                         </Border>
                     </DataTemplate>
-                </toolkit:LongListSelector.GroupHeaderTemplate>
-            </toolkit:LongListSelector>
+                </phone:LongListSelector.GroupHeaderTemplate>
+            </phone:LongListSelector>
         </Grid>
     </Grid>
 </Controls1:AnimatedBasePage>
