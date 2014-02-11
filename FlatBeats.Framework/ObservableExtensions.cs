@@ -8,10 +8,9 @@ namespace FlatBeats.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reactive.Linq;
     using System.Threading;
     using System.Windows.Threading;
-
-    using Microsoft.Phone.Reactive;
 
     public static class ObservableExtensions
     {
@@ -105,7 +104,7 @@ namespace FlatBeats.ViewModels
 
         public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate, Action onExit)
         {
-            return Observable.CreateWithDisposable<T>(
+            return Observable.Create<T>(
                 observer =>
                     {
                         bool isRunning = true;
@@ -136,7 +135,7 @@ namespace FlatBeats.ViewModels
         public static IObservable<T> FirstDo<T>(this IObservable<T> sequence, Action<T> firstAction)
         {
             bool hasBeenRun = false;
-            return Observable.CreateWithDisposable<T>(
+            return Observable.Create<T>(
                 observer => sequence.Subscribe(
                     _ =>
                     {
@@ -267,7 +266,7 @@ namespace FlatBeats.ViewModels
 
         public static IObservable<TResult> FinallySelect<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)
         {
-            return Observable.CreateWithDisposable<TResult>(
+            return Observable.Create<TResult>(
                 observer => sequence.Subscribe(
                     _ =>
                     {

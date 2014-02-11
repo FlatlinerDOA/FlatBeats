@@ -407,6 +407,15 @@ namespace FlatBeats.Framework {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Music store.
+        /// </summary>
+        public static string Label_MusicStore {
+            get {
+                return ResourceManager.GetString("Label_MusicStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Label_Password {

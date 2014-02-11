@@ -3,9 +3,16 @@ using System.Net;
 
 namespace FlatBeats.ViewModels
 {
+    using System.Linq;
     using System.Windows.Navigation;
 
+    using Windows.System;
+
     using FlatBeats.DataModel;
+    using FlatBeats.DataModel.Profile;
+    using FlatBeats.DataModel.Services;
+
+    using Flatliner.Phone.Data;
 
     using Microsoft.Phone.Tasks;
 
@@ -85,10 +92,21 @@ namespace FlatBeats.ViewModels
                     }
                     else if (url.Scheme == "music")
                     {
-                        MarketplaceSearchTask task = new MarketplaceSearchTask();
-                        task.ContentType = MarketplaceContentType.Music;
-                        task.SearchTerms = HttpUtility.UrlDecode(url.Query.TrimStart('?'));
-                        task.Show();
+                        ProfileService.Instance.GetSettingsAsync().Subscribe(
+                            s =>
+                            {
+                                if ((s.MusicStore ?? MusicStores.WindowsPhone) == MusicStores.NokiaMixRadio)
+                                {
+                                    Launcher.LaunchUriAsync(new Uri("nokia-music://search/anything/?term=" + url.Query.TrimStart('?')));
+                                    return;
+                                }
+
+                                var task = new MarketplaceSearchTask();
+                                task.ContentType = MarketplaceContentType.Music;
+                                task.SearchTerms = HttpUtility.UrlDecode(url.Query.TrimStart('?'));
+                                task.Show();
+                            });
+
                     }
                     else if (url.Scheme == "rate")
                     {

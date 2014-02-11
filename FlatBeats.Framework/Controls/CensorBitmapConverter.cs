@@ -1,26 +1,45 @@
-﻿namespace FlatBeats.Framework.Controls
+﻿// --------------------------------------------------------------------------------------------------
+//  <copyright file="CensorBitmapConverter.cs" company="DNS Technology Pty Ltd.">
+//    Copyright (c) 2014 DNS Technology Pty Ltd. All rights reserved.
+//  </copyright>
+// --------------------------------------------------------------------------------------------------
+namespace FlatBeats.Framework.Controls
 {
     using System;
     using System.Globalization;
     using System.IO;
-    using System.Net;
+    using System.Reactive.Concurrency;
+    using System.Reactive.Linq;
+    using System.Windows;
     using System.Windows.Data;
     using System.Windows.Media.Imaging;
 
-    using FlatBeats.DataModel;
+    using Windows.UI.Core;
+
     using FlatBeats.DataModel.Services;
+    using System.Windows.Threading;
 
-    using Microsoft.Phone.Reactive;
-
-    using ObservableExtensions = Microsoft.Phone.Reactive.ObservableExtensions;
-
+    /// <summary>
+    /// </summary>
     public class CensorBitmapConverter : IValueConverter
     {
-        public int PixelWidth { get; set; }
+        #region Public Properties
 
+        /// <summary>
+        /// </summary>
         public int PixelHeight { get; set; }
 
+        /// <summary>
+        /// </summary>
         public int PixelSize { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public int PixelWidth { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         /// Modifies the source data before passing it to the target for display in the UI.
@@ -28,7 +47,18 @@
         /// <returns>
         /// The value to be passed to the target dependency property.
         /// </returns>
-        /// <param name="value">The source data being passed to the target.</param><param name="targetType">The <see cref="T:System.Type"/> of data expected by the target dependency property.</param><param name="parameter">An optional parameter to be used in the converter logic.</param><param name="culture">The culture of the conversion.</param>
+        /// <param name="value">
+        /// The source data being passed to the target.
+        /// </param>
+        /// <param name="targetType">
+        /// The <see cref="T:System.Type"/> of data expected by the target dependency property.
+        /// </param>
+        /// <param name="parameter">
+        /// An optional parameter to be used in the converter logic.
+        /// </param>
+        /// <param name="culture">
+        /// The culture of the conversion.
+        /// </param>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
@@ -38,7 +68,7 @@
                     return null;
                 }
 
-                var url = GetUrl(value);
+                var url = this.GetUrl(value);
                 if (url == null)
                 {
                     return null;
@@ -54,8 +84,9 @@
 
                 var safeUrl = new Uri(url.OriginalString.Remove(url.OriginalString.Length - 4, 4).TrimEnd('?'));
                 var pixelated = new WriteableBitmap(this.PixelWidth, this.PixelHeight);
-                AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOnDispatcher().Subscribe(
-                    b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize),
+                AsyncDownloader.Instance.GetStreamAsync(safeUrl, false).ObserveOn(DefaultScheduler.Instance) // TODO: Review
+                    .Subscribe(
+                    b => this.Pixelate(pixelated, b, 0, 0, this.PixelWidth, this.PixelHeight, this.PixelSize), 
                     ex =>
                     {
                         // Image failed to download who cares!
@@ -68,6 +99,76 @@
             }
         }
 
+        /// <summary>
+        /// Modifies the target data before passing it to the source object.  This method is called only in <see cref="F:System.Windows.Data.BindingMode.TwoWay"/> bindings.
+        /// </summary>
+        /// <returns>
+        /// The value to be passed to the source object.
+        /// </returns>
+        /// <param name="value">
+        /// The target data being passed to the source.
+        /// </param>
+        /// <param name="targetType">
+        /// The <see cref="T:System.Type"/> of data expected by the source object.
+        /// </param>
+        /// <param name="parameter">
+        /// An optional parameter to be used in the converter logic.
+        /// </param>
+        /// <param name="culture">
+        /// The culture of the conversion.
+        /// </param>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// </summary>
+        /// <param name="value">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private Uri GetUrl(object value)
+        {
+            var uriValue = value as Uri;
+            if (uriValue != null)
+            {
+                return uriValue;
+
+                ////return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
+            }
+
+            var textValue = value.ToString();
+            if (Uri.TryCreate(textValue, UriKind.Absolute, out uriValue))
+            {
+                return uriValue;
+
+                ////return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="target">
+        /// </param>
+        /// <param name="source">
+        /// </param>
+        /// <param name="startX">
+        /// </param>
+        /// <param name="startY">
+        /// </param>
+        /// <param name="width">
+        /// </param>
+        /// <param name="height">
+        /// </param>
+        /// <param name="pixelateSize">
+        /// </param>
         private void Pixelate(WriteableBitmap target, Stream source, int startX, int startY, int width, int height, int pixelateSize)
         {
             try
@@ -108,35 +209,6 @@
             }
         }
 
-        private Uri GetUrl(object value)
-        {
-            var uriValue = value as Uri;
-            if (uriValue != null)
-            {
-                return uriValue;
-                ////return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
-            }
-
-            var textValue = value.ToString();
-            if (Uri.TryCreate(textValue, UriKind.Absolute, out uriValue))
-            {
-                return uriValue;
-                ////return new BitmapImage(uriValue) { CreateOptions = BitmapCreateOptions.BackgroundCreation };
-            }
-            
-            return null;
-        }
-
-        /// <summary>
-        /// Modifies the target data before passing it to the source object.  This method is called only in <see cref="F:System.Windows.Data.BindingMode.TwoWay"/> bindings.
-        /// </summary>
-        /// <returns>
-        /// The value to be passed to the source object.
-        /// </returns>
-        /// <param name="value">The target data being passed to the source.</param><param name="targetType">The <see cref="T:System.Type"/> of data expected by the source object.</param><param name="parameter">An optional parameter to be used in the converter logic.</param><param name="culture">The culture of the conversion.</param>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+        #endregion
     }
 }

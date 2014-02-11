@@ -19,6 +19,8 @@
     d:DataContext="{d:DesignData /SampleData/TagsPageViewModelSampleData.xaml}">
     <phone:PhoneApplicationPage.Resources>
         <ViewModels:TagsPageViewModel x:Key="ViewModel" />
+        <phone:JumpListItemBackgroundConverter x:Key="ListBackgroundConverter"></phone:JumpListItemBackgroundConverter>
+        <phone:JumpListItemForegroundConverter x:Key="ListForegroundConverter"></phone:JumpListItemForegroundConverter>
         <Controls2:BooleanToBrushConverter x:Key="BooleanToAccentConverter" WhenTrue="{StaticResource PhoneAccentBrush}" WhenFalse="{StaticResource PhoneChromeBrush}" />
         <Controls2:BooleanToBrushConverter x:Key="BooleanToForegroundConverter"
                                        WhenTrue="{StaticResource PhoneForegroundBrush}"
@@ -59,18 +61,18 @@
                     TextWrapping="Wrap" Margin="12,8,12,0" 
                     Visibility="{Binding ShowMessage, Converter={StaticResource ShowConverter}}" />
             <phone:LongListSelector x:Name="tagsList"
-                ItemsSource="{Binding Tags}"
-                                      Background="Transparent"
-                                    JumpListOpening="TagsList_OnJumpListOpening"
-                                    JumpListClosed="TagsList_OnJumpListClosed"
-                                      Tap="ListSelectorTap">
+                    ItemsSource="{Binding Tags}"
+                    IsGroupingEnabled="True"
+                    Background="Transparent"
+                    JumpListOpening="TagsList_OnJumpListOpening"
+                    JumpListClosed="TagsList_OnJumpListClosed"
+                    Tap="ListSelectorTap">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                            <TextBlock Text="{Binding TagName}"
-                                       TextWrapping="NoWrap"
-                                       Style="{StaticResource PhoneTextExtraLargeStyle}"
-                                       Foreground="{StaticResource PhoneForegroundBrush}" Margin="0,0,0,17"
-                                       Width="432" />
+                        <TextBlock Text="{Binding TagName}"
+                                    TextWrapping="NoWrap"
+                                    Margin="0,0,0,17"
+                                    Width="432" />
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
 
@@ -81,20 +83,13 @@
                         <Setter Property="ItemTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <Border Background="{Binding HasItems, Converter={StaticResource BooleanToAccentConverter}}"
-                                        Width="99"
-                                        Height="99"
-                                        Margin="6"
-                                        IsHitTestVisible="{Binding HasItems}">
-                                        <TextBlock Text="{Binding Key}"
-                                       FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                                       FontSize="48"
-                                       Margin="8,0,0,0"
-                                       Foreground="{StaticResource PhoneForegroundBrush}"
-                                       VerticalAlignment="Bottom" />
-                                        <Border.Projection>
-                                            <PlaneProjection RotationX="-90" />
-                                        </Border.Projection>
+                                    <Border Background="{Binding Converter={StaticResource ListBackgroundConverter}}"
+                                        Width="113" Height="113" Margin="6" >
+                                        <TextBlock Text="{Binding Title}"
+                                               FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                                               FontSize="48" Padding="6"
+                                               Foreground="{Binding Converter={StaticResource ListForegroundConverter}}"
+                                               VerticalAlignment="Center"/>
                                     </Border>
                                 </DataTemplate>
                             </Setter.Value>
@@ -103,6 +98,7 @@
                 </phone:LongListSelector.JumpListStyle>
                 <phone:LongListSelector.GroupHeaderTemplate>
                     <DataTemplate>
+                        
                         <Border Background="Transparent"
                                 Margin="12,8,0,8">
                             <Border Background="{StaticResource PhoneAccentBrush}"
@@ -110,7 +106,7 @@
                                     Width="62"
                                     Height="62"
                                     HorizontalAlignment="Left">
-                                <TextBlock Text="{Binding Key}"
+                                <TextBlock Text="{Binding Title}"
                                            Foreground="#FFFFFF"
                                            FontSize="48"
                                            FontFamily="{StaticResource PhoneFontFamilySemiLight}"

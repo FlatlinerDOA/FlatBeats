@@ -111,7 +111,7 @@ namespace FlatBeats.Users.ViewModels
 
         /// <summary>
         /// </summary>
-        private string preferredList;
+        private string preferredList = StringResources.PreferredLists_Liked;
 
         /// <summary>
         /// </summary>
@@ -133,7 +133,9 @@ namespace FlatBeats.Users.ViewModels
         /// </summary>
         private string userNameLabelText;
 
-        private string musicStore;
+        private string musicStore = StringResources.MusicStores_WindowsPhone;
+
+        private string musicStoreText;
 
         #endregion
 
@@ -161,6 +163,7 @@ namespace FlatBeats.Users.ViewModels
             this.PasswordLabelText = StringResources.Label_Password;
             this.PlayNextMixText = StringResources.Label_PlayNextMix;
             this.PreferredListText = StringResources.Label_PreferredList;
+            this.MusicStoreText = StringResources.Label_MusicStore;
             this.CensorshipEnabledText = StringResources.Label_CensorshipEnabled;
             this.PlayOverWifiOnlyText = StringResources.Label_PlayOverWifiOnly;
             this.CanLogin = false;
@@ -180,6 +183,19 @@ namespace FlatBeats.Users.ViewModels
             foreach (var item in this.musicStoreMap)
             {
                 this.MusicStoreChoices.Add(item.Value);
+            }
+        }
+
+        public string MusicStoreText
+        {
+            get
+            {
+                return this.musicStoreText;
+            }
+            set
+            {
+                this.musicStoreText = value;
+                this.OnPropertyChanged("MusicStoreText");
             }
         }
 

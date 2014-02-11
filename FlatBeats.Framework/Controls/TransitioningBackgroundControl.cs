@@ -19,7 +19,7 @@ namespace FlatBeats.Framework.Controls
     using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
 
-    using Microsoft.Phone.Reactive;
+    using System.Reactive.Linq;
 
     /// <summary>
     /// Represents a control with a single piece of content and when that content 
@@ -559,7 +559,7 @@ namespace FlatBeats.Framework.Controls
                         {
                             //Observable.FromEvent<ExceptionRoutedEventArgs>(bmp, "ImageFailed").Select(t => new Unit()).Take(1).Amb(
                             //    Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1)).Take(1).Subscribe(_ => this.TransitionNow());
-                            Observable.FromEvent<RoutedEventArgs>(bmp, "ImageOpened").Take(1).Subscribe(_ => this.TransitionNow(bmp));
+                            Observable.FromEventPattern<RoutedEventArgs>(bmp, "ImageOpened").Take(1).Subscribe(_ => this.TransitionNow(bmp));
                             return;
                         }
                     }

@@ -409,4 +409,7 @@ Link:
   <data name="MusicStores_WindowsPhone" xml:space="preserve">
     <value>Music Store</value>
   </data>
+  <data name="Label_MusicStore" xml:space="preserve">
+    <value>Music store</value>
+  </data>
 </root>

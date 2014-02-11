@@ -132,6 +132,11 @@
                                            Style="{StaticResource PhoneTextNormalStyle}"
                                            Margin="12,12,12,0" />
                             <toolkit:ListPicker ItemsSource="{Binding PreferredListChoices}" SelectedItem="{Binding PreferredList, Mode=TwoWay}" />
+                            <TextBlock Text="{Binding MusicStoreText}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource PhoneTextNormalStyle}"
+                                           Margin="12,12,12,0" />
+                            <toolkit:ListPicker ItemsSource="{Binding MusicStoreChoices}" SelectedItem="{Binding MusicStore, Mode=TwoWay}" />
                             <toolkit:ToggleSwitch  IsChecked="{Binding CensorshipEnabled, Mode=TwoWay}"
                                                    Margin="0,12,0,0">
                                 <TextBlock Text="{Binding CensorshipEnabledText}"
