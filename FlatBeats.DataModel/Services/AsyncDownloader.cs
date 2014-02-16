@@ -1,36 +1,42 @@
-﻿//--------------------------------------------------------------------------------------------------
-// <copyright file="Downloader.cs" company="DNS Technology Pty Ltd.">
-//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
-// </copyright>
-//--------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------
+//  <copyright file="AsyncDownloader.cs" company="Andrew Chisholm">
+//    Copyright (c) 2014 Andrew Chisholm. All rights reserved.
+//  </copyright>
+// --------------------------------------------------------------------------------------------------
 namespace FlatBeats.DataModel.Services
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Net;
+    using System.Net.NetworkInformation;
     using System.Text;
 
+    using Flatliner.Functional;
     using Flatliner.Phone;
 
-    using Microsoft.Phone.Net.NetworkInformation;
     using Microsoft.Phone.Reactive;
-    using Flatliner.Functional;
-
-    using SharpGIS.ZLib;
-
-    using NetworkInterface = System.Net.NetworkInformation.NetworkInterface;
 
     /// <summary>
     /// </summary>
     public sealed class AsyncDownloader : IAsyncDownloader
     {
+        #region Static Fields
+
+        /// <summary>
+        /// </summary>
         public static readonly IAsyncDownloader Instance = new AsyncDownloader();
 
-        #region Constants and Fields
+        #endregion
 
+        #region Fields
+
+        /// <summary>
+        /// </summary>
         private readonly IAsyncStorage storage;
 
+        /// <summary>
+        /// </summary>
         private readonly object syncRoot = new object();
 
         /// <summary>
@@ -39,14 +45,24 @@ namespace FlatBeats.DataModel.Services
 
         #endregion
 
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// </summary>
         public AsyncDownloader() : this(AsyncIsolatedStorage.Instance)
         {
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="storage">
+        /// </param>
         public AsyncDownloader(IAsyncStorage storage)
         {
             this.storage = storage;
         }
+
+        #endregion
 
         #region Public Properties
 
@@ -60,6 +76,8 @@ namespace FlatBeats.DataModel.Services
             }
         }
 
+        /// <summary>
+        /// </summary>
         public string UserToken
         {
             get
@@ -81,15 +99,17 @@ namespace FlatBeats.DataModel.Services
 
         #endregion
 
-        #region Public Methods
+        #region Public Methods and Operators
 
         /// <summary>
         /// </summary>
-        /// <param name = "url">
+        /// <param name="url">
         /// </param>
-        /// <param name = "fileName">
+        /// <param name="fileName">
         /// </param>
-        /// <param name="overwrite">A value indicating whether to overwrite any existing file</param>
+        /// <param name="overwrite">
+        /// A value indicating whether to overwrite any existing file
+        /// </param>
         /// <returns>
         /// </returns>
         public IObservable<PortableUnit> GetAndSaveFileAsync(Uri url, string fileName, bool overwrite)
@@ -111,6 +131,30 @@ namespace FlatBeats.DataModel.Services
                         });
         }
 
+        /// <summary>
+        /// Gets Json forcing no-cache
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="url">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public IObservable<T> GetDeserializedAsync<T>(Uri url) where T : class
+        {
+            return this.GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="cacheFile">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public IObservable<T> GetDeserializedCachedAndRefreshedAsync<T>(Uri url, string cacheFile) where T : class
         {
             IObservable<T> sequence = Observable.Empty<T>();
@@ -126,7 +170,16 @@ namespace FlatBeats.DataModel.Services
                 .Catch<T, WebException>(ex => Observable.Empty<T>()));
         }
 
-
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="cacheFile">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public IObservable<T> GetDeserializedCachedAsync<T>(Uri url, string cacheFile) where T : class
         {
             if (this.storage.Exists(cacheFile))
@@ -139,6 +192,14 @@ namespace FlatBeats.DataModel.Services
                    select cache;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="url">
+        /// </param>
+        /// <param name="disableCache">
+        /// </param>
+        /// <returns>
+        /// </returns>
         public IObservable<Stream> GetStreamAsync(Uri url, bool disableCache)
         {
             return this.WebRequestAsync(url, disableCache).TrySelect(
@@ -156,25 +217,14 @@ namespace FlatBeats.DataModel.Services
         }
 
         /// <summary>
-        /// Gets Json forcing no-cache
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public IObservable<T> GetDeserializedAsync<T>(Uri url) where T : class
-        {
-            return this.GetStreamAsync(url, true).Select(Json<T>.Instance.DeserializeFromStream);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name = "url">
+        /// <param name="url">
         /// </param>
-        /// <param name = "postData">
+        /// <param name="postData">
         /// </param>
-        /// <typeparam name = "TRequest">
+        /// <typeparam name="TRequest">
         /// </typeparam>
-        /// <typeparam name = "TResponse">
+        /// <typeparam name="TResponse">
         /// </typeparam>
         /// <returns>
         /// </returns>
@@ -189,9 +239,9 @@ namespace FlatBeats.DataModel.Services
 
         /// <summary>
         /// </summary>
-        /// <param name = "url">
+        /// <param name="url">
         /// </param>
-        /// <param name = "postData">
+        /// <param name="postData">
         /// </param>
         /// <returns>
         /// </returns>
@@ -204,7 +254,7 @@ namespace FlatBeats.DataModel.Services
                     r.Method = "POST";
                     r.ContentType = "application/x-www-form-urlencoded";
                     return r;
-                },
+                }, 
                 r =>
                 {
                     Debug.WriteLine("GET " + url.OriginalString);
@@ -241,11 +291,11 @@ namespace FlatBeats.DataModel.Services
 
         /// <summary>
         /// </summary>
-        /// <param name = "url">
+        /// <param name="url">
         /// </param>
-        /// <param name = "postData">
+        /// <param name="postData">
         /// </param>
-        /// <typeparam name = "TResponse">
+        /// <typeparam name="TResponse">
         /// </typeparam>
         /// <returns>
         /// </returns>
@@ -261,24 +311,12 @@ namespace FlatBeats.DataModel.Services
 
         #region Methods
 
-        private IObservable<WebResponse> WebRequestAsync(Uri address, bool noCache)
-        {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                return Observable.Throw<WebResponse>(new WebException("Network is not available"));
-            }
-
-            return Observable.Using(
-                () => this.CreateRequest(address, noCache),
-                r =>
-                {
-                    Debug.WriteLine("GET " + address.OriginalString);
-                    return Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)();
-                }).Catch<WebResponse, WebException>(DownloadExtensions.HandleWebException<WebResponse>);
-        }
-
         /// <summary>
         /// </summary>
+        /// <param name="address">
+        /// </param>
+        /// <param name="noCache">
+        /// </param>
         /// <returns>
         /// </returns>
         private DisposableWebRequest CreateRequest(Uri address, bool noCache)
@@ -297,6 +335,30 @@ namespace FlatBeats.DataModel.Services
             }
 
             return request;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="address">
+        /// </param>
+        /// <param name="noCache">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        private IObservable<WebResponse> WebRequestAsync(Uri address, bool noCache)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                return Observable.Throw<WebResponse>(new WebException("Network is not available"));
+            }
+
+            return Observable.Using(
+                () => this.CreateRequest(address, noCache), 
+                r =>
+                    {
+                        Debug.WriteLine("GET " + address.OriginalString);
+                        return Observable.FromAsyncPattern<WebResponse>(r.BeginGetResponse, r.EndGetResponse)();
+                    }).Catch<WebResponse, WebException>(DownloadExtensions.HandleWebException<WebResponse>);
         }
 
         #endregion

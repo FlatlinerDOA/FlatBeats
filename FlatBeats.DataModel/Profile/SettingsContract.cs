@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------
-//  <copyright file="SettingsContract.cs" company="DNS Technology Pty Ltd.">
-//    Copyright (c) 2014 DNS Technology Pty Ltd. All rights reserved.
+//  <copyright file="SettingsContract.cs" company="Andrew Chisholm">
+//    Copyright (c) 2014 Andrew Chisholm. All rights reserved.
 //  </copyright>
 // --------------------------------------------------------------------------------------------------
 namespace FlatBeats.DataModel.Profile

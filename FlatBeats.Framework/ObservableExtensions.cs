@@ -1,107 +1,138 @@
-﻿//--------------------------------------------------------------------------------------------------
-// <copyright file="ObservableExtensions.cs" company="DNS Technology Pty Ltd.">
-//   Copyright (c) 2011 DNS Technology Pty Ltd. All rights reserved.
-// </copyright>
-//--------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------
+//  <copyright file="ObservableExtensions.cs" company="Andrew Chisholm">
+//    Copyright (c) 2014 Andrew Chisholm. All rights reserved.
+//  </copyright>
+// --------------------------------------------------------------------------------------------------
 namespace FlatBeats.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reactive.Linq;
-    using System.Threading;
-    using System.Windows.Threading;
 
+    /// <summary>
+    /// </summary>
     public static class ObservableExtensions
     {
-        public static IObservable<T> FlowInTime<T>(this IObservable<T> source)
-        {
-            return from item in source
-                   from interval in Observable.Interval(TimeSpan.FromMilliseconds(150)).Take(1)
-                   select item;
-        }
+        #region Public Methods and Operators
 
-        public static IObservable<T> SetListItemPositions<T>(this IObservable<T> items) where T : ListItemViewModel
+        /// <summary>
+        /// </summary>
+        /// <param name="dataItems">
+        /// </param>
+        /// <param name="viewModels">
+        /// </param>
+        /// <param name="load">
+        /// </param>
+        /// <typeparam name="TViewModel">
+        /// </typeparam>
+        /// <typeparam name="TData">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
         {
-            bool isFirst = true;
-            bool setLast = false;
-            T last = default(T);
-            return items.Do(
-                item =>
-                {
-                    item.IsFirstItem = isFirst;
-                    item.IsLastItem = false;
-                    isFirst = false;
-                    setLast = true;
-                    last = item;
-                }, 
-                () =>
-                {
-                    if (setLast)
+            int removeAfter = -1;
+            return dataItems.Indexed().Do(
+                dataItem =>
                     {
-                        last.IsLastItem = true;
-                    }
-                });
+                        var existing = dataItem.Index < viewModels.Count ? viewModels[dataItem.Index] : null;
+                        if (existing == null)
+                        {
+                            existing = new TViewModel();
+                            load(existing, dataItem.Item);
+                            viewModels.Add(existing);
+                        }
+                        else
+                        {
+                            load(existing, dataItem.Item);
+                        }
+
+                        removeAfter = Math.Max(removeAfter, dataItem.Index);
+                    }).Finally(() =>
+                        {
+                            while (viewModels.Count > removeAfter + 1)
+                            {
+                                viewModels.RemoveAt(removeAfter + 1);
+                            }
+
+                            UpdateFirstAndLastItems(viewModels);
+                        }).Select(t => t.Item);
         }
 
-        public static IEnumerable<T> SetListItemPositions<T>(this IEnumerable<T> items) where T : ListItemViewModel
+        /// <summary>
+        /// </summary>
+        /// <param name="pages">
+        /// </param>
+        /// <param name="target">
+        /// </param>
+        /// <param name="load">
+        /// </param>
+        /// <typeparam name="TViewModel">
+        /// </typeparam>
+        /// <typeparam name="TData">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new() 
         {
-            bool isFirst = true;
-            bool setLast = false;
-            T last = default(T);
-            foreach (var item in items)
-            {
-                item.IsFirstItem = isFirst;
-                item.IsLastItem = false;
-                isFirst = false;
-                setLast = true;
-                last = item;
-                yield return item;
-            }
-        
-            if (setLast)
-            {
-                last.IsLastItem = true;
-            }
-        }
-
-        public static IObservable<Indexed<T>> Indexed<T>(this IObservable<T> items)
-        {
-            int index = 0;
-            return items.Select(
-                t =>
+            return pages.Do(
+                page =>
                     {
-                        var result = new Indexed<T>(t, index);
-                        index++;
-                        return result;
-                    });
+                        var startIndex = (page.PageNumber - 1) * page.PageSize;
+                        var endIndex = startIndex + page.Items.Count;
+                        for (int i = 0; i < page.Items.Count; i++)
+                        {
+                            var targetIndex = startIndex + i;
+                            if (target.Count <= targetIndex)
+                            {
+                                target.Add(new TViewModel());
+                                targetIndex = target.Count - 1;
+                            }
+
+                            var vm = target[targetIndex] ?? new TViewModel();
+                            load(vm, page.Items[i]);
+                        }
+
+                        if (page.Items.Count < page.PageSize)
+                        {
+                            while (target.Count > endIndex)
+                            {
+                                target.RemoveAt(target.Count - 1);
+                            }
+                        }
+
+                        UpdateFirstAndLastItems(target);
+                    }).Select(t => t.Items);
         }
 
-        public static IEnumerable<Indexed<T>> Indexed<T>(this IEnumerable<T> items)
-        {
-            int index = 0;
-            return items.Select(
-                t =>
-                {
-                    var result = new Indexed<T>(t, index);
-                    index++;
-                    return result;
-                });
-        }
-
-        public static IObservable<T> FlowIn<T>(this IObservable<T> source, int millisecondDelay = 85)
-        {
-            //bool hasBeenRun = false;
-            return from item in source
-                   from delayTimer in Observable.Timer(TimeSpan.FromMilliseconds(millisecondDelay))
-                   select item;
-        }
-
+        /// <summary>
+        /// </summary>
+        /// <param name="sequence">
+        /// </param>
+        /// <param name="predicate">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate)
         {
             return sequence.ContinueWhile(predicate, null);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="sequence">
+        /// </param>
+        /// <param name="predicate">
+        /// </param>
+        /// <param name="onExit">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public static IObservable<T> ContinueWhile<T>(this IObservable<T> sequence, Predicate<T> predicate, Action onExit)
         {
             return Observable.Create<T>(
@@ -132,6 +163,43 @@ namespace FlatBeats.ViewModels
 
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="sequence">
+        /// </param>
+        /// <param name="finalValue">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<TResult> FinallySelect<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)
+        {
+            return Observable.Create<TResult>(
+                observer => sequence.Subscribe(
+                    _ =>
+                        {
+                        }, 
+                    observer.OnError, 
+                    () =>
+                        { 
+                            observer.OnNext(finalValue());
+                            observer.OnCompleted();
+                        }));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sequence">
+        /// </param>
+        /// <param name="firstAction">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
         public static IObservable<T> FirstDo<T>(this IObservable<T> sequence, Action<T> firstAction)
         {
             bool hasBeenRun = false;
@@ -150,6 +218,141 @@ namespace FlatBeats.ViewModels
                     observer.OnError, 
                     observer.OnCompleted));
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="source">
+        /// </param>
+        /// <param name="millisecondDelay">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<T> FlowIn<T>(this IObservable<T> source, int millisecondDelay = 85)
+        {
+            // bool hasBeenRun = false;
+            return from item in source
+                   from delayTimer in Observable.Timer(TimeSpan.FromMilliseconds(millisecondDelay))
+                   select item;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="source">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<T> FlowInTime<T>(this IObservable<T> source)
+        {
+            return from item in source
+                   from interval in Observable.Interval(TimeSpan.FromMilliseconds(150)).Take(1)
+                   select item;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="items">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<Indexed<T>> Indexed<T>(this IObservable<T> items)
+        {
+            int index = 0;
+            return items.Select(
+                t =>
+                    {
+                        var result = new Indexed<T>(t, index);
+                        index++;
+                        return result;
+                    });
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="items">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IEnumerable<Indexed<T>> Indexed<T>(this IEnumerable<T> items)
+        {
+            int index = 0;
+            return items.Select(
+                t =>
+                    {
+                        var result = new Indexed<T>(t, index);
+                        index++;
+                        return result;
+                    });
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="items">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IObservable<T> SetListItemPositions<T>(this IObservable<T> items) where T : ListItemViewModel
+        {
+            bool isFirst = true;
+            bool setLast = false;
+            T last = default(T);
+            return items.Do(
+                item =>
+                    {
+                        item.IsFirstItem = isFirst;
+                        item.IsLastItem = false;
+                        isFirst = false;
+                        setLast = true;
+                        last = item;
+                    }, 
+                () =>
+                    {
+                        if (setLast)
+                        {
+                            last.IsLastItem = true;
+                        }
+                    });
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="items">
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// </returns>
+        public static IEnumerable<T> SetListItemPositions<T>(this IEnumerable<T> items) where T : ListItemViewModel
+        {
+            bool isFirst = true;
+            bool setLast = false;
+            T last = default(T);
+            foreach (var item in items)
+            {
+                item.IsFirstItem = isFirst;
+                item.IsLastItem = false;
+                isFirst = false;
+                setLast = true;
+                last = item;
+                yield return item;
+            }
+        
+            if (setLast)
+            {
+                last.IsLastItem = true;
+            }
+        }
+
+        #endregion
 
         ////public static IObservable<TData> AddOrReloadListItems<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
         ////{
@@ -191,69 +394,14 @@ namespace FlatBeats.ViewModels
         ////            }
         ////        }).Select(t => t.Item);
         ////}
+        #region Methods
 
-        public static IObservable<IList<TData>> AddOrReloadPage<TViewModel, TData>(this IObservable<Page<TData>> pages, IList<TViewModel> target, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new() 
-        {
-            return pages.Do(
-                page =>
-                    {
-                        var startIndex = (page.PageNumber - 1) * page.PageSize;
-                        var endIndex = startIndex + page.Items.Count;
-                        for (int i = 0; i < page.Items.Count; i++)
-                        {
-                            var targetIndex = startIndex + i;
-                            if (target.Count <= targetIndex)
-                            {
-                                target.Add(new TViewModel());
-                                targetIndex = target.Count - 1;
-                            }
-
-                            var vm = target[targetIndex] ?? new TViewModel();
-                            load(vm, page.Items[i]);
-                        }
-
-                        if (page.Items.Count < page.PageSize)
-                        {
-                            while (target.Count > endIndex)
-                            {
-                                target.RemoveAt(target.Count - 1);
-                            }
-                        }
-
-                        UpdateFirstAndLastItems(target);
-                    }).Select(t => t.Items);
-        }
-
-        public static IObservable<TData> AddOrReloadByPosition<TViewModel, TData>(this IObservable<TData> dataItems, IList<TViewModel> viewModels, Action<TViewModel, TData> load) where TViewModel : ListItemViewModel, new()
-        {
-            int removeAfter = -1;
-            return dataItems.Indexed().Do(
-                dataItem =>
-                {
-                    var existing = dataItem.Index < viewModels.Count ? viewModels[dataItem.Index] : null;
-                    if (existing == null)
-                    {
-                        existing = new TViewModel();
-                        load(existing, dataItem.Item);
-                        viewModels.Add(existing);
-                    }
-                    else
-                    {
-                        load(existing, dataItem.Item);
-                    }
-
-                    removeAfter = Math.Max(removeAfter, dataItem.Index);
-                }).Finally(() =>
-                    {
-                        while (viewModels.Count > removeAfter + 1)
-                        {
-                            viewModels.RemoveAt(removeAfter + 1);
-                        }
-
-                        UpdateFirstAndLastItems(viewModels);
-                    }).Select(t => t.Item);
-        }
-
+        /// <summary>
+        /// </summary>
+        /// <param name="viewModels">
+        /// </param>
+        /// <typeparam name="TViewModel">
+        /// </typeparam>
         private static void UpdateFirstAndLastItems<TViewModel>(IList<TViewModel> viewModels) where TViewModel : ListItemViewModel
         {
             for (int i = 0; i < viewModels.Count; i++)
@@ -264,19 +412,6 @@ namespace FlatBeats.ViewModels
             }
         }
 
-        public static IObservable<TResult> FinallySelect<T, TResult>(this IObservable<T> sequence, Func<TResult> finalValue)
-        {
-            return Observable.Create<TResult>(
-                observer => sequence.Subscribe(
-                    _ =>
-                    {
-                    },
-                    observer.OnError,
-                    () =>
-                    { 
-                        observer.OnNext(finalValue());
-                        observer.OnCompleted();
-                    }));
-        }
+        #endregion
     }
 }

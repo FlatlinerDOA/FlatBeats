@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------
-//  <copyright file="CensorBitmapConverter.cs" company="DNS Technology Pty Ltd.">
-//    Copyright (c) 2014 DNS Technology Pty Ltd. All rights reserved.
+//  <copyright file="CensorBitmapConverter.cs" company="Andrew Chisholm">
+//    Copyright (c) 2014 Andrew Chisholm. All rights reserved.
 //  </copyright>
 // --------------------------------------------------------------------------------------------------
 namespace FlatBeats.Framework.Controls
@@ -10,14 +10,10 @@ namespace FlatBeats.Framework.Controls
     using System.IO;
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
-    using System.Windows;
     using System.Windows.Data;
     using System.Windows.Media.Imaging;
 
-    using Windows.UI.Core;
-
     using FlatBeats.DataModel.Services;
-    using System.Windows.Threading;
 
     /// <summary>
     /// </summary>
