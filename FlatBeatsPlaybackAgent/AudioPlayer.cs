@@ -8,6 +8,7 @@ namespace FlatBeatsPlaybackAgent
     using System;
     using System.Diagnostics;
     using System.Net;
+    using System.Windows.Navigation;
 
     using FlatBeats.DataModel;
     using FlatBeats.DataModel.Profile;
@@ -136,6 +137,12 @@ namespace FlatBeatsPlaybackAgent
             }
             else
             {
+                if (error.HResult == -2146233088)
+                {
+                    this.LoadAndPlayNextTrack(player);
+                    return;
+                }
+
                 player.Track = null;
                 var stopProcess = from _ in this.LoadNowPlayingAsync()
                                   from stop in this.NowPlaying.StopAsync(TimeSpan.Zero).ObserveOn(Scheduler.CurrentThread)
@@ -146,11 +153,21 @@ namespace FlatBeatsPlaybackAgent
             }
         }
 
+        private void LoadAndPlayNextTrack(BackgroundAudioPlayer player)
+        {
+            this.Lifetime.Add(
+                (from _ in this.LoadNowPlayingAsync()
+                 from t in this.PlayNextTrackAsync(player)
+                 select t).ObserveOn(Scheduler.CurrentThread).Subscribe(
+                    _ => { },
+                    ex => this.ReportFatalStopError(ex, null), 
+                    this.Completed));
+        }
+
         private void ReportFatalStopError(Exception stopError, Exception originalError)
         {
             LittleWatsonLog.ReportException(stopError, "Errored trying to handle another error: " + originalError);
             this.Abort();
-            
         }
 
         /// <summary>
@@ -179,12 +196,7 @@ namespace FlatBeatsPlaybackAgent
                 case PlayState.Stopped:
                     break;
                 case PlayState.TrackEnded:
-                    this.Lifetime.Add(
-                        (from _ in this.LoadNowPlayingAsync()
-                        from t in this.PlayNextTrackAsync(player)
-                        select t).ObserveOn(Scheduler.CurrentThread).Finally(this.Completed).Subscribe(
-                            _ => { },
-                            ex => this.ReportFatalStopError(ex, null)));
+                    this.LoadAndPlayNextTrack(player);
                     return;
                 case PlayState.Error:
                     this.Lifetime.Add(
@@ -221,8 +233,7 @@ namespace FlatBeatsPlaybackAgent
         /// User actions do not automatically make any changes in system state; the agent is responsible
         ///   for carrying out the user actions if they are supported
         /// </remarks>
-        protected override void OnUserAction(
-            BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
+        protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
         {
             switch (action)
             {
@@ -233,7 +244,7 @@ namespace FlatBeatsPlaybackAgent
                         {
                             this.Lifetime.Add((from _ in this.LoadNowPlayingAsync()
                                                from __ in this.StopPlayingAsync(player)
-                                               select __).Finally(this.Completed).Subscribe(_ => { }, ex => this.ReportFatalStopError(ex, null)));
+                                               select __).Subscribe(_ => { }, ex => this.ReportFatalStopError(ex, null), this.Completed));
                             return;
                         }
                     }
@@ -417,7 +428,23 @@ namespace FlatBeatsPlaybackAgent
 
             // Set which track to play. When the TrackReady state is received 
             // in the OnPlayStateChanged handler, call player.Play().
-            return from trackAddress in PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).ObserveOn(Scheduler.CurrentThread).Do(
+            return from trackAddress in PlayerService.GetTrackAddressAsync(this.NowPlaying.Set.Track).Catch<Uri, WebException>(
+                ex =>
+                    {
+                        if (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.NotFound)
+                        {
+                            var playNext = from nextResponse in this.NowPlaying.NextTrackAsync(player).Do(r =>
+                            {
+                                this.NowPlaying.Set = r.Set;
+                            })
+                            from _ in this.NowPlaying.SaveNowPlayingAsync()
+                            from play in this.PlayTrackAsync(player)
+                            select play;
+                            return playNext.SelectMany(_ => Observable.Empty<Uri>());
+                        }
+
+                        return Observable.Empty<Uri>();
+                    }).ObserveOn(Scheduler.CurrentThread).Do(
                     trackUrl =>
                     {
                         var coverUrl = this.NowPlaying.Cover.ThumbnailUrl;

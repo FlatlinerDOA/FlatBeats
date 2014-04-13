@@ -114,12 +114,14 @@
             if (!this.disposed)
             {
                 var response = this.request.EndGetResponse(asyncResult);
+
                 // Response would be GZipWebResponse would be the case if WebRequestCreator was also used
                 if (response != null && 
                     !(response is GZipWebClient.GZipWebResponse) && 
                     response.Headers[HttpRequestHeader.ContentEncoding] == "gzip")
                 {
-                    return new GZipWebClient.GZipWebResponse(response); //If gzipped response, uncompress
+                    //If gzipped response, uncompress
+                    return new GZipWebClient.GZipWebResponse(response);
                 }
 
                 return response;

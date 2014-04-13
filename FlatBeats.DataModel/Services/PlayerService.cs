@@ -61,9 +61,9 @@
                     playedDuration = player.Position;
                 }
             }
-            catch (InvalidOperationException)
+            catch (SystemException)
             {
-                // Background audio resources no longer available
+                // Not found etc. HRESULT = 0xC00D001A
             }
 
             return playedDuration;
@@ -435,8 +435,8 @@
                 return Observable.Return(new Uri(localFullPath, UriKind.Relative));
             }
 
-            ////return Downloader.GetAndSaveFile(remoteTrackUrl, localFullPath).Select(_ => new Uri(localFullPath, UriKind.Relative));
-            return Observable.Return(remoteTrackUrl);
+            return Downloader.GetAndSaveFileAsync(remoteTrackUrl, localFullPath, false).Select(_ => new Uri(localFullPath, UriKind.Relative));
+            ////return Observable.Return(remoteTrackUrl);
         }
     }
 }
